@@ -1,6 +1,6 @@
-/*      $Id: Exception.c,v 1.11 2000/09/23 19:39:18 ooc-devel Exp $    */
+/*      $Id: Exception.c,v 1.12 2001/03/18 14:59:29 ooc-devel Exp $    */
 /*  Provides facilities to raise and handle exceptions.
-    Copyright (C) 1997, 1998, 1999  Michael van Acken
+    Copyright (C) 1997, 1998, 1999, 2001  Michael van Acken
 
     This module is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public License
@@ -106,7 +106,7 @@ static _ExecutionContext top_context = NULL;
 
 /* this variable is used to pass the exception source to the reactivation
    of PUSHCONTEXT: */
-void* _Exception__source = NULL;
+void* _exception_source = NULL;
 
 /* exception source associated with exceptions raised by this module */
 static Exception__Source eexcept;
@@ -115,12 +115,12 @@ static Exception__Source eexcept;
 #define STACK_EMPTY 3
 #define INVALID_RAISE 4
 
-/* the following variables describe together with _Exception__source the raised
+/* the following variables describe together with _exception_source the raised
    exception if the program is in the exceptional execution state: */
 #define MESSAGE_LENGTH 128
-static _ExecutionContext _Exception__context = NULL;
-static LONGINT _Exception__number = 0;
-static OOC_CHAR _Exception__message[MESSAGE_LENGTH];
+static _ExecutionContext _exception_context = NULL;
+static LONGINT _exception_number = 0;
+static OOC_CHAR _exception_message[MESSAGE_LENGTH];
 
 
 #define STR_PARAM(text) (OOC_CHAR*)text,sizeof(text)
@@ -128,7 +128,7 @@ static OOC_CHAR _Exception__message[MESSAGE_LENGTH];
 
 static _ModId _mid;
 
-void _push_Exception__context(_ExecutionContext c) {
+void _push_exception_context(_ExecutionContext c) {
   c->next = top_context;
   top_context = c;
 }
@@ -138,9 +138,9 @@ void Exception__POPCONTEXT(void) {
     if(is_exception) {
       /* pass exception along to next higher exception handler; since we are
          in an exception, RAISE will reactivate the second stack element */
-      Exception__RAISE(_Exception__source, _Exception__number, 
-                      _Exception__message,
-                      strlen((char*)_Exception__message));
+      Exception__RAISE(_exception_source, _exception_number, 
+                      _exception_message,
+                      strlen((char*)_exception_message));
     } else {                    /* just pop top of stack */
       top_context = top_context->next;
     }
@@ -153,7 +153,7 @@ void Exception__POPCONTEXT(void) {
 void Exception__RETRY(void) {
   _exception_pos = 0;           /* clear file position */
   if(is_exception) {
-    longjmp(*(jmp_buf*)_Exception__context->jmpbuf, -1);
+    longjmp(*(jmp_buf*)_exception_context->jmpbuf, -1);
   } else {
     Exception__RAISE(eexcept, NORMAL_EXECUTION, 
                     STR_PARAM("[Exception] RETRY called in normal execution state"));
@@ -190,13 +190,13 @@ void Exception__RAISE(Exception__Source source, LONGINT number,
     is_exception = 1;
   }
   /* store information describing the current exception in global variables */
-  _Exception__source = source;
-  _Exception__number = number;
-  _Exception__context = top_context;
-  _string_copy(_Exception__message, message__ref, MESSAGE_LENGTH);
-  if (_Exception__context) {
+  _exception_source = source;
+  _exception_number = number;
+  _exception_context = top_context;
+  _string_copy(_exception_message, message__ref, MESSAGE_LENGTH);
+  if (_exception_context) {
     /* reactivate topmost context */
-    longjmp(*(jmp_buf*)_Exception__context->jmpbuf, 1);
+    longjmp(*(jmp_buf*)_exception_context->jmpbuf, 1);
   } else {
     /* oops, stack is empty; use default exception handler from __oo2c.c --
        it'll write a nice message and abort */
@@ -206,7 +206,7 @@ void Exception__RAISE(Exception__Source source, LONGINT number,
 
 LONGINT Exception__CurrentNumber(Exception__Source source) {
   if(is_exception) {
-    return _Exception__number;
+    return _exception_number;
   } else {
     Exception__RAISE(eexcept, NORMAL_EXECUTION, 
                     STR_PARAM("[Exception] CurrentNumber called in normal execution state"));
@@ -216,7 +216,7 @@ LONGINT Exception__CurrentNumber(Exception__Source source) {
 
 void Exception__GetMessage(OOC_CHAR* text, LONGINT text_0d) {
   if(is_exception) {
-    _string_copy(text, _Exception__message, text_0d);
+    _string_copy(text, _exception_message, text_0d);
   } else {
     Exception__RAISE(eexcept, NORMAL_EXECUTION, 
                     STR_PARAM("[Exception] GetMessage called in normal execution state"));

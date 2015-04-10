@@ -10,6 +10,19 @@
 static const struct {
   int length;
   void* pad;
+  const void* list[1];
+} _p0 = {1, NULL, {
+  (const void*)&CopyPropagation__Propagate,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[16];
 } _n0 = {16, NULL, {"CopyPropagation"}};
 static struct _MD CopyPropagation_md = {
@@ -19,7 +32,10 @@ static struct _MD CopyPropagation_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    455863073
   }
 };
 

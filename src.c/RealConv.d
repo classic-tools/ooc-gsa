@@ -20,6 +20,25 @@ unsigned char RealConv__IsSign(unsigned char ch);
 static const struct {
   int length;
   void* pad;
+  const void* list[7];
+} _p0 = {7, NULL, {
+  (const void*)&RealConv__FormatReal,
+  (const void*)&RealConv__IsRConvException,
+  (const void*)&RealConv__LengthEngReal,
+  (const void*)&RealConv__LengthFixedReal,
+  (const void*)&RealConv__LengthFloatReal,
+  (const void*)&RealConv__ScanReal,
+  (const void*)&RealConv__ValueReal,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[9];
 } _n0 = {9, NULL, {"RealConv"}};
 static struct _MD RealConv_md = {
@@ -29,7 +48,10 @@ static struct _MD RealConv_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -604354786
   }
 };
 

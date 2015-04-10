@@ -1,7 +1,7 @@
-(*	$Id: Schedule.Mod,v 1.35 1999/11/06 11:14:45 ooc-devel Exp $	*)
+(*	$Id: Schedule.Mod,v 1.36 2000/12/27 16:33:57 ooc-devel Exp $	*)
 MODULE Schedule;
 (*  Instruction scheduler for ANSI-C back-end.
-    Copyright (C) 1996-1999  Michael van Acken
+    Copyright (C) 1996-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -210,7 +210,7 @@ PROCEDURE DataDependencies (greg: D.GlobalRegion; r: D.Region);
         opnd: D.Opnd;
       BEGIN
         CASE instr. opcode OF
-        | Opc.call, Opc.updateMem, Opc.move:
+        | Opc.call, Opc.accessMem, Opc.updateMem, Opc.move:
           opnd := instr. GetOperand (Sym.store, D.symLocObject)
         | Opc.updateNonlocal, Opc.updateVarParam, Opc.updateHeap:
           opnd := instr. NthOperand (2)

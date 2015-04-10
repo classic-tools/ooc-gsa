@@ -38,6 +38,45 @@ void StdPragmas__CreatePragma(ParamOptions__BooleanOption *pragma, const unsigne
 static const struct {
   int length;
   void* pad;
+  const void* list[1];
+} _p0 = {1, NULL, {
+  (const void*)&StdPragmas__Init,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[26];
+} _p1 = {26, NULL, {
+  (const void*)&StdPragmas__assertions,
+  (const void*)&StdPragmas__caseSelectCheck,
+  (const void*)&StdPragmas__compiler,
+  (const void*)&StdPragmas__compilerMajor,
+  (const void*)&StdPragmas__compilerMinor,
+  (const void*)&StdPragmas__compilerVersion,
+  (const void*)&StdPragmas__conformantMode,
+  (const void*)&StdPragmas__derefCheck,
+  (const void*)&StdPragmas__functResult,
+  (const void*)&StdPragmas__indexCheck,
+  (const void*)&StdPragmas__initialize,
+  (const void*)&StdPragmas__intDivCheck,
+  (const void*)&StdPragmas__intOverflowCheck,
+  (const void*)&StdPragmas__poisonHeap,
+  (const void*)&StdPragmas__rangeCheck,
+  (const void*)&StdPragmas__realDivCheck,
+  (const void*)&StdPragmas__realOverflowCheck,
+  (const void*)&StdPragmas__stackCheck,
+  (const void*)&StdPragmas__targetAddress,
+  (const void*)&StdPragmas__targetArch,
+  (const void*)&StdPragmas__targetArchMinor,
+  (const void*)&StdPragmas__targetByteOrder,
+  (const void*)&StdPragmas__targetInteger,
+  (const void*)&StdPragmas__targetOS,
+  (const void*)&StdPragmas__typeGuard,
+  (const void*)&StdPragmas__warnings,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[11];
 } _n0 = {11, NULL, {"StdPragmas"}};
 static struct _MD StdPragmas_md = {
@@ -47,7 +86,10 @@ static struct _MD StdPragmas_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    1559598469
   }
 };
 

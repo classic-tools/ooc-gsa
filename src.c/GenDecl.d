@@ -16,6 +16,7 @@
 static short int GenDecl__anonCounter;
 static short int GenDecl__nameCounter;
 static short int GenDecl__recordCounter;
+static short int GenDecl__ptrListCounter;
 #include "Parameter.h"
 static Parameter__String GenDecl__dummyName;
 static unsigned char GenDecl__rwList[2560];
@@ -58,6 +59,9 @@ void GenDecl__BuildObjList_BuildList(Data__Object obj);
 void GenDecl__BuildObjList_QuickSort_Swap(int i, int j);
 void GenDecl__BuildObjList_QuickSort(int l, int r);
 short int GenDecl__Name(TextRider__Writer w, const unsigned char* name__ref, int name_0d);
+short int GenDecl__PtrList_CountObjects(Data__Object node, signed char *GenDecl__PtrList_mode);
+void GenDecl__PtrList_WriteObjects(Data__Object node, signed char *GenDecl__PtrList_mode, TextRider__Writer *GenDecl__PtrList_w);
+short int GenDecl__PtrList(TextRider__Writer w, Data__Object root, signed char mode);
 void GenDecl__TBProcArray_WriteTBProc(Data__Struct record, short int index, TextRider__Writer *GenDecl__TBProcArray_w);
 short int GenDecl__TBProcArray(TextRider__Writer w, Data__Struct t);
 void GenDecl__TypeDescriptor_BaseTypes_WriteType(Data__Struct t, unsigned char last, TextRider__Writer *GenDecl__TypeDescriptor_BaseTypes_w);
@@ -65,6 +69,36 @@ void GenDecl__TypeDescriptor_BaseTypes(TextRider__Writer w, Data__Struct t);
 void GenDecl__InitReservedWords_RW(const unsigned char* id__ref, int id_0d);
 
 /* module and type descriptors */
+static const struct {
+  int length;
+  void* pad;
+  const void* list[15];
+} _p0 = {15, NULL, {
+  (const void*)&GenDecl__AssignNames,
+  (const void*)&GenDecl__BuildObjList,
+  (const void*)&GenDecl__Declaration,
+  (const void*)&GenDecl__EnumerateSideEffects,
+  (const void*)&GenDecl__ModuleDescriptor,
+  (const void*)&GenDecl__NewLine,
+  (const void*)&GenDecl__PatchTBCalls,
+  (const void*)&GenDecl__RegisterTBCall,
+  (const void*)&GenDecl__Strings,
+  (const void*)&GenDecl__TypeDeclaration,
+  (const void*)&GenDecl__TypeDescrName,
+  (const void*)&GenDecl__TypeDescriptor,
+  (const void*)&GenDecl__VarDeclaration,
+  (const void*)&GenDecl__WriteScalarCast,
+  (const void*)&GenDecl__WriteScalarType,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[3];
+} _p1 = {3, NULL, {
+  (const void*)&GenDecl__objCount,
+  (const void*)&GenDecl__objList,
+  (const void*)&GenDecl__tbCallList,
+}};
 static const struct {
   int length;
   void* pad;
@@ -77,7 +111,10 @@ static struct _MD GenDecl_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    530678467
   }
 };
 
@@ -120,113 +157,120 @@ struct _TD GenDecl__SideEffectInfo_td = {
 };
 
 /* local strings */
-static const unsigned char _c137[] = "strcmpl";
-static const unsigned char _c136[] = "strcmp";
-static const unsigned char _c135[] = "memset";
-static const unsigned char _c134[] = "memcpy";
-static const unsigned char _c133[] = "alloca";
-static const unsigned char _c132[] = "malloc";
-static const unsigned char _c131[] = "throw";
-static const unsigned char _c130[] = "virtual";
-static const unsigned char _c129[] = "this";
-static const unsigned char _c128[] = "try";
-static const unsigned char _c127[] = "true";
-static const unsigned char _c126[] = "template";
-static const unsigned char _c125[] = "public";
-static const unsigned char _c124[] = "protected";
-static const unsigned char _c123[] = "private";
-static const unsigned char _c122[] = "operator";
-static const unsigned char _c121[] = "new";
-static const unsigned char _c120[] = "inline";
-static const unsigned char _c119[] = "friend";
-static const unsigned char _c118[] = "false";
-static const unsigned char _c117[] = "delete";
-static const unsigned char _c116[] = "class";
-static const unsigned char _c115[] = "catch";
-static const unsigned char _c114[] = "bool";
-static const unsigned char _c113[] = "asm";
-static const unsigned char _c112[] = "fortran";
-static const unsigned char _c111[] = "while";
-static const unsigned char _c110[] = "volatile";
-static const unsigned char _c109[] = "unsigned";
-static const unsigned char _c108[] = "union";
-static const unsigned char _c107[] = "typedef";
-static const unsigned char _c106[] = "switch";
-static const unsigned char _c105[] = "struct";
-static const unsigned char _c104[] = "static";
-static const unsigned char _c103[] = "sizeof";
-static const unsigned char _c102[] = "signed";
-static const unsigned char _c101[] = "short";
-static const unsigned char _c100[] = "return";
-static const unsigned char _c99[] = "register";
-static const unsigned char _c98[] = "long";
-static const unsigned char _c97[] = "int";
-static const unsigned char _c96[] = "if";
-static const unsigned char _c95[] = "goto";
-static const unsigned char _c94[] = "for";
-static const unsigned char _c93[] = "float";
-static const unsigned char _c92[] = "extern";
-static const unsigned char _c91[] = "enum";
-static const unsigned char _c90[] = "else";
-static const unsigned char _c89[] = "double";
-static const unsigned char _c88[] = "do";
-static const unsigned char _c87[] = "default";
-static const unsigned char _c86[] = "continue";
-static const unsigned char _c85[] = "const";
-static const unsigned char _c84[] = "char";
-static const unsigned char _c83[] = "case";
-static const unsigned char _c82[] = "break";
-static const unsigned char _c81[] = "auto";
-static const unsigned char _c80[] = "),";
-static const unsigned char _c79[] = "sizeof(";
-static const unsigned char _c78[] = "\0470\047, \0471\047,";
-static const unsigned char _c77[] = "_md.md,";
-static const unsigned char _c76[] = ".name,";
-static const unsigned char _c75[] = ".tbprocs,";
-static const unsigned char _c74[] = "_tb";
-static const unsigned char _c73[] = "b.btypes,";
-static const unsigned char _c72[] = "&Types__TypeDesc_td.td,";
-static const unsigned char _c71[] = "NULL,";
-static const unsigned char _c70[] = "struct _TD ";
-static const unsigned char _c69[] = "b = {";
-static const unsigned char _c68[] = "} ";
-static const unsigned char _c67[] = "_Type btypes[";
-static const unsigned char _c66[] = ".td";
-static const unsigned char _c65[] = "}};";
-static const unsigned char _c64[] = "(void*)";
-static const unsigned char _c63[] = ", NULL, {";
-static const unsigned char _c62[] = "} _tb";
-static const unsigned char _c61[] = "const void* tbprocs[";
-static const unsigned char _c60[] = "};";
-static const unsigned char _c59[] = "NULL";
-static const unsigned char _c58[] = "-1, ";
-static const unsigned char _c57[] = ".name, ";
-static const unsigned char _c56[] = "_n";
-static const unsigned char _c55[] = "&Kernel__ModuleDesc_td.td, ";
-static const unsigned char _c54[] = "NULL, ";
-static const unsigned char _c53[] = "_md = {";
-static const unsigned char _c52[] = "static struct _MD ";
-static const unsigned char _c51[] = "\042}};";
-static const unsigned char _c50[] = ", NULL, {\042";
-static const unsigned char _c49[] = " = {";
-static const unsigned char _c48[] = "} _n";
-static const unsigned char _c47[] = "];";
-static const unsigned char _c46[] = "const char name[";
-static const unsigned char _c45[] = "void* pad;";
-static const unsigned char _c44[] = " length;";
-static const unsigned char _c43[] = "static const struct {";
-static const unsigned char _c42[] = "#define _TB";
-static const unsigned char _c41[] = "signed ";
-static const unsigned char _c40[] = "unsigned ";
-static const unsigned char _c39[] = "_td";
-static const unsigned char _c38[] = "_TypeDesc";
-static const unsigned char _c37[] = "[] = ";
-static const unsigned char _c36[] = "static const ";
-static const unsigned char _c35[] = "_dummy_";
-static const unsigned char _c34[] = ".h";
-static const unsigned char _c33[] = "#define";
-static const unsigned char _c32[] = "_TBP_";
-static const unsigned char _c31[] = "const ";
+static const unsigned char _c144[] = "strcmpl";
+static const unsigned char _c143[] = "strcmp";
+static const unsigned char _c142[] = "memset";
+static const unsigned char _c141[] = "memcpy";
+static const unsigned char _c140[] = "alloca";
+static const unsigned char _c139[] = "malloc";
+static const unsigned char _c138[] = "throw";
+static const unsigned char _c137[] = "virtual";
+static const unsigned char _c136[] = "this";
+static const unsigned char _c135[] = "try";
+static const unsigned char _c134[] = "true";
+static const unsigned char _c133[] = "template";
+static const unsigned char _c132[] = "public";
+static const unsigned char _c131[] = "protected";
+static const unsigned char _c130[] = "private";
+static const unsigned char _c129[] = "operator";
+static const unsigned char _c128[] = "new";
+static const unsigned char _c127[] = "inline";
+static const unsigned char _c126[] = "friend";
+static const unsigned char _c125[] = "false";
+static const unsigned char _c124[] = "delete";
+static const unsigned char _c123[] = "class";
+static const unsigned char _c122[] = "catch";
+static const unsigned char _c121[] = "bool";
+static const unsigned char _c120[] = "asm";
+static const unsigned char _c119[] = "fortran";
+static const unsigned char _c118[] = "while";
+static const unsigned char _c117[] = "volatile";
+static const unsigned char _c116[] = "unsigned";
+static const unsigned char _c115[] = "union";
+static const unsigned char _c114[] = "typedef";
+static const unsigned char _c113[] = "switch";
+static const unsigned char _c112[] = "struct";
+static const unsigned char _c111[] = "static";
+static const unsigned char _c110[] = "sizeof";
+static const unsigned char _c109[] = "signed";
+static const unsigned char _c108[] = "short";
+static const unsigned char _c107[] = "return";
+static const unsigned char _c106[] = "register";
+static const unsigned char _c105[] = "long";
+static const unsigned char _c104[] = "int";
+static const unsigned char _c103[] = "if";
+static const unsigned char _c102[] = "goto";
+static const unsigned char _c101[] = "for";
+static const unsigned char _c100[] = "float";
+static const unsigned char _c99[] = "extern";
+static const unsigned char _c98[] = "enum";
+static const unsigned char _c97[] = "else";
+static const unsigned char _c96[] = "double";
+static const unsigned char _c95[] = "do";
+static const unsigned char _c94[] = "default";
+static const unsigned char _c93[] = "continue";
+static const unsigned char _c92[] = "const";
+static const unsigned char _c91[] = "char";
+static const unsigned char _c90[] = "case";
+static const unsigned char _c89[] = "break";
+static const unsigned char _c88[] = "auto";
+static const unsigned char _c87[] = "),";
+static const unsigned char _c86[] = "sizeof(";
+static const unsigned char _c85[] = "\0470\047, \0471\047,";
+static const unsigned char _c84[] = "_md.md,";
+static const unsigned char _c83[] = ".name,";
+static const unsigned char _c82[] = ".tbprocs,";
+static const unsigned char _c81[] = "_tb";
+static const unsigned char _c80[] = "b.btypes,";
+static const unsigned char _c79[] = "&Types__TypeDesc_td.td,";
+static const unsigned char _c78[] = "struct _TD ";
+static const unsigned char _c77[] = "b = {";
+static const unsigned char _c76[] = "} ";
+static const unsigned char _c75[] = "_Type btypes[";
+static const unsigned char _c74[] = ".td";
+static const unsigned char _c73[] = "(void*)";
+static const unsigned char _c72[] = "} _tb";
+static const unsigned char _c71[] = "const void* tbprocs[";
+static const unsigned char _c70[] = "NULL";
+static const unsigned char _c69[] = "};";
+static const unsigned char _c68[] = ".list,";
+static const unsigned char _c67[] = "_p";
+static const unsigned char _c66[] = "NULL,";
+static const unsigned char _c65[] = "-1, ";
+static const unsigned char _c64[] = ".name, ";
+static const unsigned char _c63[] = "_n";
+static const unsigned char _c62[] = "&Kernel__ModuleDesc_td.td, ";
+static const unsigned char _c61[] = "NULL, ";
+static const unsigned char _c60[] = "_md = {";
+static const unsigned char _c59[] = "static struct _MD ";
+static const unsigned char _c58[] = "}};";
+static const unsigned char _c57[] = ", NULL, {";
+static const unsigned char _c56[] = "} _p";
+static const unsigned char _c55[] = " list[";
+static const unsigned char _c54[] = ",";
+static const unsigned char _c53[] = "&";
+static const unsigned char _c52[] = "\042}};";
+static const unsigned char _c51[] = ", NULL, {\042";
+static const unsigned char _c50[] = " = {";
+static const unsigned char _c49[] = "} _n";
+static const unsigned char _c48[] = "];";
+static const unsigned char _c47[] = "const char name[";
+static const unsigned char _c46[] = "void* pad;";
+static const unsigned char _c45[] = " length;";
+static const unsigned char _c44[] = "static const struct {";
+static const unsigned char _c43[] = "#define _TB";
+static const unsigned char _c42[] = "signed ";
+static const unsigned char _c41[] = "unsigned ";
+static const unsigned char _c40[] = "_td";
+static const unsigned char _c39[] = "_TypeDesc";
+static const unsigned char _c38[] = "[] = ";
+static const unsigned char _c37[] = "static const ";
+static const unsigned char _c36[] = "_dummy_";
+static const unsigned char _c35[] = ".h";
+static const unsigned char _c34[] = "#define";
+static const unsigned char _c33[] = "_TBP_";
+static const unsigned char _c32[] = "const ";
+static const unsigned char _c31[] = "volatile ";
 static const unsigned char _c30[] = "extern ";
 static const unsigned char _c29[] = "static ";
 static const unsigned char _c28[] = ")";

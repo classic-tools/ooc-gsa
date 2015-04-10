@@ -11,6 +11,38 @@ TextRider__Writer Out__writer;
 static const struct {
   int length;
   void* pad;
+  const void* list[19];
+} _p0 = {19, NULL, {
+  (const void*)&Out__Bool,
+  (const void*)&Out__Char,
+  (const void*)&Out__ClearError,
+  (const void*)&Out__Done,
+  (const void*)&Out__Flush,
+  (const void*)&Out__Hex,
+  (const void*)&Out__Int,
+  (const void*)&Out__Ln,
+  (const void*)&Out__LongInt,
+  (const void*)&Out__LongReal,
+  (const void*)&Out__LongRealEng,
+  (const void*)&Out__LongRealFix,
+  (const void*)&Out__Real,
+  (const void*)&Out__RealEng,
+  (const void*)&Out__RealFix,
+  (const void*)&Out__Set,
+  (const void*)&Out__SetWriter,
+  (const void*)&Out__ShortInt,
+  (const void*)&Out__String,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[1];
+} _p1 = {1, NULL, {
+  (const void*)&Out__writer,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[4];
 } _n0 = {4, NULL, {"Out"}};
 static struct _MD Out_md = {
@@ -20,7 +52,10 @@ static struct _MD Out_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -1504583613
   }
 };
 

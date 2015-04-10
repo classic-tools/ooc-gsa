@@ -23,6 +23,22 @@ unsigned char Check__Structure(Data__Region r);
 static const struct {
   int length;
   void* pad;
+  const void* list[4];
+} _p0 = {4, NULL, {
+  (const void*)&Check__All,
+  (const void*)&Check__GuardUses,
+  (const void*)&Check__MergeUses,
+  (const void*)&Check__WrType,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[6];
 } _n0 = {6, NULL, {"Check"}};
 static struct _MD Check_md = {
@@ -32,7 +48,10 @@ static struct _MD Check_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -727972832
   }
 };
 

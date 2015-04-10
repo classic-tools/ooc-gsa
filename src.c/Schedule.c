@@ -165,11 +165,11 @@ Data__Usable Schedule__DataDependencies_AddStoreAccesses_GetStoreInput(Data__Ins
   Data__Opnd opnd;
   i0 = (int)instr + 44;
   i0 = *(short int*)i0;
-  if (!(i0<=2 || (i0>=4 && i0<=25) || (i0>=27 && i0<=49) || i0>=54)) goto l0;
+  if (!(i0<=2 || (i0>=4 && i0<=25) || (i0>=27 && i0<=36) || (i0>=38 && i0<=49) || i0>=54)) goto l0;
   i1 = 1;
   goto l2;
 l0:
-  if (!(i0==3 || i0==26 || i0==53)) goto l1;
+  if (!(i0==3 || i0==26 || i0==37 || i0==53)) goto l1;
   i0 = (int)SymbolTable__store;
   i0 = (int)Data__InstructionDesc_GetOperand((Data__Instruction)(int)instr, (Data__Addressable)i0, (short int)-3);
   i1 = 0;
@@ -702,7 +702,7 @@ l0:
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(12)+8);
-    if (!_mem) _new_failed(_P(19451));
+    if (!_mem) _new_failed(_P(19466));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Schedule__ScheduleInfoDesc_td.td;
     i1 = (int)_var;
@@ -1587,7 +1587,7 @@ l20:
 l21:
   i0 = i7 == 0;
   if (i0) goto l22;
-  _assertion_failed(1, _P(35436));
+  _assertion_failed(1, _P(35451));
 l22:
   ;
 }
@@ -1754,7 +1754,7 @@ void Schedule_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(76)+8);
-    if (!_mem) _new_failed(_P(38819));
+    if (!_mem) _new_failed(_P(38834));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ObjectDesc_td.td;
     i0 = (int)_var;
@@ -1768,7 +1768,7 @@ void Schedule_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(80)+8);
-    if (!_mem) _new_failed(_P(38955));
+    if (!_mem) _new_failed(_P(38970));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__RegionDesc_td.td;
     i0 = (int)_var;

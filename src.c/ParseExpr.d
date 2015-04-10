@@ -15,6 +15,8 @@ Attributes__Item ParseExpr__receiverDesignator;
 void(* ParseExpr__ProcedureCall)(Data__Region region, const Attributes__Item *proc__ref, Attributes__Item *result, _Type result__tag, Attributes__ExitInfo *exitInfo, _Type exitInfo__tag, unsigned char statement);
 void(* ParseExpr__CommitIfMerge)(Data__Region region);
 void(* ParseExpr__FixupCondPath)(Data__Region path, Data__Merge oldMerge, Data__Merge merge, unsigned char innerMost);
+void(* ParseExpr__AssignToVar)(Data__Region region, Data__Object dest, Attributes__Item *x, _Type x__tag);
+void(* ParseExpr__ReclaimFromMem)(Data__Instruction instr);
 
 /* function prototypes */
 unsigned char ParseExpr__DegenerateValueParam(Data__Object obj);
@@ -51,6 +53,50 @@ void ParseExpr__ConditionExit_Connect(Attributes__Item *x, _Type x__tag, Data__U
 static const struct {
   int length;
   void* pad;
+  const void* list[26];
+} _p0 = {26, NULL, {
+  (const void*)&ParseExpr__AccessVar,
+  (const void*)&ParseExpr__AddStructToEnter,
+  (const void*)&ParseExpr__BoundSetElement,
+  (const void*)&ParseExpr__CheckValue,
+  (const void*)&ParseExpr__Condition,
+  (const void*)&ParseExpr__ConditionExit,
+  (const void*)&ParseExpr__ConstExpr,
+  (const void*)&ParseExpr__Designator,
+  (const void*)&ParseExpr__Dominates,
+  (const void*)&ParseExpr__EvalDyadicOp,
+  (const void*)&ParseExpr__EvalInstr,
+  (const void*)&ParseExpr__EvalMonadicOp,
+  (const void*)&ParseExpr__Expr,
+  (const void*)&ParseExpr__GuardClass,
+  (const void*)&ParseExpr__InsertTempCopy,
+  (const void*)&ParseExpr__IsCondResult,
+  (const void*)&ParseExpr__Qualident,
+  (const void*)&ParseExpr__QueryTempCopy,
+  (const void*)&ParseExpr__RedoDesignatorAccess,
+  (const void*)&ParseExpr__ResetVariables,
+  (const void*)&ParseExpr__SplitIfPaths,
+  (const void*)&ParseExpr__SplitPaths,
+  (const void*)&ParseExpr__StringConvertible,
+  (const void*)&ParseExpr__TypeConversion,
+  (const void*)&ParseExpr__TypeQualident,
+  (const void*)&ParseExpr__TypeTest,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[6];
+} _p1 = {6, NULL, {
+  (const void*)&ParseExpr__AssignToVar,
+  (const void*)&ParseExpr__CommitIfMerge,
+  (const void*)&ParseExpr__FixupCondPath,
+  (const void*)&ParseExpr__ProcedureCall,
+  (const void*)&ParseExpr__ReclaimFromMem,
+  (const void*)&ParseExpr__receiverDesignator,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[10];
 } _n0 = {10, NULL, {"ParseExpr"}};
 static struct _MD ParseExpr_md = {
@@ -60,7 +106,10 @@ static struct _MD ParseExpr_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -1263265163
   }
 };
 

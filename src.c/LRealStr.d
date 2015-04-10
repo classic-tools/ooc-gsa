@@ -20,6 +20,23 @@ void LRealStr__Scale(double x, LongInts__LongInt n, short int sigFigs, short int
 static const struct {
   int length;
   void* pad;
+  const void* list[5];
+} _p0 = {5, NULL, {
+  (const void*)&LRealStr__RealToEng,
+  (const void*)&LRealStr__RealToFixed,
+  (const void*)&LRealStr__RealToFloat,
+  (const void*)&LRealStr__RealToStr,
+  (const void*)&LRealStr__StrToReal,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[9];
 } _n0 = {9, NULL, {"LRealStr"}};
 static struct _MD LRealStr_md = {
@@ -29,7 +46,10 @@ static struct _MD LRealStr_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -2097802319
   }
 };
 

@@ -1,4 +1,4 @@
-(* 	$Id: ParseStatm.Mod,v 1.137 2000/07/20 18:25:05 ooc-devel Exp $	 *)
+(* 	$Id: ParseStatm.Mod,v 1.138 2000/12/27 16:32:32 ooc-devel Exp $	 *)
 MODULE ParseStatm;
 (*  Parses Oberon-2 statements and translates them to GSA.
     Copyright (C) 1995-2000  Michael van Acken
@@ -484,6 +484,8 @@ PROCEDURE AssignBoolean (region: D.Region; dest: D.Object; value: BOOLEAN);
     AssignToVar (region, dest, x)
   END AssignBoolean;
 
+PROCEDURE ^ ReclaimFromMem (instr: D.Instruction);
+
 PROCEDURE AssignToDesignator (region: D.Region; VAR dest, value: Attr.Item);
 (* Handles assignment to structured designators that contain record fields or
    array indices.  `dest' is the target to which `value' is about to be 
@@ -540,9 +542,19 @@ PROCEDURE AssignToDesignator (region: D.Region; VAR dest, value: Attr.Item);
       END
     END AddUpdate;
   
+  PROCEDURE CreateUpdateMem (instr: D.Instruction);
+    BEGIN
+      instr. opcode := Opc.updateMem;
+      instr. InsertOperand (instr. opndList, value. currValue)
+    END CreateUpdateMem;
+  
   BEGIN
     IF (dest. obj # NIL) THEN            (* `dest' is simple variable *)
       AssignToVar (region, dest. obj, value)
+    ELSIF (dest. currValue IS D.Instruction) &
+          (dest. currValue(D.Instruction). opcode = Opc.accessMem) THEN
+      (* assigning to a volatile variable *)
+      CreateUpdateMem (dest. currValue(D.Instruction))
     ELSIF (dest. type. form # D.strUndef) THEN
       (* if we are assigning a result of a procedure call (either function 
          result or variable parameter), the values in the access instructions 
@@ -616,7 +628,7 @@ PROCEDURE CollectToMem (instr: D.Instruction);
   END CollectToMem;
 
 PROCEDURE ReclaimFromMem (instr: D.Instruction);
-(* Adds resuls to `instr' that will retrieve the value of $store and all 
+(* Adds results to `instr' that will retrieve the value of $store and all 
    local variables not marked with `D.objNotSideEffected' from $mem.  
    pre: last result of `instr' is $mem.
    post: instr has result list "... $mem $store <local-var>...' *)
@@ -2772,5 +2784,7 @@ BEGIN
   Expr.ProcedureCall := ProcedureCall;
   Expr.CommitIfMerge := CommitIfMerge;
   Expr.FixupCondPath := FixupCondPath;
+  Expr.AssignToVar := AssignToVar;
+  Expr.ReclaimFromMem := ReclaimFromMem;
   setAssignHints := FALSE
 END ParseStatm.

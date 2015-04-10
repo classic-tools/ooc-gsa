@@ -296,7 +296,8 @@ typedef struct Data__SymLocationDesc* Data__SymLocation;
 #define Data__objIsSpecialCodeProc 8
 #define Data__objAbstractTBProc 9
 #define Data__objFinalTBProc 10
-#define Data__objExportMask 0x7FFU
+#define Data__objVolatile 11
+#define Data__objExportMask 0xFFFU
 #define Data__strUndef 0
 #define Data__strBoolean 1
 #define Data__strChar8 2
@@ -407,8 +408,11 @@ extern void Data__OpndDesc_SwapArguments(Data__Opnd opnd1, Data__Opnd opnd2);
 typedef void(* _TBP_Data__InstructionDesc_Operand)(Data__Instruction instr, Data__Usable arg);
 #define _TBN_Data__InstructionDesc_Operand 5
 extern void Data__InstructionDesc_Operand(Data__Instruction instr, Data__Usable arg);
+typedef void(* _TBP_Data__InstructionDesc_InsertOperand)(Data__Instruction instr, Data__Opnd after, Data__Usable arg);
+#define _TBN_Data__InstructionDesc_InsertOperand 6
+extern void Data__InstructionDesc_InsertOperand(Data__Instruction instr, Data__Opnd after, Data__Usable arg);
 typedef void(* _TBP_Data__InstructionDesc_UniqueOperand)(Data__Instruction instr, Data__Usable arg, Data__Location loc);
-#define _TBN_Data__InstructionDesc_UniqueOperand 6
+#define _TBN_Data__InstructionDesc_UniqueOperand 7
 extern void Data__InstructionDesc_UniqueOperand(Data__Instruction instr, Data__Usable arg, Data__Location loc);
 typedef void(* _TBP_Data__OpndDesc_DeleteOperand)(Data__Opnd opnd);
 #define _TBN_Data__OpndDesc_DeleteOperand 2
@@ -420,31 +424,31 @@ typedef void(* _TBP_Data__UsableDesc_ReplaceUses)(Data__Usable of, Data__Usable 
 #define _TBN_Data__UsableDesc_ReplaceUses 1
 extern void Data__UsableDesc_ReplaceUses(Data__Usable of, Data__Usable with);
 typedef Data__Result(* _TBP_Data__InstructionDesc_AppendResult)(Data__Instruction instr, Data__Location location, Data__Struct type);
-#define _TBN_Data__InstructionDesc_AppendResult 7
+#define _TBN_Data__InstructionDesc_AppendResult 8
 extern Data__Result Data__InstructionDesc_AppendResult(Data__Instruction instr, Data__Location location, Data__Struct type);
 typedef void(* _TBP_Data__ResultDesc_DeleteResult)(Data__Result res);
 #define _TBN_Data__ResultDesc_DeleteResult 2
 extern void Data__ResultDesc_DeleteResult(Data__Result res);
 typedef void(* _TBP_Data__RegionDesc_Insert)(Data__Region region, Data__Instruction instr);
-#define _TBN_Data__RegionDesc_Insert 27
+#define _TBN_Data__RegionDesc_Insert 28
 extern void Data__RegionDesc_Insert(Data__Region region, Data__Instruction instr);
 typedef void(* _TBP_Data__RegionDesc_ReverseInstr)(Data__Region region);
-#define _TBN_Data__RegionDesc_ReverseInstr 28
+#define _TBN_Data__RegionDesc_ReverseInstr 29
 extern void Data__RegionDesc_ReverseInstr(Data__Region region);
 typedef Data__GlobalRegion(* _TBP_Data__NodeDesc_Greg)(Data__Node n);
 #define _TBN_Data__NodeDesc_Greg 0
 extern Data__GlobalRegion Data__NodeDesc_Greg(Data__Node n);
 typedef void(* _TBP_Data__InstructionDesc_Delete)(Data__Instruction instr);
-#define _TBN_Data__InstructionDesc_Delete 8
+#define _TBN_Data__InstructionDesc_Delete 9
 extern void Data__InstructionDesc_Delete(Data__Instruction instr);
 typedef void(* _TBP_Data__RegionDesc_MoveInstruction)(Data__Region to, Data__Instruction instr);
-#define _TBN_Data__RegionDesc_MoveInstruction 29
+#define _TBN_Data__RegionDesc_MoveInstruction 30
 extern void Data__RegionDesc_MoveInstruction(Data__Region to, Data__Instruction instr);
 typedef void(* _TBP_Data__RegionDesc_MoveInstructions)(Data__Region to, Data__Region from);
-#define _TBN_Data__RegionDesc_MoveInstructions 30
+#define _TBN_Data__RegionDesc_MoveInstructions 31
 extern void Data__RegionDesc_MoveInstructions(Data__Region to, Data__Region from);
 typedef void(* _TBP_Data__InstructionDesc_MoveResultList)(Data__Instruction toInstr, Data__Result prevResult);
-#define _TBN_Data__InstructionDesc_MoveResultList 9
+#define _TBN_Data__InstructionDesc_MoveResultList 10
 extern void Data__InstructionDesc_MoveResultList(Data__Instruction toInstr, Data__Result prevResult);
 typedef void(* _TBP_Data__ResultDesc_MoveResultToEnd)(Data__Result res);
 #define _TBN_Data__ResultDesc_MoveResultToEnd 3
@@ -453,10 +457,10 @@ typedef void(* _TBP_Data__OpndDesc_MoveOperandToEnd)(Data__Opnd opnd);
 #define _TBN_Data__OpndDesc_MoveOperandToEnd 4
 extern void Data__OpndDesc_MoveOperandToEnd(Data__Opnd opnd);
 typedef Data__Instruction(* _TBP_Data__RegionDesc_CreateInstruction)(Data__Region region, short int opcode, Data__Struct type, int pos);
-#define _TBN_Data__RegionDesc_CreateInstruction 31
+#define _TBN_Data__RegionDesc_CreateInstruction 32
 extern Data__Instruction Data__RegionDesc_CreateInstruction(Data__Region region, short int opcode, Data__Struct type, int pos);
 typedef Data__Gate(* _TBP_Data__MergeDesc_CreateGate)(Data__Merge merge, short int opcode, Data__Object var, Data__Struct type);
-#define _TBN_Data__MergeDesc_CreateGate 43
+#define _TBN_Data__MergeDesc_CreateGate 44
 extern Data__Gate Data__MergeDesc_CreateGate(Data__Merge merge, short int opcode, Data__Object var, Data__Struct type);
 typedef short int(* _TBP_Data__StructDesc_OpenDimensions)(Data__Struct type);
 #define _TBN_Data__StructDesc_OpenDimensions 2
@@ -465,85 +469,85 @@ typedef short int(* _TBP_Data__StructDesc_Dimensions)(Data__Struct type);
 #define _TBN_Data__StructDesc_Dimensions 3
 extern short int Data__StructDesc_Dimensions(Data__Struct type);
 typedef Data__Result(* _TBP_Data__InstructionDesc_GetResult)(Data__Instruction instr, Data__Addressable var, short int attrib);
-#define _TBN_Data__InstructionDesc_GetResult 10
+#define _TBN_Data__InstructionDesc_GetResult 11
 extern Data__Result Data__InstructionDesc_GetResult(Data__Instruction instr, Data__Addressable var, short int attrib);
 typedef Data__Result(* _TBP_Data__InstructionDesc_LastResult)(Data__Instruction instr);
-#define _TBN_Data__InstructionDesc_LastResult 11
+#define _TBN_Data__InstructionDesc_LastResult 12
 extern Data__Result Data__InstructionDesc_LastResult(Data__Instruction instr);
 typedef Data__Opnd(* _TBP_Data__InstructionDesc_GetOperand)(Data__Instruction instr, Data__Addressable var, short int attrib);
-#define _TBN_Data__InstructionDesc_GetOperand 12
+#define _TBN_Data__InstructionDesc_GetOperand 13
 extern Data__Opnd Data__InstructionDesc_GetOperand(Data__Instruction instr, Data__Addressable var, short int attrib);
 typedef Data__Opnd(* _TBP_Data__InstructionDesc_LastOperand)(Data__Instruction instr);
-#define _TBN_Data__InstructionDesc_LastOperand 13
+#define _TBN_Data__InstructionDesc_LastOperand 14
 extern Data__Opnd Data__InstructionDesc_LastOperand(Data__Instruction instr);
 typedef void(* _TBP_Data__InstructionDesc_SetOpndSymLoc)(Data__Instruction instr, Data__Addressable obj);
-#define _TBN_Data__InstructionDesc_SetOpndSymLoc 14
+#define _TBN_Data__InstructionDesc_SetOpndSymLoc 15
 extern void Data__InstructionDesc_SetOpndSymLoc(Data__Instruction instr, Data__Addressable obj);
 typedef Data__Struct(* _TBP_Data__OpndDesc_OpndType)(Data__Opnd opnd);
 #define _TBN_Data__OpndDesc_OpndType 5
 extern Data__Struct Data__OpndDesc_OpndType(Data__Opnd opnd);
 typedef short int(* _TBP_Data__InstructionDesc_ArgumentIndex)(Data__Instruction instr, Data__Usable arg);
-#define _TBN_Data__InstructionDesc_ArgumentIndex 15
+#define _TBN_Data__InstructionDesc_ArgumentIndex 16
 extern short int Data__InstructionDesc_ArgumentIndex(Data__Instruction instr, Data__Usable arg);
 typedef short int(* _TBP_Data__OpndDesc_OperandIndex)(Data__Opnd opnd);
 #define _TBN_Data__OpndDesc_OperandIndex 6
 extern short int Data__OpndDesc_OperandIndex(Data__Opnd opnd);
 typedef Data__Opnd(* _TBP_Data__InstructionDesc_NthOperand)(Data__Instruction instr, short int nth);
-#define _TBN_Data__InstructionDesc_NthOperand 16
+#define _TBN_Data__InstructionDesc_NthOperand 17
 extern Data__Opnd Data__InstructionDesc_NthOperand(Data__Instruction instr, short int nth);
 typedef Data__Usable(* _TBP_Data__InstructionDesc_NthArgument)(Data__Instruction instr, short int nth);
-#define _TBN_Data__InstructionDesc_NthArgument 17
+#define _TBN_Data__InstructionDesc_NthArgument 18
 extern Data__Usable Data__InstructionDesc_NthArgument(Data__Instruction instr, short int nth);
 typedef Data__Result(* _TBP_Data__InstructionDesc_NthResult)(Data__Instruction instr, short int nth);
-#define _TBN_Data__InstructionDesc_NthResult 18
+#define _TBN_Data__InstructionDesc_NthResult 19
 extern Data__Result Data__InstructionDesc_NthResult(Data__Instruction instr, short int nth);
 typedef short int(* _TBP_Data__ResultDesc_ResultIndex)(Data__Result result);
 #define _TBN_Data__ResultDesc_ResultIndex 4
 extern short int Data__ResultDesc_ResultIndex(Data__Result result);
 typedef short int(* _TBP_Data__InstructionDesc_NumOfOperands)(Data__Instruction instr);
-#define _TBN_Data__InstructionDesc_NumOfOperands 19
+#define _TBN_Data__InstructionDesc_NumOfOperands 20
 extern short int Data__InstructionDesc_NumOfOperands(Data__Instruction instr);
 typedef short int(* _TBP_Data__InstructionDesc_NumOfResults)(Data__Instruction instr);
-#define _TBN_Data__InstructionDesc_NumOfResults 20
+#define _TBN_Data__InstructionDesc_NumOfResults 21
 extern short int Data__InstructionDesc_NumOfResults(Data__Instruction instr);
 typedef Data__Instruction(* _TBP_Data__RegionDesc_EnterInstr)(Data__Region region);
-#define _TBN_Data__RegionDesc_EnterInstr 32
+#define _TBN_Data__RegionDesc_EnterInstr 33
 extern Data__Instruction Data__RegionDesc_EnterInstr(Data__Region region);
 typedef Data__Instruction(* _TBP_Data__RegionDesc_ExitInstr)(Data__Region region);
-#define _TBN_Data__RegionDesc_ExitInstr 33
+#define _TBN_Data__RegionDesc_ExitInstr 34
 extern Data__Instruction Data__RegionDesc_ExitInstr(Data__Region region);
 typedef void(* _TBP_Data__InstructionDesc_MoveBehind)(Data__Instruction toMove, Data__Instruction prevInstr);
-#define _TBN_Data__InstructionDesc_MoveBehind 21
+#define _TBN_Data__InstructionDesc_MoveBehind 22
 extern void Data__InstructionDesc_MoveBehind(Data__Instruction toMove, Data__Instruction prevInstr);
 typedef void(* _TBP_Data__InstructionDesc_MoveInFront)(Data__Instruction toMove, Data__Instruction nextInstr);
-#define _TBN_Data__InstructionDesc_MoveInFront 22
+#define _TBN_Data__InstructionDesc_MoveInFront 23
 extern void Data__InstructionDesc_MoveInFront(Data__Instruction toMove, Data__Instruction nextInstr);
 typedef void(* _TBP_Data__RegionDesc_ClearInfo)(Data__Region region, int m);
-#define _TBN_Data__RegionDesc_ClearInfo 34
+#define _TBN_Data__RegionDesc_ClearInfo 35
 extern void Data__RegionDesc_ClearInfo(Data__Region region, int m);
 typedef void(* _TBP_Data__RegionDesc_ClearInstrInfo)(Data__Region region, int m);
-#define _TBN_Data__RegionDesc_ClearInstrInfo 35
+#define _TBN_Data__RegionDesc_ClearInstrInfo 36
 extern void Data__RegionDesc_ClearInstrInfo(Data__Region region, int m);
 typedef void(* _TBP_Data__RegionDesc_ClearRegionInfo)(Data__Region region, int m);
-#define _TBN_Data__RegionDesc_ClearRegionInfo 36
+#define _TBN_Data__RegionDesc_ClearRegionInfo 37
 extern void Data__RegionDesc_ClearRegionInfo(Data__Region region, int m);
 typedef Data__Object(* _TBP_Data__ObjectDesc_Module)(Data__Object obj);
 #define _TBN_Data__ObjectDesc_Module 2
 extern Data__Object Data__ObjectDesc_Module(Data__Object obj);
 typedef void(* _TBP_Data__GlobalRegionDesc_NumberDominanceTree)(Data__GlobalRegion greg);
-#define _TBN_Data__GlobalRegionDesc_NumberDominanceTree 43
+#define _TBN_Data__GlobalRegionDesc_NumberDominanceTree 44
 extern void Data__GlobalRegionDesc_NumberDominanceTree(Data__GlobalRegion greg);
 typedef unsigned char(* _TBP_Data__RegionDesc_Dominates)(Data__Region x, Data__Region y);
-#define _TBN_Data__RegionDesc_Dominates 37
+#define _TBN_Data__RegionDesc_Dominates 38
 extern unsigned char Data__RegionDesc_Dominates(Data__Region x, Data__Region y);
 typedef unsigned char(* _TBP_Data__RegionDesc_DominatesNR)(Data__Region x, Data__Region y);
-#define _TBN_Data__RegionDesc_DominatesNR 38
+#define _TBN_Data__RegionDesc_DominatesNR 39
 extern unsigned char Data__RegionDesc_DominatesNR(Data__Region x, Data__Region y);
 typedef short int(* _TBP_Data__InstructionDesc_Class)(Data__Instruction instr);
-#define _TBN_Data__InstructionDesc_Class 23
+#define _TBN_Data__InstructionDesc_Class 24
 extern short int Data__InstructionDesc_Class(Data__Instruction instr);
 typedef short int(* _TBP_Data__InstructionDesc_Subclass)(Data__Instruction instr);
-#define _TBN_Data__InstructionDesc_Subclass 24
+#define _TBN_Data__InstructionDesc_Subclass 25
 extern short int Data__InstructionDesc_Subclass(Data__Instruction instr);
 typedef unsigned char(* _TBP_Data__OpndDesc_ValueOperand)(Data__Opnd opnd);
 #define _TBN_Data__OpndDesc_ValueOperand 7
@@ -552,22 +556,22 @@ typedef unsigned char(* _TBP_Data__OpndDesc_PassThroughOperand)(Data__Opnd opnd)
 #define _TBN_Data__OpndDesc_PassThroughOperand 8
 extern unsigned char Data__OpndDesc_PassThroughOperand(Data__Opnd opnd);
 typedef Data__Merge(* _TBP_Data__RegionDesc_RegionMerge)(Data__Region r);
-#define _TBN_Data__RegionDesc_RegionMerge 39
+#define _TBN_Data__RegionDesc_RegionMerge 40
 extern Data__Merge Data__RegionDesc_RegionMerge(Data__Region r);
 typedef unsigned char(* _TBP_Data__InstructionDesc_MayTrap)(Data__Instruction instr);
-#define _TBN_Data__InstructionDesc_MayTrap 25
+#define _TBN_Data__InstructionDesc_MayTrap 26
 extern unsigned char Data__InstructionDesc_MayTrap(Data__Instruction instr);
 typedef Data__Instruction(* _TBP_Data__RegionDesc_CreateAdrInstr)(Data__Region region, Data__Usable arg, int pos);
-#define _TBN_Data__RegionDesc_CreateAdrInstr 40
+#define _TBN_Data__RegionDesc_CreateAdrInstr 41
 extern Data__Instruction Data__RegionDesc_CreateAdrInstr(Data__Region region, Data__Usable arg, int pos);
 typedef Data__Instruction(* _TBP_Data__RegionDesc_CreateDyadicOp)(Data__Region region, short int opcode, Data__Struct type, Data__Usable opnd1, Data__Usable opnd2, int pos);
-#define _TBN_Data__RegionDesc_CreateDyadicOp 41
+#define _TBN_Data__RegionDesc_CreateDyadicOp 42
 extern Data__Instruction Data__RegionDesc_CreateDyadicOp(Data__Region region, short int opcode, Data__Struct type, Data__Usable opnd1, Data__Usable opnd2, int pos);
 typedef Data__Instruction(* _TBP_Data__RegionDesc_CreateTypeCast)(Data__Region region, Data__Usable value, Data__Struct toType);
-#define _TBN_Data__RegionDesc_CreateTypeCast 42
+#define _TBN_Data__RegionDesc_CreateTypeCast 43
 extern Data__Instruction Data__RegionDesc_CreateTypeCast(Data__Region region, Data__Usable value, Data__Struct toType);
 typedef Data__Object(* _TBP_Data__InstructionDesc_GetReceiver)(Data__Instruction call);
-#define _TBN_Data__InstructionDesc_GetReceiver 26
+#define _TBN_Data__InstructionDesc_GetReceiver 27
 extern Data__Object Data__InstructionDesc_GetReceiver(Data__Instruction call);
 typedef Data__Object(* _TBP_Data__OpndDesc_GetFormalParam)(Data__Opnd opnd);
 #define _TBN_Data__OpndDesc_GetFormalParam 9

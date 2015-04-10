@@ -17,7 +17,7 @@ typedef struct SystemFlags__Modifier {
   signed char structFlag;
   char _33pad, _34pad, _35pad;
 } SystemFlags__Modifier;
-static SystemFlags__Modifier SystemFlags__mods[18];
+static SystemFlags__Modifier SystemFlags__mods[19];
 static unsigned char SystemFlags__emptyString[2];
 static signed char SystemFlags__mode;
 static short int SystemFlags__callConv;
@@ -46,6 +46,26 @@ unsigned char SystemFlags__StructModifiers_HasRestParam(Data__Struct str);
 static const struct {
   int length;
   void* pad;
+  const void* list[7];
+} _p0 = {7, NULL, {
+  (const void*)&SystemFlags__CreateInfo,
+  (const void*)&SystemFlags__ObjectModifiers,
+  (const void*)&SystemFlags__ReadObjectInfo,
+  (const void*)&SystemFlags__ReadStructInfo,
+  (const void*)&SystemFlags__StructModifiers,
+  (const void*)&SystemFlags__WriteObjectInfo,
+  (const void*)&SystemFlags__WriteStructInfo,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[1];
+} _p1 = {1, NULL, {
+  (const void*)&SystemFlags__noLibFileRead,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[12];
 } _n0 = {12, NULL, {"SystemFlags"}};
 static struct _MD SystemFlags_md = {
@@ -55,7 +75,10 @@ static struct _MD SystemFlags_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -2131011669
   }
 };
 
@@ -137,6 +160,7 @@ struct _TD SystemFlags__InfoDesc_td = {
 };
 
 /* local strings */
+static const unsigned char _c35[] = "VOLATILE";
 static const unsigned char _c34[] = "VTABLE";
 static const unsigned char _c33[] = "NO_COPY";
 static const unsigned char _c32[] = "ABSTRACT";

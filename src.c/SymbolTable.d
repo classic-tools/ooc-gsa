@@ -38,6 +38,65 @@ void SymbolTable__InitPredef(void);
 static const struct {
   int length;
   void* pad;
+  const void* list[36];
+} _p0 = {36, NULL, {
+  (const void*)&SymbolTable__AddStructRef,
+  (const void*)&SymbolTable__BalanceTree,
+  (const void*)&SymbolTable__BaseDefinition,
+  (const void*)&SymbolTable__CloseScope,
+  (const void*)&SymbolTable__EqualTypes,
+  (const void*)&SymbolTable__ErrT1,
+  (const void*)&SymbolTable__ExtensionOf,
+  (const void*)&SymbolTable__Find,
+  (const void*)&SymbolTable__FindDecl,
+  (const void*)&SymbolTable__FindField,
+  (const void*)&SymbolTable__GetBoolConst,
+  (const void*)&SymbolTable__GlobalDecl,
+  (const void*)&SymbolTable__ImportedObject,
+  (const void*)&SymbolTable__Includes,
+  (const void*)&SymbolTable__Init,
+  (const void*)&SymbolTable__Insert,
+  (const void*)&SymbolTable__InsertField,
+  (const void*)&SymbolTable__InsertParams,
+  (const void*)&SymbolTable__LocalObject,
+  (const void*)&SymbolTable__LocalType,
+  (const void*)&SymbolTable__MakeFormalParsLocal,
+  (const void*)&SymbolTable__Module,
+  (const void*)&SymbolTable__NewModule,
+  (const void*)&SymbolTable__NewObject,
+  (const void*)&SymbolTable__NewStruct,
+  (const void*)&SymbolTable__NumberOfTBProcs,
+  (const void*)&SymbolTable__OpenScope,
+  (const void*)&SymbolTable__ParameterType,
+  (const void*)&SymbolTable__ParamsMatch,
+  (const void*)&SymbolTable__SameType,
+  (const void*)&SymbolTable__TransformIntoList,
+  (const void*)&SymbolTable__TransformIntoTree,
+  (const void*)&SymbolTable__TypeInGroup,
+  (const void*)&SymbolTable__TypeName,
+  (const void*)&SymbolTable__Unnamed,
+  (const void*)&SymbolTable__Visible,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[11];
+} _p1 = {11, NULL, {
+  (const void*)&SymbolTable__constFalse,
+  (const void*)&SymbolTable__constTrue,
+  (const void*)&SymbolTable__currScope,
+  (const void*)&SymbolTable__importedMods,
+  (const void*)&SymbolTable__mem,
+  (const void*)&SymbolTable__mod,
+  (const void*)&SymbolTable__paramsMatchExt,
+  (const void*)&SymbolTable__predef,
+  (const void*)&SymbolTable__store,
+  (const void*)&SymbolTable__system,
+  (const void*)&SymbolTable__typeConstrList,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[12];
 } _n0 = {12, NULL, {"SymbolTable"}};
 static struct _MD SymbolTable_md = {
@@ -47,7 +106,10 @@ static struct _MD SymbolTable_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -608193428
   }
 };
 

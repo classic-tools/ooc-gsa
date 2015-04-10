@@ -1,6 +1,6 @@
-/*	$Id: __Descr.h,v 1.8 2000/09/23 19:40:49 ooc-devel Exp $	*/
+/*	$Id: __Descr.h,v 1.9 2001/01/14 14:09:29 ooc-devel Exp $	*/
 /*  Low-level functions to manage module and type descriptors.
-    Copyright (C) 1997-1999  Michael van Acken
+    Copyright (C) 1997-1999, 2001  Michael van Acken
 
     This module is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public License
@@ -26,6 +26,9 @@ typedef struct _ModuleDesc {
   const OOC_CHAR* name;
   LONGINT key;
   _Type tdescs;
+  const void* const* procs;
+  const void* const* vars;
+  LONGINT fingerprint;
 } _ModuleDesc;
 
 typedef struct _TypeDesc {

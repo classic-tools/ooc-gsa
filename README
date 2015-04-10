@@ -1,9 +1,9 @@
 oo2c is the first compiler of the OOC project.  OOC's goal is to
 provide optimizing native code Oberon-2 compilers for a number of
 popular computer architectures.  The OOC home page is
-  http://www.uni-kl.de/OOC/
+  http://ooc.sourceforge.net/
 Current oo2c versions and patches are available at
-  http://www.uni-kl.de/OOC/files/oo2c/
+  ftp://ooc.sourceforge.net/pub/ooc/releases/
 
 The compiler's requirements are 
   o a 32 or 64 bit Unix system
@@ -24,10 +24,10 @@ INSTALL for details.
 This distribution contains the OOC Reference Manual in info format and
 as texinfo source.  The HTML version of the reference manual can be
 found at
-  http://www.uni-kl.de/OOC/OOCref/OOCref_toc.html
+  ftp://ooc.sourceforge.net/pub/ooc/ooc-www-pages/OOCref/OOCref_toc.html
 The manual is also available in texinfo, info, and postscript format
 from the OOC server:
-  http://www.uni-kl.de/OOC/files/docs/
+  ftp://ooc.sourceforge.net/pub/ooc/ooc-www-pages/files/docs/
 Manual pages are included, but the man page for the compiler oo2c is
 only a subset of the information in the reference manual.
 
@@ -94,4 +94,4 @@ module, together with the following information:
 The latter two points are important if the bug is caused by some
 quirk in the C compiler or OS.
 
-                     -- Michael van Acken <acken@informatik.uni-kl.de>
+                                      -- Michael van Acken <mia@de.uu.net>

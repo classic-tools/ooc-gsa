@@ -15,6 +15,19 @@ Msg__Msg ProgramArgs__GetError(int code);
 static const struct {
   int length;
   void* pad;
+  const void* list[0];
+} _p0 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[1];
+} _p1 = {1, NULL, {
+  (const void*)&ProgramArgs__args,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[12];
 } _n0 = {12, NULL, {"ProgramArgs"}};
 static struct _MD ProgramArgs_md = {
@@ -24,7 +37,10 @@ static struct _MD ProgramArgs_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    698174999
   }
 };
 

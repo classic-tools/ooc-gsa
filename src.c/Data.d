@@ -21,6 +21,7 @@ void Data__InitInstruction(Data__Instruction instr, Data__Struct type, int pos);
 void Data__InsertUse(Data__Usable arg, Data__Opnd opnd);
 void Data__DeleteUse(Data__Opnd opnd);
 void Data__InstructionDesc_Operand_Append(Data__Opnd *opnd, Data__Instruction *Data__InstructionDesc_Operand_instr, Data__Usable *Data__InstructionDesc_Operand_arg);
+void Data__InstructionDesc_InsertOperand_Insert(Data__Opnd *list, Data__Instruction *Data__InstructionDesc_InsertOperand_instr, Data__Usable *Data__InstructionDesc_InsertOperand_arg);
 void Data__InstructionDesc_UniqueOperand_Append(Data__Opnd *opnd, Data__Instruction *Data__InstructionDesc_UniqueOperand_instr, Data__Location *Data__InstructionDesc_UniqueOperand_loc, Data__Usable *Data__InstructionDesc_UniqueOperand_arg);
 Data__Result Data__InstructionDesc_AppendResult_Append(Data__Result *res, Data__Struct *Data__InstructionDesc_AppendResult_type, Data__Location *Data__InstructionDesc_AppendResult_location, Data__Instruction *Data__InstructionDesc_AppendResult_instr);
 void Data__RemoveFromInstrList(Data__Instruction instr);
@@ -38,6 +39,42 @@ unsigned char Data__OpndDesc_GetFormalParam_OpndPartOfParam(Data__Object param, 
 static const struct {
   int length;
   void* pad;
+  const void* list[20];
+} _p0 = {20, NULL, {
+  (const void*)&Data__CompareStrings,
+  (const void*)&Data__ConvertString,
+  (const void*)&Data__CreateGuard,
+  (const void*)&Data__CreateMerge,
+  (const void*)&Data__CreateSymLocation,
+  (const void*)&Data__FreeConsts,
+  (const void*)&Data__GetIntConst,
+  (const void*)&Data__GetRangeConst,
+  (const void*)&Data__GetRealConst,
+  (const void*)&Data__GetSetConst,
+  (const void*)&Data__GetStringConst,
+  (const void*)&Data__InitConst,
+  (const void*)&Data__InitGuard,
+  (const void*)&Data__InitObject,
+  (const void*)&Data__InitRegion,
+  (const void*)&Data__InitStruct,
+  (const void*)&Data__OperatorSubclass,
+  (const void*)&Data__SortRanges,
+  (const void*)&Data__TransferOperandList,
+  (const void*)&Data__TransferResultList,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[4];
+} _p1 = {4, NULL, {
+  (const void*)&Data__constNil,
+  (const void*)&Data__constUndef,
+  (const void*)&Data__setMask,
+  (const void*)&Data__struct,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[5];
 } _n0 = {5, NULL, {"Data"}};
 static struct _MD Data_md = {
@@ -47,7 +84,10 @@ static struct _MD Data_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -919271629
   }
 };
 
@@ -538,14 +578,15 @@ static const struct {
 static const struct {
   int length;
   void* pad;
-  const void* tbprocs[27];
-} _tb11 = {27, NULL, {
+  const void* tbprocs[28];
+} _tb11 = {28, NULL, {
   (void*)Data__NodeDesc_Greg, 
   (void*)Data__UsableDesc_ReplaceUses, 
   (void*)Data__ResultDesc_DeleteResult, 
   (void*)Data__ResultDesc_MoveResultToEnd, 
   (void*)Data__ResultDesc_ResultIndex, 
   (void*)Data__InstructionDesc_Operand, 
+  (void*)Data__InstructionDesc_InsertOperand, 
   (void*)Data__InstructionDesc_UniqueOperand, 
   (void*)Data__InstructionDesc_AppendResult, 
   (void*)Data__InstructionDesc_Delete, 
@@ -607,14 +648,15 @@ static const struct {
 static const struct {
   int length;
   void* pad;
-  const void* tbprocs[27];
-} _tb12 = {27, NULL, {
+  const void* tbprocs[28];
+} _tb12 = {28, NULL, {
   (void*)Data__NodeDesc_Greg, 
   (void*)Data__UsableDesc_ReplaceUses, 
   (void*)Data__ResultDesc_DeleteResult, 
   (void*)Data__ResultDesc_MoveResultToEnd, 
   (void*)Data__ResultDesc_ResultIndex, 
   (void*)Data__InstructionDesc_Operand, 
+  (void*)Data__InstructionDesc_InsertOperand, 
   (void*)Data__InstructionDesc_UniqueOperand, 
   (void*)Data__InstructionDesc_AppendResult, 
   (void*)Data__InstructionDesc_Delete, 
@@ -676,14 +718,15 @@ static const struct {
 static const struct {
   int length;
   void* pad;
-  const void* tbprocs[43];
-} _tb13 = {43, NULL, {
+  const void* tbprocs[44];
+} _tb13 = {44, NULL, {
   (void*)Data__NodeDesc_Greg, 
   (void*)Data__UsableDesc_ReplaceUses, 
   (void*)Data__ResultDesc_DeleteResult, 
   (void*)Data__ResultDesc_MoveResultToEnd, 
   (void*)Data__ResultDesc_ResultIndex, 
   (void*)Data__InstructionDesc_Operand, 
+  (void*)Data__InstructionDesc_InsertOperand, 
   (void*)Data__InstructionDesc_UniqueOperand, 
   (void*)Data__InstructionDesc_AppendResult, 
   (void*)Data__InstructionDesc_Delete, 
@@ -762,14 +805,15 @@ static const struct {
 static const struct {
   int length;
   void* pad;
-  const void* tbprocs[43];
-} _tb14 = {43, NULL, {
+  const void* tbprocs[44];
+} _tb14 = {44, NULL, {
   (void*)Data__NodeDesc_Greg, 
   (void*)Data__UsableDesc_ReplaceUses, 
   (void*)Data__ResultDesc_DeleteResult, 
   (void*)Data__ResultDesc_MoveResultToEnd, 
   (void*)Data__ResultDesc_ResultIndex, 
   (void*)Data__InstructionDesc_Operand, 
+  (void*)Data__InstructionDesc_InsertOperand, 
   (void*)Data__InstructionDesc_UniqueOperand, 
   (void*)Data__InstructionDesc_AppendResult, 
   (void*)Data__InstructionDesc_Delete, 
@@ -848,14 +892,15 @@ static const struct {
 static const struct {
   int length;
   void* pad;
-  const void* tbprocs[44];
-} _tb15 = {44, NULL, {
+  const void* tbprocs[45];
+} _tb15 = {45, NULL, {
   (void*)Data__NodeDesc_Greg, 
   (void*)Data__UsableDesc_ReplaceUses, 
   (void*)Data__ResultDesc_DeleteResult, 
   (void*)Data__ResultDesc_MoveResultToEnd, 
   (void*)Data__ResultDesc_ResultIndex, 
   (void*)Data__InstructionDesc_Operand, 
+  (void*)Data__InstructionDesc_InsertOperand, 
   (void*)Data__InstructionDesc_UniqueOperand, 
   (void*)Data__InstructionDesc_AppendResult, 
   (void*)Data__InstructionDesc_Delete, 
@@ -936,14 +981,15 @@ static const struct {
 static const struct {
   int length;
   void* pad;
-  const void* tbprocs[44];
-} _tb16 = {44, NULL, {
+  const void* tbprocs[45];
+} _tb16 = {45, NULL, {
   (void*)Data__NodeDesc_Greg, 
   (void*)Data__UsableDesc_ReplaceUses, 
   (void*)Data__ResultDesc_DeleteResult, 
   (void*)Data__ResultDesc_MoveResultToEnd, 
   (void*)Data__ResultDesc_ResultIndex, 
   (void*)Data__InstructionDesc_Operand, 
+  (void*)Data__InstructionDesc_InsertOperand, 
   (void*)Data__InstructionDesc_UniqueOperand, 
   (void*)Data__InstructionDesc_AppendResult, 
   (void*)Data__InstructionDesc_Delete, 
@@ -998,21 +1044,21 @@ struct _TD Data__GlobalRegionDesc_td = {
   }
 };
 #define _TB2 5
-#define _TB4 2
-#define _TB9 27
+#define _TB5 2
 #define _TB10 28
-#define _TB11 0
-#define _TB12 8
-#define _TB13 29
-#define _TB18 31
-#define _TB20 2
-#define _TB21 3
-#define _TB25 13
-#define _TB30 16
-#define _TB40 34
+#define _TB11 29
+#define _TB12 0
+#define _TB13 9
+#define _TB14 30
+#define _TB19 32
+#define _TB21 2
+#define _TB22 3
+#define _TB26 14
+#define _TB31 17
 #define _TB41 35
 #define _TB42 36
-#define _TB56 26
+#define _TB43 37
+#define _TB57 27
 
 /* local strings */
 

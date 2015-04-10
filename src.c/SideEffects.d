@@ -67,6 +67,21 @@ void SideEffects__Adjust_RestoreLists(SideEffects__ProcInfo callee, Data__Instru
 static const struct {
   int length;
   void* pad;
+  const void* list[3];
+} _p0 = {3, NULL, {
+  (const void*)&SideEffects__AddProc,
+  (const void*)&SideEffects__Adjust,
+  (const void*)&SideEffects__Init,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[12];
 } _n0 = {12, NULL, {"SideEffects"}};
 static struct _MD SideEffects_md = {
@@ -76,7 +91,10 @@ static struct _MD SideEffects_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    885560853
   }
 };
 

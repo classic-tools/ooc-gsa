@@ -22,6 +22,40 @@ double LRealMath__ipower_Adjust(double xadj, double *LRealMath__ipower_x, short 
 static const struct {
   int length;
   void* pad;
+  const void* list[22];
+} _p0 = {22, NULL, {
+  (const void*)&LRealMath__IsRMathException,
+  (const void*)&LRealMath__arccos,
+  (const void*)&LRealMath__arccosh,
+  (const void*)&LRealMath__arcsin,
+  (const void*)&LRealMath__arcsinh,
+  (const void*)&LRealMath__arctan,
+  (const void*)&LRealMath__arctan2,
+  (const void*)&LRealMath__arctanh,
+  (const void*)&LRealMath__cos,
+  (const void*)&LRealMath__cosh,
+  (const void*)&LRealMath__exp,
+  (const void*)&LRealMath__ipower,
+  (const void*)&LRealMath__ln,
+  (const void*)&LRealMath__log,
+  (const void*)&LRealMath__power,
+  (const void*)&LRealMath__round,
+  (const void*)&LRealMath__sin,
+  (const void*)&LRealMath__sincos,
+  (const void*)&LRealMath__sinh,
+  (const void*)&LRealMath__sqrt,
+  (const void*)&LRealMath__tan,
+  (const void*)&LRealMath__tanh,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[10];
 } _n0 = {10, NULL, {"LRealMath"}};
 static struct _MD LRealMath_md = {
@@ -31,7 +65,10 @@ static struct _MD LRealMath_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -1906927131
   }
 };
 

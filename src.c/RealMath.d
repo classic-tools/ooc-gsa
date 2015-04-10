@@ -23,6 +23,40 @@ float RealMath__ipower_Adjust(float xadj, float *RealMath__ipower_x, short int *
 static const struct {
   int length;
   void* pad;
+  const void* list[22];
+} _p0 = {22, NULL, {
+  (const void*)&RealMath__IsRMathException,
+  (const void*)&RealMath__arccos,
+  (const void*)&RealMath__arccosh,
+  (const void*)&RealMath__arcsin,
+  (const void*)&RealMath__arcsinh,
+  (const void*)&RealMath__arctan,
+  (const void*)&RealMath__arctan2,
+  (const void*)&RealMath__arctanh,
+  (const void*)&RealMath__cos,
+  (const void*)&RealMath__cosh,
+  (const void*)&RealMath__exp,
+  (const void*)&RealMath__ipower,
+  (const void*)&RealMath__ln,
+  (const void*)&RealMath__log,
+  (const void*)&RealMath__power,
+  (const void*)&RealMath__round,
+  (const void*)&RealMath__sin,
+  (const void*)&RealMath__sincos,
+  (const void*)&RealMath__sinh,
+  (const void*)&RealMath__sqrt,
+  (const void*)&RealMath__tan,
+  (const void*)&RealMath__tanh,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[9];
 } _n0 = {9, NULL, {"RealMath"}};
 static struct _MD RealMath_md = {
@@ -32,7 +66,10 @@ static struct _MD RealMath_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    478347990
   }
 };
 

@@ -27,6 +27,21 @@ Data__Usable AlgebraicTransformation__Transform_HandleComparison(Data__Instructi
 static const struct {
   int length;
   void* pad;
+  const void* list[3];
+} _p0 = {3, NULL, {
+  (const void*)&AlgebraicTransformation__GetOne,
+  (const void*)&AlgebraicTransformation__GetZero,
+  (const void*)&AlgebraicTransformation__Transform,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[24];
 } _n0 = {24, NULL, {"AlgebraicTransformation"}};
 static struct _MD AlgebraicTransformation_md = {
@@ -36,7 +51,10 @@ static struct _MD AlgebraicTransformation_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -1459997155
   }
 };
 

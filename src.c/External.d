@@ -33,6 +33,35 @@ void External__ReadLibFile_ReadModList(BinaryRider__Reader r, External__Lib lib)
 static const struct {
   int length;
   void* pad;
+  const void* list[16];
+} _p0 = {16, NULL, {
+  (const void*)&External__AddModule,
+  (const void*)&External__AddName,
+  (const void*)&External__Append,
+  (const void*)&External__AppendDep,
+  (const void*)&External__ClearLibList,
+  (const void*)&External__ClearMarks,
+  (const void*)&External__GetLib,
+  (const void*)&External__MarkLib,
+  (const void*)&External__NewFile,
+  (const void*)&External__ReadLibFile,
+  (const void*)&External__ReadRefList,
+  (const void*)&External__ReadString,
+  (const void*)&External__SortMarkedLibraries,
+  (const void*)&External__WriteLibFile,
+  (const void*)&External__WriteRefList,
+  (const void*)&External__WriteString,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[1];
+} _p1 = {1, NULL, {
+  (const void*)&External__libFileId,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[9];
 } _n0 = {9, NULL, {"External"}};
 static struct _MD External_md = {
@@ -42,7 +71,10 @@ static struct _MD External_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -729142556
   }
 };
 

@@ -1,5 +1,5 @@
-(*	$Id: liboo2c.Mod,v 1.19 2000/03/01 11:28:29 ooc-devel Exp $	*)
-MODULE liboo2c [LIBRARY "oo2c" "14:0:2"; INTERFACE "C"];
+(*	$Id: liboo2c.Mod,v 1.20 2001/03/18 15:00:03 ooc-devel Exp $	*)
+MODULE liboo2c [LIBRARY "oo2c" "14:0:3"; INTERFACE "C"];
 <* Warnings := FALSE *>
    
 IMPORT

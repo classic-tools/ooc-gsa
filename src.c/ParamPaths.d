@@ -27,6 +27,26 @@ void ParamPaths__PathsSectionDesc_Write_WritePaths(ParamPaths__Path pathList);
 static const struct {
   int length;
   void* pad;
+  const void* list[6];
+} _p0 = {6, NULL, {
+  (const void*)&ParamPaths__FindPath,
+  (const void*)&ParamPaths__FindPathExt,
+  (const void*)&ParamPaths__GeneratePath,
+  (const void*)&ParamPaths__GeneratePathExt,
+  (const void*)&ParamPaths__Init,
+  (const void*)&ParamPaths__NormalizeFileName,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[2];
+} _p1 = {2, NULL, {
+  (const void*)&ParamPaths__newFiles,
+  (const void*)&ParamPaths__paths,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[11];
 } _n0 = {11, NULL, {"ParamPaths"}};
 static struct _MD ParamPaths_md = {
@@ -36,7 +56,10 @@ static struct _MD ParamPaths_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -788725707
   }
 };
 

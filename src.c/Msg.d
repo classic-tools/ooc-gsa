@@ -14,6 +14,29 @@ void Msg__MsgDesc_SetAttribute_Insert(Msg__Attribute *aList, Msg__Attribute attr
 static const struct {
   int length;
   void* pad;
+  const void* list[11];
+} _p0 = {11, NULL, {
+  (const void*)&Msg__GetLStringPtr,
+  (const void*)&Msg__GetStringPtr,
+  (const void*)&Msg__InitAttribute,
+  (const void*)&Msg__InitContext,
+  (const void*)&Msg__InitMsgList,
+  (const void*)&Msg__New,
+  (const void*)&Msg__NewIntAttrib,
+  (const void*)&Msg__NewLStringAttrib,
+  (const void*)&Msg__NewMsgAttrib,
+  (const void*)&Msg__NewMsgList,
+  (const void*)&Msg__NewStringAttrib,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[4];
 } _n0 = {4, NULL, {"Msg"}};
 static struct _MD Msg_md = {
@@ -23,7 +46,10 @@ static struct _MD Msg_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -194641372
   }
 };
 

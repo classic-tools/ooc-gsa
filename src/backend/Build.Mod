@@ -1,7 +1,7 @@
-(*      $Id: Build.Mod,v 1.43 2000/09/23 19:41:52 ooc-devel Exp $       *)
+(*      $Id: Build.Mod,v 1.44 2001/02/10 23:15:18 ooc-devel Exp $       *)
 MODULE Build;
 (*  Runs C compiler and linker to built executable.
-    Copyright (C) 1996-2000  Michael van Acken
+    Copyright (C) 1996-2001  Michael van Acken
 
     This file is part of OOC.
 
@@ -104,8 +104,10 @@ PROCEDURE CompileCCode (cFile, oFile: FileData.FileData;
     IF buildLib THEN
       SetCommand (libtoolCmd. value^);
       AppendCommand (" ");
-      FileData.MarkForRemoval (oFile. name^, ".o");
-      FileData.MarkForRemoval (oFile. name^, ".lo")
+      COPY (oFile. name^, file);
+      ParamPaths.NormalizeFileName (file);
+      FileData.MarkForRemoval (file, ".o");
+      FileData.MarkForRemoval (file, ".lo")
     ELSE
       SetCommand ("")
     END;

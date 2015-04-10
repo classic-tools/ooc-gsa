@@ -1,7 +1,7 @@
-(* 	$Id: ParseDecl.Mod,v 1.74 2000/06/25 18:51:48 ooc-devel Exp $	 *)
+(* 	$Id: ParseDecl.Mod,v 1.75 2001/03/18 15:10:54 ooc-devel Exp $	 *)
 MODULE ParseDecl;
 (*  Parses Oberon-2 declarations and module, builds symbol table.
-    Copyright (C) 1995-2000  Michael van Acken
+    Copyright (C) 1995-2001  Michael van Acken
 
     This file is part of OOC.
 
@@ -320,7 +320,8 @@ PROCEDURE Type (restr: SET; exp: SHORTINT): D.Struct;
   PROCEDURE CheckRestrictions (t: D.Struct; restr: SET);
     BEGIN
       IF (typeIsParameter IN restr) & Sym.Unnamed (t) &
-         (t. form # D.strOpenArray) & (t. form # D.strProc) THEN
+         (t. form # D.strOpenArray) & (t. form # D.strProc) &
+         (t. form # D.strPointer) THEN
         E.Err (pos, 203)      (* can't use type constructor here *)
       END;
       IF (typeIsReceiver IN restr) & 

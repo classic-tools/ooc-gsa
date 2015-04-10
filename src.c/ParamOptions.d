@@ -22,6 +22,25 @@ void ParamOptions__OptionsSectionDesc_Parse_Assign(unsigned char def, signed cha
 static const struct {
   int length;
   void* pad;
+  const void* list[5];
+} _p0 = {5, NULL, {
+  (const void*)&ParamOptions__CreateBoolean,
+  (const void*)&ParamOptions__CreateInteger,
+  (const void*)&ParamOptions__CreateString,
+  (const void*)&ParamOptions__Init,
+  (const void*)&ParamOptions__InitOption,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[2];
+} _p1 = {2, NULL, {
+  (const void*)&ParamOptions__error,
+  (const void*)&ParamOptions__options,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[13];
 } _n0 = {13, NULL, {"ParamOptions"}};
 static struct _MD ParamOptions_md = {
@@ -31,7 +50,10 @@ static struct _MD ParamOptions_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    1773109273
   }
 };
 

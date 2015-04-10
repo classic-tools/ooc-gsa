@@ -36,6 +36,26 @@ void WriteGSAvC__SetMarkers(Data__Region greg);
 static const struct {
   int length;
   void* pad;
+  const void* list[6];
+} _p0 = {6, NULL, {
+  (const void*)&WriteGSAvC__Body,
+  (const void*)&WriteGSAvC__Class,
+  (const void*)&WriteGSAvC__MW,
+  (const void*)&WriteGSAvC__Opcode,
+  (const void*)&WriteGSAvC__WrArgument,
+  (const void*)&WriteGSAvC__WrOpcode,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[2];
+} _p1 = {2, NULL, {
+  (const void*)&WriteGSAvC__writeGSA,
+  (const void*)&WriteGSAvC__writeQualNames,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[11];
 } _n0 = {11, NULL, {"WriteGSAvC"}};
 static struct _MD WriteGSAvC_md = {
@@ -45,7 +65,10 @@ static struct _MD WriteGSAvC_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    854594727
   }
 };
 

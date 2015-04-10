@@ -11,6 +11,39 @@ short int LowReal__err;
 static const struct {
   int length;
   void* pad;
+  const void* list[19];
+} _p0 = {19, NULL, {
+  (const void*)&LowReal__ClearError,
+  (const void*)&LowReal__IsInfinity,
+  (const void*)&LowReal__IsLowException,
+  (const void*)&LowReal__IsNaN,
+  (const void*)&LowReal__currentMode,
+  (const void*)&LowReal__exponent,
+  (const void*)&LowReal__exponent10,
+  (const void*)&LowReal__fraction,
+  (const void*)&LowReal__fractpart,
+  (const void*)&LowReal__intpart,
+  (const void*)&LowReal__pred,
+  (const void*)&LowReal__round,
+  (const void*)&LowReal__scale,
+  (const void*)&LowReal__setMode,
+  (const void*)&LowReal__sign,
+  (const void*)&LowReal__succ,
+  (const void*)&LowReal__synthesize,
+  (const void*)&LowReal__trunc,
+  (const void*)&LowReal__ulp,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[2];
+} _p1 = {2, NULL, {
+  (const void*)&LowReal__ErrorHandler,
+  (const void*)&LowReal__err,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[8];
 } _n0 = {8, NULL, {"LowReal"}};
 static struct _MD LowReal_md = {
@@ -20,7 +53,10 @@ static struct _MD LowReal_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -1527162149
   }
 };
 

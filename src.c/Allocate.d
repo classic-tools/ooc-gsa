@@ -127,6 +127,30 @@ void Allocate__EmitVariables_WriteAssignments(const unsigned char* aprefix0__ref
 static const struct {
   int length;
   void* pad;
+  const void* list[12];
+} _p0 = {12, NULL, {
+  (const void*)&Allocate__AccessNonlocal,
+  (const void*)&Allocate__EmitVariables,
+  (const void*)&Allocate__FindOperand,
+  (const void*)&Allocate__FindResult,
+  (const void*)&Allocate__GetAddressValue,
+  (const void*)&Allocate__GetLocation,
+  (const void*)&Allocate__GlobalRegion,
+  (const void*)&Allocate__NewLoc,
+  (const void*)&Allocate__PtrValue,
+  (const void*)&Allocate__TransformLocation,
+  (const void*)&Allocate__WriteRegType,
+  (const void*)&Allocate__WriteStats,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[9];
 } _n0 = {9, NULL, {"Allocate"}};
 static struct _MD Allocate_md = {
@@ -136,7 +160,10 @@ static struct _MD Allocate_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    81434580
   }
 };
 

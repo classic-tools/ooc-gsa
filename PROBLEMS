@@ -1,3 +1,10 @@
+* Empty Loops: An empty loop (like "LOOP END"), or a loop that can be
+reduced by the compiler to an empty loop, is *always* removed from the
+program.  If you want the loop to stay, put a call to an external
+procedure into it, e.g. "LOOP Out.String('') END".  The removal of
+"endless" but otherwise empty loops is a known problem.  Because of
+technical reasons there is no easy fix for this.
+
 * Libraries(1): If libtool thinks it can deal with shared libraries,
 but fails to do so correctly, you should try to pass --disable-shared
 to libtool's configure when installing libtool.  If static libraries

@@ -16,6 +16,19 @@ void GuardPropagation__Propagate_ReplaceUses(Data__Region guard, Data__Usable va
 static const struct {
   int length;
   void* pad;
+  const void* list[1];
+} _p0 = {1, NULL, {
+  (const void*)&GuardPropagation__Propagate,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[17];
 } _n0 = {17, NULL, {"GuardPropagation"}};
 static struct _MD GuardPropagation_md = {
@@ -25,7 +38,10 @@ static struct _MD GuardPropagation_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    638595368
   }
 };
 

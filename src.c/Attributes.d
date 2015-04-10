@@ -25,6 +25,43 @@ void Attributes__CleanupGreg_RemoveNoopGateHints(Data__Region r);
 static const struct {
   int length;
   void* pad;
+  const void* list[25];
+} _p0 = {25, NULL, {
+  (const void*)&Attributes__Address,
+  (const void*)&Attributes__Adr,
+  (const void*)&Attributes__ArrayLength,
+  (const void*)&Attributes__CleanupGreg,
+  (const void*)&Attributes__ContainsRuntimeCheck,
+  (const void*)&Attributes__CreateGreg,
+  (const void*)&Attributes__CreateGuard,
+  (const void*)&Attributes__CreateItem,
+  (const void*)&Attributes__DyadicOp,
+  (const void*)&Attributes__ExitInfoOr,
+  (const void*)&Attributes__FindAddEnterResult,
+  (const void*)&Attributes__GetNonParamOpnd,
+  (const void*)&Attributes__GuardExit,
+  (const void*)&Attributes__HasLengthInfo,
+  (const void*)&Attributes__InitExitInfo,
+  (const void*)&Attributes__InitGreg,
+  (const void*)&Attributes__InitItem,
+  (const void*)&Attributes__Operand,
+  (const void*)&Attributes__PartOfStore,
+  (const void*)&Attributes__SetOpndPos,
+  (const void*)&Attributes__SizeOfItem,
+  (const void*)&Attributes__TBProcAdr,
+  (const void*)&Attributes__TracesToEmptyStore,
+  (const void*)&Attributes__TypeTag,
+  (const void*)&Attributes__UnguardExit,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[11];
 } _n0 = {11, NULL, {"Attributes"}};
 static struct _MD Attributes_md = {
@@ -34,7 +71,10 @@ static struct _MD Attributes_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -801218519
   }
 };
 

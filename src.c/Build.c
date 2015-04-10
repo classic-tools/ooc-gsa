@@ -100,38 +100,37 @@ l2:
 }
 
 FileData__FileData Build__CompileCCode(FileData__FileData cFile, FileData__FileData oFile, External__NameList prefixOptions, External__NameList suffixOptions, unsigned char buildLib) {
-  register int i0, i1, i2;
+  register int i0, i1;
   Parameter__Filename file;
   Parameter__Filename msg;
   if (buildLib) goto l0;
   Build__SetCommand((const unsigned char*)(int)_c0, 1);
   goto l1;
 l0:
-  i2 = (int)Build__libtoolCmd;
-  i2 += 8;
-  i1 = (int)*(void**)i2;
-  i2 = *(int*)(i1-8);
-  Build__SetCommand((const unsigned char*)i1, i2);
-  i2 = (int)oFile + 4;
-  Build__AppendCommand((const unsigned char*)(int)_c1, 2);
-  i0 = (int)*(void**)i2;
+  i1 = (int)Build__libtoolCmd;
+  i1 += 8;
+  i0 = (int)*(void**)i1;
   i1 = *(int*)(i0-8);
-  FileData__MarkForRemoval((const unsigned char*)i0, i1, (const unsigned char*)(int)_c2, 3);
-  i1 = (int)*(void**)i2;
-  i2 = *(int*)(i1-8);
-  FileData__MarkForRemoval((const unsigned char*)i1, i2, (const unsigned char*)(int)_c3, 4);
+  Build__SetCommand((const unsigned char*)i0, i1);
+  Build__AppendCommand((const unsigned char*)(int)_c1, 2);
+  i1 = (int)oFile + 4;
+  i1 = (int)*(void**)i1;
+  _string_copy((int)file, i1, 256);
+  ParamPaths__NormalizeFileName((unsigned char*)(int)file, 256);
+  FileData__MarkForRemoval((const unsigned char*)(int)file, 256, (const unsigned char*)(int)_c2, 3);
+  FileData__MarkForRemoval((const unsigned char*)(int)file, 256, (const unsigned char*)(int)_c3, 4);
 l1:
   i0 = (int)Build__cc;
   i0 += 8;
-  i0 = (int)*(void**)i0;
-  i1 = *(int*)(i0-8);
-  Build__AppendCommand((const unsigned char*)i0, i1);
+  i1 = (int)*(void**)i0;
+  i0 = *(int*)(i1-8);
+  Build__AppendCommand((const unsigned char*)i1, i0);
   Build__AppendCommand((const unsigned char*)(int)_c1, 2);
   i0 = (int)Build__cflags;
   i0 += 8;
-  i0 = (int)*(void**)i0;
-  i1 = *(int*)(i0-8);
-  Build__AppendCommand((const unsigned char*)i0, i1);
+  i1 = (int)*(void**)i0;
+  i0 = *(int*)(i1-8);
+  Build__AppendCommand((const unsigned char*)i1, i0);
   i0 = (int)Build__optimize;
   i0 += 8;
   i0 = *(unsigned char*)i0;
@@ -153,11 +152,11 @@ l3:
   GenInclude__AddOptions((void(*)(const unsigned char*, int opt_0d))(int)&Build__AppendCommand);
   Build__AppendOptions((External__NameList)(int)prefixOptions);
   Build__AppendCommand((const unsigned char*)(int)_c5, 5);
-  i1 = (int)ParamPaths__paths;
-  i0 = (int)cFile + 20;
-  i0 = (int)*(void**)i0;
-  _string_copy((int)file, i0, 256);
-  i0 = i1 + 16;
+  i0 = (int)ParamPaths__paths;
+  i1 = (int)cFile + 20;
+  i1 = (int)*(void**)i1;
+  _string_copy((int)file, i1, 256);
+  i0 += 16;
   i0 = *(unsigned char*)i0;
   if (!(i0)) goto l5;
   i0 = RCS__MasterFile((const unsigned char*)(int)file, 256);
@@ -173,14 +172,14 @@ l5:
   Build__AppendOptions((External__NameList)(int)suffixOptions);
   if (buildLib) goto l6;
   Build__AppendCommand((const unsigned char*)(int)_c6, 5);
-  i1 = (int)oFile + 20;
-  i1 = (int)*(void**)i1;
-  i0 = *(int*)(i1-8);
-  Build__AppendCommand((const unsigned char*)i1, i0);
-l6:
-  i0 = (int)Build__command;
+  i0 = (int)oFile + 20;
+  i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-8);
-  Error__VerboseMsg((const unsigned char*)i0, i1);
+  Build__AppendCommand((const unsigned char*)i0, i1);
+l6:
+  i1 = (int)Build__command;
+  i0 = *(int*)(i1-8);
+  Error__VerboseMsg((const unsigned char*)i1, i0);
   i0 = (int)Build__command;
   i0 = Rts_System((const unsigned char*)i0);
   i0 = i0 == 0;
@@ -2144,7 +2143,7 @@ void Build_init(void) {
     char *_mem, *_var;
     int* _dim_ptr;
     _mem = GC_malloc_atomic(_not_zero(992*1)+8);
-    if (!_mem) _new_failed(_P(40890));
+    if (!_mem) _new_failed(_P(40950));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 992;

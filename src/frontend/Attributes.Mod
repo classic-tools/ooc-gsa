@@ -1,7 +1,7 @@
-(* 	$Id: Attributes.Mod,v 1.66 1999/11/06 11:16:09 ooc-devel Exp $	 *)
+(* 	$Id: Attributes.Mod,v 1.67 2000/12/26 16:16:56 ooc-devel Exp $	 *)
 MODULE Attributes;
 (*  Calculation and maintenance of attributes needed by the parser.
-    Copyright (C) 1995-1999  Michael van Acken
+    Copyright (C) 1995-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -66,7 +66,7 @@ TYPE
     (* this is set if the item represents a nonlocal exit condition (ie, $exit,
        $return, or a combination of both) *)
     designator*: BOOLEAN;
-    (* TRUE if the item is discribes a designator, i.e. is derived from a 
+    (* TRUE if the item describes a designator, i.e., is derived from a 
        variable instead of an expression *)
     arrayDim*: INTEGER;
     (* this is the number of the array's current dimension relative to the

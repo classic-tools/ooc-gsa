@@ -15,6 +15,23 @@ static ConvTypes__ScanState IntConv__SI;
 static const struct {
   int length;
   void* pad;
+  const void* list[5];
+} _p0 = {5, NULL, {
+  (const void*)&IntConv__FormatInt,
+  (const void*)&IntConv__IsIntConvException,
+  (const void*)&IntConv__LengthInt,
+  (const void*)&IntConv__ScanInt,
+  (const void*)&IntConv__ValueInt,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[8];
 } _n0 = {8, NULL, {"IntConv"}};
 static struct _MD IntConv_md = {
@@ -24,7 +41,10 @@ static struct _MD IntConv_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -493975604
   }
 };
 

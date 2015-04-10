@@ -1,6 +1,60 @@
 Note: Directory parts of files mentioned here refer to the
       OOC source tree, not the shrunk oo2c distribution.
 
+2001-03-18  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseDecl.Mod (Type.CheckRestrictions):
+	Allow unnamed pointer type in parameter
+	list.
+
+	* backend/ansi-c/lib/liboo2c.Mod: Bumped version to 14:0:3.
+
+	* backend/ansi-c/lib/Exception.c:
+	Undid some of the changes made in r1.8 (1999/06/03!).  They made the
+	Exception module completely unusable :-/
+
+2001-02-11  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Build.Mod (CompileCCode):
+	Use correct file name when removing intermediate obj
+	files with "buildLib=TRUE".
+
+2001-01-14  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenDecl.Mod (ModuleDescriptor):
+	Added initialization of the members `procs',
+	`vars', and `fingerprint'.
+
+	* backend/ansi-c/lib/__Descr.h (_ModuleDesc):
+	Added members `procs', `vars', and `fingerprint'.
+
+2000-12-27  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Schedule.Mod, backend/ansi-c/GenDecl.Mod, backend/ansi-c/SystemFlags.Mod, frontend/ParseStatm.Mod, frontend/ParseExpr.Mod:
+	Added code for `volatile' variables.
+
+	* frontend/Data.Mod (objVolatile): New flag.
+
+	  [back-end] if set for a scalar variable, then it is assumed that the
+	  content of the variable may change behind the current process's/thread's
+	  back; access to this variable always reads from or writes to memory, and
+	  all instructions accessing the variable are strictly serialized; note:
+	  passing a volatile variable to a variable parameter is not considered a
+	  read or write access, because only the address is passed to the callee;
+	  this implies that such a procedure call is _not_ strictly serialized
+
+2000-12-04  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__oo2c.c (_break_rtc):
+	Make this non-static, otherwise gdb won't allow to set a
+	breakpoint on it.
+
+2000-10-18  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (SimpleExpr):
+	String concatenation with a string8 const on the left
+	and a char16 const on the right, like "abc"+1234X, was rejected.
+
 2000-10-09  Michael van Acken  <acken@informatik.uni-kl.de>
 
 	* lib/Msg.Mod: Texified documentation.

@@ -11,6 +11,22 @@ unsigned char Strings2__Match_RecMatch(unsigned char* src, int src_0d, short int
 static const struct {
   int length;
   void* pad;
+  const void* list[4];
+} _p0 = {4, NULL, {
+  (const void*)&Strings2__AppendChar,
+  (const void*)&Strings2__InsertChar,
+  (const void*)&Strings2__Match,
+  (const void*)&Strings2__PosChar,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[9];
 } _n0 = {9, NULL, {"Strings2"}};
 static struct _MD Strings2_md = {
@@ -20,7 +36,10 @@ static struct _MD Strings2_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -397565723
   }
 };
 

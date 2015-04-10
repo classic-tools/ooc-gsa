@@ -24,6 +24,25 @@ double LRealConv__Real(LongInts__LongInt x, int exp, int digits, unsigned char *
 static const struct {
   int length;
   void* pad;
+  const void* list[7];
+} _p0 = {7, NULL, {
+  (const void*)&LRealConv__FormatReal,
+  (const void*)&LRealConv__IsRConvException,
+  (const void*)&LRealConv__LengthEngReal,
+  (const void*)&LRealConv__LengthFixedReal,
+  (const void*)&LRealConv__LengthFloatReal,
+  (const void*)&LRealConv__ScanReal,
+  (const void*)&LRealConv__ValueReal,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[10];
 } _n0 = {10, NULL, {"LRealConv"}};
 static struct _MD LRealConv_md = {
@@ -33,7 +52,10 @@ static struct _MD LRealConv_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -587573340
   }
 };
 

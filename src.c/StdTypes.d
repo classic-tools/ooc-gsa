@@ -12,6 +12,31 @@
 static const struct {
   int length;
   void* pad;
+  const void* list[13];
+} _p0 = {13, NULL, {
+  (const void*)&StdTypes__BasicTypes,
+  (const void*)&StdTypes__CharType,
+  (const void*)&StdTypes__IntType,
+  (const void*)&StdTypes__Max,
+  (const void*)&StdTypes__Min,
+  (const void*)&StdTypes__NotifyPragmaAssign,
+  (const void*)&StdTypes__PassPerReference,
+  (const void*)&StdTypes__StructAlloc,
+  (const void*)&StdTypes__ValidChar,
+  (const void*)&StdTypes__ValidInt,
+  (const void*)&StdTypes__ValidReal,
+  (const void*)&StdTypes__WholeMax,
+  (const void*)&StdTypes__WholeMin,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[9];
 } _n0 = {9, NULL, {"StdTypes"}};
 static struct _MD StdTypes_md = {
@@ -21,7 +46,10 @@ static struct _MD StdTypes_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    1620942442
   }
 };
 

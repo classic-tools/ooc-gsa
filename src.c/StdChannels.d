@@ -22,6 +22,22 @@ Msg__Msg StdChannels__GetError(int code);
 static const struct {
   int length;
   void* pad;
+  const void* list[0];
+} _p0 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[4];
+} _p1 = {4, NULL, {
+  (const void*)&StdChannels__null,
+  (const void*)&StdChannels__stderr,
+  (const void*)&StdChannels__stdin,
+  (const void*)&StdChannels__stdout,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[12];
 } _n0 = {12, NULL, {"StdChannels"}};
 static struct _MD StdChannels_md = {
@@ -31,7 +47,10 @@ static struct _MD StdChannels_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    1655778086
   }
 };
 

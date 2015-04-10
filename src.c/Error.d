@@ -45,6 +45,31 @@ void Error__EmitErrors_WriteError(Parameter__String source, int pos, short int n
 static const struct {
   int length;
   void* pad;
+  const void* list[8];
+} _p0 = {8, NULL, {
+  (const void*)&Error__EmitErrors,
+  (const void*)&Error__Err,
+  (const void*)&Error__ErrIns,
+  (const void*)&Error__ErrIns2,
+  (const void*)&Error__ErrOoR,
+  (const void*)&Error__FileError,
+  (const void*)&Error__Init,
+  (const void*)&Error__VerboseMsg,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[5];
+} _p1 = {5, NULL, {
+  (const void*)&Error__errCount,
+  (const void*)&Error__errorMsgs,
+  (const void*)&Error__noerr,
+  (const void*)&Error__sourceFile,
+  (const void*)&Error__verbose,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[6];
 } _n0 = {6, NULL, {"Error"}};
 static struct _MD Error_md = {
@@ -54,7 +79,10 @@ static struct _MD Error_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    1411212384
   }
 };
 

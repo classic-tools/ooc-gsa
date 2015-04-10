@@ -16,6 +16,19 @@ void GateReduction__Reduce_TraverseGates(Data__Region r);
 static const struct {
   int length;
   void* pad;
+  const void* list[1];
+} _p0 = {1, NULL, {
+  (const void*)&GateReduction__Reduce,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[14];
 } _n0 = {14, NULL, {"GateReduction"}};
 static struct _MD GateReduction_md = {
@@ -25,7 +38,10 @@ static struct _MD GateReduction_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    703020339
   }
 };
 

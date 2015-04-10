@@ -67,6 +67,24 @@ void Build__Makefile_CRules(Make__Module mainMod, Make__Module *Build__Makefile_
 static const struct {
   int length;
   void* pad;
+  const void* list[5];
+} _p0 = {5, NULL, {
+  (const void*)&Build__CheckLibtool,
+  (const void*)&Build__Executable,
+  (const void*)&Build__InstallLib,
+  (const void*)&Build__Makefile,
+  (const void*)&Build__RemoveSymbolFiles,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[1];
+} _p1 = {1, NULL, {
+  (const void*)&Build__optimize,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[6];
 } _n0 = {6, NULL, {"Build"}};
 static struct _MD Build_md = {
@@ -76,7 +94,10 @@ static struct _MD Build_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    71309110
   }
 };
 

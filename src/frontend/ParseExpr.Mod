@@ -1,4 +1,4 @@
-(* 	$Id: ParseExpr.Mod,v 1.119 2000/07/20 18:24:52 ooc-devel Exp $	 *)
+(* 	$Id: ParseExpr.Mod,v 1.121 2000/12/27 16:32:19 ooc-devel Exp $	 *)
 MODULE ParseExpr;
 (*  Parses Oberon-2 expressions and translates them to GSA.
     Copyright (C) 1995-2000  Michael van Acken
@@ -38,6 +38,8 @@ VAR
   CommitIfMerge*: PROCEDURE (region: D.Region);
   FixupCondPath*: PROCEDURE (path: D.Region; oldMerge: D.Merge; 
                              merge: D.Merge; innerMost: BOOLEAN);
+  AssignToVar*: PROCEDURE (region: D.Region; dest: D.Object; VAR x: Attr.Item);
+  ReclaimFromMem*: PROCEDURE (instr: D.Instruction);
   (* the above variables correspond to procedures defined in `ParseStatm' *)
 
 
@@ -186,6 +188,7 @@ PROCEDURE RedoDesignatorAccess* (region: D.Region; VAR x: Attr.Item);
       instr, guard, access: D.Instruction;
       new: D.Usable;
       opnd: D.Opnd;
+      memAssign: Attr.Item;
     
     PROCEDURE CopyOpndPos (from, to: D.Instruction);
       VAR
@@ -227,6 +230,28 @@ PROCEDURE RedoDesignatorAccess* (region: D.Region; VAR x: Attr.Item);
           opnd := opnd. nextOpnd
         END;
         CopyOpndPos (guard, instr);
+        RETURN instr
+        
+      ELSIF (value(D.Instruction). opcode = Opc.accessMem) THEN
+        (* access to a volatile variable, encoded as direct memory access;
+           problem: the previous instruction writes to $mem, this must be
+           undone *)
+        access := value(D.Instruction);
+        instr := region. CreateInstruction (Opc.accessMem, access. type, access. pos);
+        instr. flags := access. flags; access. flags := {};
+        instr. Operand (access. opndList. arg);
+        instr. Operand (AccessVar (region, Sym.mem));
+        instr. SetOpndSymLoc (Sym.mem);
+        instr. Operand (AccessVar (region, Sym.store));
+        instr. SetOpndSymLoc (Sym.store);
+        Attr.CreateItem (memAssign, instr. AppendResult (D.CreateSymLocation (Sym.mem, D.symLocObject), NIL), x. pos);
+        AssignToVar (region, Sym.mem, memAssign);
+        ReclaimFromMem (instr);
+        CopyOpndPos (access, instr);
+
+        access. nextResult. ReplaceUses (access. opndList. nextOpnd. arg);
+        access. nextResult. nextResult. ReplaceUses (access. opndList. nextOpnd. nextOpnd. arg);
+        access. Delete;
         RETURN instr
         
       ELSE  (* field or element access *)
@@ -724,9 +749,10 @@ PROCEDURE Designator* (region: D.Region; VAR x: Attr.Item);
     obj: D.Object;
     type: D.Struct;
     instr, copy: D.Instruction;
-    index, len, size, y, result: Attr.Item;
+    index, len, size, y, result, memAssign: Attr.Item;
     pos, startPos: LONGINT;
     discardObj: BOOLEAN;
+    isVolatileAccess: BOOLEAN;
     
   PROCEDURE Deref (checkForPtr: BOOLEAN);
   (* Executes dereference of a pointer.  If `checkForPtr = TRUE' and the item
@@ -812,6 +838,7 @@ PROCEDURE Designator* (region: D.Region; VAR x: Attr.Item);
     END AbstractSuperCall;
   
   BEGIN  (* pre: (S.sym = ident) *)
+    isVolatileAccess := FALSE;
     Qualident (x);
     (* update additional item fields *)
     x. type := x. obj. type;
@@ -845,6 +872,9 @@ PROCEDURE Designator* (region: D.Region; VAR x: Attr.Item);
            be modified if it is visible by other names), but it is a close
            approximation *)
         x. readOnlyPos := -x. pos
+      END;
+      IF (D.objVolatile IN x. obj. flags) THEN
+        isVolatileAccess := TRUE
       END
     | D.objProc:
       IF (x. obj. localTo # Sym.predef) & (x. obj. localTo # Sym.system) THEN
@@ -911,6 +941,9 @@ PROCEDURE Designator* (region: D.Region; VAR x: Attr.Item);
                  (D.objIsExportedReadOnly IN obj. flags) &
                  (x. readOnlyPos = D.undefPos) THEN
                 x. readOnlyPos := S.currSymPos
+              END;
+              IF (D.objVolatile IN obj. flags) THEN
+                isVolatileAccess := TRUE
               END;
               S.GetSym
               
@@ -1081,6 +1114,21 @@ PROCEDURE Designator* (region: D.Region; VAR x: Attr.Item);
     END;
     IF (x. basePos >= 0) THEN
       x. pos := x. basePos
+    END;
+    
+    IF isVolatileAccess THEN
+      instr := region. CreateInstruction (Opc.accessMem, x. type, x. pos);
+      INCL (instr. flags, D.instrUniqueResult);
+      instr. Operand (Attr.Adr (region, x));
+      instr. Operand (AccessVar (region, Sym.mem));
+      instr. SetOpndSymLoc (Sym.mem);
+      instr. Operand (AccessVar (region, Sym.store));
+      instr. SetOpndSymLoc (Sym.store);
+      Attr.CreateItem (memAssign, instr. AppendResult (D.CreateSymLocation (Sym.mem, D.symLocObject), NIL), x. pos);
+      AssignToVar (region, Sym.mem, memAssign);
+      ReclaimFromMem (instr);
+      x. obj := NIL;             (* don't treat this as an ordinary variable *)
+      x. currValue := instr
     END
   END Designator;
 
@@ -1821,6 +1869,7 @@ PROCEDURE SimpleExpr (region: D.Region; VAR x: Attr.Item);
     op: SHORTINT;
     pos: LONGINT;
     tempCopy: D.Instruction;
+    targetType: D.Struct;
   
   PROCEDURE Concat (x, y: D.Const): D.Const;
     CONST
@@ -1886,8 +1935,18 @@ PROCEDURE SimpleExpr (region: D.Region; VAR x: Attr.Item);
            (Sym.TypeInGroup (x. type, D.grpStringConst) OR
             Sym.TypeInGroup (x. type, D.grpChar)) THEN
           (* string concatenation; only available in non-conformant mode *)
-          IF StringConvertible (y, x. type) & (* behold the side effects ;-) *)
-             StringConvertible (x, y. type) THEN
+          IF (x. type. form = D.strStringConst16) OR
+             (y. type. form = D.strStringConst16) OR
+             (x. type. form = D.strChar16) OR
+             (y. type. form = D.strChar16) THEN
+            targetType := D.struct[D.strStringConst16]
+          ELSE
+            targetType := D.struct[D.strStringConst8]
+          END;
+          
+          IF StringConvertible (y, targetType) &
+             StringConvertible (x, targetType) THEN
+            (* behold the side effects of the condition's guard ;-) *)
             Attr.CreateItem (x, Concat (x. const, y. const), pos)
           ELSE  (* operand incompatible to type on left side *)
             Sym.ErrT1 (y. pos, 233, x. type)
@@ -2092,5 +2151,7 @@ PROCEDURE ConditionExit* (region: D.Region; VAR x: Attr.Item;
 BEGIN
   ProcedureCall := NIL;
   FixupCondPath := NIL;
-  CommitIfMerge := NIL
+  CommitIfMerge := NIL;
+  AssignToVar := NIL;
+  ReclaimFromMem := NIL;
 END ParseExpr.

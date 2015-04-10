@@ -66,6 +66,21 @@ void ConstPropagation__ConstPropagation_AssertCorrectMarking(Data__Region region
 static const struct {
   int length;
   void* pad;
+  const void* list[3];
+} _p0 = {3, NULL, {
+  (const void*)&ConstPropagation__CheckConstSemantics,
+  (const void*)&ConstPropagation__ConstPropagation,
+  (const void*)&ConstPropagation__TryConstantFolding,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[17];
 } _n0 = {17, NULL, {"ConstPropagation"}};
 static struct _MD ConstPropagation_md = {
@@ -75,7 +90,10 @@ static struct _MD ConstPropagation_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -16621120
   }
 };
 

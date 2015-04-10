@@ -56,6 +56,28 @@ void SymbolFile__Read_StructAlloc(Data__Struct t);
 static const struct {
   int length;
   void* pad;
+  const void* list[9];
+} _p0 = {9, NULL, {
+  (const void*)&SymbolFile__FindImportedModule,
+  (const void*)&SymbolFile__IntegrateSymbols,
+  (const void*)&SymbolFile__Read,
+  (const void*)&SymbolFile__ReadFlags,
+  (const void*)&SymbolFile__ReadString,
+  (const void*)&SymbolFile__RemoveImportedModule,
+  (const void*)&SymbolFile__Write,
+  (const void*)&SymbolFile__WriteFlags,
+  (const void*)&SymbolFile__WriteString,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[1];
+} _p1 = {1, NULL, {
+  (const void*)&SymbolFile__symbolFileId,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[11];
 } _n0 = {11, NULL, {"SymbolFile"}};
 static struct _MD SymbolFile_md = {
@@ -65,7 +87,10 @@ static struct _MD SymbolFile_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -1837613339
   }
 };
 

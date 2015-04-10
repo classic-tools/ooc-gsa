@@ -95,6 +95,30 @@ void CodeGen__FinishModule_CloseFile(TextRider__Writer w, FileData__FileData fd)
 static const struct {
   int length;
   void* pad;
+  const void* list[9];
+} _p0 = {9, NULL, {
+  (const void*)&CodeGen__AddModule,
+  (const void*)&CodeGen__CheckOptimizers,
+  (const void*)&CodeGen__CreateModule,
+  (const void*)&CodeGen__CreateProgram,
+  (const void*)&CodeGen__FileMissing,
+  (const void*)&CodeGen__FinishModule,
+  (const void*)&CodeGen__FinishProcedure,
+  (const void*)&CodeGen__FinishProgram,
+  (const void*)&CodeGen__ForwardProcedure,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[3];
+} _p1 = {3, NULL, {
+  (const void*)&CodeGen__optimizers,
+  (const void*)&CodeGen__stupidCodeGen,
+  (const void*)&CodeGen__translationBasis,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[8];
 } _n0 = {8, NULL, {"CodeGen"}};
 static struct _MD CodeGen_md = {
@@ -104,7 +128,10 @@ static struct _MD CodeGen_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -2060022713
   }
 };
 

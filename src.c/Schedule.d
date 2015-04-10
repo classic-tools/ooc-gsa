@@ -53,6 +53,20 @@ void Schedule__Region_PassStoreToExit(Data__Instruction exit, Data__GlobalRegion
 static const struct {
   int length;
   void* pad;
+  const void* list[2];
+} _p0 = {2, NULL, {
+  (const void*)&Schedule__ExecutedBefore,
+  (const void*)&Schedule__Region,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[9];
 } _n0 = {9, NULL, {"Schedule"}};
 static struct _MD Schedule_md = {
@@ -62,7 +76,10 @@ static struct _MD Schedule_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    1081961888
   }
 };
 

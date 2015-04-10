@@ -41,6 +41,30 @@ void Parameter__ParseCmdLine_EvalOption(unsigned char* optName, int optName_0d, 
 static const struct {
   int length;
   void* pad;
+  const void* list[10];
+} _p0 = {10, NULL, {
+  (const void*)&Parameter__AddSection,
+  (const void*)&Parameter__FatalError,
+  (const void*)&Parameter__GetArg,
+  (const void*)&Parameter__GetSection,
+  (const void*)&Parameter__IsAlpha,
+  (const void*)&Parameter__IsNum,
+  (const void*)&Parameter__ParseCmdLine,
+  (const void*)&Parameter__ParseConfigFile,
+  (const void*)&Parameter__Warning,
+  (const void*)&Parameter__WriteConfig,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[2];
+} _p1 = {2, NULL, {
+  (const void*)&Parameter__in,
+  (const void*)&Parameter__include,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[10];
 } _n0 = {10, NULL, {"Parameter"}};
 static struct _MD Parameter_md = {
@@ -50,7 +74,10 @@ static struct _MD Parameter_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -2143912518
   }
 };
 

@@ -447,13 +447,15 @@ void ParseDecl__Type_CheckRestrictions(Data__Struct t, unsigned int restr, int *
   i1 = SymbolTable__Unnamed((Data__Struct)(int)t);
   if (!(i1)) goto l0;
   i1 = (int)t + 20;
-  i0 = *(signed char*)i1;
-  i1 = i0 == 30;
-  if (i1) goto l0;
-  i0 = i0 == 28;
+  i1 = *(signed char*)i1;
+  i0 = i1 == 30;
   if (i0) goto l0;
-  i0 = *ParseDecl__Type_pos;
-  Error__Err((int)i0, (short int)203);
+  i0 = i1 == 28;
+  if (i0) goto l0;
+  i1 = i1 == 27;
+  if (i1) goto l0;
+  i1 = *ParseDecl__Type_pos;
+  Error__Err((int)i1, (short int)203);
 l0:
   i0 = (restr & ((unsigned int)1 << 1)) != 0;
   if (!(i0)) goto l2;
@@ -2230,9 +2232,9 @@ l7:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i4 < 0) _invalid_length(i4, _P(48103));
+    if(i4 < 0) _invalid_length(i4, _P(48139));
     _mem = GC_malloc_atomic(_not_zero(i4*1)+8);
-    if (!_mem) _new_failed(_P(48062));
+    if (!_mem) _new_failed(_P(48098));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i4;

@@ -1,4 +1,4 @@
-(*	$Id: GenStatm.Mod,v 1.53 2000/06/25 19:09:57 ooc-devel Exp $	*)
+(*	$Id: GenStatm.Mod,v 1.54 2000/12/27 16:34:31 ooc-devel Exp $	*)
 MODULE GenStatm;
 (*  Translates GSA opcodes to C statements.
     Copyright (C) 1996-2000  Michael van Acken
@@ -1206,6 +1206,14 @@ PROCEDURE NewInstr (instr: D.Instruction; opc: INTEGER);
         w. WriteString ("((_Type*)_var)[-1] = &");
         GenDecl.TypeDescrName (w, type, TRUE);
         w. WriteString (".td;");
+(*        NewLine;
+        w. WriteString('{char* s=(char* )(((_Type* )_var)[-1])->module->name; write(2,s,strlen(s));}');
+        NewLine;
+        w. WriteString('write(2,".",1);');
+        NewLine;
+        w. WriteString('{char* s=(char* )(((_Type* )_var)[-1])->name; write(2,s,strlen(s));}');
+        NewLine;
+        w. WriteString('write(2,"\n",1);');*)
         
         IF (D.structVTableField IN type. flags) THEN
           (* fill in the `_vtbl' field if the record was flagged with VTABLE *)

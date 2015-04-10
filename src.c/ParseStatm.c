@@ -1001,6 +1001,17 @@ l11:
   ;
 }
 
+void ParseStatm__AssignToDesignator_CreateUpdateMem(Data__Instruction instr, Attributes__Item *ParseStatm__AssignToDesignator_value) {
+  register int i0, i1;
+  i0 = (int)instr + 44;
+  *(short int*)i0 = 53;
+  i1 = (int)instr + 28;
+  i0 = (int)ParseStatm__AssignToDesignator_value + 16;
+  i1 = (int)*(void**)i1;
+  i0 = (int)*(void**)i0;
+  Data__InstructionDesc_InsertOperand((Data__Instruction)(int)instr, (Data__Opnd)i1, (Data__Usable)i0);
+}
+
 void ParseStatm__AssignToDesignator(Data__Region region, Attributes__Item *dest, _Type dest__tag, Attributes__Item *value, _Type value__tag) {
   register int i0, i1, i2, i3, i4, i5, i6, i7;
   Data__Usable currDest;
@@ -1009,86 +1020,98 @@ void ParseStatm__AssignToDesignator(Data__Region region, Attributes__Item *dest,
   i0 = (int)dest + 4;
   i1 = (int)*(void**)i0;
   i0 = i1 != 0;
-  if (i0) goto l7;
-  i5 = (int)dest + 8;
-  i5 = (int)*(void**)i5;
-  i5 += 20;
-  i5 = *(signed char*)i5;
-  i5 = i5 == 0;
-  if (i5) goto l8;
-  i2 = (int)dest + 20;
-  i7 = (int)dest + 16;
-  i1 = (int)value + 16;
-  ParseExpr__RedoDesignatorAccess((Data__Region)i6, (Attributes__Item *)(int)dest, dest__tag);
-  i3 = (int)*(void**)i7;
-  i4 = (int)*(void**)i1;
-  i7 = (int)*(void**)i2;
-  i7 = i3 == i7;
-  if (i7) goto l0;
-  i0 = i3 + 44;
-  i5 = *(short int*)i0;
-  i0 = i5 == 32;
-  if (i0) goto l1;
-  i5 = i5 == 33;
-  if (i5) goto l1;
+  if (i0) goto l9;
+  i1 = (int)dest + 16;
+  i5 = (int)*(void**)i1;
+  i4 = *(int*)(i5-4);
+  i4 = _type_test(i4, &Data__InstructionDesc_td.td, 4);
+  if (!(i4)) goto l0;
+  i4 = i5 + 44;
+  i4 = *(short int*)i4;
+  i4 = i4 == 37;
+  if (i4) goto l8;
 l0:
-  i2 = i6;
-  goto l5;
-l1:
-  i5 = i6;
-  i7 = i4;
-  i0 = i3;
-l2:
-  region = (void*)i5;
-  currDest = (void*)i0;
-  currValue = (void*)i7;
-  region = (void*)i5;
-  currDest = (void*)i0;
-  currValue = (void*)i7;
-  ParseStatm__AssignToDesignator_AddUpdate((Data__Usable *)(int)&currDest, (Data__Usable *)(int)&currValue, (Data__Region *)&region);
-  i0 = (int)*(void**)i2;
-  i0 = (int)currDest == i0;
-  if (i0) goto l4;
-  i0 = (int)currDest + 44;
-  i5 = *(short int*)i0;
-  i0 = i5 == 32;
-  if (i0) goto l3;
-  i5 = i5 != 33;
-  if (i5) goto l4;
-l3:
-  i5 = (int)region;
-  i7 = (int)currValue;
-  i0 = (int)currDest;
-  goto l2;
-l4:
-  i3 = (int)currDest;
-  i4 = (int)currValue;
-  i2 = (int)region;
-l5:
-  i0 = (int)dest + 36;
-  i5 = (int)*(void**)i0;
-  i7 = *(int*)(i5-4);
-  i7 = _type_test(i7, &Data__StructDesc_td.td, 4);
-  if (i7) goto l6;
-  i7 = i4 + 52;
-  i7 = *(int*)i7;
-  Attributes__InitItem((Attributes__Item *)(int)value, value__tag, (int)i7);
-  *(void**)i1 = (void*)i4;
+  i7 = (int)dest + 8;
+  i7 = (int)*(void**)i7;
+  i7 += 20;
+  i7 = *(signed char*)i7;
+  i7 = i7 == 0;
+  if (i7) goto l10;
+  i0 = (int)dest + 20;
+  i5 = (int)value + 16;
+  ParseExpr__RedoDesignatorAccess((Data__Region)i6, (Attributes__Item *)(int)dest, dest__tag);
+  i7 = (int)*(void**)i1;
+  i2 = (int)*(void**)i5;
   i1 = (int)*(void**)i0;
-  ParseStatm__AssignToVar((Data__Region)i2, (Data__Object)i1, (Attributes__Item *)(int)value, value__tag);
-  goto l8;
-l6:
-  region = (void*)i2;
-  currDest = (void*)i3;
-  currValue = (void*)i4;
-  region = (void*)i2;
-  currDest = (void*)i3;
-  currValue = (void*)i4;
+  i1 = i7 == i1;
+  if (i1) goto l1;
+  i4 = i7 + 44;
+  i3 = *(short int*)i4;
+  i4 = i3 == 32;
+  if (i4) goto l2;
+  i3 = i3 == 33;
+  if (i3) goto l2;
+l1:
+  i3 = i6;
+  goto l6;
+l2:
+  i3 = i6;
+  i1 = i2;
+  i4 = i7;
+l3:
+  region = (void*)i3;
+  currDest = (void*)i4;
+  currValue = (void*)i1;
+  region = (void*)i3;
+  currDest = (void*)i4;
+  currValue = (void*)i1;
   ParseStatm__AssignToDesignator_AddUpdate((Data__Usable *)(int)&currDest, (Data__Usable *)(int)&currValue, (Data__Region *)&region);
-  goto l8;
+  i4 = (int)*(void**)i0;
+  i4 = (int)currDest == i4;
+  if (i4) goto l5;
+  i4 = (int)currDest + 44;
+  i3 = *(short int*)i4;
+  i4 = i3 == 32;
+  if (i4) goto l4;
+  i3 = i3 != 33;
+  if (i3) goto l5;
+l4:
+  i3 = (int)region;
+  i1 = (int)currValue;
+  i4 = (int)currDest;
+  goto l3;
+l5:
+  i7 = (int)currDest;
+  i2 = (int)currValue;
+  i3 = (int)region;
+l6:
+  i0 = (int)dest + 36;
+  i1 = (int)*(void**)i0;
+  i4 = *(int*)(i1-4);
+  i1 = _type_test(i4, &Data__StructDesc_td.td, 4);
+  if (i1) goto l7;
+  i1 = i2 + 52;
+  i1 = *(int*)i1;
+  Attributes__InitItem((Attributes__Item *)(int)value, value__tag, (int)i1);
+  *(void**)i5 = (void*)i2;
+  i5 = (int)*(void**)i0;
+  ParseStatm__AssignToVar((Data__Region)i3, (Data__Object)i5, (Attributes__Item *)(int)value, value__tag);
+  goto l10;
 l7:
-  ParseStatm__AssignToVar((Data__Region)i6, (Data__Object)i1, (Attributes__Item *)(int)value, value__tag);
+  region = (void*)i3;
+  currDest = (void*)i7;
+  currValue = (void*)i2;
+  region = (void*)i3;
+  currDest = (void*)i7;
+  currValue = (void*)i2;
+  ParseStatm__AssignToDesignator_AddUpdate((Data__Usable *)(int)&currDest, (Data__Usable *)(int)&currValue, (Data__Region *)&region);
+  goto l10;
 l8:
+  ParseStatm__AssignToDesignator_CreateUpdateMem((Data__Instruction)i5, &*value);
+  goto l10;
+l9:
+  ParseStatm__AssignToVar((Data__Region)i6, (Data__Object)i1, (Attributes__Item *)(int)value, value__tag);
+l10:
   ;
 }
 
@@ -4945,7 +4968,7 @@ l6:
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(12)+8);
-    if (!_mem) _new_failed(_P(97916));
+    if (!_mem) _new_failed(_P(98379));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParseStatm__StatementSeq_WithGuardDesc_td.td;
     i0 = (int)_var;
@@ -5477,5 +5500,7 @@ void ParseStatm_init(void) {
   ParseExpr__ProcedureCall = (void(*)(Data__Region, const Attributes__Item *, Attributes__Item *, _Type result__tag, Attributes__ExitInfo *, _Type exitInfo__tag, unsigned char))(int)&ParseStatm__ProcedureCall;
   ParseExpr__CommitIfMerge = (void(*)(Data__Region))(int)&ParseStatm__CommitIfMerge;
   ParseExpr__FixupCondPath = (void(*)(Data__Region, Data__Merge, Data__Merge, unsigned char))(int)&ParseStatm__FixupCondPath;
+  ParseExpr__AssignToVar = (void(*)(Data__Region, Data__Object, Attributes__Item *, _Type x__tag))(int)&ParseStatm__AssignToVar;
+  ParseExpr__ReclaimFromMem = (void(*)(Data__Instruction))(int)&ParseStatm__ReclaimFromMem;
   ParseStatm__setAssignHints = 0;
 }

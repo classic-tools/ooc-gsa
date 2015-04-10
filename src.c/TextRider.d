@@ -35,6 +35,24 @@ void TextRider__WriterDesc_WriteHex_WriteHexDigits(TextRider__Writer w, int *n, 
 static const struct {
   int length;
   void* pad;
+  const void* list[6];
+} _p0 = {6, NULL, {
+  (const void*)&TextRider__ConnectReader,
+  (const void*)&TextRider__ConnectScanner,
+  (const void*)&TextRider__ConnectWriter,
+  (const void*)&TextRider__InitReader,
+  (const void*)&TextRider__InitScanner,
+  (const void*)&TextRider__InitWriter,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[10];
 } _n0 = {10, NULL, {"TextRider"}};
 static struct _MD TextRider_md = {
@@ -44,7 +62,10 @@ static struct _MD TextRider_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    735296380
   }
 };
 

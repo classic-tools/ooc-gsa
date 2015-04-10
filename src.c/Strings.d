@@ -9,6 +9,39 @@
 static const struct {
   int length;
   void* pad;
+  const void* list[21];
+} _p0 = {21, NULL, {
+  (const void*)&Strings__Append,
+  (const void*)&Strings__Assign,
+  (const void*)&Strings__CanAppendAll,
+  (const void*)&Strings__CanAssignAll,
+  (const void*)&Strings__CanConcatAll,
+  (const void*)&Strings__CanDeleteAll,
+  (const void*)&Strings__CanExtractAll,
+  (const void*)&Strings__CanInsertAll,
+  (const void*)&Strings__CanReplaceAll,
+  (const void*)&Strings__Capitalize,
+  (const void*)&Strings__Compare,
+  (const void*)&Strings__Concat,
+  (const void*)&Strings__Delete,
+  (const void*)&Strings__Equal,
+  (const void*)&Strings__Extract,
+  (const void*)&Strings__FindDiff,
+  (const void*)&Strings__FindNext,
+  (const void*)&Strings__FindPrev,
+  (const void*)&Strings__Insert,
+  (const void*)&Strings__Length,
+  (const void*)&Strings__Replace,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[8];
 } _n0 = {8, NULL, {"Strings"}};
 static struct _MD Strings_md = {
@@ -18,7 +51,10 @@ static struct _MD Strings_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    1101494495
   }
 };
 

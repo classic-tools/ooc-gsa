@@ -24,6 +24,21 @@ void WriteSymbols__WriteTree(Data__Object obj, short int off);
 static const struct {
   int length;
   void* pad;
+  const void* list[3];
+} _p0 = {3, NULL, {
+  (const void*)&WriteSymbols__Const,
+  (const void*)&WriteSymbols__WriteConst,
+  (const void*)&WriteSymbols__WriteModule,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[13];
 } _n0 = {13, NULL, {"WriteSymbols"}};
 static struct _MD WriteSymbols_md = {
@@ -33,7 +48,10 @@ static struct _MD WriteSymbols_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -1796831342
   }
 };
 

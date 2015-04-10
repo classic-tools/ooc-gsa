@@ -12,6 +12,20 @@ void IntStr__Reverse(unsigned char* str, int str_0d, short int start, short int 
 static const struct {
   int length;
   void* pad;
+  const void* list[2];
+} _p0 = {2, NULL, {
+  (const void*)&IntStr__IntToStr,
+  (const void*)&IntStr__StrToInt,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[7];
 } _n0 = {7, NULL, {"IntStr"}};
 static struct _MD IntStr_md = {
@@ -21,7 +35,10 @@ static struct _MD IntStr_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    712782408
   }
 };
 

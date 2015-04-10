@@ -22,6 +22,26 @@ unsigned char GuardCond__RemoveDeadReferences_Dead(short int i, GuardCond__Regio
 static const struct {
   int length;
   void* pad;
+  const void* list[8];
+} _p0 = {8, NULL, {
+  (const void*)&GuardCond__Contradicting,
+  (const void*)&GuardCond__Implication,
+  (const void*)&GuardCond__Implies,
+  (const void*)&GuardCond__Init,
+  (const void*)&GuardCond__OperandInfo,
+  (const void*)&GuardCond__RemoveDeadReferences,
+  (const void*)&GuardCond__TraceValue,
+  (const void*)&GuardCond__Unreachable,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[10];
 } _n0 = {10, NULL, {"GuardCond"}};
 static struct _MD GuardCond_md = {
@@ -31,7 +51,10 @@ static struct _MD GuardCond_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -333402862
   }
 };
 

@@ -8,6 +8,8 @@ extern Attributes__Item ParseExpr__receiverDesignator;
 extern void(* ParseExpr__ProcedureCall)(Data__Region region, const Attributes__Item *proc__ref, Attributes__Item *result, _Type result__tag, Attributes__ExitInfo *exitInfo, _Type exitInfo__tag, unsigned char statement);
 extern void(* ParseExpr__CommitIfMerge)(Data__Region region);
 extern void(* ParseExpr__FixupCondPath)(Data__Region path, Data__Merge oldMerge, Data__Merge merge, unsigned char innerMost);
+extern void(* ParseExpr__AssignToVar)(Data__Region region, Data__Object dest, Attributes__Item *x, _Type x__tag);
+extern void(* ParseExpr__ReclaimFromMem)(Data__Instruction instr);
 extern unsigned char ParseExpr__Dominates(Data__Region reg0, Data__Region reg1);
 extern short int ParseExpr__GuardClass(Data__Instruction i);
 extern void ParseExpr__ResetVariables(Data__Region merge, Data__Region usePath);

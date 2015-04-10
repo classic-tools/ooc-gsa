@@ -55,6 +55,20 @@ void ParseDecl__Module_ImportList(void);
 static const struct {
   int length;
   void* pad;
+  const void* list[1];
+} _p0 = {1, NULL, {
+  (const void*)&ParseDecl__Module,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[1];
+} _p1 = {1, NULL, {
+  (const void*)&ParseDecl__removeDeadCode,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[10];
 } _n0 = {10, NULL, {"ParseDecl"}};
 static struct _MD ParseDecl_md = {
@@ -64,7 +78,10 @@ static struct _MD ParseDecl_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    702619190
   }
 };
 

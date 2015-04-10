@@ -14,6 +14,25 @@ unsigned char Classify__Region_TypeCastOp(Data__Instruction instr);
 static const struct {
   int length;
   void* pad;
+  const void* list[7];
+} _p0 = {7, NULL, {
+  (const void*)&Classify__ElementUpdate,
+  (const void*)&Classify__NoopAccess,
+  (const void*)&Classify__NoopUpdate,
+  (const void*)&Classify__RegClass,
+  (const void*)&Classify__Region,
+  (const void*)&Classify__TestInstr,
+  (const void*)&Classify__UpdateSourceAdr,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[9];
 } _n0 = {9, NULL, {"Classify"}};
 static struct _MD Classify_md = {
@@ -23,7 +42,10 @@ static struct _MD Classify_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -196682163
   }
 };
 

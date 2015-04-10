@@ -686,7 +686,7 @@ l2:
   SymbolFile__WriteString((BinaryRider__Writer)i2, (unsigned char*)i1, i0);
   i1 = (int)obj + 64;
   i1 = *(unsigned int*)i1;
-  i1 &= 0x7FFU;
+  i1 &= 0xFFFU;
   SymbolFile__WriteFlags((BinaryRider__Writer)i2, (unsigned int)i1);
   i1 = (int)obj + 68;
   i1 = *(unsigned int*)i1;
@@ -1069,7 +1069,7 @@ void SymbolFile__Write(Data__Object mod, unsigned char *newSymbolFile, unsigned 
   ((_TBP_BinaryRider__WriterDesc_WriteNum)i6)((BinaryRider__Writer)(int)w, (int)1);
   ((_TBP_BinaryRider__WriterDesc_WriteNum)i6)((BinaryRider__Writer)(int)w, (int)4);
   i6 = *(unsigned int*)i4;
-  i6 &= 0x7FFU;
+  i6 &= 0xFFFU;
   SymbolFile__WriteFlags((BinaryRider__Writer)(int)w, (unsigned int)i6);
   i6 = (int)mod + 68;
   i6 = *(unsigned int*)i6;

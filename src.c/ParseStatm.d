@@ -34,6 +34,7 @@ unsigned char ParseStatm__AssignToVar_Visible(Data__Usable a, Data__Usable b);
 void ParseStatm__AssignToVar(Data__Region region, Data__Object dest, Attributes__Item *x, _Type x__tag);
 void ParseStatm__AssignBoolean(Data__Region region, Data__Object dest, unsigned char value);
 void ParseStatm__AssignToDesignator_AddUpdate(Data__Usable *dest, Data__Usable *val, Data__Region *ParseStatm__AssignToDesignator_region);
+void ParseStatm__AssignToDesignator_CreateUpdateMem(Data__Instruction instr, Attributes__Item *ParseStatm__AssignToDesignator_value);
 void ParseStatm__AssignToDesignator(Data__Region region, Attributes__Item *dest, _Type dest__tag, Attributes__Item *value, _Type value__tag);
 void ParseStatm__CollectToMem_AddOperand(Data__Object localVar, Data__Instruction *ParseStatm__CollectToMem_instr);
 void ParseStatm__CollectToMem(Data__Instruction instr);
@@ -85,6 +86,22 @@ unsigned char ParseStatm__StatementSeq_StatementSep(short int sym);
 static const struct {
   int length;
   void* pad;
+  const void* list[3];
+} _p0 = {3, NULL, {
+  (const void*)&ParseStatm__InitVariables,
+  (const void*)&ParseStatm__StatementSeq,
+  (const void*)&ParseStatm__Trap,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[1];
+} _p1 = {1, NULL, {
+  (const void*)&ParseStatm__setAssignHints,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[11];
 } _n0 = {11, NULL, {"ParseStatm"}};
 static struct _MD ParseStatm_md = {
@@ -94,7 +111,10 @@ static struct _MD ParseStatm_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    1144185953
   }
 };
 

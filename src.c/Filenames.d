@@ -14,6 +14,25 @@ void Filenames__SplitRChar(const unsigned char* str__ref, int str_0d, unsigned c
 static const struct {
   int length;
   void* pad;
+  const void* list[7];
+} _p0 = {7, NULL, {
+  (const void*)&Filenames__AddExt,
+  (const void*)&Filenames__AddPath,
+  (const void*)&Filenames__BuildFilename,
+  (const void*)&Filenames__ExpandPath,
+  (const void*)&Filenames__GetExt,
+  (const void*)&Filenames__GetFile,
+  (const void*)&Filenames__GetPath,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[10];
 } _n0 = {10, NULL, {"Filenames"}};
 static struct _MD Filenames_md = {
@@ -23,7 +42,10 @@ static struct _MD Filenames_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -1884430904
   }
 };
 

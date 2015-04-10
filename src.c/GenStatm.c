@@ -3560,9 +3560,9 @@ void GenStatm__AssignToGates_AddAssignment(Data__Opnd src, Allocate__Location sr
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i3 < 0) _invalid_length(i3, _P(52414));
+    if(i3 < 0) _invalid_length(i3, _P(52773));
     _mem = GC_malloc(_not_zero(i3*16)+8);
-    if (!_mem) _new_failed(_P(52397));
+    if (!_mem) _new_failed(_P(52756));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i3;
@@ -4877,7 +4877,7 @@ void GenStatm_init(void) {
     char *_mem, *_var;
     int* _dim_ptr;
     _mem = GC_malloc(_not_zero(32*16)+8);
-    if (!_mem) _new_failed(_P(72465));
+    if (!_mem) _new_failed(_P(72824));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 32;

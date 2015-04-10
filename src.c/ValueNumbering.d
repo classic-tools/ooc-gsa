@@ -50,6 +50,19 @@ void ValueNumbering__CSE(void);
 static const struct {
   int length;
   void* pad;
+  const void* list[1];
+} _p0 = {1, NULL, {
+  (const void*)&ValueNumbering__Number,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[15];
 } _n0 = {15, NULL, {"ValueNumbering"}};
 static struct _MD ValueNumbering_md = {
@@ -59,7 +72,10 @@ static struct _MD ValueNumbering_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    231942598
   }
 };
 

@@ -114,6 +114,23 @@ unsigned char GenStatm__EmitLocalVars_UndefinedUse(Data__Object obj);
 static const struct {
   int length;
   void* pad;
+  const void* list[3];
+} _p0 = {3, NULL, {
+  (const void*)&GenStatm__EmitLocalVars,
+  (const void*)&GenStatm__GlobalRegion,
+  (const void*)&GenStatm__SetWriter,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[2];
+} _p1 = {2, NULL, {
+  (const void*)&GenStatm__gcflags,
+  (const void*)&GenStatm__valueStack,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[9];
 } _n0 = {9, NULL, {"GenStatm"}};
 static struct _MD GenStatm_md = {
@@ -123,7 +140,10 @@ static struct _MD GenStatm_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -1781763896
   }
 };
 

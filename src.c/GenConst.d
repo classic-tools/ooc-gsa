@@ -23,6 +23,24 @@ void GenConst__EmitInitialization_NewLine(TextRider__Writer *GenConst__EmitIniti
 static const struct {
   int length;
   void* pad;
+  const void* list[5];
+} _p0 = {5, NULL, {
+  (const void*)&GenConst__Const,
+  (const void*)&GenConst__EmitInitialization,
+  (const void*)&GenConst__InitStringList,
+  (const void*)&GenConst__InsertString,
+  (const void*)&GenConst__Int,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[1];
+} _p1 = {1, NULL, {
+  (const void*)&GenConst__stringList,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[9];
 } _n0 = {9, NULL, {"GenConst"}};
 static struct _MD GenConst_md = {
@@ -32,7 +50,10 @@ static struct _MD GenConst_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    309387145
   }
 };
 

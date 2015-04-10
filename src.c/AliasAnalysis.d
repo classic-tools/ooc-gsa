@@ -42,6 +42,23 @@ void AliasAnalysis__Analyse_AddAccessInstr(Data__Region r);
 static const struct {
   int length;
   void* pad;
+  const void* list[4];
+} _p0 = {4, NULL, {
+  (const void*)&AliasAnalysis__Aliasing,
+  (const void*)&AliasAnalysis__Analyse,
+  (const void*)&AliasAnalysis__NeedLocalCopy,
+  (const void*)&AliasAnalysis__TransitiveStoreAlias,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[1];
+} _p1 = {1, NULL, {
+  (const void*)&AliasAnalysis__enabled,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[14];
 } _n0 = {14, NULL, {"AliasAnalysis"}};
 static struct _MD AliasAnalysis_md = {
@@ -51,7 +68,10 @@ static struct _MD AliasAnalysis_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    900626792
   }
 };
 

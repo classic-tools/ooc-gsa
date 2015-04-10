@@ -85,6 +85,43 @@ void Scanner__InitKeywords_KW(const unsigned char* ident__ref, int ident_0d, sig
 static const struct {
   int length;
   void* pad;
+  const void* list[12];
+} _p0 = {12, NULL, {
+  (const void*)&Scanner__CheckPragmas,
+  (const void*)&Scanner__CheckSym,
+  (const void*)&Scanner__Close,
+  (const void*)&Scanner__Column,
+  (const void*)&Scanner__GetSym,
+  (const void*)&Scanner__Init,
+  (const void*)&Scanner__Line,
+  (const void*)&Scanner__Name2File,
+  (const void*)&Scanner__RestoreScanPos,
+  (const void*)&Scanner__SaveScanPos,
+  (const void*)&Scanner__SetSym,
+  (const void*)&Scanner__ThreeDots,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[13];
+} _p1 = {13, NULL, {
+  (const void*)&Scanner__allowUnderscore,
+  (const void*)&Scanner__currSymPos,
+  (const void*)&Scanner__identLength,
+  (const void*)&Scanner__intVal,
+  (const void*)&Scanner__lastSymEnd,
+  (const void*)&Scanner__moduleIdent,
+  (const void*)&Scanner__numType,
+  (const void*)&Scanner__realVal,
+  (const void*)&Scanner__sourceLines,
+  (const void*)&Scanner__sourceTotal,
+  (const void*)&Scanner__str,
+  (const void*)&Scanner__stringLength,
+  (const void*)&Scanner__sym,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[8];
 } _n0 = {8, NULL, {"Scanner"}};
 static struct _MD Scanner_md = {
@@ -94,7 +131,10 @@ static struct _MD Scanner_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -97749775
   }
 };
 

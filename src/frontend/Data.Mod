@@ -1,4 +1,4 @@
-(* 	$Id: Data.Mod,v 1.102 2000/06/25 18:50:40 ooc-devel Exp $	 *)
+(* 	$Id: Data.Mod,v 1.103 2000/12/27 16:31:44 ooc-devel Exp $	 *)
 MODULE Data;
 (*  Basic data definitions for the symbol table and GSA code.
     Copyright (C) 1995-2000  Michael van Acken
@@ -380,9 +380,17 @@ CONST
      need to look up the redirection table, it can use the procedure's address
      directly; this flag is set by the front-end after all declarations of a 
      module have been parsed *)
+  objVolatile* = 11;
+  (* [back-end] if set for a scalar variable, then it is assumed that the
+     content of the variable may change behind the current process's/thread's
+     back; access to this variable always reads from or writes to memory, and
+     all instructions accessing the variable are strictly serialized; note:
+     passing a volatile variable to a variable parameter is not considered a
+     read or write access, because only the address is passed to the callee;
+     this implies that such a procedure call is _not_ strictly serialized *)
      
   (* note: add flags that are written into the symbol file here *)
-  objExportMask* = {objIsExported..objFinalTBProc};
+  objExportMask* = {objIsExported..objVolatile};
   (* only the value of `Object.flags * objExportMask' will be be written to 
      the symbol file, the rest is either discarded or reconstructed while
      reading the file *)
@@ -903,6 +911,33 @@ PROCEDURE (instr: Instruction) Operand* (arg: Usable);
   BEGIN
     Append (instr. opndList)
   END Operand;
+
+PROCEDURE (instr: Instruction) InsertOperand* (after: Opnd; arg: Usable);
+(* Adds `arg' to the end of `instr's operand list.
+   pre: arg # NIL *)
+
+  PROCEDURE Insert (VAR list: Opnd);
+    VAR
+      opnd: Opnd;
+    BEGIN
+      NEW (opnd);
+      InitOpnd (opnd);
+      (* append `opnd' to list of operands of `instr' *)
+      opnd. instr := instr;
+      (* add `opnd' to list of uses of `arg' *)
+      InsertUse (arg, opnd);
+      
+      opnd. nextOpnd := list;
+      list := opnd
+    END Insert;
+  
+  BEGIN
+    IF (after = NIL) THEN
+      Insert (instr. opndList)
+    ELSE
+      Insert (after. nextOpnd)
+    END
+  END InsertOperand;
 
 PROCEDURE (instr: Instruction) UniqueOperand* (arg: Usable; loc: Location);
 (* Adds `arg' to the end of `instr's operand list, but only if `instr#arg' and

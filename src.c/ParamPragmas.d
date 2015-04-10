@@ -12,6 +12,25 @@ ParamPragmas__PragmaStack ParamPragmas__Save_CopyStack(ParamPragmas__PragmaStack
 static const struct {
   int length;
   void* pad;
+  const void* list[6];
+} _p0 = {6, NULL, {
+  (const void*)&ParamPragmas__Init,
+  (const void*)&ParamPragmas__Pop,
+  (const void*)&ParamPragmas__PrepareForModify,
+  (const void*)&ParamPragmas__Push,
+  (const void*)&ParamPragmas__Restore,
+  (const void*)&ParamPragmas__Save,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[1];
+} _p1 = {1, NULL, {
+  (const void*)&ParamPragmas__pragmas,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[13];
 } _n0 = {13, NULL, {"ParamPragmas"}};
 static struct _MD ParamPragmas_md = {
@@ -21,7 +40,10 @@ static struct _MD ParamPragmas_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -2131298387
   }
 };
 

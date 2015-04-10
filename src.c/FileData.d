@@ -25,6 +25,27 @@ void FileData__RemoveFiles_AddFile(unsigned char* file, int file_0d, short int *
 static const struct {
   int length;
   void* pad;
+  const void* list[9];
+} _p0 = {9, NULL, {
+  (const void*)&FileData__AddDependence,
+  (const void*)&FileData__ClearFiles,
+  (const void*)&FileData__FindFile,
+  (const void*)&FileData__GetFile,
+  (const void*)&FileData__MarkForRemoval,
+  (const void*)&FileData__NewFile,
+  (const void*)&FileData__RemoveFiles,
+  (const void*)&FileData__SetFilename,
+  (const void*)&FileData__SetTimeStamp,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[9];
 } _n0 = {9, NULL, {"FileData"}};
 static struct _MD FileData_md = {
@@ -34,7 +55,10 @@ static struct _MD FileData_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -549507174
   }
 };
 

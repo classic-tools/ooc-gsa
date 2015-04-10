@@ -1,4 +1,4 @@
-/*	$Id: __oo2c.c,v 1.24 2000/09/23 19:40:51 ooc-devel Exp $	*/
+/*	$Id: __oo2c.c,v 1.25 2000/12/04 21:40:43 ooc-devel Exp $	*/
 /*  Run-time system for oo2c programs.
     Copyright (C) 1997-2000  Michael van Acken
 
@@ -91,7 +91,7 @@ static void NORETURN raise_exception(void* source, LONGINT number,
 				     const char* message, _Pos pos) NORETURN2;
 
 
-static void _break_rtc(void) {
+void _break_rtc(void) {
 /* use this function as breakpoint when debugging a failed runtime check */
   exit(127);
 }

@@ -20,6 +20,23 @@ void RealStr__ExtractExpScale(double *real, short int *exp, short int *expoff);
 static const struct {
   int length;
   void* pad;
+  const void* list[5];
+} _p0 = {5, NULL, {
+  (const void*)&RealStr__RealToEng,
+  (const void*)&RealStr__RealToFixed,
+  (const void*)&RealStr__RealToFloat,
+  (const void*)&RealStr__RealToStr,
+  (const void*)&RealStr__StrToReal,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[8];
 } _n0 = {8, NULL, {"RealStr"}};
 static struct _MD RealStr_md = {
@@ -29,7 +46,10 @@ static struct _MD RealStr_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    2061930161
   }
 };
 

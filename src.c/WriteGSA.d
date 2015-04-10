@@ -36,6 +36,27 @@ void WriteGSA__SetMarkersPos_MarkInstr(Data__Instruction instr, int *WriteGSA__S
 static const struct {
   int length;
   void* pad;
+  const void* list[7];
+} _p0 = {7, NULL, {
+  (const void*)&WriteGSA__Body,
+  (const void*)&WriteGSA__Class,
+  (const void*)&WriteGSA__MW,
+  (const void*)&WriteGSA__Opcode,
+  (const void*)&WriteGSA__SetMarkersPos,
+  (const void*)&WriteGSA__WrArgument,
+  (const void*)&WriteGSA__WrOpcode,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[2];
+} _p1 = {2, NULL, {
+  (const void*)&WriteGSA__writeAssignHints,
+  (const void*)&WriteGSA__writeQualNames,
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[9];
 } _n0 = {9, NULL, {"WriteGSA"}};
 static struct _MD WriteGSA_md = {
@@ -45,7 +66,10 @@ static struct _MD WriteGSA_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    16251308
   }
 };
 

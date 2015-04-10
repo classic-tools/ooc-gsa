@@ -12,6 +12,28 @@ signed char IntArith__Sgn(int i);
 static const struct {
   int length;
   void* pad;
+  const void* list[10];
+} _p0 = {10, NULL, {
+  (const void*)&IntArith__Abs,
+  (const void*)&IntArith__Add,
+  (const void*)&IntArith__Ash,
+  (const void*)&IntArith__Div,
+  (const void*)&IntArith__Includes,
+  (const void*)&IntArith__Mod,
+  (const void*)&IntArith__Mult,
+  (const void*)&IntArith__Neg,
+  (const void*)&IntArith__OutOfRange,
+  (const void*)&IntArith__Sub,
+}};
+static const struct {
+  int length;
+  void* pad;
+  const void* list[0];
+} _p1 = {0, NULL, {
+}};
+static const struct {
+  int length;
+  void* pad;
   const char name[9];
 } _n0 = {9, NULL, {"IntArith"}};
 static struct _MD IntArith_md = {
@@ -21,7 +43,10 @@ static struct _MD IntArith_md = {
     NULL, 
     (const unsigned char*)_n0.name, 
     -1, 
-    NULL
+    NULL,
+    _p0.list,
+    _p1.list,
+    -285914436
   }
 };
 

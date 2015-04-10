@@ -1,7 +1,7 @@
-(* 	$Id: GenDecl.Mod,v 1.49 2000/06/26 14:43:09 ooc-devel Exp $	 *)
+(* 	$Id: GenDecl.Mod,v 1.51 2001/01/14 14:10:54 ooc-devel Exp $	 *)
 MODULE GenDecl;
 (*  Handles name mangling, generates C declarations and type casts.
-    Copyright (C) 1996-2000  Michael van Acken
+    Copyright (C) 1996-2001  Michael van Acken
 
     This file is part of OOC.
 
@@ -30,6 +30,7 @@ VAR
   anonCounter: INTEGER;  (* used to build names for anonymous types *)
   nameCounter: INTEGER;  (* used to build variables for strings *)
   recordCounter: INTEGER;(* used to build variables for tb proc lists *)
+  ptrListCounter: INTEGER;(* used to build variables for pointer lists *)
   dummyName: D.String;
   
 VAR
@@ -422,9 +423,11 @@ PROCEDURE AssignNames* (block: D.Object);
         (* make sure that declarations in imported modules have their names 
            set *)
         AssignImports (block. localDecl);
+        
         anonCounter := 0;
         nameCounter := 0;
-        recordCounter := 0
+        recordCounter := 0;
+        ptrListCounter := 0;
       ELSIF (block. mode # D.objTBProc) THEN
         (* make sure that declarations in enclosing scopes have their names 
            set *)
@@ -1081,6 +1084,9 @@ PROCEDURE Declaration* (w: TextRider.Writer; obj: D.Object;
             w. WriteString ("static ")
           END
         END;
+        IF (D.objVolatile IN obj. flags) THEN
+          w. WriteString ("volatile ")
+        END;
         IF (formalParam IN dmode) & (obj. mode = D.objVar) &
            StdTypes.PassPerReference (obj, TRUE) THEN
           w. WriteString ("const ")
@@ -1441,10 +1447,80 @@ PROCEDURE Name (w: TextRider.Writer; name: ARRAY OF CHAR): INTEGER;
     RETURN id
   END Name;
 
+PROCEDURE PtrList (w: TextRider.Writer; root: D.Object; mode: SHORTINT): INTEGER;
+(* Writes a list of exported `mode' objects.  *)
+  VAR
+    id, len: INTEGER;
+  
+  PROCEDURE CountObjects (node: D.Object): INTEGER;
+    VAR
+      c: INTEGER;
+    BEGIN
+      IF (node # NIL) THEN
+        IF (node. mode = mode) & (D.objIsExported IN node. flags) THEN
+          c := 1
+        ELSE
+          c := 0
+        END;
+        RETURN CountObjects (node. leftObj)+CountObjects (node. rightObj)+c
+      ELSE
+        RETURN 0
+      END
+    END CountObjects;
+  
+  PROCEDURE WriteObjects (node: D.Object);
+    BEGIN
+      IF (node # NIL) THEN
+        WriteObjects (node. leftObj);
+        IF (node. mode = mode) & (D.objIsExported IN node. flags) THEN
+          NewLine (w, 1);
+          WriteScalarCast (w, D.struct[D.strPtr], FALSE, FALSE, TRUE);
+          w. WriteString ("&");
+          w. WriteString (node. beInfo(SystemFlags.Info). name^);
+          w. WriteString (",");
+        END;
+        WriteObjects (node. rightObj)
+      END
+    END WriteObjects;
+  
+  BEGIN
+    id := ptrListCounter;
+    len := CountObjects (root);
+    INC (ptrListCounter);
+    
+    NewLine (w, 0);
+    w. WriteString ("static const struct {");
+    NewLine (w, 1);
+    WriteScalarType (w, D.struct[D.strLongInt], FALSE, FALSE);
+    w. WriteString (" length;");
+    NewLine (w, 1);
+    w. WriteString ("void* pad;");
+    NewLine (w, 1);
+    w. WriteString ("const ");
+    WriteScalarType (w, D.struct[D.strPtr], FALSE, FALSE);
+    w. WriteString (" list[");
+    w. WriteInt (len, 0);
+    w. WriteString ("];");
+    NewLine (w, 0);
+    w. WriteString ("} _p");
+    w. WriteInt (id, 0);
+    w. WriteString (" = {");
+    w. WriteInt (len, 0);
+    w. WriteString (', NULL, {');
+    WriteObjects (root);
+    NewLine (w, 0);
+    w. WriteString ('}};');
+    RETURN id
+  END PtrList;
+
 PROCEDURE ModuleDescriptor* (w: TextRider.Writer; mod: D.Object);
   VAR
-    id: INTEGER;
+    id, pid, vid: INTEGER;
   BEGIN
+    (* emit lists of exported procedures and variables *)
+    pid := PtrList (w, mod. localDecl, D.objProc);
+    vid := PtrList (w, mod. localDecl, D.objVar);
+    
     (* declare the module name *)
     id := Name (w, mod. name^);
     
@@ -1473,7 +1549,21 @@ PROCEDURE ModuleDescriptor* (w: TextRider.Writer; mod: D.Object);
     w. WriteString ("-1, ");
     (* type descriptor list *)
     NewLine (w, 2);
-    w. WriteString ("NULL");
+    w. WriteString ("NULL,");
+    (* list of procedure pointers *)
+    NewLine (w, 2);
+    w. WriteString ("_p");
+    w. WriteInt (pid, 0);
+    w. WriteString (".list,");
+    (* list of variable pointers *)
+    NewLine (w, 2);
+    w. WriteString ("_p");
+    w. WriteInt (vid, 0);
+    w. WriteString (".list,");
+    (* fingerprint *)
+    NewLine (w, 2);
+    GenConst.Int (w, mod. data(D.Const). int);
+    
     NewLine (w, 1);
     w. WriteChar ("}");
     NewLine (w, 0);

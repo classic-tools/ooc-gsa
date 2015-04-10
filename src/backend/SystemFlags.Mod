@@ -1,4 +1,4 @@
-(* 	$Id: SystemFlags.Mod,v 1.35 2000/06/26 14:42:12 ooc-devel Exp $	 *)
+(* 	$Id: SystemFlags.Mod,v 1.36 2000/12/27 16:33:10 ooc-devel Exp $	 *)
 MODULE SystemFlags;
 (*  Implements parsing and storing/loading of system flags.
     Copyright (C) 1996-2000  Michael van Acken
@@ -43,9 +43,10 @@ CONST
   objReferenceParam = 30;
   objVarRecordParam = 29;
   objStructValueParam = 28;
-  
+  objScalarType = 27;
+
 VAR
-  mods: ARRAY 18 OF Modifier;
+  mods: ARRAY 19 OF Modifier;
   emptyString: ARRAY 2 OF CHAR;
   
 
@@ -463,6 +464,11 @@ PROCEDURE ObjectModifiers* (obj: D.Object; parse: BOOLEAN);
             valid := (obj. mode = D.objVar) &
                      (D.objIsParameter IN obj. flags) &
                      Sym.TypeInGroup (obj. type, D.grpStructured)
+          | objScalarType:
+            valid := 
+              ((obj. mode = D.objVar) & (obj. level = Sym.globalLevel) OR
+               (obj. mode = D.objField)) &
+              ~Sym.TypeInGroup (obj. type, D.grpStructured)
           ELSE
             valid := (obj. mode = i)
           END;
@@ -1028,6 +1034,12 @@ BEGIN
   mods[17]. objFlag := -1;
   mods[17]. structId := {D.strRecord-strOffset};
   mods[17]. structFlag := D.structVTableField;
+  
+  mods[18]. name := "VOLATILE"; 
+  mods[18]. objId := {objScalarType};
+  mods[18]. objFlag := D.objVolatile;
+  mods[18]. structId := {};
+  mods[18]. structFlag := -1;
   
   Sym.paramsMatchExt := ParamsMatchExt;
   noLibFileRead := FALSE;
