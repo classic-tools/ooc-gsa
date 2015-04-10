@@ -1,6 +1,32 @@
 Note: Directory parts of files mentioned here refer to the
       OOC source tree, not the shrunk oo2c distribution.
 
+2002-12-03  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenDecl.Mod:
+	For 64-bit targets, fix layout of type descriptors of array values
+	that are embedded into C code as `static const struct' definitions.
+	The bug prevents access to module and type names through modules
+	Kernel and Types.
+
+2002-10-06  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/UndefVar.Mod (PushUse):
+	Overflow of `useStack' table wasn't handled at all -- one
+	crucial detail was missing ;-)
+
+2002-07-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/Integers.Mod (Difference):
+	contrary to popular believe, subtraction is not
+	commutative
+
+2002-05-11  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/IntConv.Mod (FormatInt):
+	the strings "+" and "-" should be reported as
+	strWrongFormat, not strAllRight
+
 2002-02-15  Michael van Acken  <acken@informatik.uni-kl.de>
 
 	* backend/ansi-c/lib/Files.c (Writer.Truncate):

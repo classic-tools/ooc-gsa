@@ -43,7 +43,7 @@ LIBTOOL=@LIBTOOL@
 ### to install files in.
 
 ### This should be the number of the oo2c version we're building.
-version=1.5.7
+version=1.5.8
 
 ### Transformation applied to program names when installing.
 transform=@program_transform_name@

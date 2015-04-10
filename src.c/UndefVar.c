@@ -27,9 +27,9 @@ void UndefVar__AddToTrue(GuardCond__Condition *c, _Type c__tag) {
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i5 < 0) _invalid_length(i5, _P(3040));
+    if(i5 < 0) _invalid_length(i5, _P(3050));
     _mem = GC_malloc(_not_zero(i5*8)+8);
-    if (!_mem) _new_failed(_P(3016));
+    if (!_mem) _new_failed(_P(3026));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i5;
@@ -348,9 +348,9 @@ unsigned char UndefVar__Reachable_Test(short int i, Data__Opnd opnd, Data__Objec
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i2 < 0) _invalid_length(i2, _P(8155));
+    if(i2 < 0) _invalid_length(i2, _P(8165));
     _mem = GC_malloc(_not_zero(i2*4)+8);
-    if (!_mem) _new_failed(_P(8140));
+    if (!_mem) _new_failed(_P(8150));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i2;
@@ -482,16 +482,16 @@ void UndefVar__InspectUses_PushUse(Data__Opnd use) {
   i6 = *(int*)(i0-8);
   i0 = UndefVar__useStackSize;
   i0 = i6 != i0;
-  if (i0) goto l1;
+  if (i0) goto l2;
   i2 = i6 - 1;
   i5 = i2 < 0;
   i6 = (int)_ashl(i6, 1, (unsigned int));
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i6 < 0) _invalid_length(i6, _P(10542));
+    if(i6 < 0) _invalid_length(i6, _P(10552));
     _mem = GC_malloc(_not_zero(i6*4)+8);
-    if (!_mem) _new_failed(_P(10517));
+    if (!_mem) _new_failed(_P(10527));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i6;
@@ -517,6 +517,8 @@ l0:
   i5 = i3;
   goto l0;
 l1:
+  UndefVar__useStack = (void*)i1;
+l2:
   i0 = (int)UndefVar__useStack;
   i1 = UndefVar__useStackSize;
   i2 = (int)_ashl(i1, 2, (unsigned int));
@@ -1048,7 +1050,7 @@ void UndefVar_init(void) {
     char *_mem, *_var;
     int* _dim_ptr;
     _mem = GC_malloc(_not_zero(128*4)+8);
-    if (!_mem) _new_failed(_P(19910));
+    if (!_mem) _new_failed(_P(19946));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 128;
@@ -1059,7 +1061,7 @@ void UndefVar_init(void) {
     char *_mem, *_var;
     int* _dim_ptr;
     _mem = GC_malloc(_not_zero(128*8)+8);
-    if (!_mem) _new_failed(_P(19933));
+    if (!_mem) _new_failed(_P(19969));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 128;
@@ -1070,7 +1072,7 @@ void UndefVar_init(void) {
     char *_mem, *_var;
     int* _dim_ptr;
     _mem = GC_malloc(_not_zero(32*4)+8);
-    if (!_mem) _new_failed(_P(19956));
+    if (!_mem) _new_failed(_P(19992));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 32;

@@ -69,143 +69,130 @@ l3:
 }
 
 signed char IntConv__FormatInt(const unsigned char* str__ref, int str_0d) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12;
+  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9;
   signed char class_;
   ConvTypes__ScanState state;
   unsigned char* str;
   char* _old_top_vs = _top_vs;
   _push_value(int, str, str__ref, str_0d);
-  i10 = Strings__Length((const unsigned char*)(int)str, str_0d);
-  i12 = (int)IntConv__SI;
-  i0 = 0;
-  i3 = 1;
-  i8 = 0;
-  i4 = 0;
-  i1 = 0;
-l0:
-  i9 = i10 == i4;
-  if (i9) goto l16;
-  i2 = (int)str + i4;
-  i2 = *(unsigned char*)i2;
-  i7 = (int)*(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i12;
-  class_ = (signed char)i0;
-  state = (void*)i12;
-  class_ = (signed char)i0;
-  state = (void*)i12;
-  ((void(*)(unsigned char, signed char *, ConvTypes__ScanState *))i7)((unsigned char)i2, (signed char *)(int)&class_, (ConvTypes__ScanState *)(int)&state);
-  if (!(class_==0)) goto l1;
+  i0 = Strings__Length((const unsigned char*)(int)str, str_0d);
+  i9 = (int)IntConv__SI;
+  i3 = 0;
+  i5 = 0;
+  i7 = 0;
+  i6 = 1;
   i2 = 0;
-  i9 = i3;
-  i11 = 0;
-  i7 = i8;
-  goto l12;
+l0:
+  i4 = (int)str + i5;
+  i4 = *(unsigned char*)i4;
+  i1 = (int)*(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i9;
+  class_ = (signed char)i2;
+  state = (void*)i9;
+  class_ = (signed char)i2;
+  state = (void*)i9;
+  ((void(*)(unsigned char, signed char *, ConvTypes__ScanState *))i1)((unsigned char)i4, (signed char *)(int)&class_, (ConvTypes__ScanState *)(int)&state);
+  if (!(class_==0)) goto l1;
+  i0 = 0;
+  goto l19;
 l1:
-  if (!(class_==1)) goto l11;
-  i6 = i2 == 45;
-  if (i6) goto l9;
-  i9 = i2 == 43;
-  if (i9) goto l8;
-  i2 -= 48;
-  if (i3) goto l5;
-  i9 = i2 + (-2147483647-1);
-  _div(i6, i9, 10, int);
-  i11 = i8 > i6;
-  if (i11) goto l4;
-  i7 = i8 < i6;
-  if (i7) goto l3;
-  i7 = i8 != i6;
-  if (i7) goto l2;
-  _mod(i9, i9, 10, int);
-  i9 = i9 != 0;
-  if (i9) goto l3;
+  if (!(class_==1)) goto l13;
+  i2 = i4 == 45;
+  if (i2) goto l11;
+  i1 = i4 == 43;
+  if (i1) goto l10;
+  i2 = i4 - 48;
+  if (i6) goto l5;
+  i3 = i2 + (-2147483647-1);
+  _div(i1, i3, 10, int);
+  i9 = i7 > i1;
+  if (i9) goto l4;
+  i0 = i7 < i1;
+  if (i0) goto l3;
+  i9 = i7 != i1;
+  if (i9) goto l2;
+  _mod(i3, i3, 10, int);
+  i3 = i3 != 0;
+  if (i3) goto l3;
 l2:
-  i7 = i8 * 10;
-  i7 -= i2;
-  i11 = 0;
-  goto l7;
+  i9 = i7 * 10;
+  i9 -= i2;
+  i0 = 0;
+  goto l9;
 l3:
-  i7 = i8;
-  i11 = 1;
-  goto l7;
+  i9 = i7;
+  i8 = 1;
+  i0 = 1;
+  goto l9;
 l4:
-  i7 = i8 * 10;
-  i7 -= i2;
-  i11 = 0;
-  goto l7;
+  i9 = i7 * 10;
+  i9 -= i2;
+  i0 = 0;
+  goto l9;
 l5:
-  i11 = 2147483647 - i2;
-  _div(i11, i11, 10, int);
-  i11 = i8 > i11;
-  if (i11) goto l6;
-  i7 = i8 * 10;
-  i7 = i2 + i7;
+  i0 = 2147483647 - i2;
+  _div(i0, i0, 10, int);
+  i0 = i7 > i0;
+  if (i0) goto l6;
+  i9 = i7 * 10;
+  i9 = i2 + i9;
   goto l7;
 l6:
-  i7 = i8;
+  i9 = i7;
 l7:
-  i9 = i3;
-  goto l10;
+  if (i0) goto l8;
+  goto l9;
 l8:
-  i11 = 0;
-  i7 = i8;
-  i9 = 1;
-  goto l10;
+  i8 = 1;
 l9:
-  i7 = i8;
-  i11 = 0;
-  i9 = 0;
+  i1 = i6;
+  goto l12;
 l10:
-  i2 = 0;
+  i0 = 0;
+  i9 = i7;
+  i1 = 1;
   goto l12;
 l11:
-  if (!((class_>=2 && class_<=3))) goto l12;
-  i2 = 1;
-  i9 = i3;
-  i11 = 0;
-  i7 = i8;
+  i9 = i7;
+  i0 = 0;
+  i1 = 0;
 l12:
-  if (i11) goto l13;
-  if (!(i2)) goto l14;
+  i6 = i1;
+  i7 = i9;
+  goto l19;
 l13:
-  i6 = i4;
-  i5 = i1;
+  if (!(class_==2)) goto l16;
+  i3 = i3 == 0;
+  if (i3) goto l14;
+  i8 = 2;
   goto l15;
 l14:
-  i6 = i4 + 1;
-  i5 = class_;
+  i8 = 3;
 l15:
-  i1 = i5;
-  i4 = i6;
-  i8 = i7;
-  i3 = i9;
-  i12 = (int)state;
-  i0 = class_;
-  goto l17;
+  i0 = 1;
+  goto l19;
 l16:
-  i11 = 0;
-  i2 = 1;
+  if (!(class_==3)) goto l19;
+  i4 = i4 == 0;
+  if (i4) goto l17;
+  i8 = 2;
+  goto l18;
 l17:
-  if (i11) goto l18;
-  if (!(i2)) goto l0;
+  i8 = 0;
 l18:
-  if (i11) goto l21;
-  i2 = (0xCU & ((unsigned int)1 << i0)) != 0;
-  if (i2) goto l20;
-  i2 = i1 == 0;
-  if (i2) goto l19;
-  i2 = 0;
-  goto l22;
+  i0 = 1;
 l19:
-  i2 = 3;
-  goto l22;
+  if (i0) goto l20;
+  i4 = i5 + 1;
+  i5 = i4;
 l20:
-  i2 = 2;
-  goto l22;
+  if (i0) goto l21;
+  i3 = class_;
+  i9 = (int)state;
+  i2 = class_;
+  goto l0;
 l21:
-  i2 = 1;
-l22:
   _top_vs = _old_top_vs;
-  return (signed char)i2;
+  return (signed char)i8;
 }
 
 int IntConv__ValueInt(const unsigned char* str__ref, int str_0d) {
@@ -322,7 +309,7 @@ void IntConv_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc_atomic(_not_zero(4)+8);
-    if (!_mem) _new_failed(_P(8225));
+    if (!_mem) _new_failed(_P(8281));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
     i0 = (int)_var;
@@ -331,7 +318,7 @@ void IntConv_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc_atomic(_not_zero(4)+8);
-    if (!_mem) _new_failed(_P(8233));
+    if (!_mem) _new_failed(_P(8289));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
     i0 = (int)_var;
@@ -340,7 +327,7 @@ void IntConv_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc_atomic(_not_zero(4)+8);
-    if (!_mem) _new_failed(_P(8241));
+    if (!_mem) _new_failed(_P(8297));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
     i0 = (int)_var;

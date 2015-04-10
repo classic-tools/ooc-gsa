@@ -1,7 +1,7 @@
-(* 	$Id: GenDecl.Mod,v 1.53 2001/05/25 11:49:47 ooc-devel Exp $	 *)
+(* 	$Id: GenDecl.Mod,v 1.54 2002/12/03 13:21:02 ooc-devel Exp $	 *)
 MODULE GenDecl;
 (*  Handles name mangling, generates C declarations and type casts.
-    Copyright (C) 1996-2001  Michael van Acken
+    Copyright (C) 1996-2002  Michael van Acken
 
     This file is part of OOC.
 
@@ -1428,6 +1428,12 @@ PROCEDURE Name (w: TextRider.Writer; name: ARRAY OF CHAR): INTEGER;
     
     NewLine (w, 0);
     w. WriteString ("static const struct {");
+    IF (D.strAddress = D.strHugeInt) THEN
+      (* add padding to beginning of struct, so that the length is at -12 *)
+      NewLine (w, 1);
+      WriteScalarType (w, D.struct[D.strLongInt], FALSE, FALSE);
+      w.WriteString(" pad0;");
+    END;
     NewLine (w, 1);
     WriteScalarType (w, D.struct[D.strLongInt], FALSE, FALSE);
     w. WriteString (" length;");
@@ -1441,6 +1447,7 @@ PROCEDURE Name (w: TextRider.Writer; name: ARRAY OF CHAR): INTEGER;
     w. WriteString ("} _n");
     w. WriteInt (id, 0);
     w. WriteString (" = {");
+    IF (D.strAddress = D.strHugeInt) THEN w. WriteString("0, "); END;
     w. WriteInt (len, 0);
     w. WriteString (', NULL, {"');
     w. WriteString (name);
@@ -1491,6 +1498,12 @@ PROCEDURE PtrList (w: TextRider.Writer; root: D.Object; mode: SHORTINT): INTEGER
     
     NewLine (w, 0);
     w. WriteString ("static const struct {");
+    IF (D.strAddress = D.strHugeInt) THEN
+      (* add padding to beginning of struct, so that the length is at -12 *)
+      NewLine (w, 1);
+      WriteScalarType (w, D.struct[D.strLongInt], FALSE, FALSE);
+      w.WriteString(" pad0;");
+    END;
     NewLine (w, 1);
     WriteScalarType (w, D.struct[D.strLongInt], FALSE, FALSE);
     w. WriteString (" length;");
@@ -1506,6 +1519,7 @@ PROCEDURE PtrList (w: TextRider.Writer; root: D.Object; mode: SHORTINT): INTEGER
     w. WriteString ("} _p");
     w. WriteInt (id, 0);
     w. WriteString (" = {");
+    IF (D.strAddress = D.strHugeInt) THEN w. WriteString("0, "); END;
     w. WriteInt (len, 0);
     w. WriteString (', NULL, {');
     WriteObjects (root);
@@ -1606,6 +1620,12 @@ PROCEDURE TBProcArray (w: TextRider.Writer; t: D.Struct): INTEGER;
     
     NewLine (w, 0);
     w. WriteString ("static const struct {");
+    IF (D.strAddress = D.strHugeInt) THEN
+      (* add padding to beginning of struct, so that the length is at -12 *)
+      NewLine (w, 1);
+      WriteScalarType (w, D.struct[D.strLongInt], FALSE, FALSE);
+      w.WriteString(" pad0;");
+    END;
     NewLine (w, 1);
     WriteScalarType (w, D.struct[D.strLongInt], FALSE, FALSE);
     w. WriteString (" length;");
@@ -1623,6 +1643,7 @@ PROCEDURE TBProcArray (w: TextRider.Writer; t: D.Struct): INTEGER;
     w. WriteString ("} _tb");
     w. WriteInt (id, 0);
     w. WriteString (" = {");
+    IF (D.strAddress = D.strHugeInt) THEN w. WriteString("0, "); END;
     w. WriteLInt (len, 0);
     w. WriteString (", NULL, {");
     
@@ -1676,6 +1697,12 @@ PROCEDURE TypeDescriptor* (w: TextRider.Writer; mod: D.Object;
     BEGIN
       NewLine (w, 0);
       w. WriteString ("static const struct {");
+      IF (D.strAddress = D.strHugeInt) THEN
+        (* add padding to beginning of struct, so that the length is at -12 *)
+        NewLine (w, 1);
+        WriteScalarType (w, D.struct[D.strLongInt], FALSE, FALSE);
+        w.WriteString(" pad0;");
+      END;
       NewLine (w, 1);
       WriteScalarType (w, D.struct[D.strLongInt], FALSE, FALSE);
       w. WriteString (" length;");
@@ -1690,6 +1717,7 @@ PROCEDURE TypeDescriptor* (w: TextRider.Writer; mod: D.Object;
       TypeDescrName (w, t, TRUE);
       w. WriteString ("b = {");
       NewLine (w, 1);
+      IF (D.strAddress = D.strHugeInt) THEN w. WriteString("0, "); END;
       w. WriteLInt (t. len+1, 0);
       w. WriteString (', ');
       NewLine (w, 1);

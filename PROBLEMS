@@ -35,6 +35,15 @@ libtool versions prior to 1.2 are not very helpful here.  Also, see
 any operating system documentation about shared libraries for more
 information, such as the ld(1) and ld.so(8) manual pages.
 
+* MacOS X: Building on a HFS+ file system may fail.  It looks like
+due to the case insensitive nature of the file names, the compiler
+confuses the standard include file <time.h> with oo2c's "Time.h".  A
+fix is to compile oo2c on a case sensitive file system.
+
+* MacOS X: Installation may fail with the original MacX libtool
+because of different command line options.  Using GNU libtool instead
+is reported to work.
+
 * HP-UX 9 (10?): If linking against gc.a fails with an error message 
   "/bin/ld: Unsatisfied symbols: shl_get (code)"
 comment out the line "#define DYNAMIC_LOADING" in the HP_PA section of

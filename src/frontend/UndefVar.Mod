@@ -1,7 +1,7 @@
-(* 	$Id: UndefVar.Mod,v 3.15 1999/05/07 18:29:04 acken Exp $	 *)
+(* 	$Id: UndefVar.Mod,v 3.16 2002/10/06 19:16:08 ooc-devel Exp $	 *)
 MODULE UndefVar;
 (*  Detects use of undefined variables and missing function returns.
-    Copyright (C) 1995-1999  Michael van Acken
+    Copyright (C) 1995-1999, 2002  Michael van Acken
 
     This file is part of OOC.
 
@@ -330,7 +330,8 @@ PROCEDURE InspectUses (var: D.Object; u: D.Usable; status: SHORTINT;
         FOR i := 0 TO LEN (useStack^)-1 DO
           new[i] := useStack[i];
           useStack[i] := NIL
-        END
+        END;
+        useStack := new;
       END;
       useStack[useStackSize] := use;
       INC (useStackSize)

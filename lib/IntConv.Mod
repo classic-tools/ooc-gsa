@@ -1,10 +1,10 @@
-(*	$Id: IntConv.Mod,v 1.4 2000/01/16 16:32:02 ooc-devel Exp $	*)
+(*	$Id: IntConv.Mod,v 1.5 2002/05/10 23:06:58 ooc-devel Exp $	*)
 MODULE IntConv;
  
  (*
     IntConv -  Low-level integer/string conversions.       
     Copyright (C) 1995 Michael Griebling
-    Copyright (C) 2000 Michael van Acken
+    Copyright (C) 2000, 2002 Michael van Acken
  
     This module is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as 
@@ -124,7 +124,6 @@ BEGIN
   class:=Conv.padding; prev:=class;
   state:=SI; int:=0; positive:=TRUE;
   LOOP
-    IF index=len THEN EXIT END;
     ch:=str[index];
     state.p(ch, class, state);
     CASE class OF
@@ -149,14 +148,23 @@ BEGIN
             END
           END
         END
-    | Conv.invalid, Conv.terminator: EXIT
+      
+    | Conv.invalid:
+      IF (prev = Conv.padding) THEN
+        RETURN strEmpty;
+      ELSE
+        RETURN strWrongFormat;
+      END;
+      
+    | Conv.terminator:
+      IF (ch = 0X) THEN
+        RETURN strAllRight;
+      ELSE
+        RETURN strWrongFormat;
+      END;
     END;
     prev:=class; INC(index)
   END;
-  IF class IN {Conv.invalid, Conv.terminator} THEN RETURN strWrongFormat
-  ELSIF prev=Conv.padding THEN RETURN strEmpty
-  ELSE RETURN strAllRight
-  END
 END FormatInt;
  
  

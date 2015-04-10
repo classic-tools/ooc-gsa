@@ -3517,7 +3517,7 @@ void GenDecl_init(void) {
     char *_mem, *_var;
     int* _dim_ptr;
     _mem = GC_malloc_atomic(_not_zero(16*1)+8);
-    if (!_mem) _new_failed(_P(61973));
+    if (!_mem) _new_failed(_P(63251));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 16;
@@ -3530,7 +3530,7 @@ void GenDecl_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(76)+8);
-    if (!_mem) _new_failed(_P(62028));
+    if (!_mem) _new_failed(_P(63306));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ObjectDesc_td.td;
     i0 = (int)_var;
@@ -3544,7 +3544,7 @@ void GenDecl_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(20)+8);
-    if (!_mem) _new_failed(_P(62131));
+    if (!_mem) _new_failed(_P(63409));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &SystemFlags__InfoDesc_td.td;
     i0 = (int)_var;
@@ -3554,7 +3554,7 @@ void GenDecl_init(void) {
     char *_mem, *_var;
     int* _dim_ptr;
     _mem = GC_malloc(_not_zero(500*4)+8);
-    if (!_mem) _new_failed(_P(62147));
+    if (!_mem) _new_failed(_P(63425));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 500;
