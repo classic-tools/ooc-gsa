@@ -8,6 +8,7 @@
 #include "External.h"
 #include "FileData.h"
 #include "Filenames.h"
+#include "GenDecl.h"
 #include "Make.h"
 #include "Out.h"
 #include "ParamOptions.h"

@@ -1,9 +1,9 @@
-(*	$Id: LRealStr.Mod,v 1.7 1999/09/02 13:09:45 acken Exp $	*)
+(*	$Id: LRealStr.Mod,v 1.8 2001/07/15 14:59:29 ooc-devel Exp $	*)
 MODULE LRealStr;
  
  (*
     LRealStr -  LONGREAL/string conversions.       
-    Copyright (C) 1996 Michael Griebling
+    Copyright (C) 1996, 2001 Michael Griebling
  
     This module is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as 
@@ -27,8 +27,6 @@ IMPORT
  
 CONST
   ZERO=0.0D0; B=8000H;
-  
-  DEBUG = FALSE;
  
 TYPE
   ConvResults*= Conv.ConvResults; (* strAllRight, strOutOfRange, strWrongFormat, strEmpty *)
@@ -107,7 +105,7 @@ BEGIN
   (* write significant digits *)
   lstr:="";
   FOR digs:=1 TO sigFigs DO
-    LInt.DivDigit(n, 10, d); AppendDigit(d, lstr)
+    LInt.DivDigit(n, 10, d); AppendDigit(d, lstr);
   END;
   
   (* reverse the real digits and append to str *)
@@ -128,25 +126,57 @@ BEGIN
   WHILE (len>1)&(str[0]="0")&(str[1]#".") DO Str.Delete(str, 0, 1); DEC(len) END
 END RemoveLeadingZeros;
 
-PROCEDURE Scale (x: LONGREAL; VAR n: LInt.LongInt; sigFigs, exp: INTEGER);
+
+
+PROCEDURE MaxDigit (VAR n: LInt.LongInt) : LONGINT;
+
+VAR
+
+	i, max : LONGINT;
+
+BEGIN
+
+	(* return the maximum digit in the specified LongInt number *)
+
+  FOR i:=0 TO LEN(n)-1 DO
+
+  	 IF n[i] # 0 THEN
+
+		max := n[i];
+
+		WHILE max>=10 DO max:=max DIV 10 END;
+
+      	RETURN max;
+
+    END;       
+  END;  
+
+  RETURN 0;
+
+END MaxDigit;
+
+PROCEDURE Scale (x: LONGREAL; VAR n: LInt.LongInt; sigFigs: INTEGER; exp: INTEGER; VAR overflow : BOOLEAN);
 CONST
   MaxDigits=4; LOG2B=15;
 VAR
   i, m, ln, d: LONGINT; e1, e2: INTEGER;
+
+  max: LONGINT;
 BEGIN
   (* extract fraction & exponent *)
-  m:=0;
+  m:=0; overflow := FALSE;
   WHILE Low.exponent(x)=Low.expoMin DO        (* scale up subnormal numbers *)
     x:=x*2.0D0; DEC(m)
   END;
   m:=m+Low.exponent(x); x:=Low.fraction(x);
   x:=Low.scale(x, SHORT(m MOD LOG2B));        (* scale up the number *)   
   m:=m DIV LOG2B;                             (* base B exponent *)
-  
+
+    
   (* convert to an extended integer MOD B *)
   ln:=LEN(n)-1;
   FOR i:=ln-MaxDigits TO ln DO 
-    n[i]:=SHORT(ENTIER(x));                   (* convert/store the number *)
+    n[i]:=SHORT(ENTIER(x));                   (* convert/store the number *)  
     x:=(x-n[i])*B 
   END;
   FOR i:=0 TO ln-MaxDigits-1 DO n[i]:=0 END;  (* zero the other digits *)
@@ -155,14 +185,30 @@ BEGIN
   e1:=SHORT(m)-MaxDigits; e2:= sigFigs-exp-1;
   IF e1>=0 THEN
     LInt.BPower(n, e1+1); LInt.TenPower(n, e2);
+
+  	max := MaxDigit(n);    (* remember the original digit so we can check for round-up *)	    
     LInt.AddDigit(n, B DIV 2); LInt.DivDigit(n, B, d) (* round *)
   ELSIF e2>0 THEN
     LInt.TenPower(n, e2);
     IF e1>0 THEN LInt.BPower(n, e1-1) ELSE LInt.BPower(n, e1+1) END;
+
+  	max := MaxDigit(n);    (* remember the original digit so we can check for round-up *)	       
     LInt.AddDigit(n, B DIV 2); LInt.DivDigit(n, B, d) (* round *)    
   ELSE (* e1<=0, e2<=0 *)
-    LInt.TenPower(n, e2); LInt.BPower(n, e1+1); 
+    LInt.TenPower(n, e2); LInt.BPower(n, e1+1);
+
+  	max := MaxDigit(n);    (* remember the original digit so we can check for round-up *)	        
     LInt.AddDigit(n, B DIV 2); LInt.DivDigit(n, B, d) (* round *)     
+  END;
+
+  
+
+  (* check if the upper digit was changed by rounding up *)
+
+  IF (max = 9) & (max # MaxDigit(n)) THEN
+
+	 overflow := TRUE;
+
   END
 END Scale;
 
@@ -188,7 +234,13 @@ PROCEDURE RealToFloat*(real: LONGREAL; sigFigs: INTEGER; VAR str: ARRAY OF CHAR)
       5        3.9230E+6   3.9230E+1    3.9230E-4
  *)
 VAR
-  exp: INTEGER; in: LInt.LongInt; lstr: ARRAY 64 OF CHAR;
+  exp: INTEGER; in: LInt.LongInt; 
+
+  lstr: ARRAY 64 OF CHAR;
+
+  overflow: BOOLEAN;
+
+  d: LONGINT;
 BEGIN 
   (* set significant digits, extract sign & exponent *)
   lstr:="";
@@ -201,7 +253,15 @@ BEGIN
   exp:=Low.exponent10(real); 
   
   (* round the number and extract exponent again *)
-  Scale(real, in, sigFigs, exp);
+  Scale(real, in, sigFigs, exp, overflow);
+
+  IF overflow THEN
+
+  	 IF exp>=0 THEN INC(exp) ELSE DEC(exp) END;
+
+  	 LInt.DivDigit(in, 10, d)    
+
+  END;
   
   (* output number like x[.{x}][E+n[n]] *)                               
   AppendFraction(in, sigFigs, 1, lstr);
@@ -228,7 +288,13 @@ PROCEDURE RealToEng*(real: LONGREAL; sigFigs: INTEGER; VAR str: ARRAY OF CHAR);
       5        3.9230E+6   39.230     392.30E-6     
   *)
 VAR
-  in: LInt.LongInt; exp, offset: INTEGER; lstr: ARRAY 64 OF CHAR;
+  in: LInt.LongInt; exp, offset: INTEGER; 
+
+  lstr: ARRAY 64 OF CHAR;
+
+  d: LONGINT;
+
+  overflow: BOOLEAN;
 BEGIN 
   (* set significant digits, extract sign & exponent *)
   lstr:="";
@@ -241,8 +307,16 @@ BEGIN
   exp:=Low.exponent10(real); 
   
   (* round the number and extract exponent again (ie. 9.9 => 10.0) *)
-  Scale(real, in, sigFigs, exp);
-  
+  Scale(real, in, sigFigs, exp, overflow);
+  IF overflow THEN
+
+  	 IF exp>=0 THEN INC(exp) ELSE DEC(exp) END;
+
+  	 LInt.DivDigit(in, 10, d)    
+
+  END;
+
+    
   (* find the offset to make the exponent a multiple of three *)
   offset:=exp MOD 3;
   
@@ -277,7 +351,11 @@ PROCEDURE RealToFixed*(real: LONGREAL; place: INTEGER; VAR str: ARRAY OF CHAR);
       4        3923009.0000    3.9230     0.0004       
  *)
 VAR
-  in: LInt.LongInt; exp, digs: INTEGER; addDecPt: BOOLEAN; lstr: ARRAY 256 OF CHAR;
+  in: LInt.LongInt; exp, digs: INTEGER; 
+
+  overflow, addDecPt: BOOLEAN; 
+
+  lstr: ARRAY 256 OF CHAR;
 BEGIN 
   (* set significant digits, extract sign & exponent *)
   lstr:=""; addDecPt:=place=0;
@@ -287,10 +365,19 @@ BEGIN
   IF real<ZERO THEN Str.Append("-", lstr); real:=-real END;
   IF Low.IsInfinity(real) THEN Str.Append("Infinity", lstr); COPY(lstr, str); RETURN END;  
   exp:=Low.exponent10(real);  
-  
+  IF place<0 THEN digs:=place+exp+2 ELSE digs:=place+exp+1 END; 
+
+   
   (* round the number and extract exponent again (ie. 9.9 => 10.0) *)
-  IF place<0 THEN digs:=place+exp+2 ELSE digs:=place+exp+1 END;
-  Scale(real, in, digs, exp);
+  Scale(real, in, digs, exp, overflow);
+
+  IF overflow THEN
+
+	 INC(digs); INC(exp);
+
+	 addDecPt := place=0;
+
+  END;
   
   (* output number like x[{x}][.{x}] *)
   IF exp<0 THEN
@@ -357,66 +444,6 @@ BEGIN
   END
 END RealToStr;
 
-PROCEDURE Test;
-CONST n1=3923009.0D0; n2=39.23009D0; n3=0.0003923009D0; n4=3.923009D0;
-VAR str: ARRAY 80 OF CHAR; len: INTEGER; res: ConvResults; n: LONGREAL;
-BEGIN
-  RealToFloat(1.0380093413668478E+21, 17, str);
-  RealToFloat(1.0D-307, 17, str);
-  RealToFloat(2.4D-308, 17, str);
-  RealToFloat(n3, 17, str);
-  RealToFloat(1234567890.0, 17, str);
-  n:=MIN(LONGREAL); RealToFloat(n, 17, str); StrToReal(str, n, res);
-  n:=MAX(LONGREAL); RealToFloat(n, 17, str); StrToReal(str, n, res);
-  
-  RealToFloat(n1, 1, str); len:=RC.LengthFloatReal(n1, 1);
-  RealToFloat(n1, 2, str); len:=RC.LengthFloatReal(n1, 2);
-  RealToFloat(n1, 5, str); len:=RC.LengthFloatReal(n1, 5);
-  RealToFloat(n2, 1, str); len:=RC.LengthFloatReal(n2, 1);
-  RealToFloat(n2, 2, str); len:=RC.LengthFloatReal(n2, 2);
-  RealToFloat(n2, 5, str); len:=RC.LengthFloatReal(n2, 5);
-  RealToFloat(n3, 1, str); len:=RC.LengthFloatReal(n3, 1);
-  RealToFloat(n3, 2, str); len:=RC.LengthFloatReal(n3, 2);
-  RealToFloat(n3, 5, str); len:=RC.LengthFloatReal(n3, 5); 
-  
-  RealToEng(n1, 1, str); len:=RC.LengthEngReal(n1, 1);
-  RealToEng(n1, 2, str); len:=RC.LengthEngReal(n1, 2);
-  RealToEng(n1, 5, str); len:=RC.LengthEngReal(n1, 5);
-  RealToEng(n2, 1, str); len:=RC.LengthEngReal(n2, 1);
-  RealToEng(n2, 2, str); len:=RC.LengthEngReal(n2, 2);
-  RealToEng(n2, 5, str); len:=RC.LengthEngReal(n2, 5);
-  RealToEng(n3, 1, str); len:=RC.LengthEngReal(n3, 1);
-  RealToEng(n3, 2, str); len:=RC.LengthEngReal(n3, 2);
-  RealToEng(n3, 5, str); len:=RC.LengthEngReal(n3, 5); 
-  
-  RealToFixed(n1, -5, str); len:=RC.LengthFixedReal(n1, -5);
-  RealToFixed(n1, -2, str); len:=RC.LengthFixedReal(n1, -2);
-  RealToFixed(n1, -1, str); len:=RC.LengthFixedReal(n1, -1);
-  RealToFixed(n1,  0, str); len:=RC.LengthFixedReal(n1,  0);
-  RealToFixed(n1,  1, str); len:=RC.LengthFixedReal(n1,  1);
-  RealToFixed(n1,  4, str); len:=RC.LengthFixedReal(n1,  4);  
-  RealToFixed(n4, -5, str); len:=RC.LengthFixedReal(n4, -5);
-  RealToFixed(n4, -2, str); len:=RC.LengthFixedReal(n4, -2);
-  RealToFixed(n4, -1, str); len:=RC.LengthFixedReal(n4, -1);
-  RealToFixed(n4,  0, str); len:=RC.LengthFixedReal(n4,  0);
-  RealToFixed(n4,  1, str); len:=RC.LengthFixedReal(n4,  1);
-  RealToFixed(n4,  4, str); len:=RC.LengthFixedReal(n4,  4);  
-  RealToFixed(n3, -5, str); len:=RC.LengthFixedReal(n3, -5);
-  RealToFixed(n3, -2, str); len:=RC.LengthFixedReal(n3, -2);
-  RealToFixed(n3, -1, str); len:=RC.LengthFixedReal(n3, -1);     
-  RealToFixed(n3,  0, str); len:=RC.LengthFixedReal(n3,  0);
-  RealToFixed(n3,  1, str); len:=RC.LengthFixedReal(n3,  1);
-  RealToFixed(n3,  4, str); len:=RC.LengthFixedReal(n3,  4);
-  
-  StrToReal("1.234D-10", n, res);    (* should give error: exp must be `E' *)
-  StrToReal("  1234567890", n, res);
-  StrToReal("-0.0002345097E+10", n, res);
-  StrToReal("345,234", n, res);      (* should give error: embedded comma *)
-  StrToReal("1234.1234123412341234", n, res)
-END Test;
-
-BEGIN
-  IF DEBUG THEN Test END
 END LRealStr.
 
 

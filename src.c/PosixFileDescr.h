@@ -75,11 +75,11 @@ extern C__charPtr2d _program_argv;
 typedef struct PosixFileDescr__ErrorContextDesc {
   Msg__StringPtr id;
 } PosixFileDescr__ErrorContextDesc;
+typedef struct PosixFileDescr__ErrorContextDesc* PosixFileDescr__ErrorContext;
 extern void PosixFileDescr__InitReader(PosixFileDescr__Reader r, PosixFileDescr__Channel ch);
 extern void PosixFileDescr__InitWriter(PosixFileDescr__Writer w, PosixFileDescr__Channel ch);
 extern void PosixFileDescr__Init(PosixFileDescr__Channel ch, int fd, signed char mode);
 extern void PosixFileDescr__Truncate(PosixFileDescr__Writer w, int newLength);
-typedef struct PosixFileDescr__ErrorContextDesc* PosixFileDescr__ErrorContext;
 typedef void(* _TBP_PosixFileDescr__ErrorContextDesc_GetTemplate)(PosixFileDescr__ErrorContext context, Msg__Msg msg, Msg__LString templ, int templ_0d);
 #define _TBN_PosixFileDescr__ErrorContextDesc_GetTemplate 0
 extern void PosixFileDescr__ErrorContextDesc_GetTemplate(PosixFileDescr__ErrorContext context, Msg__Msg msg, Msg__LString templ, int templ_0d);

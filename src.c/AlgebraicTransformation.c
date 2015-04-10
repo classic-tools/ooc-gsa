@@ -212,10 +212,10 @@ Data__Usable AlgebraicTransformation__Transform_BooleanResult(Data__Instruction 
   i2 = (int)*(void**)i0;
   if (!(i1)) goto l0;
   Out__String((const unsigned char*)(int)_c0, 89);
+  Out__Ln();
   i0 = *AlgebraicTransformation__Transform_subClass;
   i0 += 480;
   i4 = (int)instr + 44;
-  Out__Ln();
   *(short int*)i4 = i0;
   *AlgebraicTransformation__Transform_class_ = 30;
   _halt(1);
@@ -372,56 +372,48 @@ l5:
 }
 
 Data__Instruction AlgebraicTransformation__Transform_ArithmTransform_ReplaceMod(short int subcl, Data__Usable arg, int mask, Data__Instruction *AlgebraicTransformation__Transform_ArithmTransform_instr) {
-  register int i0, i1, i2, i3, i4, i5;
-  signed char form;
-  if (!(subcl<=-1 || subcl==1 || subcl==3 || subcl==5 || subcl>=7)) goto l0;
-  i0 = 1;
-  goto l4;
+  register int i0, i1, i2, i3;
+  if (!(subcl==0)) goto l0;
+  i2 = 12;
+  goto l3;
 l0:
-  if (!(subcl==0)) goto l1;
-  i0 = 0;
-  i4 = 12;
-  goto l4;
+  if (!(subcl==2)) goto l1;
+  i2 = 13;
+  goto l3;
 l1:
-  if (!(subcl==2)) goto l2;
-  i0 = 0;
-  i4 = 13;
-  goto l4;
+  if (!(subcl==4)) goto l2;
+  i2 = 14;
+  goto l3;
 l2:
-  if (!(subcl==4)) goto l3;
-  i0 = 0;
-  i4 = 14;
-  goto l4;
+  if (!(subcl==6)) goto l3;
+  i2 = 15;
 l3:
-  if (!(subcl==6)) goto l4;
-  i0 = 0;
-  i4 = 15;
-l4:
-  if (i0) goto l5;
-  i5 = (int)*AlgebraicTransformation__Transform_ArithmTransform_instr;
-  i3 = i5 + 32;
-  i2 = (int)_ashl(i4, 2, (unsigned int));
-  i2 = (int)Data__struct + i2;
+  i1 = (int)*AlgebraicTransformation__Transform_ArithmTransform_instr;
+  i0 = (int)_ashl(i2, 2, (unsigned int));
+  i1 += 32;
+  i0 = (int)Data__struct + i0;
+  i0 = (int)*(void**)i0;
+  i1 = (int)*(void**)i1;
+  i3 = Data__OperatorSubclass((Data__Struct)0, (signed char)i2);
+  i2 = (int)*AlgebraicTransformation__Transform_ArithmTransform_instr;
+  i2 += 52;
+  i3 += 336;
+  i2 = *(int*)i2;
+  i1 = (int)Data__RegionDesc_CreateInstruction((Data__Region)i1, (short int)i3, (Data__Struct)i0, (int)i2);
+  i2 = (int)*AlgebraicTransformation__Transform_ArithmTransform_instr;
+  i2 += 32;
   i2 = (int)*(void**)i2;
-  i1 = (int)*(void**)i3;
-  i0 = Data__OperatorSubclass((Data__Struct)0, (signed char)i4);
-  i4 = i5 + 52;
-  i0 += 336;
-  i4 = *(int*)i4;
-  i4 = (int)Data__RegionDesc_CreateInstruction((Data__Region)i1, (short int)i0, (Data__Struct)i2, (int)i4);
-  i1 = (int)*(void**)i3;
-  i1 = (int)Data__RegionDesc_CreateTypeCast((Data__Region)i1, (Data__Usable)(int)arg, (Data__Struct)i2);
-  Data__InstructionDesc_Operand((Data__Instruction)i4, (Data__Usable)i1);
-  i2 = (int)Data__GetSetConst((unsigned int)mask, (Data__Struct)i2);
-  Data__InstructionDesc_Operand((Data__Instruction)i4, (Data__Usable)i2);
-  i5 += 24;
-  i3 = (int)*(void**)i3;
-  i5 = (int)*(void**)i5;
-  i5 = (int)Data__RegionDesc_CreateTypeCast((Data__Region)i3, (Data__Usable)i4, (Data__Struct)i5);
-  goto l6;
-l5:
-l6:
-  return (void*)i5;
+  i2 = (int)Data__RegionDesc_CreateTypeCast((Data__Region)i2, (Data__Usable)(int)arg, (Data__Struct)i0);
+  Data__InstructionDesc_Operand((Data__Instruction)i1, (Data__Usable)i2);
+  i0 = (int)Data__GetSetConst((unsigned int)mask, (Data__Struct)i0);
+  Data__InstructionDesc_Operand((Data__Instruction)i1, (Data__Usable)i0);
+  i0 = (int)*AlgebraicTransformation__Transform_ArithmTransform_instr;
+  i2 = i0 + 32;
+  i0 += 24;
+  i2 = (int)*(void**)i2;
+  i0 = (int)*(void**)i0;
+  i0 = (int)Data__RegionDesc_CreateTypeCast((Data__Region)i2, (Data__Usable)i1, (Data__Struct)i0);
+  return (void*)i0;
 }
 
 Data__Usable AlgebraicTransformation__Transform_ArithmTransform(Data__Instruction instr) {
@@ -961,64 +953,46 @@ Data__Usable AlgebraicTransformation__Transform_HandleComparison_Negation(Data__
 Data__Const AlgebraicTransformation__Transform_HandleComparison_GetMinMax(signed char type, unsigned char max) {
   register int i0, i1;
   register double d0;
-  if (max) goto l3;
-  if (!(type<=-1 || (type>=6 && type<=7) || type==9 || type>=11)) goto l0;
-  i0 = 1;
-  i1 = 0;
-  goto l7;
-l0:
-  if (!((type>=0 && type<=5))) goto l1;
+  if (max) goto l2;
+  if (!((type>=0 && type<=5))) goto l0;
   i1 = StdTypes__WholeMin((signed char)type);
   i0 = (int)Data__struct + 36;
   d0 = i1;
   i1 = (int)*(void**)i0;
   i1 = (int)Data__GetRealConst((double)d0, (Data__Struct)i1);
-  i0 = 0;
-  goto l7;
-l1:
-  if (!(type==8)) goto l2;
+  goto l5;
+l0:
+  if (!(type==8)) goto l1;
   i1 = (int)Data__struct + 36;
   i1 = (int)*(void**)i1;
   i1 = (int)Data__GetRealConst((double)-3.4028234663852886E+38, (Data__Struct)i1);
-  i0 = 0;
-  goto l7;
-l2:
-  if (!(type==10)) goto l7;
+  goto l5;
+l1:
+  if (!(type==10)) goto l5;
   i1 = (int)Data__struct + 36;
   i1 = (int)*(void**)i1;
   i1 = (int)Data__GetRealConst((double)-1.7976931348623157E+308, (Data__Struct)i1);
-  i0 = 0;
-  goto l7;
-l3:
-  if (!(type<=-1 || (type>=6 && type<=7) || type==9 || type>=11)) goto l4;
-  i0 = 1;
-  i1 = 0;
-  goto l7;
-l4:
-  if (!((type>=0 && type<=5))) goto l5;
+  goto l5;
+l2:
+  if (!((type>=0 && type<=5))) goto l3;
   i1 = StdTypes__WholeMax((signed char)type);
   i0 = (int)Data__struct + 36;
   d0 = i1;
   i1 = (int)*(void**)i0;
   i1 = (int)Data__GetRealConst((double)d0, (Data__Struct)i1);
-  i0 = 0;
-  goto l7;
-l5:
-  if (!(type==8)) goto l6;
+  goto l5;
+l3:
+  if (!(type==8)) goto l4;
   i1 = (int)Data__struct + 36;
   i1 = (int)*(void**)i1;
   i1 = (int)Data__GetRealConst((double)3.4028234663852886E+38, (Data__Struct)i1);
-  i0 = 0;
-  goto l7;
-l6:
-  if (!(type==10)) goto l7;
+  goto l5;
+l4:
+  if (!(type==10)) goto l5;
   i1 = (int)Data__struct + 36;
   i1 = (int)*(void**)i1;
   i1 = (int)Data__GetRealConst((double)1.7976931348623157E+308, (Data__Struct)i1);
-  i0 = 0;
-l7:
-  if (!(i0)) goto l8;
-l8:
+l5:
   return (void*)i1;
 }
 

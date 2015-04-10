@@ -219,7 +219,6 @@ void WriteSymbols__Const(Data__Const const_, unsigned char* str, int str_0d) {
   i0 = (int)*(void**)i0;
   i0 += 20;
   i0 = *(signed char*)i0;
-  if (i0<=-1 || (i0>=10 && i0<=11) || (i0>=16 && i0<=17) || i0>=21) goto l10;
   if (!(i0==1)) goto l1;
   i0 = (int)const_ + 24;
   i0 = *(int*)i0;
@@ -296,7 +295,7 @@ void WriteSymbols__WriteConst(Data__Const const_) {
 }
 
 void WriteSymbols__WriteTree_WriteObject_WriteStruct(Data__Struct t, unsigned char structure, short int off, short int *WriteSymbols__WriteTree_off) {
-  register int i0, i1, i2, i3;
+  register int i0, i1, i2;
   i1 = (int)t + 36;
   i0 = (int)*(void**)i1;
   i2 = i0 == 0;
@@ -305,7 +304,6 @@ void WriteSymbols__WriteTree_WriteObject_WriteStruct(Data__Struct t, unsigned ch
 l0:
   i2 = (int)t + 20;
   i2 = *(signed char*)i2;
-  if (i2<=-1 || (i2>=1 && i2<=17) || (i2>=22 && i2<=26) || i2>=32) goto l20;
   if (!(i2==0)) goto l1;
   Out__String((const unsigned char*)(int)_c14, 15);
   goto l20;
@@ -337,8 +335,8 @@ l6:
   if (!(structure)) goto l7;
   Out__String((const unsigned char*)(int)_c20, 10);
 l7:
-  i2 = (int)t + 28;
-  i1 = (int)*(void**)i2;
+  i0 = (int)t + 28;
+  i1 = (int)*(void**)i0;
   i1 = i1 != 0;
   if (i1) goto l8;
   i1 = (int)t + 24;
@@ -349,31 +347,31 @@ l7:
   if (i1) goto l20;
 l8:
   Out__String((const unsigned char*)(int)_c21, 3);
-  i0 = (int)*(void**)i2;
-  i3 = i0 == 0;
-  if (i3) goto l11;
+  i2 = (int)*(void**)i0;
+  i1 = i2 == 0;
+  if (i1) goto l11;
 l9:
-  i1 = i0 + 36;
-  i3 = (int)*(void**)i2;
-  i3 = i0 == i3;
-  if (i3) goto l10;
+  i1 = (int)*(void**)i0;
+  i1 = i2 == i1;
+  if (i1) goto l10;
   Out__String((const unsigned char*)(int)_c22, 3);
 l10:
-  WriteSymbols__WriteTree_WriteObject((Data__Object)i0, &*WriteSymbols__WriteTree_off);
-  i0 = (int)*(void**)i1;
-  i1 = i0 != 0;
+  i1 = i2 + 36;
+  WriteSymbols__WriteTree_WriteObject((Data__Object)i2, &*WriteSymbols__WriteTree_off);
+  i2 = (int)*(void**)i1;
+  i1 = i2 != 0;
   if (i1) goto l9;
 l11:
-  i3 = (int)t + 24;
+  i2 = (int)t + 24;
   Out__Char((unsigned char)41);
-  i0 = (int)*(void**)i3;
+  i0 = (int)*(void**)i2;
   i0 += 20;
   i0 = *(signed char*)i0;
   i0 = i0 == 21;
   if (i0) goto l20;
   Out__String((const unsigned char*)(int)_c23, 3);
-  i3 = (int)*(void**)i3;
-  WriteSymbols__WriteTree_WriteObject_WriteStruct((Data__Struct)i3, (unsigned char)0, (short int)off, &*WriteSymbols__WriteTree_off);
+  i2 = (int)*(void**)i2;
+  WriteSymbols__WriteTree_WriteObject_WriteStruct((Data__Struct)i2, (unsigned char)0, (short int)off, &*WriteSymbols__WriteTree_off);
   goto l20;
 l12:
   if (!(i2==29)) goto l13;
@@ -397,9 +395,9 @@ l14:
   if (!(i2==31)) goto l20;
   i2 = (int)t + 24;
   Out__String((const unsigned char*)(int)_c27, 7);
-  i3 = (int)*(void**)i2;
-  i3 = i3 == 0;
-  if (i3) goto l15;
+  i1 = (int)*(void**)i2;
+  i1 = i1 == 0;
+  if (i1) goto l15;
   WriteSymbols__Ln((short int)off);
   Out__Char((unsigned char)40);
   i2 = (int)*(void**)i2;
@@ -408,15 +406,15 @@ l14:
 l15:
   i2 = (int)t + 28;
   i2 = (int)*(void**)i2;
-  i3 = i2 == 0;
-  if (i3) goto l17;
+  i1 = i2 == 0;
+  if (i1) goto l17;
 l16:
-  i3 = i2 + 36;
   WriteSymbols__Ln((short int)off);
+  i1 = i2 + 36;
   WriteSymbols__WriteTree_WriteObject((Data__Object)i2, &*WriteSymbols__WriteTree_off);
-  i2 = (int)*(void**)i3;
-  i3 = i2 != 0;
-  if (i3) goto l16;
+  i2 = (int)*(void**)i1;
+  i1 = i2 != 0;
+  if (i1) goto l16;
 l17:
   i2 = off - 1;
   WriteSymbols__Ln((short int)i2);
@@ -445,26 +443,27 @@ l20:
 }
 
 void WriteSymbols__WriteTree_WriteObject_Name(Data__Object *WriteSymbols__WriteTree_WriteObject_obj) {
-  register int i0, i1, i2, i3;
-  i1 = (int)*WriteSymbols__WriteTree_WriteObject_obj;
-  i0 = i1 + 20;
-  i2 = (int)*(void**)i0;
-  i0 = i2 == 0;
+  register int i0, i1, i2;
+  i0 = (int)*WriteSymbols__WriteTree_WriteObject_obj;
+  i0 += 20;
+  i1 = (int)*(void**)i0;
+  i0 = i1 == 0;
   if (i0) goto l0;
-  i3 = strcmp((const char*) i2, (const char*) (int)_c29) == 0;
-  if (i3) goto l0;
-  i0 = *(int*)(i2-8);
-  Out__String((const unsigned char*)i2, i0);
+  i0 = strcmp((const char*) i1, (const char*) (int)_c29) == 0;
+  if (i0) goto l0;
+  i2 = *(int*)(i1-8);
+  Out__String((const unsigned char*)i1, i2);
   goto l1;
 l0:
   Out__String((const unsigned char*)(int)_c30, 10);
 l1:
-  i0 = i1 + 64;
-  i0 = *(unsigned int*)i0;
-  i1 = (i0 & ((unsigned int)1 << 0)) != 0;
-  if (!(i1)) goto l3;
-  i0 = (i0 & ((unsigned int)1 << 1)) != 0;
-  if (i0) goto l2;
+  i0 = (int)*WriteSymbols__WriteTree_WriteObject_obj;
+  i0 += 64;
+  i1 = *(unsigned int*)i0;
+  i0 = (i1 & ((unsigned int)1 << 0)) != 0;
+  if (!(i0)) goto l3;
+  i1 = (i1 & ((unsigned int)1 << 1)) != 0;
+  if (i1) goto l2;
   Out__Char((unsigned char)42);
   goto l3;
 l2:
@@ -486,7 +485,6 @@ void WriteSymbols__WriteTree_WriteObject(Data__Object obj, short int *WriteSymbo
   Out__String((const unsigned char*)(int)_c33, 3);
   i0 = (int)obj + 28;
   i0 = *(signed char*)i0;
-  if (i0<=-1 || i0>=10) goto l9;
   if (!(i0==0)) goto l0;
   Out__String((const unsigned char*)(int)_c34, 15);
   goto l9;
@@ -506,68 +504,68 @@ l1:
   Out__String((const unsigned char*)(int)_c36, 4);
   i2 = (int)obj + 24;
   i2 = (int)*(void**)i2;
-  i1 = i2 + 36;
-  i3 = *WriteSymbols__WriteTree_off;
-  i0 = (int)*(void**)i1;
-  i1 = i3 + 1;
-  i0 = (int)obj == i0;
-  WriteSymbols__WriteTree_WriteObject_WriteStruct((Data__Struct)i2, (unsigned char)i0, (short int)i1, &*WriteSymbols__WriteTree_off);
+  i0 = i2 + 36;
+  i1 = *WriteSymbols__WriteTree_off;
+  i3 = (int)*(void**)i0;
+  i0 = i1 + 1;
+  i3 = (int)obj == i3;
+  WriteSymbols__WriteTree_WriteObject_WriteStruct((Data__Struct)i2, (unsigned char)i3, (short int)i0, &*WriteSymbols__WriteTree_off);
   goto l9;
 l2:
   if (!(i0==3)) goto l3;
   Out__String((const unsigned char*)(int)_c38, 5);
   WriteSymbols__WriteTree_WriteObject_Name((Data__Object *)&obj);
-  i1 = *WriteSymbols__WriteTree_off;
   Out__String((const unsigned char*)(int)_c23, 3);
-  i0 = (int)obj + 24;
-  i2 = i1 + 1;
-  i0 = (int)*(void**)i0;
-  WriteSymbols__WriteTree_WriteObject_WriteStruct((Data__Struct)i0, (unsigned char)0, (short int)i2, &*WriteSymbols__WriteTree_off);
+  i1 = *WriteSymbols__WriteTree_off;
+  i2 = (int)obj + 24;
+  i0 = i1 + 1;
+  i2 = (int)*(void**)i2;
+  WriteSymbols__WriteTree_WriteObject_WriteStruct((Data__Struct)i2, (unsigned char)0, (short int)i0, &*WriteSymbols__WriteTree_off);
   goto l9;
 l3:
   if (!(i0==4)) goto l4;
   Out__String((const unsigned char*)(int)_c39, 8);
   WriteSymbols__WriteTree_WriteObject_Name((Data__Object *)&obj);
-  i1 = *WriteSymbols__WriteTree_off;
   Out__String((const unsigned char*)(int)_c23, 3);
-  i0 = (int)obj + 24;
-  i2 = i1 + 1;
-  i0 = (int)*(void**)i0;
-  WriteSymbols__WriteTree_WriteObject_WriteStruct((Data__Struct)i0, (unsigned char)0, (short int)i2, &*WriteSymbols__WriteTree_off);
+  i1 = *WriteSymbols__WriteTree_off;
+  i2 = (int)obj + 24;
+  i0 = i1 + 1;
+  i2 = (int)*(void**)i2;
+  WriteSymbols__WriteTree_WriteObject_WriteStruct((Data__Struct)i2, (unsigned char)0, (short int)i0, &*WriteSymbols__WriteTree_off);
   goto l9;
 l4:
   if (!(i0==5)) goto l5;
   WriteSymbols__WriteTree_WriteObject_Name((Data__Object *)&obj);
-  i2 = *WriteSymbols__WriteTree_off;
   Out__String((const unsigned char*)(int)_c23, 3);
-  i0 = (int)obj + 24;
-  i1 = i2 + 1;
-  i0 = (int)*(void**)i0;
-  WriteSymbols__WriteTree_WriteObject_WriteStruct((Data__Struct)i0, (unsigned char)0, (short int)i1, &*WriteSymbols__WriteTree_off);
+  i1 = *WriteSymbols__WriteTree_off;
+  i2 = (int)obj + 24;
+  i0 = i1 + 1;
+  i2 = (int)*(void**)i2;
+  WriteSymbols__WriteTree_WriteObject_WriteStruct((Data__Struct)i2, (unsigned char)0, (short int)i0, &*WriteSymbols__WriteTree_off);
   goto l9;
 l5:
   if (!((i0>=6 && i0<=7))) goto l7;
-  i2 = (int)obj + 52;
+  i1 = (int)obj + 52;
   Out__String((const unsigned char*)(int)_c40, 11);
-  i3 = (int)*(void**)i2;
-  i3 = i3 == 0;
-  if (i3) goto l6;
+  i0 = (int)*(void**)i1;
+  i0 = i0 == 0;
+  if (i0) goto l6;
   Out__Char((unsigned char)40);
-  i2 = (int)*(void**)i2;
-  WriteSymbols__WriteTree_WriteObject((Data__Object)i2, &*WriteSymbols__WriteTree_off);
+  i1 = (int)*(void**)i1;
+  WriteSymbols__WriteTree_WriteObject((Data__Object)i1, &*WriteSymbols__WriteTree_off);
   Out__String((const unsigned char*)(int)_c41, 3);
 l6:
   WriteSymbols__WriteTree_WriteObject_Name((Data__Object *)&obj);
-  i2 = *WriteSymbols__WriteTree_off;
-  i3 = (int)obj + 44;
-  i0 = (int)obj + 24;
-  i1 = i2 + 1;
+  i1 = *WriteSymbols__WriteTree_off;
+  i2 = (int)obj + 24;
+  i0 = i1 + 1;
+  i2 = (int)*(void**)i2;
+  WriteSymbols__WriteTree_WriteObject_WriteStruct((Data__Struct)i2, (unsigned char)0, (short int)i0, &*WriteSymbols__WriteTree_off);
+  i0 = (int)obj + 44;
+  i1 = *WriteSymbols__WriteTree_off;
   i0 = (int)*(void**)i0;
-  WriteSymbols__WriteTree_WriteObject_WriteStruct((Data__Struct)i0, (unsigned char)0, (short int)i1, &*WriteSymbols__WriteTree_off);
-  i2 = *WriteSymbols__WriteTree_off;
-  i3 = (int)*(void**)i3;
-  i2++;
-  WriteSymbols__WriteTree((Data__Object)i3, (short int)i2);
+  i1++;
+  WriteSymbols__WriteTree((Data__Object)i0, (short int)i1);
   goto l9;
 l7:
   if (!(i0==8)) goto l8;
@@ -592,16 +590,16 @@ l9:
 }
 
 void WriteSymbols__WriteTree(Data__Object obj, short int off) {
-  register int i0, i1;
+  register int i0;
   i0 = (int)obj == 0;
   if (i0) goto l0;
-  i1 = (int)obj + 32;
-  i0 = (int)obj + 36;
-  i1 = (int)*(void**)i1;
-  WriteSymbols__WriteTree((Data__Object)i1, (short int)off);
+  i0 = (int)obj + 32;
+  i0 = (int)*(void**)i0;
+  WriteSymbols__WriteTree((Data__Object)i0, (short int)off);
   WriteSymbols__Ln((short int)off);
   WriteSymbols__Ln((short int)off);
   WriteSymbols__WriteTree_WriteObject((Data__Object)(int)obj, &off);
+  i0 = (int)obj + 36;
   i0 = (int)*(void**)i0;
   WriteSymbols__WriteTree((Data__Object)i0, (short int)off);
 l0:

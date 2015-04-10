@@ -749,6 +749,7 @@ l0:
   *(unsigned int*)i3 = i0;
   i3 = *ControlFlow__GlobalRegion_countLabel;
   *(int*)i1 = i3;
+  i3 = *ControlFlow__GlobalRegion_countLabel;
   i3++;
   *ControlFlow__GlobalRegion_countLabel = i3;
 l1:

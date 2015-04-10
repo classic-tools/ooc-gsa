@@ -69,165 +69,143 @@ l3:
 }
 
 signed char IntConv__FormatInt(const unsigned char* str__ref, int str_0d) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14;
+  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12;
   signed char class_;
   ConvTypes__ScanState state;
   unsigned char* str;
   char* _old_top_vs = _top_vs;
   _push_value(int, str, str__ref, str_0d);
-  i12 = Strings__Length((const unsigned char*)(int)str, str_0d);
-  i14 = (int)IntConv__SI;
-  i1 = 0;
-  i5 = 1;
-  i6 = 0;
-  i4 = 0;
-  i2 = 0;
-l0:
-  i11 = i12 == i4;
-  if (i11) goto l19;
-  i11 = (int)str + i4;
-  i11 = *(unsigned char*)i11;
-  i9 = (int)*(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i14;
-  class_ = (signed char)i1;
-  state = (void*)i14;
-  class_ = (signed char)i1;
-  state = (void*)i14;
-  ((void(*)(unsigned char, signed char *, ConvTypes__ScanState *))i9)((unsigned char)i11, (signed char *)(int)&class_, (ConvTypes__ScanState *)(int)&state);
-  if (!(class_<=-1 || class_>=4)) goto l1;
-  i0 = 1;
-  i11 = 0;
-  i10 = i5;
-  i13 = 0;
-  i9 = i6;
-  goto l15;
-l1:
-  if (!(class_==0)) goto l2;
+  i10 = Strings__Length((const unsigned char*)(int)str, str_0d);
+  i12 = (int)IntConv__SI;
   i0 = 0;
-  i11 = 0;
-  i10 = i5;
-  i13 = 0;
-  i9 = i6;
-  goto l15;
-l2:
-  if (!(class_==1)) goto l14;
-  i0 = i11 == 45;
-  if (i0) goto l12;
-  i10 = i11 == 43;
-  if (i10) goto l11;
-  i11 -= 48;
-  if (i5) goto l6;
-  i0 = i11 + (-2147483647-1);
-  _div(i10, i0, 10, int);
-  i9 = i6 > i10;
-  if (i9) goto l5;
-  i13 = i6 < i10;
-  if (i13) goto l4;
-  i9 = i6 != i10;
-  if (i9) goto l3;
-  _mod(i0, i0, 10, int);
-  i0 = i0 != 0;
-  if (i0) goto l4;
-l3:
-  i9 = i6 * 10;
-  i9 -= i11;
-  i13 = 0;
-  goto l10;
-l4:
-  i9 = i6;
   i3 = 1;
-  i13 = 1;
-  goto l10;
+  i8 = 0;
+  i4 = 0;
+  i1 = 0;
+l0:
+  i9 = i10 == i4;
+  if (i9) goto l16;
+  i2 = (int)str + i4;
+  i2 = *(unsigned char*)i2;
+  i7 = (int)*(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i12;
+  class_ = (signed char)i0;
+  state = (void*)i12;
+  class_ = (signed char)i0;
+  state = (void*)i12;
+  ((void(*)(unsigned char, signed char *, ConvTypes__ScanState *))i7)((unsigned char)i2, (signed char *)(int)&class_, (ConvTypes__ScanState *)(int)&state);
+  if (!(class_==0)) goto l1;
+  i2 = 0;
+  i9 = i3;
+  i11 = 0;
+  i7 = i8;
+  goto l12;
+l1:
+  if (!(class_==1)) goto l11;
+  i6 = i2 == 45;
+  if (i6) goto l9;
+  i9 = i2 == 43;
+  if (i9) goto l8;
+  i2 -= 48;
+  if (i3) goto l5;
+  i9 = i2 + (-2147483647-1);
+  _div(i6, i9, 10, int);
+  i11 = i8 > i6;
+  if (i11) goto l4;
+  i7 = i8 < i6;
+  if (i7) goto l3;
+  i7 = i8 != i6;
+  if (i7) goto l2;
+  _mod(i9, i9, 10, int);
+  i9 = i9 != 0;
+  if (i9) goto l3;
+l2:
+  i7 = i8 * 10;
+  i7 -= i2;
+  i11 = 0;
+  goto l7;
+l3:
+  i7 = i8;
+  i11 = 1;
+  goto l7;
+l4:
+  i7 = i8 * 10;
+  i7 -= i2;
+  i11 = 0;
+  goto l7;
 l5:
-  i9 = i6 * 10;
-  i9 -= i11;
-  i13 = 0;
-  goto l10;
+  i11 = 2147483647 - i2;
+  _div(i11, i11, 10, int);
+  i11 = i8 > i11;
+  if (i11) goto l6;
+  i7 = i8 * 10;
+  i7 = i2 + i7;
+  goto l7;
 l6:
-  i13 = 2147483647 - i11;
-  _div(i13, i13, 10, int);
-  i13 = i6 > i13;
-  if (i13) goto l7;
-  i9 = i6 * 10;
-  i9 = i11 + i9;
-  goto l8;
+  i7 = i8;
 l7:
-  i9 = i6;
+  i9 = i3;
+  goto l10;
 l8:
-  if (i13) goto l9;
+  i11 = 0;
+  i7 = i8;
+  i9 = 1;
   goto l10;
 l9:
-  i3 = 1;
-l10:
-  i10 = i5;
-  goto l13;
-l11:
-  i13 = 0;
-  i9 = i6;
-  i10 = 1;
-  goto l13;
-l12:
-  i9 = i6;
-  i13 = 0;
-  i10 = 0;
-l13:
-  i0 = 0;
+  i7 = i8;
   i11 = 0;
+  i9 = 0;
+l10:
+  i2 = 0;
+  goto l12;
+l11:
+  if (!((class_>=2 && class_<=3))) goto l12;
+  i2 = 1;
+  i9 = i3;
+  i11 = 0;
+  i7 = i8;
+l12:
+  if (i11) goto l13;
+  if (!(i2)) goto l14;
+l13:
+  i6 = i4;
+  i5 = i1;
   goto l15;
 l14:
-  if (!((class_>=2 && class_<=3))) goto l15;
-  i0 = 0;
-  i11 = 1;
-  i10 = i5;
-  i13 = 0;
-  i9 = i6;
+  i6 = i4 + 1;
+  i5 = class_;
 l15:
-  if (i13) goto l16;
-  if (i11) goto l16;
-  if (!(i0)) goto l17;
+  i1 = i5;
+  i4 = i6;
+  i8 = i7;
+  i3 = i9;
+  i12 = (int)state;
+  i0 = class_;
+  goto l17;
 l16:
-  i8 = i4;
-  i7 = i2;
-  goto l18;
+  i11 = 0;
+  i2 = 1;
 l17:
-  i8 = i4 + 1;
-  i7 = class_;
+  if (i11) goto l18;
+  if (!(i2)) goto l0;
 l18:
-  i2 = i7;
-  i4 = i8;
-  i6 = i9;
-  i5 = i10;
-  i14 = (int)state;
-  i1 = class_;
-  goto l20;
-l19:
-  i13 = 0;
-  i11 = 1;
-  i0 = 0;
-l20:
-  if (i13) goto l21;
   if (i11) goto l21;
-  if (!(i0)) goto l0;
+  i2 = (0xCU & ((unsigned int)1 << i0)) != 0;
+  if (i2) goto l20;
+  i2 = i1 == 0;
+  if (i2) goto l19;
+  i2 = 0;
+  goto l22;
+l19:
+  i2 = 3;
+  goto l22;
+l20:
+  i2 = 2;
+  goto l22;
 l21:
-  if (i13) goto l22;
-  if (!(i0)) goto l23;
+  i2 = 1;
 l22:
-  i4 = i3;
-  goto l26;
-l23:
-  i4 = (0xCU & ((unsigned int)1 << i1)) != 0;
-  if (i4) goto l25;
-  i4 = i2 == 0;
-  if (i4) goto l24;
-  i4 = 0;
-  goto l26;
-l24:
-  i4 = 3;
-  goto l26;
-l25:
-  i4 = 2;
-l26:
   _top_vs = _old_top_vs;
-  return (signed char)i4;
+  return (signed char)i2;
 }
 
 int IntConv__ValueInt(const unsigned char* str__ref, int str_0d) {
@@ -339,7 +317,7 @@ unsigned char IntConv__IsIntConvException(void) {
 }
 
 void IntConv_init(void) {
-  register int i0, i1, i2;
+  register int i0;
   _mid = _register_module(&IntConv_md.md, NULL);
   {
     char *_mem, *_var;
@@ -350,28 +328,28 @@ void IntConv_init(void) {
     i0 = (int)_var;
   }
   IntConv__S = (void*)i0;
-  i0 = (int)IntConv__S;
   {
     char *_mem, *_var;
     _mem = GC_malloc_atomic(_not_zero(4)+8);
     if (!_mem) _new_failed(_P(8233));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
-    i1 = (int)_var;
+    i0 = (int)_var;
   }
-  IntConv__W = (void*)i1;
-  i1 = (int)IntConv__W;
+  IntConv__W = (void*)i0;
   {
     char *_mem, *_var;
     _mem = GC_malloc_atomic(_not_zero(4)+8);
     if (!_mem) _new_failed(_P(8241));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
-    i2 = (int)_var;
+    i0 = (int)_var;
   }
-  IntConv__SI = (void*)i2;
-  i2 = (int)IntConv__SI;
+  IntConv__SI = (void*)i0;
+  i0 = (int)IntConv__S;
   *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i0 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&IntConv__SState;
-  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i1 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&IntConv__WState;
-  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i2 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&IntConv__ScanInt;
+  i0 = (int)IntConv__W;
+  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i0 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&IntConv__WState;
+  i0 = (int)IntConv__SI;
+  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i0 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&IntConv__ScanInt;
 }

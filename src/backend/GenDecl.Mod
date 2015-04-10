@@ -1,4 +1,4 @@
-(* 	$Id: GenDecl.Mod,v 1.51 2001/01/14 14:10:54 ooc-devel Exp $	 *)
+(* 	$Id: GenDecl.Mod,v 1.53 2001/05/25 11:49:47 ooc-devel Exp $	 *)
 MODULE GenDecl;
 (*  Handles name mangling, generates C declarations and type casts.
     Copyright (C) 1996-2001  Michael van Acken
@@ -151,7 +151,8 @@ PROCEDURE IllegalName (VAR str: ARRAY OF CHAR): BOOLEAN;
          allocator to a value  *)
       CASE str[0] OF
       | Classify.prefixInt, Classify.prefixHuge, Classify.prefixReal,
-        Classify.prefixLongReal, Classify.prefixAuxiliary:
+        Classify.prefixLongReal, Classify.prefixAuxiliary, 
+        Classify.prefixLabel:
         i := 1;
         WHILE ("0" <= str[i]) & (str[i] <= "9") DO
           INC (i)
@@ -1789,6 +1790,14 @@ PROCEDURE TypeDescriptor* (w: TextRider.Writer; mod: D.Object;
       INCL (t. beFlags, StdTypes.structTDEmitted)
     END
   END TypeDescriptor;
+
+PROCEDURE Init*;
+(**Initialize back-end specific data that is hooked into the predefined
+   modules.  Should be called after SymbolTable.Init.  *)
+  BEGIN
+    AssignNames (Sym.predef);
+    AssignNames (Sym.system);
+  END Init;
 
 
 

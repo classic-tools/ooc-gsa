@@ -507,23 +507,24 @@ l3:
 }
 
 void ValueNumbering__CollectNonEmptyPartitions(void) {
-  register int i0, i1, i2;
+  register int i0, i1, i2, i3;
   ValueNumbering__partitionList = (void*)0;
   ValueNumbering__sizeOnePartitions = (void*)0;
   i0 = 0;
 l0:
-  i2 = (int)_ashl(i0, 2, (unsigned int));
-  i2 = (int)ValueNumbering__collectPartitions + i2;
-  i1 = (int)*(void**)i2;
-  i2 = i1 == 0;
-  if (i2) goto l1;
-  i2 = (int)ValueNumbering__partitionList;
-  *(void**)i1 = (void*)i2;
-  ValueNumbering__partitionList = (void*)i1;
+  i3 = (int)_ashl(i0, 2, (unsigned int));
+  i1 = (int)ValueNumbering__collectPartitions + i3;
+  i2 = (int)*(void**)i1;
+  i3 = i2 == 0;
+  if (i3) goto l1;
+  i3 = (int)ValueNumbering__partitionList;
+  *(void**)i2 = (void*)i3;
+  i2 = (int)*(void**)i1;
+  ValueNumbering__partitionList = (void*)i2;
 l1:
   i0++;
-  i2 = i0 <= 591;
-  if (i2) goto l0;
+  i3 = i0 <= 591;
+  if (i3) goto l0;
 }
 
 void ValueNumbering__PartitionByPredicate(ValueNumbering__MoveDifferentProc mdp) {
@@ -1106,44 +1107,44 @@ void ValueNumbering__SplitPartitions_SplitByPartition(ValueNumbering__Partition 
   i6 = 0;
   goto l7;
 l0:
-  i0 = 0;
+  i1 = 0;
   i2 = 0;
 l1:
-  i1 = (int)*ValueNumbering__SplitPartitions_current;
   splittedPartitions = (void*)i2;
   splittedPartitions = (void*)i2;
-  ValueNumbering__GetSplittedPartitions((ValueNumbering__Partition *)(int)&splittedPartitions, (ValueNumbering__InstrList)i4, (int)i0);
-  i3 = (int)splittedPartitions;
-  i6 = ValueNumbering__PartitionInWorklist((ValueNumbering__Partition)i1, (ValueNumbering__Partition)i3);
-  if (i6) goto l4;
-  i2 = i3 == 0;
-  if (i2) goto l3;
-  i1 = i3;
-l2:
+  ValueNumbering__GetSplittedPartitions((ValueNumbering__Partition *)(int)&splittedPartitions, (ValueNumbering__InstrList)i4, (int)i1);
+  i0 = (int)splittedPartitions;
   i2 = (int)*ValueNumbering__SplitPartitions_current;
-  ValueNumbering__SplitPartitions_SplitByPartition_SplitPartitionByAt((ValueNumbering__Partition)i1, (ValueNumbering__Partition)i2, (int)i0, (ValueNumbering__InstrList)i4, (ValueNumbering__Partition *)&*created, &*ValueNumbering__SplitPartitions_fixpoint);
-  i2 = i1 + 24;
-  i1 = (int)*(void**)i2;
-  i2 = i1 != 0;
-  if (i2) goto l2;
+  i6 = ValueNumbering__PartitionInWorklist((ValueNumbering__Partition)i2, (ValueNumbering__Partition)i0);
+  if (i6) goto l4;
+  i3 = i0 == 0;
+  if (i3) goto l3;
+  i2 = i0;
+l2:
+  i3 = (int)*ValueNumbering__SplitPartitions_current;
+  ValueNumbering__SplitPartitions_SplitByPartition_SplitPartitionByAt((ValueNumbering__Partition)i2, (ValueNumbering__Partition)i3, (int)i1, (ValueNumbering__InstrList)i4, (ValueNumbering__Partition *)&*created, &*ValueNumbering__SplitPartitions_fixpoint);
+  i3 = i2 + 24;
+  i2 = (int)*(void**)i3;
+  i3 = i2 != 0;
+  if (i3) goto l2;
 l3:
-  i2 = i3;
+  i2 = i0;
   goto l5;
 l4:
-  ValueNumbering__SplitPartitions_SplitByPartition_SplitPartitionByAt((ValueNumbering__Partition)i1, (ValueNumbering__Partition)i1, (int)i0, (ValueNumbering__InstrList)i4, (ValueNumbering__Partition *)&*created, &*ValueNumbering__SplitPartitions_fixpoint);
-  splittedPartitions = (void*)i3;
+  ValueNumbering__SplitPartitions_SplitByPartition_SplitPartitionByAt((ValueNumbering__Partition)i2, (ValueNumbering__Partition)i2, (int)i1, (ValueNumbering__InstrList)i4, (ValueNumbering__Partition *)&*created, &*ValueNumbering__SplitPartitions_fixpoint);
+  splittedPartitions = (void*)i0;
   ValueNumbering__ClearWorklist((ValueNumbering__Partition *)(int)&splittedPartitions);
   i2 = (int)splittedPartitions;
 l5:
   if (i6) goto l6;
-  splittedPartitions = (void*)i3;
+  splittedPartitions = (void*)i0;
   ValueNumbering__ClearWorklist((ValueNumbering__Partition *)(int)&splittedPartitions);
   i2 = (int)splittedPartitions;
 l6:
-  i0++;
+  i1++;
   if (i6) goto l7;
-  i1 = i0 <= i5;
-  if (i1) goto l1;
+  i0 = i1 <= i5;
+  if (i0) goto l1;
 l7:
   if (i6) goto l8;
   i1 = (int)*ValueNumbering__SplitPartitions_current;
@@ -1221,76 +1222,87 @@ l8:
 }
 
 void ValueNumbering__CSE_Eliminate(ValueNumbering__Partition part, ValueNumbering__Partition *ValueNumbering__CSE_other) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12;
-  i11 = *(int*)((int)part-4);
-  i0 = (int)((_Type)i11)->tbprocs[3];
+  register int i0, i1, i2, i3, i4, i5, i6, i7, i8;
+  i7 = *(int*)((int)part-4);
+  i0 = (int)((_Type)i7)->tbprocs[3];
   i0 = ((_TBP_ValueNumbering__PartitionDesc_Size)i0)((ValueNumbering__Partition)(int)part);
   i0 = i0 <= 1;
   if (i0) goto l8;
-  i1 = (int)*ValueNumbering__CSE_other;
-  i5 = (int)((_Type)i11)->tbprocs[4];
-  i6 = (int)((_TBP_ValueNumbering__PartitionDesc_GetAnyInstruction)i5)((ValueNumbering__Partition)(int)part);
-  i4 = (int)((_Type)i11)->tbprocs[2];
-  i12 = *(int*)(i1-4);
-  i3 = (int)((_Type)i11)->tbprocs[5];
-  i11 = i6 + 4;
-  ((_TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode)i4)((ValueNumbering__Partition)(int)part, (ValueNumbering__InstrNode)i6);
-  i2 = (int)*(void**)i11;
-  i11 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i3)((ValueNumbering__Partition)(int)part);
-  if (i11) goto l3;
-  i10 = (int)((_Type)i12)->tbprocs[1];
-  i11 = (int)((_Type)i12)->tbprocs[1];
-  i0 = i2;
+  i0 = (int)((_Type)i7)->tbprocs[4];
+  i4 = (int)((_TBP_ValueNumbering__PartitionDesc_GetAnyInstruction)i0)((ValueNumbering__Partition)(int)part);
+  i3 = (int)((_Type)i7)->tbprocs[2];
+  i2 = (int)((_Type)i7)->tbprocs[5];
+  i7 = i4 + 4;
+  ((_TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode)i3)((ValueNumbering__Partition)(int)part, (ValueNumbering__InstrNode)i4);
+  i8 = (int)*(void**)i7;
+  i7 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i2)((ValueNumbering__Partition)(int)part);
+  if (i7) goto l3;
+  i1 = i8;
 l0:
-  i8 = (int)((_TBP_ValueNumbering__PartitionDesc_GetAnyInstruction)i5)((ValueNumbering__Partition)(int)part);
-  i9 = i8 + 4;
-  ((_TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode)i4)((ValueNumbering__Partition)(int)part, (ValueNumbering__InstrNode)i8);
-  i7 = (int)*(void**)i9;
-  i7 += 32;
-  i7 = (int)*(void**)i7;
-  i7 = ValueNumbering__Available((Data__Instruction)i0, (Data__Region)i7);
-  if (i7) goto l1;
-  ((_TBP_ValueNumbering__PartitionDesc_IncludeInstrNode)i11)((ValueNumbering__Partition)i1, (ValueNumbering__InstrNode)i6);
-  i0 = (int)*(void**)i9;
-  i6 = i8;
+  i6 = (int)((_TBP_ValueNumbering__PartitionDesc_GetAnyInstruction)i0)((ValueNumbering__Partition)(int)part);
+  i7 = i6 + 4;
+  ((_TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode)i3)((ValueNumbering__Partition)(int)part, (ValueNumbering__InstrNode)i6);
+  i5 = (int)*(void**)i7;
+  i5 += 32;
+  i5 = (int)*(void**)i5;
+  i5 = ValueNumbering__Available((Data__Instruction)i1, (Data__Region)i5);
+  if (i5) goto l1;
+  i1 = (int)*ValueNumbering__CSE_other;
+  i5 = *(int*)(i1-4);
+  i5 = (int)((_Type)i5)->tbprocs[1];
+  ((_TBP_ValueNumbering__PartitionDesc_IncludeInstrNode)i5)((ValueNumbering__Partition)i1, (ValueNumbering__InstrNode)i4);
+  i1 = (int)*(void**)i7;
+  i4 = i6;
   goto l2;
 l1:
-  ((_TBP_ValueNumbering__PartitionDesc_IncludeInstrNode)i10)((ValueNumbering__Partition)i1, (ValueNumbering__InstrNode)i8);
-l2:
-  i9 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i3)((ValueNumbering__Partition)(int)part);
-  if (!(i9)) goto l0;
-  goto l4;
-l3:
-  i0 = i2;
-l4:
-  i6 = (int)((_Type)i12)->tbprocs[5];
-  i11 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i6)((ValueNumbering__Partition)i1);
-  if (i11) goto l8;
-  i10 = (int)((_Type)i12)->tbprocs[4];
-  i9 = (int)((_Type)i12)->tbprocs[2];
-l5:
-  i5 = (int)((_TBP_ValueNumbering__PartitionDesc_GetAnyInstruction)i10)((ValueNumbering__Partition)i1);
-  ((_TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode)i9)((ValueNumbering__Partition)i1, (ValueNumbering__InstrNode)i5);
-  i5 += 4;
-  i12 = (int)*(void**)i5;
-  i5 = i12 == 0;
-  if (i5) goto l7;
-  i11 = i0;
-  i7 = i12;
-l6:
+  i7 = (int)*ValueNumbering__CSE_other;
   i5 = *(int*)(i7-4);
   i5 = (int)((_Type)i5)->tbprocs[1];
-  i8 = i7 + 12;
-  ((_TBP_Data__UsableDesc_ReplaceUses)i5)((Data__Usable)i7, (Data__Usable)i11);
-  i7 = (int)*(void**)i8;
-  i8 = i11 + 12;
-  i5 = i7 != 0;
-  i11 = (int)*(void**)i8;
-  if (i5) goto l6;
+  ((_TBP_ValueNumbering__PartitionDesc_IncludeInstrNode)i5)((ValueNumbering__Partition)i7, (ValueNumbering__InstrNode)i6);
+l2:
+  i7 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i2)((ValueNumbering__Partition)(int)part);
+  if (!(i7)) goto l0;
+  goto l4;
+l3:
+  i1 = i8;
+l4:
+  i7 = (int)*ValueNumbering__CSE_other;
+  i6 = *(int*)(i7-4);
+  i6 = (int)((_Type)i6)->tbprocs[5];
+  i7 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i6)((ValueNumbering__Partition)i7);
+  if (i7) goto l8;
+l5:
+  i7 = (int)*ValueNumbering__CSE_other;
+  i6 = *(int*)(i7-4);
+  i6 = (int)((_Type)i6)->tbprocs[4];
+  i7 = (int)((_TBP_ValueNumbering__PartitionDesc_GetAnyInstruction)i6)((ValueNumbering__Partition)i7);
+  i6 = (int)*ValueNumbering__CSE_other;
+  i3 = *(int*)(i6-4);
+  i3 = (int)((_Type)i3)->tbprocs[2];
+  ((_TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode)i3)((ValueNumbering__Partition)i6, (ValueNumbering__InstrNode)i7);
+  i7 += 4;
+  i4 = (int)*(void**)i7;
+  i7 = i4 == 0;
+  if (i7) goto l7;
+  i5 = i1;
+  i3 = i4;
+l6:
+  i7 = *(int*)(i3-4);
+  i7 = (int)((_Type)i7)->tbprocs[1];
+  i6 = i3 + 12;
+  ((_TBP_Data__UsableDesc_ReplaceUses)i7)((Data__Usable)i3, (Data__Usable)i5);
+  i3 = (int)*(void**)i6;
+  i6 = i5 + 12;
+  i7 = i3 != 0;
+  i5 = (int)*(void**)i6;
+  if (i7) goto l6;
 l7:
-  Data__InstructionDesc_Delete((Data__Instruction)i12);
-  i5 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i6)((ValueNumbering__Partition)i1);
-  if (!(i5)) goto l5;
+  Data__InstructionDesc_Delete((Data__Instruction)i4);
+  i7 = (int)*ValueNumbering__CSE_other;
+  i6 = *(int*)(i7-4);
+  i6 = (int)((_Type)i6)->tbprocs[5];
+  i7 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i6)((ValueNumbering__Partition)i7);
+  if (!(i7)) goto l5;
 l8:
   ;
 }
@@ -1298,9 +1310,9 @@ l8:
 void ValueNumbering__CSE(void) {
   register int i0, i1, i2;
   ValueNumbering__Partition other;
+  i1 = (int)ValueNumbering__NewPartition((ValueNumbering__Partition)0);
   i2 = (int)ValueNumbering__partitionList;
   i0 = i2 == 0;
-  i1 = (int)ValueNumbering__NewPartition((ValueNumbering__Partition)0);
   if (i0) goto l1;
 l0:
   other = (void*)i1;

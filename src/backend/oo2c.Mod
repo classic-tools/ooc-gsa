@@ -1,7 +1,7 @@
-(* 	$Id: oo2c.Mod,v 1.47 1999/11/24 19:42:26 ooc-devel Exp $	 *)
+(* 	$Id: oo2c.Mod,v 1.48 2001/05/25 11:51:34 ooc-devel Exp $	 *)
 MODULE oo2c;
 (*  OO2C main module.
-    Copyright (C) 1995-1999  Michael van Acken
+    Copyright (C) 1995-1999, 2001  Michael van Acken
 
     This file is part of OOC.
 
@@ -24,7 +24,7 @@ IMPORT
   Out, Filenames, Strings, Parameter, ParamOptions, ParamPaths, ParamPragmas, 
   Config, Error, Scanner, SymbolTable, ParseDecl, Make, CodeGen, FileData,
   External, Build, StdTypes, SystemFlags, StdPragmas, Allocate,
-  ProgramArgs, TextRider;
+  ProgramArgs, TextRider, GenDecl;
 
 CONST
   defaultOptimization = "agGlAc";
@@ -74,6 +74,7 @@ PROCEDURE Compile (sourceFile: ARRAY OF CHAR; program: CodeGen.Program;
     Error.Init;
     Scanner.Init (sourceFile, FALSE);    (* will abort on error *)
     SymbolTable.Init;
+    GenDecl.Init;
     
     (* parse module, `ParseDecl.Module' will call the code generation 
        procedures of the back-end (in module `CodeGen') *)

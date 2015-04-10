@@ -1,7 +1,7 @@
 #!/bin/sh
 # This script manipulates OOC initialization files to install new packages.
 # 
-# Copyright (C) 1998, 1999  Michael van Acken
+# Copyright (C) 1998, 1999, 2001  Michael van Acken
 # 
 # You can redistribute this file it and/or modify it under the terms
 # of the GNU General Public License as published by the Free Software
@@ -18,7 +18,7 @@
 
 if test $# = 0; then
     cat <<\EOF
-usage: ooconfig.sh <file> [command]... 
+usage: ooconfig <file> [command]... 
 
 commands:
 --append-line <key> <value>  Insert the line <value> at the end of the section

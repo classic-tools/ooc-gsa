@@ -47,6 +47,7 @@ extern void GenDecl__RegisterTBCall(Data__Object proc);
 extern void GenDecl__PatchTBCalls(TextRider__Writer w);
 extern void GenDecl__ModuleDescriptor(TextRider__Writer w, Data__Object mod);
 extern void GenDecl__TypeDescriptor(TextRider__Writer w, Data__Object mod, Data__Struct t, Data__Struct link, unsigned char extern_);
+extern void GenDecl__Init(void);
 extern struct _TD GenDecl__SideEffectInfo_td;
 extern void GenDecl_init(void);
 

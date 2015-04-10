@@ -1,7 +1,7 @@
-(* 	$Id: Allocate.Mod,v 2.36 2000/07/21 16:04:51 ooc-devel Exp $	 *)
+(* 	$Id: Allocate.Mod,v 2.37 2001/09/29 11:36:18 ooc-devel Exp $	 *)
 MODULE Allocate;
 (*  Adds location attributes to GSA code.
-    Copyright (C) 1996-2000  Michael van Acken
+    Copyright (C) 1996-2001  Michael van Acken
 
     This file is part of OOC.
 
@@ -527,6 +527,16 @@ PROCEDURE TransformLocation* (greg: D.GlobalRegion; loc: D.SymLocation): D.Locat
   END TransformLocation;
 
 
+PROCEDURE PassThroughInstr (instr: D.Instruction): BOOLEAN;
+  VAR
+    opc: INTEGER;
+  BEGIN
+    opc := instr. opcode;
+    RETURN (Class.instrVoid IN instr. flags) &
+           ((opc = Opc.boundIndex) OR  (opc = Opc.boundRange) OR
+            (opc = Opc.typeGuard))
+  END PassThroughInstr;
+
 PROCEDURE ResolveVarConflicts (greg: D.GlobalRegion);
 (* Looks for possible conflicts between live ranges living in local scalar 
    variables of `greg' and inserts copy instructions to fix the problem.  Such
@@ -645,7 +655,7 @@ PROCEDURE ResolveVarConflicts (greg: D.GlobalRegion);
       BEGIN
         IF (loc # NIL) & (loc(D.SymLocation). var IS D.Object) THEN
           obj := loc(D.SymLocation). var(D.Object);
-          RETURN (obj. localTo = greg. bodyOf) & (obj. marker > 0)
+          RETURN (obj. localTo = greg. bodyOf) & (obj. marker > noMark)
         ELSE
           RETURN FALSE
         END
@@ -865,6 +875,21 @@ PROCEDURE ResolveVarConflicts (greg: D.GlobalRegion);
         RETURN prev
       END SummarizeMerge;
     
+    PROCEDURE GetResult (u: D.Usable): D.Result;
+      VAR
+        res: D.Result;
+      BEGIN
+        IF (u IS D.Result) THEN
+          res := u(D.Result);
+          IF PassThroughInstr (res. instr) THEN
+            RETURN GetResult (res. instr. opndList. arg)
+          ELSE
+            RETURN res
+          END
+        END;
+        RETURN NIL
+      END GetResult;
+    
     BEGIN
       (* scan nested regions; return to top-most caller if one region signals
          that the scan has to be repeated *)
@@ -935,9 +960,11 @@ PROCEDURE ResolveVarConflicts (greg: D.GlobalRegion);
              instruction  *)
           opnd := instr. opndList;
           WHILE (opnd # NIL) DO
-            IF (opnd. arg IS D.Result) &
-               ScalarLocalVar (opnd. arg(D.Result). location, obj) &
-               ReadConflict (ia, opnd. arg(D.Result), obj. marker) THEN
+            res := GetResult (opnd. arg);
+            
+            IF (res # NIL) &
+               ScalarLocalVar (res. location, obj) &
+               ReadConflict (ia, res, obj. marker) THEN
               RETURN TRUE
             END;
             opnd := opnd. nextOpnd
@@ -2636,9 +2663,7 @@ PROCEDURE GlobalRegion* (greg: D.GlobalRegion);
         ELSE
           opc := instr. opcode;
 
-          IF (Class.instrVoid IN instr. flags) &
-             ((opc = Opc.boundIndex) OR  (opc = Opc.boundRange) OR
-              (opc = Opc.typeGuard)) THEN
+          IF PassThroughInstr (instr) THEN
             (* these instructions are plain functions in GSA, but not in C:
                they are translated into plain statements;  to avoid references
                to their non-existent result they are replaced by their

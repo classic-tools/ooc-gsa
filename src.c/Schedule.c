@@ -6,8 +6,7 @@
 static _ModId _mid;
 
 void Schedule__DataDependencies_AddAccesses(Data__Instruction update, Data__Usable value) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8;
-  short int m;
+  register int i0, i1, i2, i3, i4, i5;
   i3 = *(int*)((int)value-4);
   i2 = _type_test(i3, &Data__ObjectDesc_td.td, 4);
   if (i2) goto l3;
@@ -44,147 +43,115 @@ l2:
   i3 = (int)*(void**)i3;
   Schedule__DataDependencies_AddAccesses((Data__Instruction)(int)update, (Data__Usable)i3);
 l3:
-  if (i2) goto l19;
-  i8 = (int)*(void**)(int)value;
-  i7 = i8 == 0;
-  if (i7) goto l19;
+  if (i2) goto l14;
+  i5 = (int)*(void**)(int)value;
+  i4 = i5 == 0;
+  if (i4) goto l14;
   i0 = (int)update + 32;
 l4:
-  i7 = i8 + 16;
-  i7 = (int)*(void**)i7;
-  i6 = (int)Schedule__auxLocation;
-  i7 = i7 == i6;
-  if (i7) goto l6;
-  i6 = i8 + 12;
-  i5 = (int)*(void**)i6;
-  i4 = i5 + 44;
-  i4 = *(short int*)i4;
-  i1 = (short int)_ashr(i4, 4, (unsigned short int));
-  i1 = i1 == 2;
-  if (i1) goto l5;
-  i1 = i4 == 22;
-  if (i1) goto l5;
-  i1 = i4 == 23;
-  if (i1) goto l5;
-  i4 = i4 != 3;
-  if (i4) goto l6;
+  i4 = i5 + 16;
+  i4 = (int)*(void**)i4;
+  i3 = (int)Schedule__auxLocation;
+  i4 = i4 == i3;
+  if (i4) goto l13;
+  i3 = i5 + 12;
+  i2 = (int)*(void**)i3;
+  i1 = i2 + 44;
+  i1 = *(short int*)i1;
+  i4 = (short int)_ashr(i1, 4, (unsigned short int));
+  i4 = i4 == 2;
+  if (i4) goto l5;
+  i4 = i1 == 22;
+  if (i4) goto l5;
+  i4 = i1 == 23;
+  if (i4) goto l5;
+  i1 = i1 != 3;
+  if (i1) goto l13;
 l5:
-  i4 = i5 + 32;
-  i5 = (int)*(void**)i0;
+  i4 = i2 + 32;
+  i2 = (int)*(void**)i0;
   i4 = (int)*(void**)i4;
-  i5 += 4;
+  i2 += 4;
   i4 += 4;
-  i5 = (int)*(void**)i5;
+  i2 = (int)*(void**)i2;
   i4 = (int)*(void**)i4;
-  i5 = GuardCond__Contradicting((GuardCond__RegionInfo)i5, (GuardCond__RegionInfo)i4);
-  if (i5) goto l6;
-  i7 = (int)*(void**)i6;
-  i7 = AliasAnalysis__Aliasing((Data__Instruction)(int)update, (signed char)2, (Data__Instruction)i7, (signed char)0);
-  i7 = i7 != -1;
-  if (i7) goto l7;
+  i2 = GuardCond__Contradicting((GuardCond__RegionInfo)i2, (GuardCond__RegionInfo)i4);
+  if (i2) goto l13;
+  i4 = (int)*(void**)i3;
+  i4 = AliasAnalysis__Aliasing((Data__Instruction)(int)update, (signed char)2, (Data__Instruction)i4, (signed char)0);
+  i4 = i4 == -1;
+  if (i4) goto l13;
+  i1 = Data__OpndDesc_OperandIndex((Data__Opnd)i5);
+  i2 = (int)*(void**)i3;
+  i3 = i2 + 44;
+  i4 = *(short int*)i3;
+  if (!((i4>=32 && i4<=33))) goto l6;
+  i4 = 0;
+  goto l10;
 l6:
-  i1 = 0;
-  goto l17;
+  if (!((i4>=22 && i4<=23))) goto l7;
+  i4 = 3;
+  goto l10;
 l7:
-  i5 = Data__OpndDesc_OperandIndex((Data__Opnd)i8);
-  i4 = (int)*(void**)i6;
-  i6 = i4 + 44;
-  i1 = *(short int*)i6;
-  if (!(i1<=2 || (i1>=4 && i1<=21) || (i1>=24 && i1<=31) || i1>=38)) goto l8;
-  i1 = 1;
-  i3 = i2;
-  goto l13;
+  if (!((i4>=34 && i4<=36))) goto l8;
+  i4 = 2;
+  goto l10;
 l8:
-  if (!((i1>=32 && i1<=33))) goto l9;
-  i1 = 0;
-  i3 = 0;
-  goto l13;
+  if (!(i4==37)) goto l9;
+  i4 = 1;
+  goto l10;
 l9:
-  if (!((i1>=22 && i1<=23))) goto l10;
-  i1 = 0;
-  i3 = 3;
-  goto l13;
+  if (!(i4==3)) goto l10;
+  i4 = -1;
 l10:
-  if (!((i1>=34 && i1<=36))) goto l11;
-  i1 = 0;
-  i3 = 2;
-  goto l13;
+  i1 = i1 == i4;
+  if (i1) goto l11;
+  i4 = i4 >= 0;
+  if (i4) goto l13;
 l11:
-  if (!(i1==37)) goto l12;
-  i1 = 0;
-  i3 = 1;
-  goto l13;
+  i1 = i2 + 48;
+  i4 = *(unsigned int*)i1;
+  i4 = (i4 & ((unsigned int)1 << 10)) != 0;
+  if (i4) goto l12;
+  i4 = (int)update == i2;
+  if (i4) goto l12;
+  i4 = AliasAnalysis__Aliasing((Data__Instruction)(int)update, (signed char)2, (Data__Instruction)i2, (signed char)0);
+  i4 = i4 == -1;
+  if (i4) goto l12;
+  i4 = (int)Schedule__auxLocation;
+  Data__InstructionDesc_UniqueOperand((Data__Instruction)(int)update, (Data__Usable)i2, (Data__Location)i4);
 l12:
-  if (!(i1==3)) goto l13;
-  i1 = 0;
-  i3 = -1;
+  i3 = *(short int*)i3;
+  i3 = (short int)_ashr(i3, 4, (unsigned short int));
+  i3 = i3 != 2;
+  if (i3) goto l13;
+  i1 = *(unsigned int*)i1;
+  i1 = (i1 & ((unsigned int)1 << 10)) != 0;
+  if (!(i1)) goto l13;
+  Schedule__DataDependencies_AddAccesses((Data__Instruction)(int)update, (Data__Usable)i2);
 l13:
-  if (i1) goto l16;
-  i5 = i5 == i3;
-  if (i5) goto l14;
-  i5 = i3 >= 0;
-  if (i5) goto l16;
+  i4 = i5 + 4;
+  i5 = (int)*(void**)i4;
+  i4 = i5 != 0;
+  if (i4) goto l4;
 l14:
-  i5 = i4 + 48;
-  i7 = *(unsigned int*)i5;
-  i7 = (i7 & ((unsigned int)1 << 10)) != 0;
-  if (i7) goto l15;
-  i7 = (int)update == i4;
-  if (i7) goto l15;
-  i7 = AliasAnalysis__Aliasing((Data__Instruction)(int)update, (signed char)2, (Data__Instruction)i4, (signed char)0);
-  i7 = i7 == -1;
-  if (i7) goto l15;
-  i7 = (int)Schedule__auxLocation;
-  Data__InstructionDesc_UniqueOperand((Data__Instruction)(int)update, (Data__Usable)i4, (Data__Location)i7);
-l15:
-  i6 = *(short int*)i6;
-  i6 = (short int)_ashr(i6, 4, (unsigned short int));
-  i6 = i6 != 2;
-  if (i6) goto l16;
-  i5 = *(unsigned int*)i5;
-  i5 = (i5 & ((unsigned int)1 << 10)) != 0;
-  if (!(i5)) goto l16;
-  Schedule__DataDependencies_AddAccesses((Data__Instruction)(int)update, (Data__Usable)i4);
-l16:
-  i2 = i3;
-l17:
-  if (i1) goto l18;
-  i7 = i8 + 4;
-  i7 = (int)*(void**)i7;
-  i8 = i7;
-l18:
-  if (i1) goto l19;
-  i7 = i8 != 0;
-  if (i7) goto l4;
-l19:
   ;
 }
 
 Data__Usable Schedule__DataDependencies_AddStoreAccesses_GetStoreInput(Data__Instruction instr) {
-  register int i0, i1;
-  Data__Opnd opnd;
+  register int i0;
   i0 = (int)instr + 44;
   i0 = *(short int*)i0;
-  if (!(i0<=2 || (i0>=4 && i0<=25) || (i0>=27 && i0<=36) || (i0>=38 && i0<=49) || i0>=54)) goto l0;
-  i1 = 1;
-  goto l2;
-l0:
-  if (!(i0==3 || i0==26 || i0==37 || i0==53)) goto l1;
+  if (!(i0==3 || i0==26 || i0==37 || i0==53)) goto l0;
   i0 = (int)SymbolTable__store;
   i0 = (int)Data__InstructionDesc_GetOperand((Data__Instruction)(int)instr, (Data__Addressable)i0, (short int)-3);
-  i1 = 0;
-  goto l2;
-l1:
-  if (!((i0>=50 && i0<=52))) goto l2;
+  goto l1;
+l0:
+  if (!((i0>=50 && i0<=52))) goto l1;
   i0 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)(int)instr, (short int)2);
-  i1 = 0;
-l2:
-  if (i1) goto l3;
-  i1 = (int)*(void**)i0;
-  goto l4;
-l3:
-l4:
-  return (void*)i1;
+l1:
+  i0 = (int)*(void**)i0;
+  return (void*)i0;
 }
 
 void Schedule__DataDependencies_AddStoreAccesses(Data__Instruction update, Data__Usable value) {
@@ -301,24 +268,21 @@ Data__Usable Schedule__DataDependencies_InspectUpdate_UpdatedValue(Data__Instruc
   register int i0;
   i0 = (int)instr + 44;
   i0 = *(short int*)i0;
-  if (!(i0<=47 || i0>=54)) goto l0;
-  goto l2;
+  if (!((i0>=48 && i0<=49))) goto l0;
+  i0 = (int)instr + 28;
+  i0 = (int)*(void**)i0;
+  i0 = (int)*(void**)i0;
+  goto l1;
 l0:
-  if (!((i0>=48 && i0<=49))) goto l1;
+  if (!((i0>=50 && i0<=53))) goto l1;
   i0 = (int)instr + 28;
   i0 = (int)*(void**)i0;
+  i0 += 8;
   i0 = (int)*(void**)i0;
-  goto l2;
+  i0 += 8;
+  i0 = (int)*(void**)i0;
+  i0 = (int)*(void**)i0;
 l1:
-  if (!((i0>=50 && i0<=53))) goto l2;
-  i0 = (int)instr + 28;
-  i0 = (int)*(void**)i0;
-  i0 += 8;
-  i0 = (int)*(void**)i0;
-  i0 += 8;
-  i0 = (int)*(void**)i0;
-  i0 = (int)*(void**)i0;
-l2:
   return (void*)i0;
 }
 
@@ -429,6 +393,8 @@ l9:
   i4 = (int)*(void**)i4;
   i4 += 44;
   i4 = *(short int*)i4;
+  i3 = i4 == 51;
+  if (i3) goto l10;
   i3 = i4 == 48;
   if (i3) goto l10;
   i4 = i4 != 49;
@@ -702,7 +668,7 @@ l0:
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(12)+8);
-    if (!_mem) _new_failed(_P(19466));
+    if (!_mem) _new_failed(_P(19537));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Schedule__ScheduleInfoDesc_td.td;
     i1 = (int)_var;
@@ -715,31 +681,31 @@ l1:
 }
 
 unsigned char Schedule__InitSelection_EndOfRegion(Data__Instruction instr, Data__Region *Schedule__InitSelection_r) {
-  register int i0, i1, i2, i3;
-  i2 = (int)*(void**)(int)instr;
-  i0 = i2 != 0;
+  register int i0, i1, i2;
+  i1 = (int)*(void**)(int)instr;
+  i0 = i1 != 0;
   if (i0) goto l0;
-  i3 = 0;
+  i2 = 0;
   goto l3;
 l0:
-  i0 = (int)*Schedule__InitSelection_r;
 l1:
-  i1 = i2 + 12;
-  i1 = (int)*(void**)i1;
-  i1 += 32;
-  i1 = (int)*(void**)i1;
-  i1 = Data__RegionDesc_Dominates((Data__Region)i1, (Data__Region)i0);
-  i3 = ! i1;
-  if (i3) goto l2;
-  i1 = i2 + 4;
-  i1 = (int)*(void**)i1;
-  i2 = i1;
+  i0 = i1 + 12;
+  i0 = (int)*(void**)i0;
+  i0 += 32;
+  i0 = (int)*(void**)i0;
+  i2 = (int)*Schedule__InitSelection_r;
+  i0 = Data__RegionDesc_Dominates((Data__Region)i0, (Data__Region)i2);
+  i2 = ! i0;
+  if (i2) goto l2;
+  i0 = i1 + 4;
+  i0 = (int)*(void**)i0;
+  i1 = i0;
 l2:
-  if (i3) goto l3;
-  i1 = i2 != 0;
-  if (i1) goto l1;
+  if (i2) goto l3;
+  i0 = i1 != 0;
+  if (i0) goto l1;
 l3:
-  if (i3) goto l4;
+  if (i2) goto l4;
   i0 = 1;
   goto l5;
 l4:
@@ -1051,17 +1017,19 @@ l3:
 }
 
 Data__Instruction Schedule__Select(Data__Region ready) {
-  register int i0, i1, i2, i3, i4, i5;
-  i5 = (int)ready + 56;
-  i0 = (int)*(void**)i5;
-  i1 = i0 + 4;
-  i2 = (int)*(void**)i1;
-  i3 = i2 + 8;
-  i4 = (int)Schedule__infoList;
-  *(void**)i3 = (void*)i4;
-  Schedule__infoList = (void*)i2;
-  *(void**)i1 = (void*)0;
-  i0 = (int)*(void**)i5;
+  register int i0, i1, i2, i3;
+  i0 = (int)ready + 56;
+  i1 = (int)*(void**)i0;
+  i1 += 4;
+  i1 = (int)*(void**)i1;
+  i3 = i1 + 8;
+  i2 = (int)Schedule__infoList;
+  *(void**)i3 = (void*)i2;
+  Schedule__infoList = (void*)i1;
+  i1 = (int)*(void**)i0;
+  i2 = i1 + 4;
+  *(void**)i2 = (void*)0;
+  i0 = (int)*(void**)i0;
   return (void*)i0;
 }
 
@@ -1303,55 +1271,55 @@ l0:
 l1:
   i0 = (int)*Schedule__Schedule_scheduled;
   Data__InstructionDesc_MoveBehind((Data__Instruction)(int)instr, (Data__Instruction)i0);
-  i1 = (int)instr + 8;
-  i0 = *Schedule__Schedule_unscheduled;
-  *(int*)i1 = -1;
-  i1 = i0 - 1;
-  i0 = (int)instr == 0;
   *Schedule__Schedule_scheduled = (void*)(int)instr;
-  *Schedule__Schedule_unscheduled = i1;
+  i0 = (int)instr + 8;
+  *(int*)i0 = -1;
+  i0 = *Schedule__Schedule_unscheduled;
+  i0--;
+  *Schedule__Schedule_unscheduled = i0;
+  i0 = (int)instr == 0;
   if (i0) goto l7;
   i5 = (int)instr;
 l2:
   i4 = (int)*(void**)i5;
-  i0 = i4 == 0;
-  if (i0) goto l6;
-  i0 = (int)instr != i5;
+  i6 = i4 == 0;
+  if (i6) goto l6;
+  i6 = (int)instr != i5;
 l3:
   i3 = i4 + 12;
   i2 = (int)*(void**)i3;
-  i1 = (int)instr == i2;
+  i0 = (int)instr == i2;
+  if (i0) goto l5;
+  i0 = i2 + 32;
+  i1 = (int)*Schedule__Schedule_r;
+  i0 = (int)*(void**)i0;
+  i0 = i0 != i1;
+  if (i0) goto l5;
+  i0 = Schedule__BackedgeOpnd((Data__Opnd)i4);
+  if (i0) goto l5;
+  if (i6) goto l4;
+  i1 = Schedule__Schedule_MergeUse((Data__Instruction)(int)instr, (Data__Instruction)i2, (Data__Region *)&*Schedule__Schedule_r);
   if (i1) goto l5;
-  i1 = i2 + 32;
-  i6 = (int)*Schedule__Schedule_r;
-  i1 = (int)*(void**)i1;
-  i1 = i1 != i6;
-  if (i1) goto l5;
-  i1 = Schedule__BackedgeOpnd((Data__Opnd)i4);
-  if (i1) goto l5;
-  if (i0) goto l4;
-  i6 = Schedule__Schedule_MergeUse((Data__Instruction)(int)instr, (Data__Instruction)i2, (Data__Region *)&*Schedule__Schedule_r);
-  if (i6) goto l5;
 l4:
   i3 = (int)*(void**)i3;
-  i6 = i3 + 8;
-  i2 = *(int*)i6;
+  i1 = i3 + 8;
+  i2 = *(int*)i1;
   i2--;
-  *(int*)i6 = i2;
-  i6 = *(int*)i6;
-  i6 = i6 != 0;
-  if (i6) goto l5;
+  *(int*)i1 = i2;
+  i1 = *(int*)i1;
+  i1 = i1 != 0;
+  if (i1) goto l5;
   i3 = (int)Schedule__Schedule_AddToReady((Data__Instruction)i3, (Data__Region *)&*Schedule__Schedule_r);
 l5:
-  i1 = i4 + 4;
-  i4 = (int)*(void**)i1;
-  i1 = i4 != 0;
-  if (i1) goto l3;
+  i0 = i4 + 4;
+  i4 = (int)*(void**)i0;
+  i0 = i4 != 0;
+  if (i0) goto l3;
 l6:
-  i0 = i5 + 12;
-  i5 = (int)*(void**)i0;
-  i0 = i5 != 0;
-  if (i0) goto l2;
+  i6 = i5 + 12;
+  i5 = (int)*(void**)i6;
+  i6 = i5 != 0;
+  if (i6) goto l2;
 l7:
   ;
 }
@@ -1440,38 +1408,38 @@ void Schedule__Schedule(Data__Region r) {
   Data__Instruction scheduled;
   int unscheduled;
   i0 = (int)r + 64;
-  i2 = (int)*(void**)i0;
-  i0 = i2 == 0;
+  i3 = (int)*(void**)i0;
+  i0 = i3 == 0;
   if (i0) goto l2;
 l0:
-  i3 = i2 + 68;
-  Schedule__Schedule((Data__Region)i2);
-  i0 = Schedule__Schedule_DelayedRegion((Data__Region)i2);
+  i2 = i3 + 68;
+  Schedule__Schedule((Data__Region)i3);
+  i0 = Schedule__Schedule_DelayedRegion((Data__Region)i3);
   if (!(i0)) goto l1;
-  i1 = i2 + 48;
+  i1 = i3 + 48;
   i0 = *(unsigned int*)i1;
   i0 = i0 | ((unsigned int)1 << 16);
   *(unsigned int*)i1 = i0;
 l1:
-  i2 = (int)*(void**)i3;
-  i0 = i2 != 0;
+  i3 = (int)*(void**)i2;
+  i0 = i3 != 0;
   if (i0) goto l0;
 l2:
   i0 = (int)r + 56;
-  i8 = (int)*(void**)i0;
-  i1 = i8 != 0;
+  i6 = (int)*(void**)i0;
+  i1 = i6 != 0;
   if (i1) goto l3;
   i7 = 0;
   goto l12;
 l3:
   i7 = 0;
 l4:
-  i6 = i8 + 8;
-  *(int*)i6 = 0;
-  i1 = i8 + 44;
+  i8 = i6 + 8;
+  *(int*)i8 = 0;
+  i1 = i6 + 44;
   i1 = *(short int*)i1;
   i1 = i1 != 19;
-  i2 = i8 + 28;
+  i2 = i6 + 28;
   i4 = (int)*(void**)i2;
   if (i1) goto l5;
   i1 = (int)*(void**)i4;
@@ -1487,7 +1455,7 @@ l6:
 l7:
   i1 = i4 != 0;
   if (!(i1)) goto l11;
-  i1 = i8 + 32;
+  i1 = i6 + 32;
 l8:
   i3 = (int)*(void**)i4;
   i2 = *(int*)(i3-4);
@@ -1497,7 +1465,7 @@ l8:
   if (!(i2)) goto l10;
   i3 += 16;
   i3 = (int)*(void**)i3;
-  i2 = i8 == i3;
+  i2 = i6 == i3;
   if (i2) goto l10;
   i2 = i3 + 32;
   i3 = (int)*(void**)i1;
@@ -1508,53 +1476,53 @@ l8:
   i3 = i4 == 0;
   if (i3) goto l10;
 l9:
-  i3 = *(int*)i6;
+  i3 = *(int*)i8;
   i3++;
-  *(int*)i6 = i3;
+  *(int*)i8 = i3;
 l10:
   i2 = i4 != 0;
   if (i2) goto l8;
 l11:
-  i1 = i8 + 36;
-  i8 = (int)*(void**)i1;
+  i1 = i6 + 36;
+  i6 = (int)*(void**)i1;
   i7++;
-  i1 = i8 != 0;
+  i1 = i6 != 0;
   if (i1) goto l4;
 l12:
   Schedule__InitSelection((Data__Region)(int)r);
-  i0 = (int)*(void**)i0;
-  i1 = i0 != 0;
-  if (i1) goto l13;
-  i3 = (int)r;
+  i1 = (int)*(void**)i0;
+  i0 = i1 != 0;
+  if (i0) goto l13;
+  i2 = (int)r;
   goto l18;
 l13:
-  i3 = (int)r;
+  i2 = (int)r;
 l14:
-  i1 = i0 + 8;
-  i1 = *(int*)i1;
-  i1 = i1 != 0;
-  if (i1) goto l16;
-  i1 = i0 + 44;
-  i1 = *(short int*)i1;
-  i1 = i1 == 82;
-  if (i1) goto l15;
-  i1 = *(int*)(i0-4);
-  i1 = _type_test(i1, &Data__MergeDesc_td.td, 6);
-  if (i1) goto l16;
+  i0 = i1 + 8;
+  i0 = *(int*)i0;
+  i0 = i0 != 0;
+  if (i0) goto l16;
+  i0 = i1 + 44;
+  i0 = *(short int*)i0;
+  i0 = i0 == 82;
+  if (i0) goto l15;
+  i0 = *(int*)(i1-4);
+  i0 = _type_test(i0, &Data__MergeDesc_td.td, 6);
+  if (i0) goto l16;
 l15:
-  r = (void*)i3;
-  r = (void*)i3;
-  i1 = (int)Schedule__Schedule_AddToReady((Data__Instruction)i0, (Data__Region *)&r);
-  i0 = i1;
-  i3 = (int)r;
+  r = (void*)i2;
+  r = (void*)i2;
+  i0 = (int)Schedule__Schedule_AddToReady((Data__Instruction)i1, (Data__Region *)&r);
+  i1 = i0;
+  i2 = (int)r;
   goto l17;
 l16:
-  i0 += 36;
-  i1 = (int)*(void**)i0;
-  i0 = i1;
+  i1 += 36;
+  i0 = (int)*(void**)i1;
+  i1 = i0;
 l17:
-  i1 = i0 != 0;
-  if (i1) goto l14;
+  i0 = i1 != 0;
+  if (i0) goto l14;
 l18:
   i0 = (int)Schedule__ready;
   i0 += 56;
@@ -1564,30 +1532,30 @@ l18:
   i1 = i7;
   i0 = 0;
 l19:
-  i2 = (int)Schedule__ready;
-  i4 = (int)Schedule__Select((Data__Region)i2);
-  r = (void*)i3;
-  scheduled = (void*)i0;
-  unscheduled = (int)i1;
-  r = (void*)i3;
-  scheduled = (void*)i0;
-  unscheduled = (int)i1;
-  Schedule__Schedule_ScheduleInstr((Data__Instruction)i4, (Data__Region *)&r, (Data__Instruction *)&scheduled, &unscheduled);
   i3 = (int)Schedule__ready;
-  i3 += 56;
-  i3 = (int)*(void**)i3;
-  i3 = i3 == 0;
-  if (i3) goto l20;
+  i3 = (int)Schedule__Select((Data__Region)i3);
+  r = (void*)i2;
+  scheduled = (void*)i0;
+  unscheduled = (int)i1;
+  r = (void*)i2;
+  scheduled = (void*)i0;
+  unscheduled = (int)i1;
+  Schedule__Schedule_ScheduleInstr((Data__Instruction)i3, (Data__Region *)&r, (Data__Instruction *)&scheduled, &unscheduled);
+  i2 = (int)Schedule__ready;
+  i2 += 56;
+  i2 = (int)*(void**)i2;
+  i2 = i2 == 0;
+  if (i2) goto l20;
   i1 = unscheduled;
   i0 = (int)scheduled;
-  i3 = (int)r;
+  i2 = (int)r;
   goto l19;
 l20:
   i7 = unscheduled;
 l21:
   i0 = i7 == 0;
   if (i0) goto l22;
-  _assertion_failed(1, _P(35451));
+  _assertion_failed(1, _P(35522));
 l22:
   ;
 }
@@ -1754,7 +1722,7 @@ void Schedule_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(76)+8);
-    if (!_mem) _new_failed(_P(38834));
+    if (!_mem) _new_failed(_P(38905));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ObjectDesc_td.td;
     i0 = (int)_var;
@@ -1768,7 +1736,7 @@ void Schedule_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(80)+8);
-    if (!_mem) _new_failed(_P(38970));
+    if (!_mem) _new_failed(_P(39041));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__RegionDesc_td.td;
     i0 = (int)_var;

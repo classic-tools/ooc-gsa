@@ -596,6 +596,29 @@ l11:
   return (void*)i4;
 }
 
+unsigned char Allocate__PassThroughInstr(Data__Instruction instr) {
+  register int i0, i1;
+  i0 = (int)instr + 48;
+  i0 = *(unsigned int*)i0;
+  i0 = (i0 & ((unsigned int)1 << 11)) != 0;
+  i1 = (int)instr + 44;
+  i1 = *(short int*)i1;
+  if (!(i0)) goto l0;
+  i0 = i1 == 12;
+  if (i0) goto l1;
+  i0 = i1 == 13;
+  if (i0) goto l1;
+  i1 = i1 == 15;
+  if (i1) goto l1;
+l0:
+  i0 = 0;
+  goto l2;
+l1:
+  i0 = 1;
+l2:
+  return (unsigned char)i0;
+}
+
 void Allocate__ResolveVarConflicts_MarkObjects(Data__Object obj, int *Allocate__ResolveVarConflicts_counter) {
   register int i0, i1, i2;
   i0 = (int)obj == 0;
@@ -648,6 +671,7 @@ l0:
   i0 = *Allocate__ResolveVarConflicts_icounter;
   i2 = i1 + 8;
   *(int*)i2 = i0;
+  i0 = *Allocate__ResolveVarConflicts_icounter;
   i0++;
   *Allocate__ResolveVarConflicts_icounter = i0;
   i0 = *(int*)(i1-4);
@@ -668,39 +692,40 @@ struct Allocate__ResolveVarConflicts_0* Allocate__ResolveVarConflicts_NewInfo(in
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(4)+8);
-    if (!_mem) _new_failed(_P(23467));
+    if (!_mem) _new_failed(_P(23757));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Allocate__ResolveVarConflicts_0_td.td;
     i5 = (int)_var;
   }
   i0 = *Allocate__ResolveVarConflicts_counter;
-  i6 = i0 - 1;
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i0 < 0) _invalid_length(i0, _P(23498));
+    if(i0 < 0) _invalid_length(i0, _P(23788));
     _mem = GC_malloc(_not_zero(i0*8)+8);
-    if (!_mem) _new_failed(_P(23483));
+    if (!_mem) _new_failed(_P(23773));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i0;
-    i1 = (int)_var;
+    i0 = (int)_var;
   }
+  *(void**)i5 = (void*)i0;
+  i0 = *Allocate__ResolveVarConflicts_counter;
+  i6 = i0 - 1;
   i0 = i6 < 0;
-  *(void**)i5 = (void*)i1;
   if (i0) goto l1;
   i0 = (int)*(void**)i5;
   i1 = 0;
 l0:
-  i7 = (int)_ashl(i1, 3, (unsigned int));
-  i7 = i0 + i7;
-  i2 = i1 + 1;
-  i4 = i7 + 4;
-  *(void**)i7 = (void*)0;
-  i3 = i2 > i6;
+  i2 = (int)_ashl(i1, 3, (unsigned int));
+  i2 = i0 + i2;
+  i7 = i1 + 1;
+  i4 = i2 + 4;
+  *(void**)i2 = (void*)0;
+  i3 = i7 > i6;
   *(void**)i4 = (void*)0;
   if (i3) goto l1;
-  i1 = i2;
+  i1 = i7;
   goto l0;
 l1:
   return (void*)i5;
@@ -759,7 +784,7 @@ l1:
   if (i2) goto l2;
   i0 += 8;
   i0 = *(int*)i0;
-  i0 = i0 > 0;
+  i0 = i0 > -1;
   if (i0) goto l3;
 l2:
   i2 = 0;
@@ -1016,18 +1041,19 @@ l2:
 l3:
   i0 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)i0, (short int)opn);
   i3 = (int)*(void**)i0;
-  i0 = *(int*)(i3-4);
-  i0 = _type_test(i0, &Data__ResultDesc_td.td, 3);
-  if (!(i0)) goto l4;
-  i0 = i3 + 20;
-  i1 = (int)*(void**)i0;
-  i0 = (int)*Allocate__ResolveVarConflicts_ScanRegions_obj;
-  i0 = Allocate__ResolveVarConflicts_ScanRegions_ScalarLocalVar((Data__Location)i1, (Data__Object *)(int)(int)Allocate__ResolveVarConflicts_ScanRegions_obj, (Data__GlobalRegion *)&*Allocate__ResolveVarConflicts_greg);
-  if (!(i0)) goto l4;
-  i0 = (int)*Allocate__ResolveVarConflicts_ScanRegions_obj;
-  i0 += 8;
-  i0 = *(int*)i0;
-  i3 = Allocate__ResolveVarConflicts_ScanRegions_ReadConflict((struct Allocate__ResolveVarConflicts_0*)(int)ia, (Data__Result)i3, (int)i0);
+  i1 = *(int*)(i3-4);
+  i1 = _type_test(i1, &Data__ResultDesc_td.td, 3);
+  if (!(i1)) goto l4;
+  i3 += 20;
+  i1 = (int)*(void**)i3;
+  i3 = (int)*Allocate__ResolveVarConflicts_ScanRegions_obj;
+  i3 = Allocate__ResolveVarConflicts_ScanRegions_ScalarLocalVar((Data__Location)i1, (Data__Object *)(int)(int)Allocate__ResolveVarConflicts_ScanRegions_obj, (Data__GlobalRegion *)&*Allocate__ResolveVarConflicts_greg);
+  if (!(i3)) goto l4;
+  i3 = (int)*Allocate__ResolveVarConflicts_ScanRegions_obj;
+  i3 += 8;
+  i0 = (int)*(void**)i0;
+  i3 = *(int*)i3;
+  i3 = Allocate__ResolveVarConflicts_ScanRegions_ReadConflict((struct Allocate__ResolveVarConflicts_0*)(int)ia, (Data__Result)i0, (int)i3);
   if (!(i3)) goto l4;
   i3 = 1;
   goto l5;
@@ -1069,7 +1095,7 @@ l2:
 }
 
 Data__Instruction Allocate__ResolveVarConflicts_ScanRegions_SummarizeMerge(Data__Merge merge, int *Allocate__ResolveVarConflicts_counter, int *Allocate__ResolveVarConflicts_ScanRegions_i) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14;
+  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13;
   i0 = (int)merge + 28;
   i8 = (int)*(void**)i0;
   i1 = i8 != 0;
@@ -1149,80 +1175,87 @@ l13:
   if (i4) goto l1;
 l14:
   if (i9) goto l35;
-  i13 = (int)Allocate__ResolveVarConflicts_NewInfo(&*Allocate__ResolveVarConflicts_counter);
+  i12 = (int)Allocate__ResolveVarConflicts_NewInfo(&*Allocate__ResolveVarConflicts_counter);
+  i11 = *Allocate__ResolveVarConflicts_counter;
   *Allocate__ResolveVarConflicts_ScanRegions_i = 0;
-  i12 = *Allocate__ResolveVarConflicts_counter;
-  i12--;
+  i3 = i11 - 1;
   i11 = *Allocate__ResolveVarConflicts_ScanRegions_i;
-  i11 = i11 > i12;
+  i11 = i11 > i3;
   if (i11) goto l23;
-  i11 = (int)*(void**)i13;
-  i10 = (int)merge + 32;
+  i11 = (int)merge + 32;
 l15:
-  i4 = *Allocate__ResolveVarConflicts_ScanRegions_i;
-  i9 = (int)_ashl(i4, 3, (unsigned int));
-  i3 = i11 + i9;
-  i5 = i3 + 4;
-  i9 = (int)*(void**)i5;
-  i9 = i9 != 0;
-  if (i9) goto l22;
-  i8 = (int)*(void**)i0;
-  i6 = i8 == 0;
-  if (i6) goto l22;
-  i14 = (int)*(void**)i10;
-  i6 = (int)_ashl(i4, 3, (unsigned int));
+  i5 = (int)*(void**)i12;
+  i10 = *Allocate__ResolveVarConflicts_ScanRegions_i;
+  i9 = (int)_ashl(i10, 3, (unsigned int));
+  i9 = i5 + i9;
+  i10 = i9 + 4;
+  i10 = (int)*(void**)i10;
+  i10 = i10 != 0;
+  if (i10) goto l22;
+  i9 = (int)*(void**)i0;
+  i13 = i9 == 0;
+  if (i13) goto l22;
+  i13 = (int)*(void**)i11;
 l16:
-  i7 = (int)*(void**)i8;
-  i2 = i7 + 32;
-  i2 = (int)*(void**)i2;
-  i2 = i2 != i14;
-  if (i2) goto l17;
-  i9 = i7;
+  i7 = (int)*(void**)i9;
+  i6 = i7 + 32;
+  i6 = (int)*(void**)i6;
+  i6 = i6 != i13;
+  if (i6) goto l17;
+  i4 = i7;
   goto l19;
 l17:
-  i9 = i7;
+  i4 = i7;
 l18:
-  i9 += 32;
-  i9 = (int)*(void**)i9;
-  i2 = i9 + 32;
-  i2 = (int)*(void**)i2;
-  i2 = i2 != i14;
-  if (i2) goto l18;
+  i4 += 32;
+  i4 = (int)*(void**)i4;
+  i6 = i4 + 32;
+  i6 = (int)*(void**)i6;
+  i6 = i6 != i13;
+  if (i6) goto l18;
 l19:
-  i2 = i9 + 4;
-  i2 = (int)*(void**)i2;
-  i2 = (int)*(void**)i2;
-  i2 += i6;
-  i2 += 4;
-  i9 = (int)*(void**)i2;
-  i2 = i9 == 0;
-  if (i2) goto l21;
-  i2 = (int)*(void**)i5;
-  i7 = i2 == 0;
+  i2 = *Allocate__ResolveVarConflicts_ScanRegions_i;
+  i6 = i4 + 4;
+  i6 = (int)*(void**)i6;
+  i6 = (int)*(void**)i6;
+  i4 = (int)_ashl(i2, 3, (unsigned int));
+  i6 += i4;
+  i6 += 4;
+  i10 = (int)*(void**)i6;
+  i6 = i10 == 0;
+  if (i6) goto l21;
+  i7 = (int)_ashl(i2, 3, (unsigned int));
+  i4 = i5 + i7;
+  i6 = i4 + 4;
+  i8 = (int)*(void**)i6;
+  i7 = i8 == 0;
   if (i7) goto l20;
-  i2 = i2 == i9;
-  if (i2) goto l21;
-  i2 = (int)Data__constUndef;
-  *(void**)i5 = (void*)i2;
+  i8 = i8 == i10;
+  if (i8) goto l21;
+  i8 = (int)Data__constUndef;
+  *(void**)i6 = (void*)i8;
   goto l21;
 l20:
-  *(void**)i5 = (void*)i9;
+  *(void**)i6 = (void*)i10;
 l21:
-  i2 = i8 + 8;
-  i8 = (int)*(void**)i2;
-  i2 = i8 != 0;
-  if (i2) goto l16;
+  i6 = i9 + 8;
+  i9 = (int)*(void**)i6;
+  i6 = i9 != 0;
+  if (i6) goto l16;
 l22:
-  i8 = i4 + 1;
-  i9 = i8 <= i12;
-  *Allocate__ResolveVarConflicts_ScanRegions_i = i8;
+  i10 = *Allocate__ResolveVarConflicts_ScanRegions_i;
+  i10++;
+  i9 = i10 <= i3;
+  *Allocate__ResolveVarConflicts_ScanRegions_i = i10;
   if (i9) goto l15;
 l23:
+  i11 = *Allocate__ResolveVarConflicts_counter;
   *Allocate__ResolveVarConflicts_ScanRegions_i = 0;
+  i7 = i11 - 1;
   i11 = *Allocate__ResolveVarConflicts_ScanRegions_i;
-  i11 = i11 <= i12;
+  i11 = i11 <= i7;
   if (i11) goto l24;
-  i7 = 0;
+  i6 = 0;
   goto l34;
 l24:
   i11 = (int)merge + 32;
@@ -1230,69 +1263,94 @@ l25:
   i8 = (int)*(void**)i0;
   i10 = i8 != 0;
   if (i10) goto l26;
-  i7 = 0;
+  i6 = 0;
   goto l33;
 l26:
-  i14 = (int)*(void**)i8;
-  i7 = (int)*(void**)i11;
-  i10 = i14 + 32;
+  i13 = (int)*(void**)i8;
+  i6 = (int)*(void**)i11;
+  i10 = i13 + 32;
   i10 = (int)*(void**)i10;
-  i10 = i10 != i7;
+  i10 = i10 != i6;
   if (i10) goto l27;
-  i9 = i14;
+  i9 = i13;
   goto l29;
 l27:
-  i9 = i14;
+  i9 = i13;
 l28:
   i9 += 32;
   i9 = (int)*(void**)i9;
   i10 = i9 + 32;
   i10 = (int)*(void**)i10;
-  i10 = i10 != i7;
+  i10 = i10 != i6;
   if (i10) goto l28;
 l29:
   i10 = *Allocate__ResolveVarConflicts_ScanRegions_i;
-  i7 = i9 + 4;
-  i7 = (int)*(void**)i7;
-  i7 = (int)*(void**)i7;
-  i14 = (int)_ashl(i10, 3, (unsigned int));
-  i7 += i14;
-  i7 = (int)*(void**)i7;
-  i14 = i7 == 0;
-  if (i14) goto l30;
-  i10 = Allocate__ResolveVarConflicts_ScanRegions_ReadConflict((struct Allocate__ResolveVarConflicts_0*)i13, (Data__Result)i7, (int)i10);
+  i6 = i9 + 4;
+  i6 = (int)*(void**)i6;
+  i6 = (int)*(void**)i6;
+  i13 = (int)_ashl(i10, 3, (unsigned int));
+  i6 += i13;
+  i6 = (int)*(void**)i6;
+  i13 = i6 == 0;
+  if (i13) goto l30;
+  i10 = Allocate__ResolveVarConflicts_ScanRegions_ReadConflict((struct Allocate__ResolveVarConflicts_0*)i12, (Data__Result)i6, (int)i10);
   if (!(i10)) goto l30;
-  i14 = (int)merge;
-  i7 = 1;
+  i13 = (int)merge;
+  i6 = 1;
   goto l31;
 l30:
-  i7 = 0;
+  i6 = 0;
 l31:
-  if (i7) goto l32;
+  if (i6) goto l32;
   i10 = i8 + 8;
   i10 = (int)*(void**)i10;
   i8 = i10;
 l32:
-  if (i7) goto l33;
+  if (i6) goto l33;
   i10 = i8 != 0;
   if (i10) goto l26;
 l33:
   i10 = *Allocate__ResolveVarConflicts_ScanRegions_i;
   i10++;
   *Allocate__ResolveVarConflicts_ScanRegions_i = i10;
-  if (i7) goto l34;
-  i10 = i10 <= i12;
+  if (i6) goto l34;
+  i10 = i10 <= i7;
   if (i10) goto l25;
 l34:
-  if (i7) goto l36;
-  i12 = (int)merge + 4;
-  *(void**)i12 = (void*)i13;
-  i14 = i1;
+  if (i6) goto l36;
+  i0 = (int)merge + 4;
+  *(void**)i0 = (void*)i12;
+  i13 = i1;
   goto l36;
 l35:
-  i14 = (int)merge;
+  i13 = (int)merge;
 l36:
-  return (void*)i14;
+  return (void*)i13;
+}
+
+Data__Result Allocate__ResolveVarConflicts_ScanRegions_GetResult(Data__Usable u) {
+  register int i0, i1, i2;
+  i0 = *(int*)((int)u-4);
+  i0 = _type_test(i0, &Data__ResultDesc_td.td, 3);
+  if (i0) goto l0;
+  goto l2;
+l0:
+  i1 = (int)u + 16;
+  i1 = (int)*(void**)i1;
+  i2 = Allocate__PassThroughInstr((Data__Instruction)i1);
+  if (i2) goto l1;
+  i2 = (int)u;
+  goto l2;
+l1:
+  i2 = i1 + 28;
+  i2 = (int)*(void**)i2;
+  i2 = (int)*(void**)i2;
+  i2 = (int)Allocate__ResolveVarConflicts_ScanRegions_GetResult((Data__Usable)i2);
+l2:
+  if (i0) goto l3;
+  i2 = 0;
+l3:
+  return (void*)i2;
 }
 
 unsigned char Allocate__ResolveVarConflicts_ScanRegions(Data__Region r, int *Allocate__ResolveVarConflicts_counter, Data__GlobalRegion *Allocate__ResolveVarConflicts_greg) {
@@ -1463,9 +1521,9 @@ l27:
   i7 = i5;
 l28:
   i9 = (int)*(void**)i3;
-  i13 = *(int*)(i9-4);
-  i13 = _type_test(i13, &Data__ResultDesc_td.td, 3);
-  if (!(i13)) goto l31;
+  i9 = (int)Allocate__ResolveVarConflicts_ScanRegions_GetResult((Data__Usable)i9);
+  i13 = i9 == 0;
+  if (i13) goto l31;
   i13 = i9 + 20;
   i13 = (int)*(void**)i13;
   obj = (void*)i7;
@@ -1907,98 +1965,105 @@ l8:
 }
 
 void Allocate__BuildInterferenceGraphs_AddToGlobal(Data__Region r, Allocate__RegFileSummary *rf, _Type rf__tag, signed char reg, Data__Instruction instr) {
-  register int i0, i1, i2, i3, i4, i5, i6;
+  register int i0, i1, i2, i3, i4, i5, i6, i7;
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(8)+8);
-    if (!_mem) _new_failed(_P(41606));
+    if (!_mem) _new_failed(_P(42283));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Allocate__LiveRangeListDesc_td.td;
-    i5 = (int)_var;
+    i6 = (int)_var;
   }
-  i0 = i5 + 4;
-  *(void**)i5 = (void*)0;
+  i0 = i6 + 4;
+  *(void**)i6 = (void*)0;
   i1 = *(int*)((int)r-4);
   i1 = _type_test(i1, &Data__MergeDesc_td.td, 6);
   *(void**)i0 = (void*)(int)instr;
   if (!(i1)) goto l5;
-  i3 = (int)instr + 32;
-  i3 = (int)*(void**)i3;
-  i3 = Data__RegionDesc_Dominates((Data__Region)(int)r, (Data__Region)i3);
-  if (i3) goto l5;
-  i3 = Allocate__BuildInterferenceGraphs_AddToGlobal_LocalGateArg((Data__Instruction)(int)r, (Data__Result)(int)instr);
-  if (!(i3)) goto l5;
+  i2 = (int)instr + 32;
+  i2 = (int)*(void**)i2;
+  i2 = Data__RegionDesc_Dominates((Data__Region)(int)r, (Data__Region)i2);
+  if (i2) goto l5;
+  i2 = Allocate__BuildInterferenceGraphs_AddToGlobal_LocalGateArg((Data__Instruction)(int)r, (Data__Result)(int)instr);
+  if (!(i2)) goto l5;
   i0 = (int)rf + 8;
-  i2 = (int)*(void**)i0;
-  i1 = i2 == 0;
+  i3 = (int)*(void**)i0;
+  i1 = i3 == 0;
   if (i1) goto l3;
-  i0 = (int)*(void**)i2;
+  i0 = (int)*(void**)i3;
   i0 = i0 != 0;
   if (i0) goto l0;
-  i0 = i2;
+  i0 = i3;
   goto l2;
 l0:
-  i0 = i2;
+  i0 = i3;
 l1:
   i0 = (int)*(void**)i0;
   i1 = (int)*(void**)i0;
   i1 = i1 != 0;
   if (i1) goto l1;
 l2:
-  *(void**)i0 = (void*)i5;
+  *(void**)i0 = (void*)i6;
   goto l4;
 l3:
-  *(void**)i0 = (void*)i5;
+  *(void**)i0 = (void*)i6;
 l4:
-  i2 = (int)instr + 8;
-  *(int*)i2 = -2;
+  i3 = (int)instr + 8;
+  *(int*)i3 = -2;
   goto l11;
 l5:
   i3 = (int)rf + 4;
-  i6 = (int)*(void**)i3;
-  i4 = i6 == 0;
-  if (i4) goto l9;
-  i4 = (int)*(void**)i6;
-  i4 = i4 != 0;
-  if (i4) goto l6;
-  i4 = i6;
-  goto l8;
-l6:
-  i4 = i6;
-l7:
-  i4 = (int)*(void**)i4;
+  i4 = (int)*(void**)i3;
+  i5 = i4 == 0;
+  if (i5) goto l9;
   i3 = (int)*(void**)i4;
   i3 = i3 != 0;
-  if (i3) goto l7;
+  if (i3) goto l6;
+  i3 = i4;
+  goto l8;
+l6:
+  i3 = i4;
+l7:
+  i3 = (int)*(void**)i3;
+  i5 = (int)*(void**)i3;
+  i5 = i5 != 0;
+  if (i5) goto l7;
 l8:
-  *(void**)i4 = (void*)i5;
+  *(void**)i3 = (void*)i6;
   goto l10;
 l9:
-  *(void**)i3 = (void*)i5;
+  *(void**)i3 = (void*)i6;
 l10:
-  i4 = *(int*)(int)rf;
-  i6 = reg * 40;
-  i5 = (int)Allocate__rangeInfo + i6;
-  i6 = (int)rf + 28;
-  i5 += 36;
-  i5 = (int)*(void**)i5;
-  i3 = *(int*)i6;
-  i2 = (int)_ashl(i4, 2, (unsigned int));
-  i2 = i5 + i2;
-  i1 = (int)*(void**)i2;
-  i0 = (int)_ashl(i3, 2, (unsigned int));
-  i0 = i5 + i0;
+  i5 = *(int*)(int)rf;
+  i4 = reg * 40;
+  i4 = (int)Allocate__rangeInfo + i4;
+  i6 = i4 + 36;
+  i3 = (int)instr + 8;
+  *(int*)i3 = i5;
+  i3 = (int)*(void**)i6;
+  i2 = (int)_ashl(i5, 2, (unsigned int));
+  i3 += i2;
+  i1 = (int)*(void**)i3;
+  i3 = (int)rf + 28;
+  i2 = *(int*)i3;
+  i7 = i1 + 8;
+  *(int*)i7 = i2;
+  i7 = (int)*(void**)i6;
+  i1 = (int)_ashl(i5, 2, (unsigned int));
+  i1 = i7 + i1;
+  i0 = (int)_ashl(i2, 2, (unsigned int));
+  i1 = (int)*(void**)i1;
+  i0 = i7 + i0;
   *(void**)i0 = (void*)i1;
-  i0 = (int)instr + 8;
-  *(int*)i0 = i4;
-  i0 = i1 + 8;
-  *(int*)i0 = i3;
-  i3 = i4 + 1;
+  i4 = (int)*(void**)i6;
+  i6 = (int)_ashl(i5, 2, (unsigned int));
+  i2 = i4 + i6;
+  i6 = i5 + 1;
   *(void**)i2 = (void*)(int)instr;
-  *(int*)(int)rf = i3;
-  i4 = *(int*)i6;
-  i4++;
-  *(int*)i6 = i4;
+  *(int*)(int)rf = i6;
+  i5 = *(int*)i3;
+  i5++;
+  *(int*)i3 = i5;
 l11:
   ;
 }
@@ -2006,146 +2071,149 @@ l11:
 void Allocate__BuildInterferenceGraphs_AllocateRangeInfo(signed char reg, int size) {
   register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12;
   i0 = reg * 40;
-  i10 = (int)Allocate__rangeInfo + i0;
-  i3 = *(int*)i10;
-  i0 = size <= i3;
+  i11 = (int)Allocate__rangeInfo + i0;
+  i2 = *(int*)i11;
+  i0 = size <= i2;
   if (i0) goto l2;
-  i2 = i3 >= 0;
-  if (i2) goto l0;
-  i3 = 126;
+  i1 = i2 >= 0;
+  if (i1) goto l0;
+  i2 = 126;
 l0:
-  i2 = i3;
+  i1 = i2;
 l1:
-  i2 += 128;
-  i3 = size > i2;
-  if (i3) goto l1;
-  i3 = i2 + 31;
-  i3 = (int)_ashr(i3, 5, (unsigned int));
+  i1 += 128;
+  i2 = size > i1;
+  if (i2) goto l1;
+  i2 = i1 + 31;
+  i2 = (int)_ashr(i2, 5, (unsigned int));
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i2 < 0) _invalid_length(i2, _P(44017));
-    if(i3 < 0) _invalid_length(i3, _P(44023));
-    _mem = GC_malloc_atomic(_not_zero(i2*i3*4)+16);
-    if (!_mem) _new_failed(_P(43993));
+    if(i1 < 0) _invalid_length(i1, _P(44694));
+    if(i2 < 0) _invalid_length(i2, _P(44700));
+    _mem = GC_malloc_atomic(_not_zero(i1*i2*4)+16);
+    if (!_mem) _new_failed(_P(44670));
     _var = _mem+16;
     _dim_ptr = (void*)(_var-4);
+    *(--_dim_ptr) = i1;
     *(--_dim_ptr) = i2;
-    *(--_dim_ptr) = i3;
-    i0 = (int)_var;
+    i3 = (int)_var;
   }
-  i1 = i10 + 16;
-  *(void**)i1 = (void*)i0;
-  i0 = i10 + 20;
+  i0 = i11 + 16;
+  *(void**)i0 = (void*)i3;
+  i3 = i11 + 20;
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i3 < 0) _invalid_length(i3, _P(44062));
-    _mem = GC_malloc_atomic(_not_zero(i3*4)+8);
-    if (!_mem) _new_failed(_P(44038));
-    _var = _mem+8;
-    _dim_ptr = (void*)(_var-4);
-    *(--_dim_ptr) = i3;
-    i1 = (int)_var;
-  }
-  *(void**)i0 = (void*)i1;
-  i1 = i10 + 24;
-  {
-    char *_mem, *_var;
-    int* _dim_ptr;
-    if(i2 < 0) _invalid_length(i2, _P(44101));
+    if(i2 < 0) _invalid_length(i2, _P(44739));
     _mem = GC_malloc_atomic(_not_zero(i2*4)+8);
-    if (!_mem) _new_failed(_P(44077));
+    if (!_mem) _new_failed(_P(44715));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i2;
     i0 = (int)_var;
   }
-  *(void**)i1 = (void*)i0;
-  i1 = i10 + 28;
+  *(void**)i3 = (void*)i0;
+  i0 = i11 + 24;
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i2 < 0) _invalid_length(i2, _P(44140));
-    _mem = GC_malloc_atomic(_not_zero(i2*4)+8);
-    if (!_mem) _new_failed(_P(44116));
+    if(i1 < 0) _invalid_length(i1, _P(44778));
+    _mem = GC_malloc_atomic(_not_zero(i1*4)+8);
+    if (!_mem) _new_failed(_P(44754));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
-    *(--_dim_ptr) = i2;
+    *(--_dim_ptr) = i1;
+    i3 = (int)_var;
+  }
+  *(void**)i0 = (void*)i3;
+  i0 = i11 + 28;
+  {
+    char *_mem, *_var;
+    int* _dim_ptr;
+    if(i1 < 0) _invalid_length(i1, _P(44817));
+    _mem = GC_malloc_atomic(_not_zero(i1*4)+8);
+    if (!_mem) _new_failed(_P(44793));
+    _var = _mem+8;
+    _dim_ptr = (void*)(_var-4);
+    *(--_dim_ptr) = i1;
+    i3 = (int)_var;
+  }
+  *(void**)i0 = (void*)i3;
+  i3 = i11 + 32;
+  {
+    char *_mem, *_var;
+    int* _dim_ptr;
+    if(i1 < 0) _invalid_length(i1, _P(44857));
+    _mem = GC_malloc_atomic(_not_zero(i1*4)+8);
+    if (!_mem) _new_failed(_P(44832));
+    _var = _mem+8;
+    _dim_ptr = (void*)(_var-4);
+    *(--_dim_ptr) = i1;
     i0 = (int)_var;
   }
-  *(void**)i1 = (void*)i0;
-  i0 = i10 + 32;
-  {
-    char *_mem, *_var;
-    int* _dim_ptr;
-    if(i2 < 0) _invalid_length(i2, _P(44180));
-    _mem = GC_malloc_atomic(_not_zero(i2*4)+8);
-    if (!_mem) _new_failed(_P(44155));
-    _var = _mem+8;
-    _dim_ptr = (void*)(_var-4);
-    *(--_dim_ptr) = i2;
-    i1 = (int)_var;
-  }
-  *(void**)i0 = (void*)i1;
-  *(int*)i10 = i2;
-  i2 = i10 + 8;
-  *(int*)i2 = i3;
-l2:
-  i0 = i10 + 4;
-  i1 = i10 + 12;
-  i2 = size + 31;
-  *(int*)i0 = size;
-  i2 = (int)_ashr(i2, 5, (unsigned int));
+  *(void**)i3 = (void*)i0;
+  *(int*)i11 = i1;
+  i1 = i11 + 8;
   *(int*)i1 = i2;
-  i1 = *(int*)i1;
-  i11 = i1 - 1;
-  i12 = i11 >= 0;
+l2:
+  i0 = i11 + 4;
+  i9 = i11 + 12;
+  i1 = size + 31;
+  *(int*)i0 = size;
+  i1 = (int)_ashr(i1, 5, (unsigned int));
+  *(int*)i9 = i1;
   i0 = *(int*)i0;
-  i9 = i0 - 1;
-  i0 = i9 < 0;
+  i10 = i0 - 1;
+  i0 = i10 < 0;
   if (i0) goto l6;
-  i8 = i10 + 24;
-  i1 = (int)*(void**)i8;
-  i2 = i10 + 16;
+  i1 = i11 + 24;
+  i0 = i11 + 16;
   i8 = 0;
 l3:
-  i0 = (int)_ashl(i8, 2, (unsigned int));
-  i0 = i1 + i0;
-  *(int*)i0 = 0;
-  if (!(i12)) goto l5;
-  i3 = (int)*(void**)i2;
-  i7 = *(int*)(i3-12);
-  i7 = (int)_ashl(i7, 2, (unsigned int));
-  i7 = i8 * i7;
-  i0 = i3 + i7;
-  i4 = 0;
+  i2 = (int)*(void**)i1;
+  i3 = (int)_ashl(i8, 2, (unsigned int));
+  i3 = i2 + i3;
+  *(int*)i3 = 0;
+  i2 = *(int*)i9;
+  i7 = i2 - 1;
+  i2 = i7 < 0;
+  if (i2) goto l5;
+  i2 = 0;
 l4:
-  i5 = (int)_ashl(i4, 2, (unsigned int));
-  i5 = i0 + i5;
-  i6 = i4 + 1;
-  i7 = i6 > i11;
-  *(unsigned int*)i5 = 0x0U;
-  if (i7) goto l5;
-  i4 = i6;
+  i4 = (int)*(void**)i0;
+  i3 = *(int*)(i4-12);
+  i3 = (int)_ashl(i3, 2, (unsigned int));
+  i3 = i8 * i3;
+  i5 = i4 + i3;
+  i3 = (int)_ashl(i2, 2, (unsigned int));
+  i6 = i5 + i3;
+  i12 = i2 + 1;
+  i3 = i12 > i7;
+  *(unsigned int*)i6 = 0x0U;
+  if (i3) goto l5;
+  i2 = i12;
   goto l4;
 l5:
   i8++;
-  i0 = i8 <= i9;
-  if (i0) goto l3;
+  i2 = i8 <= i10;
+  if (i2) goto l3;
 l6:
-  if (!(i12)) goto l8;
-  i10 += 20;
-  i1 = (int)*(void**)i10;
-  i3 = 0;
-l7:
-  i2 = (int)_ashl(i3, 2, (unsigned int));
-  i2 = i1 + i2;
-  i10 = i3 + 1;
-  i0 = i10 > i11;
-  *(unsigned int*)i2 = 0x0U;
+  i0 = *(int*)i9;
+  i5 = i0 - 1;
+  i0 = i5 < 0;
   if (i0) goto l8;
-  i3 = i10;
+  i0 = i11 + 20;
+  i1 = 0;
+l7:
+  i6 = (int)*(void**)i0;
+  i2 = (int)_ashl(i1, 2, (unsigned int));
+  i4 = i6 + i2;
+  i2 = i1 + 1;
+  i3 = i2 > i5;
+  *(unsigned int*)i4 = 0x0U;
+  if (i3) goto l8;
+  i1 = i2;
   goto l7;
 l8:
   ;
@@ -2154,17 +2222,17 @@ l8:
 void Allocate__BuildInterferenceGraphs_Interfere(signed char reg, int id, int *Allocate__BuildInterferenceGraphs_i) {
   register int i0, i1, i2, i3, i4, i5, i6, i7;
   i0 = reg * 40;
-  i0 = (int)Allocate__rangeInfo + i0;
+  i1 = (int)Allocate__rangeInfo + i0;
+  i0 = i1 + 16;
+  i5 = (int)*(void**)i0;
+  i0 = i1 + 12;
+  i1 += 20;
+  i4 = (int)*(void**)i1;
+  i0 = *(int*)i0;
   *Allocate__BuildInterferenceGraphs_i = 0;
-  i1 = i0 + 12;
-  i1 = *(int*)i1;
-  i6 = i1 - 1;
-  i1 = i0 + 16;
-  i5 = (int)*(void**)i1;
-  i1 = i0 + 20;
+  i6 = i0 - 1;
   i0 = *Allocate__BuildInterferenceGraphs_i;
   i0 = i0 > i6;
-  i4 = (int)*(void**)i1;
   if (i0) goto l1;
   i3 = *(int*)(i5-12);
   i3 = (int)_ashl(i3, 2, (unsigned int));
@@ -2180,10 +2248,11 @@ l0:
   i3 = *(unsigned int*)i3;
   i2 |= i3;
   *(unsigned int*)i7 = i2;
-  i7 = i1 + 1;
-  i1 = i7 <= i6;
-  *Allocate__BuildInterferenceGraphs_i = i7;
-  if (i1) goto l0;
+  i1 = *Allocate__BuildInterferenceGraphs_i;
+  i1++;
+  i7 = i1 <= i6;
+  *Allocate__BuildInterferenceGraphs_i = i1;
+  if (i7) goto l0;
 l1:
   ;
 }
@@ -2223,52 +2292,57 @@ void Allocate__BuildInterferenceGraphs_RemoveFromLive(Data__Instruction result) 
 }
 
 void Allocate__BuildInterferenceGraphs_SymmetricMatrix(signed char reg) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11;
+  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14;
   i0 = reg * 40;
-  i0 = (int)Allocate__rangeInfo + i0;
-  i1 = i0 + 4;
-  i1 = *(int*)i1;
-  i10 = i1 - 1;
-  i0 += 16;
-  i9 = (int)*(void**)i0;
-  i0 = i10 < 0;
-  if (i0) goto l3;
-  i8 = *(int*)(i9-12);
-  i1 = (int)_ashl(i8, 2, (unsigned int));
-  i0 = 0;
+  i10 = (int)Allocate__rangeInfo + i0;
+  i11 = i10 + 4;
+  i0 = *(int*)i11;
+  i13 = i0 - 1;
+  i0 = i10 + 16;
+  i12 = (int)*(void**)i0;
+  i0 = i13 < 0;
+  if (i0) goto l4;
+  i9 = *(int*)(i12-12);
+  i1 = (int)_ashl(i9, 2, (unsigned int));
+  i9 = 0;
 l0:
-  i8 = (int)_ashr(i0, 5, (unsigned int));
-  i2 = i0 * i1;
-  i5 = i9 + i2;
-  i6 = (int)_ashl(i8, 2, (unsigned int));
-  i7 = i0 & 0x1FU;
-  i2 = 0;
+  i7 = (int)_ashr(i9, 5, (unsigned int));
+  i2 = *(int*)i11;
+  i8 = i2 - 1;
+  i2 = i9 * i1;
+  i4 = i12 + i2;
+  i5 = (int)_ashl(i7, 2, (unsigned int));
+  i2 = i8 < 0;
+  i6 = i9 & 0x1FU;
+  if (i2) goto l3;
+  i3 = 0;
 l1:
-  i11 = (int)_ashr(i2, 5, (unsigned int));
-  i4 = (int)_ashl(i11, 2, (unsigned int));
-  i4 = i5 + i4;
-  i11 = *(unsigned int*)i4;
-  i4 = i2 & 0x1FU;
-  i11 = (i11 & ((unsigned int)1 << i4)) != 0;
-  if (!(i11)) goto l2;
-  i3 = i2 * i1;
-  i3 = i9 + i3;
-  i4 = i3 + i6;
-  i11 = *(unsigned int*)i4;
-  i11 = i11 | ((unsigned int)1 << i7);
-  *(unsigned int*)i4 = i11;
+  i2 = (int)_ashr(i3, 5, (unsigned int));
+  i0 = (int)_ashl(i2, 2, (unsigned int));
+  i0 = i4 + i0;
+  i2 = *(unsigned int*)i0;
+  i0 = i3 & 0x1FU;
+  i2 = (i2 & ((unsigned int)1 << i0)) != 0;
+  if (!(i2)) goto l2;
+  i14 = i3 * i1;
+  i14 = i12 + i14;
+  i0 = i14 + i5;
+  i2 = *(unsigned int*)i0;
+  i2 = i2 | ((unsigned int)1 << i6);
+  *(unsigned int*)i0 = i2;
 l2:
-  i2++;
-  i11 = i2 <= i10;
-  if (i11) goto l1;
-  i2 = i5 + i6;
-  i3 = *(unsigned int*)i2;
-  i3 = i3 & ~((unsigned int)1 << i7);
-  *(unsigned int*)i2 = i3;
-  i0++;
-  i2 = i0 <= i10;
-  if (i2) goto l0;
+  i3++;
+  i2 = i3 <= i8;
+  if (i2) goto l1;
 l3:
+  i2 = i4 + i5;
+  i0 = *(unsigned int*)i2;
+  i0 = i0 & ~((unsigned int)1 << i6);
+  *(unsigned int*)i2 = i0;
+  i9++;
+  i2 = i9 <= i13;
+  if (i2) goto l0;
+l4:
   ;
 }
 
@@ -2319,7 +2393,7 @@ l3:
 }
 
 Data__Instruction Allocate__BuildInterferenceGraphs_IntegrateInstruction_IntegrateMerge(Data__Merge merge, Data__Opnd *Allocate__BuildInterferenceGraphs_IntegrateInstruction_opnd, int *Allocate__BuildInterferenceGraphs_i) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15, i16, i17, i18, i19;
+  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15, i16, i17;
   int final[4];
   int initial[4];
   i0 = 0;
@@ -2340,7 +2414,7 @@ l0:
     char *_mem, *_var;
     int* _dim_ptr;
     _mem = GC_malloc_atomic(_not_zero(1016*4)+8);
-    if (!_mem) _new_failed(_P(49242));
+    if (!_mem) _new_failed(_P(49919));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 1016;
@@ -2356,8 +2430,8 @@ l1:
   i0 = *(int*)(i0-8);
   i0 = i0 >= i5;
   if (i0) goto l4;
-  i1 = i4 - 1;
-  i4 = i1 < 0;
+  i2 = i4 - 1;
+  i4 = i2 < 0;
   i5 += 1027;
   i5 = (int)_ashr(i5, 10, (unsigned int));
   i5 = (int)_ashl(i5, 10, (unsigned int));
@@ -2365,99 +2439,104 @@ l1:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i5 < 0) _invalid_length(i5, _P(49417));
+    if(i5 < 0) _invalid_length(i5, _P(50094));
     _mem = GC_malloc_atomic(_not_zero(i5*4)+8);
-    if (!_mem) _new_failed(_P(49367));
+    if (!_mem) _new_failed(_P(50044));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i5;
-    i0 = (int)_var;
+    i1 = (int)_var;
   }
   if (i4) goto l3;
   i4 = 0;
 l2:
   i5 = (int)Allocate__liveStack;
-  i6 = (int)_ashl(i4, 2, (unsigned int));
-  i3 = i5 + i6;
+  i0 = (int)_ashl(i4, 2, (unsigned int));
+  i3 = i5 + i0;
   i5 = (int)_ashl(i4, 2, (unsigned int));
-  i5 = i0 + i5;
-  i6 = i4 + 1;
-  i2 = *(unsigned int*)i3;
-  i3 = i6 > i1;
-  *(unsigned int*)i5 = i2;
+  i5 = i1 + i5;
+  i0 = i4 + 1;
+  i6 = *(unsigned int*)i3;
+  i3 = i0 > i2;
+  *(unsigned int*)i5 = i6;
   if (i3) goto l3;
-  i4 = i6;
+  i4 = i0;
   goto l2;
 l3:
-  Allocate__liveStack = (void*)i0;
+  Allocate__liveStack = (void*)i1;
 l4:
-  i17 = Allocate__topStack;
+  i15 = Allocate__topStack;
   i0 = 0;
 l5:
-  i8 = i0 * 40;
-  i2 = (int)Allocate__rangeInfo + i8;
-  i8 = i2 + 12;
-  i8 = *(int*)i8;
-  i1 = i8 - 1;
-  i4 = i1 >= 0;
+  i9 = i0 * 40;
+  i2 = (int)Allocate__rangeInfo + i9;
+  i4 = i2 + 12;
+  i9 = *(int*)i4;
+  i1 = i9 - 1;
+  i9 = i1 < 0;
   i3 = Allocate__topStack;
-  if (!(i4)) goto l7;
-  i6 = (int)Allocate__liveStack;
-  i2 += 20;
-  i7 = (int)*(void**)i2;
-  i8 = 0;
+  if (i9) goto l7;
+  i9 = i2 + 20;
+  i5 = 0;
 l6:
-  i5 = Allocate__topStack;
-  i9 = (int)_ashl(i8, 2, (unsigned int));
-  i9 = i7 + i9;
-  i2 = (int)_ashl(i5, 2, (unsigned int));
-  i2 = i6 + i2;
-  i9 = *(unsigned int*)i9;
-  *(unsigned int*)i2 = i9;
-  i8++;
-  i5++;
-  i9 = i8 <= i1;
-  Allocate__topStack = i5;
-  if (i9) goto l6;
-l7:
+  i7 = (int)*(void**)i9;
+  i10 = (int)Allocate__liveStack;
   i8 = Allocate__topStack;
-  if (!(i4)) goto l9;
-  i7 = (int)Allocate__liveStack;
+  i6 = (int)_ashl(i5, 2, (unsigned int));
+  i6 = i7 + i6;
+  i7 = (int)_ashl(i8, 2, (unsigned int));
+  i7 = i10 + i7;
+  i6 = *(unsigned int*)i6;
+  *(unsigned int*)i7 = i6;
+  i5++;
+  i8 = Allocate__topStack;
+  i10 = i5 <= i1;
+  i8++;
+  Allocate__topStack = i8;
+  if (i10) goto l6;
+l7:
+  i9 = *(int*)i4;
+  i6 = i9 - 1;
+  i9 = i6 < 0;
+  i7 = Allocate__topStack;
+  if (i9) goto l9;
   i5 = 0;
 l8:
-  i9 = Allocate__topStack;
-  i6 = (int)_ashl(i9, 2, (unsigned int));
-  i6 = i7 + i6;
-  *(unsigned int*)i6 = 0x0U;
+  i9 = (int)Allocate__liveStack;
+  i10 = Allocate__topStack;
+  i8 = (int)_ashl(i10, 2, (unsigned int));
+  i8 = i9 + i8;
+  *(unsigned int*)i8 = 0x0U;
   i5++;
-  i9++;
-  i6 = i5 <= i1;
-  Allocate__topStack = i9;
-  if (i6) goto l8;
+  i10 = Allocate__topStack;
+  i9 = i5 <= i6;
+  i10++;
+  Allocate__topStack = i10;
+  if (i9) goto l8;
 l9:
-  i7 = (int)_ashl(i0, 2, (unsigned int));
-  i6 = (int)final + i7;
-  *(int*)i6 = i8;
-  i8 = (int)initial + i7;
-  *(int*)i8 = i3;
+  i9 = (int)_ashl(i0, 2, (unsigned int));
+  i10 = (int)final + i9;
+  *(int*)i10 = i7;
+  i9 = (int)initial + i9;
+  *(int*)i9 = i3;
   i0++;
-  i8 = i0 <= 3;
-  if (i8) goto l5;
+  i9 = i0 <= 3;
+  if (i9) goto l5;
   i0 = (int)merge + 28;
+  i1 = (int)merge + 40;
+  i16 = (int)*(void**)i1;
   i0 = (int)*(void**)i0;
   *Allocate__BuildInterferenceGraphs_IntegrateInstruction_opnd = (void*)i0;
   i0 = (int)*Allocate__BuildInterferenceGraphs_IntegrateInstruction_opnd;
   i0 = i0 != 0;
-  i1 = (int)merge + 40;
-  i18 = (int)*(void**)i1;
   if (i0) goto l10;
-  i19 = i18;
+  i17 = i16;
   goto l25;
 l10:
   i0 = (int)merge + 32;
   i1 = (int)merge + 4;
   i2 = 1;
-  i19 = i18;
+  i17 = i16;
 l11:
   i3 = (int)*Allocate__BuildInterferenceGraphs_IntegrateInstruction_opnd;
   i4 = (int)*(void**)i3;
@@ -2480,103 +2559,109 @@ l13:
 l14:
   i4 = 0;
 l15:
-  i13 = (int)*(void**)i1;
-  i11 = (int)_ashl(i4, 5, (unsigned int));
-  i13 += i11;
-  i13 += 8;
-  i5 = (int)*(void**)i13;
-  i13 = i5 == 0;
-  if (i13) goto l18;
-  i6 = i4 * 40;
-  i13 = (int)Allocate__rangeInfo + i6;
-  i11 = i13 + 20;
+  i11 = (int)*(void**)i1;
+  i10 = (int)_ashl(i4, 5, (unsigned int));
+  i11 += i10;
+  i11 += 8;
+  i13 = (int)*(void**)i11;
+  i11 = i13 == 0;
+  if (i11) goto l18;
+  i5 = i4 * 40;
+  i11 = (int)Allocate__rangeInfo + i5;
+  i10 = i11 + 20;
 l16:
-  i10 = i5 + 4;
-  i7 = (int)*(void**)i10;
-  i3 = i7 + 8;
+  i9 = i13 + 4;
+  i6 = (int)*(void**)i9;
+  i3 = i6 + 8;
   i3 = *(int*)i3;
-  i9 = (int)_ashr(i3, 5, (unsigned int));
-  i8 = (int)*(void**)i11;
-  i6 = (int)_ashl(i9, 2, (unsigned int));
-  i8 += i6;
+  i8 = (int)_ashr(i3, 5, (unsigned int));
+  i7 = (int)*(void**)i10;
+  i5 = (int)_ashl(i8, 2, (unsigned int));
+  i7 += i5;
   i3 &= 0x1FU;
-  i9 = *(unsigned int*)i8;
-  i3 = (i9 & ((unsigned int)1 << i3)) != 0;
+  i8 = *(unsigned int*)i7;
+  i3 = (i8 & ((unsigned int)1 << i3)) != 0;
   if (i3) goto l17;
-  i7 = Allocate__BuildInterferenceGraphs_IntegrateInstruction_IntegrateMerge_GateOpnd((Data__Merge)(int)merge, (short int)i2, (Data__Result)i7);
-  if (!(i7)) goto l17;
-  i10 = (int)*(void**)i10;
-  i10 += 8;
-  i10 = *(int*)i10;
-  Allocate__BuildInterferenceGraphs_AddToLive((signed char)i4, (int)i10, &*Allocate__BuildInterferenceGraphs_i);
+  i6 = Allocate__BuildInterferenceGraphs_IntegrateInstruction_IntegrateMerge_GateOpnd((Data__Merge)(int)merge, (short int)i2, (Data__Result)i6);
+  if (!(i6)) goto l17;
+  i9 = (int)*(void**)i9;
+  i9 += 8;
+  i9 = *(int*)i9;
+  Allocate__BuildInterferenceGraphs_AddToLive((signed char)i4, (int)i9, &*Allocate__BuildInterferenceGraphs_i);
 l17:
-  i5 = (int)*(void**)i5;
-  i10 = i5 != 0;
-  if (i10) goto l16;
+  i13 = (int)*(void**)i13;
+  i9 = i13 != 0;
+  if (i9) goto l16;
 l18:
   i4++;
-  i13 = i4 <= 3;
-  if (i13) goto l15;
+  i11 = i4 <= 3;
+  if (i11) goto l15;
   i3 = (int)Allocate__BuildInterferenceGraphs_IntegrateInstruction((Data__Instruction)i12, &*Allocate__BuildInterferenceGraphs_i);
   i4 = i3 == 0;
   if (i4) goto l19;
-  i4 = Schedule__ExecutedBefore((Data__Instruction)i3, (Data__Instruction)i19);
+  i4 = Schedule__ExecutedBefore((Data__Instruction)i3, (Data__Instruction)i17);
   if (!(i4)) goto l20;
 l19:
-  i19 = i3;
+  i17 = i3;
 l20:
   i3 = (int)*Allocate__BuildInterferenceGraphs_IntegrateInstruction_opnd;
   i3 += 8;
   i3 = (int)*(void**)i3;
   *Allocate__BuildInterferenceGraphs_IntegrateInstruction_opnd = (void*)i3;
   i3 = (int)*Allocate__BuildInterferenceGraphs_IntegrateInstruction_opnd;
-  i16 = i3 != 0;
-  if (!(i16)) goto l24;
-  i15 = 0;
+  i3 = i3 == 0;
+  if (i3) goto l24;
+  i13 = 0;
 l21:
-  i3 = i15 * 40;
-  i13 = (int)Allocate__rangeInfo + i3;
-  i3 = i13 + 12;
+  i3 = i13 * 40;
+  i12 = (int)Allocate__rangeInfo + i3;
+  i3 = i12 + 12;
   i3 = *(int*)i3;
   i14 = i3 - 1;
   i3 = i14 < 0;
   if (i3) goto l23;
-  i7 = (int)Allocate__liveStack;
-  i12 = (int)_ashl(i15, 2, (unsigned int));
-  i11 = (int)final + i12;
-  i12 = (int)initial + i12;
+  i4 = i12 + 20;
+  i11 = (int)_ashl(i13, 2, (unsigned int));
+  i10 = (int)final + i11;
+  i11 = (int)initial + i11;
+  i6 = *(int*)i10;
   i5 = *(int*)i11;
-  i4 = *(int*)i12;
-  i13 += 20;
-  i6 = (int)*(void**)i13;
-  i8 = 0;
+  i7 = 0;
 l22:
-  i9 = i8 + i5;
-  i3 = (int)_ashl(i9, 2, (unsigned int));
-  i3 = i7 + i3;
+  i8 = i7 + i6;
+  i9 = (int)Allocate__liveStack;
+  i10 = (int)*(void**)i4;
+  i11 = (int)_ashl(i8, 2, (unsigned int));
+  i11 = i9 + i11;
+  i3 = (int)_ashl(i7, 2, (unsigned int));
+  i3 = i10 + i3;
+  i10 = *(unsigned int*)i11;
+  i3 = *(unsigned int*)i3;
+  i10 |= i3;
+  *(unsigned int*)i11 = i10;
+  i8 = i7 + i5;
+  i11 = (int)*(void**)i4;
+  i9 = (int)Allocate__liveStack;
   i10 = (int)_ashl(i8, 2, (unsigned int));
-  i10 = i6 + i10;
-  i11 = i8 + i4;
-  i12 = *(unsigned int*)i3;
-  i13 = *(unsigned int*)i10;
-  i12 |= i13;
-  *(unsigned int*)i3 = i12;
-  i9 = (int)_ashl(i11, 2, (unsigned int));
-  i9 = i7 + i9;
-  i3 = *(unsigned int*)i9;
-  i9 = i8 + 1;
-  *(unsigned int*)i10 = i3;
-  i8 = i9 > i14;
-  if (i8) goto l23;
-  i8 = i9;
+  i9 += i10;
+  i8 = *(unsigned int*)i9;
+  i9 = (int)_ashl(i7, 2, (unsigned int));
+  i9 = i11 + i9;
+  i10 = i7 + 1;
+  *(unsigned int*)i9 = i8;
+  i7 = i10 > i14;
+  if (i7) goto l23;
+  i7 = i10;
   goto l22;
 l23:
-  i15++;
-  i3 = i15 <= 3;
+  i13++;
+  i3 = i13 <= 3;
   if (i3) goto l21;
 l24:
+  i3 = (int)*Allocate__BuildInterferenceGraphs_IntegrateInstruction_opnd;
+  i3 = i3 != 0;
   i2++;
-  if (i16) goto l11;
+  if (i3) goto l11;
 l25:
   i0 = 0;
 l26:
@@ -2587,27 +2672,27 @@ l26:
   i2 = i9 - 1;
   i9 = i2 < 0;
   if (i9) goto l28;
-  i3 = i1 + 20;
-  i7 = (int)*(void**)i3;
-  i6 = (int)Allocate__liveStack;
+  i8 = i1 + 20;
   i3 = (int)_ashl(i0, 2, (unsigned int));
   i3 = (int)final + i3;
-  i8 = *(int*)i3;
-  i5 = 0;
+  i7 = *(int*)i3;
+  i6 = 0;
 l27:
-  i9 = i5 + i8;
-  i4 = (int)_ashl(i9, 2, (unsigned int));
-  i3 = i6 + i4;
-  i4 = (int)_ashl(i5, 2, (unsigned int));
-  i4 = i7 + i4;
+  i9 = i6 + i7;
+  i5 = (int)*(void**)i8;
+  i4 = (int)Allocate__liveStack;
+  i3 = (int)_ashl(i9, 2, (unsigned int));
+  i3 = i4 + i3;
+  i4 = (int)_ashl(i6, 2, (unsigned int));
+  i4 = i5 + i4;
   i9 = *(unsigned int*)i3;
   i3 = *(unsigned int*)i4;
-  i9 = i3 | i9;
-  i3 = i5 + 1;
-  *(unsigned int*)i4 = i9;
-  i5 = i3 > i2;
-  if (i5) goto l28;
-  i5 = i3;
+  i3 |= i9;
+  i9 = i6 + 1;
+  *(unsigned int*)i4 = i3;
+  i6 = i9 > i2;
+  if (i6) goto l28;
+  i6 = i9;
   goto l27;
 l28:
   i9 = i1 + 4;
@@ -2635,8 +2720,8 @@ l31:
   i0++;
   i9 = i0 <= 3;
   if (i9) goto l26;
-  Allocate__topStack = i17;
-  return (void*)i19;
+  Allocate__topStack = i15;
+  return (void*)i17;
 }
 
 Data__Instruction Allocate__BuildInterferenceGraphs_IntegrateInstruction(Data__Instruction instr, int *Allocate__BuildInterferenceGraphs_i) {
@@ -2942,9 +3027,9 @@ l2:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i5 < 0) _invalid_length(i5, _P(60852));
+    if(i5 < 0) _invalid_length(i5, _P(61529));
     _mem = GC_malloc(_not_zero(i5*4)+8);
-    if (!_mem) _new_failed(_P(60842));
+    if (!_mem) _new_failed(_P(61519));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i5;
@@ -3357,14 +3442,14 @@ l1:
 }
 
 void Allocate__CoalesceRanges_ScanGates_TryCoalescing_Merge(int src, int dest, signed char *Allocate__CoalesceRanges_ScanGates_TryCoalescing_reg) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13;
-  i0 = *Allocate__CoalesceRanges_ScanGates_TryCoalescing_reg;
-  i1 = i0 * 40;
-  i10 = (int)Allocate__rangeInfo + i1;
-  i0 = i10 + 12;
-  i0 = *(int*)i0;
-  i5 = i0 - 1;
-  i0 = i10 + 16;
+  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12;
+  i1 = *Allocate__CoalesceRanges_ScanGates_TryCoalescing_reg;
+  i0 = i1 * 40;
+  i0 = (int)Allocate__rangeInfo + i0;
+  i1 = i0 + 12;
+  i1 = *(int*)i1;
+  i5 = i1 - 1;
+  i0 += 16;
   i11 = (int)*(void**)i0;
   i0 = i5 < 0;
   if (i0) goto l1;
@@ -3389,37 +3474,43 @@ l0:
   i2 = i0;
   goto l0;
 l1:
-  i0 = i10 + 4;
+  i1 = *Allocate__CoalesceRanges_ScanGates_TryCoalescing_reg;
+  i0 = i1 * 40;
+  i0 = (int)Allocate__rangeInfo + i0;
+  i0 += 4;
   i0 = *(int*)i0;
   i12 = i0 - 1;
   i0 = i12 < 0;
   if (i0) goto l4;
   i1 = (int)_ashr(dest, 5, (unsigned int));
-  i9 = *(int*)(i11-12);
+  i10 = *(int*)(i11-12);
   i4 = (int)_ashr(src, 5, (unsigned int));
   i2 = (int)_ashl(i1, 2, (unsigned int));
-  i6 = (int)_ashl(i9, 2, (unsigned int));
+  i6 = (int)_ashl(i10, 2, (unsigned int));
   i3 = src & 0x1FU;
   i5 = (int)_ashl(i4, 2, (unsigned int));
   i0 = dest & 0x1FU;
-  i8 = 0;
+  i9 = 0;
 l2:
-  i13 = i8 * i6;
-  i7 = i11 + i13;
-  i13 = i7 + i5;
-  i13 = *(unsigned int*)i13;
-  i13 = (i13 & ((unsigned int)1 << i3)) != 0;
-  if (!(i13)) goto l3;
-  i9 = i7 + i2;
-  i13 = *(unsigned int*)i9;
-  i13 = i13 | ((unsigned int)1 << i0);
-  *(unsigned int*)i9 = i13;
+  i7 = i9 * i6;
+  i8 = i11 + i7;
+  i7 = i8 + i5;
+  i7 = *(unsigned int*)i7;
+  i7 = (i7 & ((unsigned int)1 << i3)) != 0;
+  if (!(i7)) goto l3;
+  i10 = i8 + i2;
+  i7 = *(unsigned int*)i10;
+  i7 = i7 | ((unsigned int)1 << i0);
+  *(unsigned int*)i10 = i7;
 l3:
-  i8++;
-  i13 = i8 <= i12;
-  if (i13) goto l2;
+  i9++;
+  i7 = i9 <= i12;
+  if (i7) goto l2;
 l4:
-  i0 = i10 + 24;
+  i1 = *Allocate__CoalesceRanges_ScanGates_TryCoalescing_reg;
+  i0 = i1 * 40;
+  i0 = (int)Allocate__rangeInfo + i0;
+  i0 += 24;
   i2 = (int)*(void**)i0;
   i0 = (int)_ashl(src, 2, (unsigned int));
   i0 = i2 + i0;
@@ -3507,92 +3598,98 @@ l5:
 }
 
 void Allocate__CoalesceRanges_ScanGates(Data__Merge merge, unsigned char loopBackedge, signed char *Allocate__CoalesceRanges_reg, Allocate__RegionSummary *Allocate__CoalesceRanges_summary) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9;
-  i8 = (int)*(void**)(int)merge;
-  i0 = i8 == 0;
+  register int i0, i1, i2, i3, i4, i5, i6, i7;
+  i6 = (int)*(void**)(int)merge;
+  i0 = i6 == 0;
   if (i0) goto l9;
-  i9 = (int)merge + 44;
+  i7 = (int)merge + 44;
 l0:
-  i0 = i8 + 12;
-  i7 = (int)*(void**)i0;
-  i0 = i7 + 44;
+  i5 = i6 + 12;
+  i4 = (int)*(void**)i5;
+  i0 = i4 + 44;
   i0 = *(short int*)i0;
   i0 = i0 != 19;
   if (i0) goto l8;
-  i6 = Allocate__TargetRegFile((Data__Instruction)i7);
-  *Allocate__CoalesceRanges_reg = i6;
+  i4 = Allocate__TargetRegFile((Data__Instruction)i4);
+  *Allocate__CoalesceRanges_reg = i4;
   i1 = *Allocate__CoalesceRanges_reg;
-  i6 = i1 < 0;
-  if (i6) goto l8;
-  i4 = Allocate__CoalesceRanges_ScanGates_LiveRangeId((Data__Instruction)i7, (signed char)i1, (Allocate__RegionSummary *)&*Allocate__CoalesceRanges_summary);
-  i7 = i1 * 40;
-  i5 = (int)Allocate__rangeInfo + i7;
-  i2 = i5 + 24;
-  i3 = (int)*(void**)i2;
-  i7 = (int)_ashl(i4, 2, (unsigned int));
-  i7 = i3 + i7;
-  i7 = *(int*)i7;
-  i7 = i7 < 0;
-  if (i7) goto l1;
-  i0 = i4;
+  i4 = i1 < 0;
+  if (i4) goto l8;
+  i0 = i1 * 40;
+  i0 = (int)Allocate__rangeInfo + i0;
+  i5 = (int)*(void**)i5;
+  i5 = Allocate__CoalesceRanges_ScanGates_LiveRangeId((Data__Instruction)i5, (signed char)i1, (Allocate__RegionSummary *)&*Allocate__CoalesceRanges_summary);
+  i0 += 24;
+  i0 = (int)*(void**)i0;
+  i2 = (int)_ashl(i5, 2, (unsigned int));
+  i2 = i0 + i2;
+  i2 = *(int*)i2;
+  i2 = i2 < 0;
+  if (i2) goto l1;
+  i4 = i5;
   goto l3;
 l1:
-  i0 = i4;
+  i4 = i5;
 l2:
-  i7 = (int)_ashl(i0, 2, (unsigned int));
-  i7 = i3 + i7;
-  i7 = *(int*)i7;
-  i7 = - i7;
-  i0 = i7 - 1;
-  i7 = (int)_ashl(i0, 2, (unsigned int));
-  i7 = i3 + i7;
-  i7 = *(int*)i7;
-  i7 = i7 < 0;
-  if (i7) goto l2;
+  i2 = (int)_ashl(i4, 2, (unsigned int));
+  i2 = i0 + i2;
+  i2 = *(int*)i2;
+  i2 = - i2;
+  i4 = i2 - 1;
+  i2 = (int)_ashl(i4, 2, (unsigned int));
+  i2 = i0 + i2;
+  i2 = *(int*)i2;
+  i2 = i2 < 0;
+  if (i2) goto l2;
 l3:
   if (loopBackedge) goto l7;
-  i4 = *(short int*)i9;
-  i4 = i4 == 82;
-  if (i4) goto l6;
-  i3 = i8 + 8;
-  i7 = (int)*(void**)i3;
-  i3 = i7 == 0;
-  if (i3) goto l8;
-  i4 = i0;
+  i3 = *(short int*)i7;
+  i3 = i3 == 82;
+  if (i3) goto l6;
+  i5 = i6 + 8;
+  i2 = (int)*(void**)i5;
+  i5 = i2 == 0;
+  if (i5) goto l8;
+  i3 = i4;
 l4:
-  i3 = (int)*(void**)i7;
-  Allocate__CoalesceRanges_ScanGates_TryCoalescing((int)i4, (signed char)i1, (Data__Usable)i3, (Allocate__RegionSummary *)&*Allocate__CoalesceRanges_summary);
-  i3 = (int)*(void**)i2;
-  i6 = (int)_ashl(i4, 2, (unsigned int));
-  i3 += i6;
-  i3 = *(int*)i3;
-  i6 = i3 >= 0;
-  if (i6) goto l5;
-  i3 = - i3;
-  i4 = i3 - 1;
+  i5 = *Allocate__CoalesceRanges_reg;
+  i0 = (int)*(void**)i2;
+  Allocate__CoalesceRanges_ScanGates_TryCoalescing((int)i3, (signed char)i5, (Data__Usable)i0, (Allocate__RegionSummary *)&*Allocate__CoalesceRanges_summary);
+  i0 = *Allocate__CoalesceRanges_reg;
+  i5 = i0 * 40;
+  i5 = (int)Allocate__rangeInfo + i5;
+  i5 += 24;
+  i0 = (int)*(void**)i5;
+  i5 = (int)_ashl(i3, 2, (unsigned int));
+  i5 = i0 + i5;
+  i5 = *(int*)i5;
+  i0 = i5 >= 0;
+  if (i0) goto l5;
+  i5 = - i5;
+  i3 = i5 - 1;
 l5:
-  i3 = i7 + 8;
-  i7 = (int)*(void**)i3;
-  i3 = i7 != 0;
-  if (i3) goto l4;
+  i5 = i2 + 8;
+  i2 = (int)*(void**)i5;
+  i5 = i2 != 0;
+  if (i5) goto l4;
   goto l8;
 l6:
-  i4 = i8 + 8;
-  i4 = (int)*(void**)i4;
-  i4 = (int)*(void**)i4;
-  Allocate__CoalesceRanges_ScanGates_TryCoalescing((int)i0, (signed char)i1, (Data__Usable)i4, (Allocate__RegionSummary *)&*Allocate__CoalesceRanges_summary);
+  i3 = i6 + 8;
+  i3 = (int)*(void**)i3;
+  i3 = (int)*(void**)i3;
+  Allocate__CoalesceRanges_ScanGates_TryCoalescing((int)i4, (signed char)i1, (Data__Usable)i3, (Allocate__RegionSummary *)&*Allocate__CoalesceRanges_summary);
   goto l8;
 l7:
-  i7 = i8 + 8;
-  i7 = (int)*(void**)i7;
-  i7 += 8;
-  i7 = (int)*(void**)i7;
-  i7 = (int)*(void**)i7;
-  Allocate__CoalesceRanges_ScanGates_TryCoalescing((int)i0, (signed char)i1, (Data__Usable)i7, (Allocate__RegionSummary *)&*Allocate__CoalesceRanges_summary);
+  i0 = i6 + 8;
+  i0 = (int)*(void**)i0;
+  i0 += 8;
+  i0 = (int)*(void**)i0;
+  i0 = (int)*(void**)i0;
+  Allocate__CoalesceRanges_ScanGates_TryCoalescing((int)i4, (signed char)i1, (Data__Usable)i0, (Allocate__RegionSummary *)&*Allocate__CoalesceRanges_summary);
 l8:
-  i0 = i8 + 4;
-  i8 = (int)*(void**)i0;
-  i0 = i8 != 0;
+  i0 = i6 + 4;
+  i6 = (int)*(void**)i0;
+  i0 = i6 != 0;
   if (i0) goto l0;
 l9:
   ;
@@ -3668,52 +3765,53 @@ l9:
 }
 
 void Allocate__ColorGraph_CreateLocation(void) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9;
-  i6 = (int)Allocate__NewLoc((const unsigned char*)(int)_c0, 1);
-  i8 = (int)Allocate__locVector;
-  i7 = Allocate__locCount;
-  i0 = i8 == 0;
+  register int i0, i1, i2, i3, i4, i5, i6, i7;
+  i5 = (int)Allocate__NewLoc((const unsigned char*)(int)_c0, 1);
+  i6 = (int)Allocate__locVector;
+  i0 = i6 == 0;
   if (i0) goto l2;
-  i1 = *(int*)(i8-8);
-  i5 = i1 > i7;
-  if (i5) goto l3;
-  i4 = i1 - 1;
-  i2 = i4 < 0;
+  i1 = *(int*)(i6-8);
+  i6 = Allocate__locCount;
+  i6 = i1 > i6;
+  if (i6) goto l3;
+  i6 = i1 - 1;
+  i2 = i6 < 0;
   i1 += 64;
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i1 < 0) _invalid_length(i1, _P(75097));
+    if(i1 < 0) _invalid_length(i1, _P(75774));
     _mem = GC_malloc(_not_zero(i1*4)+8);
-    if (!_mem) _new_failed(_P(75071));
+    if (!_mem) _new_failed(_P(75748));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i1;
-    i5 = (int)_var;
+    i4 = (int)_var;
   }
   if (i2) goto l1;
   i2 = 0;
 l0:
+  i0 = (int)Allocate__locVector;
   i1 = (int)_ashl(i2, 2, (unsigned int));
-  i1 = i8 + i1;
+  i3 = i0 + i1;
   i0 = (int)_ashl(i2, 2, (unsigned int));
-  i0 = i5 + i0;
-  i3 = i2 + 1;
-  i9 = (int)*(void**)i1;
-  i1 = i3 > i4;
-  *(void**)i0 = (void*)i9;
-  if (i1) goto l1;
-  i2 = i3;
+  i0 = i4 + i0;
+  i1 = i2 + 1;
+  i7 = (int)*(void**)i3;
+  i3 = i1 > i6;
+  *(void**)i0 = (void*)i7;
+  if (i3) goto l1;
+  i2 = i1;
   goto l0;
 l1:
-  Allocate__locVector = (void*)i5;
+  Allocate__locVector = (void*)i4;
   goto l3;
 l2:
   {
     char *_mem, *_var;
     int* _dim_ptr;
     _mem = GC_malloc(_not_zero(64*4)+8);
-    if (!_mem) _new_failed(_P(74995));
+    if (!_mem) _new_failed(_P(75672));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 64;
@@ -3722,115 +3820,129 @@ l2:
   Allocate__locVector = (void*)i0;
 l3:
   i0 = (int)Allocate__locVector;
-  i1 = (int)_ashl(i7, 2, (unsigned int));
-  i1 = i0 + i1;
-  *(void**)i1 = (void*)i6;
-  i1 = i7 + 1;
-  Allocate__locCount = i1;
+  i1 = Allocate__locCount;
+  i2 = (int)_ashl(i1, 2, (unsigned int));
+  i2 = i0 + i2;
+  *(void**)i2 = (void*)i5;
+  i0 = Allocate__locCount;
+  i0++;
+  Allocate__locCount = i0;
 }
 
 void Allocate__ColorGraph_SiftToLeaf(int i, int n, Allocate__LongintVector *Allocate__ColorGraph_s, Allocate__LongintVector *Allocate__ColorGraph_d, Allocate__LongintVector *Allocate__ColorGraph_ds) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12;
+  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10;
   i0 = (int)*Allocate__ColorGraph_s;
   i1 = (int)_ashl(i, 1, (unsigned int));
-  i5 = i1 + 1;
-  i1 = n <= i5;
+  i6 = i1 + 1;
+  i1 = n <= i6;
   if (i1) goto l0;
-  i9 = i5 + 1;
-  i4 = (int)_ashl(i5, 2, (unsigned int));
-  i6 = (int)_ashl(i9, 2, (unsigned int));
+  i8 = i6 + 1;
+  i5 = (int)_ashl(i6, 2, (unsigned int));
+  i4 = (int)_ashl(i8, 2, (unsigned int));
+  i5 = i0 + i5;
   i4 = i0 + i4;
-  i6 = i0 + i6;
+  i5 = *(int*)i5;
   i4 = *(int*)i4;
-  i6 = *(int*)i6;
   i3 = (int)*Allocate__ColorGraph_d;
-  i1 = (int)_ashl(i4, 2, (unsigned int));
-  i2 = (int)_ashl(i6, 2, (unsigned int));
+  i1 = (int)_ashl(i5, 2, (unsigned int));
+  i2 = (int)_ashl(i4, 2, (unsigned int));
   i1 = i3 + i1;
   i3 += i2;
-  i4 = *(int*)i1;
-  i6 = *(int*)i3;
-  i4 = i4 > i6;
-  if (i4) goto l1;
+  i5 = *(int*)i1;
+  i4 = *(int*)i3;
+  i5 = i5 > i4;
+  if (i5) goto l1;
 l0:
-  i9 = i5;
+  i8 = i6;
 l1:
-  i10 = (int)*Allocate__ColorGraph_ds;
   i1 = (int)_ashl(i, 2, (unsigned int));
   i1 = i0 + i1;
-  i11 = *(int*)i1;
-  i1 = n < i9;
+  i9 = *(int*)i1;
+  i1 = n < i8;
   if (i1) goto l5;
-  i2 = (int)*Allocate__ColorGraph_d;
-  i8 = (int)_ashl(i9, 2, (unsigned int));
-  i8 = i0 + i8;
-  i8 = *(int*)i8;
-  i7 = (int)_ashl(i11, 2, (unsigned int));
-  i1 = i2 + i7;
   i7 = (int)_ashl(i8, 2, (unsigned int));
-  i6 = i2 + i7;
-  i7 = *(int*)i1;
-  i8 = *(int*)i6;
-  i3 = i7 <= i8;
-  if (i3) goto l5;
-  i12 = i9;
-  i8 = i;
+  i0 += i7;
+  i0 = *(int*)i0;
+  i7 = (int)*Allocate__ColorGraph_d;
+  i5 = (int)_ashl(i9, 2, (unsigned int));
+  i6 = (int)_ashl(i0, 2, (unsigned int));
+  i5 = i7 + i5;
+  i7 += i6;
+  i6 = *(int*)i5;
+  i0 = *(int*)i7;
+  i1 = i6 <= i0;
+  if (i1) goto l5;
+  i7 = (int)_ashl(i9, 2, (unsigned int));
+  i10 = i8;
+  i6 = i;
 l2:
-  i7 = (int)_ashl(i12, 2, (unsigned int));
-  i6 = i0 + i7;
-  i7 = (int)_ashl(i8, 2, (unsigned int));
-  i7 = i0 + i7;
-  i6 = *(int*)i6;
-  *(int*)i7 = i6;
-  i7 = *(int*)i7;
-  i6 = (int)_ashl(i7, 2, (unsigned int));
-  i6 = i10 + i6;
-  i5 = (int)_ashl(i12, 1, (unsigned int));
-  i5++;
-  *(int*)i6 = i8;
-  i8 = n <= i5;
-  if (i8) goto l3;
-  i4 = i5 + 1;
-  i6 = (int)_ashl(i5, 2, (unsigned int));
-  i7 = (int)_ashl(i4, 2, (unsigned int));
-  i6 = i0 + i6;
-  i7 = i0 + i7;
-  i6 = *(int*)i6;
-  i7 = *(int*)i7;
-  i9 = (int)_ashl(i6, 2, (unsigned int));
-  i8 = (int)_ashl(i7, 2, (unsigned int));
-  i9 = i2 + i9;
-  i8 = i2 + i8;
-  i6 = *(int*)i9;
-  i7 = *(int*)i8;
-  i6 = i6 > i7;
-  if (i6) goto l4;
-l3:
-  i4 = i5;
-l4:
-  i8 = n >= i4;
-  if (!(i8)) goto l6;
+  i5 = (int)*Allocate__ColorGraph_s;
+  i4 = (int)_ashl(i10, 2, (unsigned int));
+  i4 = i5 + i4;
+  i3 = (int)_ashl(i6, 2, (unsigned int));
+  i3 = i5 + i3;
+  i4 = *(int*)i4;
+  *(int*)i3 = i4;
+  i5 = (int)*Allocate__ColorGraph_s;
+  i4 = (int)_ashl(i6, 2, (unsigned int));
+  i5 += i4;
+  i5 = *(int*)i5;
+  i4 = (int)*Allocate__ColorGraph_ds;
+  i3 = (int)_ashl(i5, 2, (unsigned int));
+  i3 = i4 + i3;
+  i2 = (int)_ashl(i10, 1, (unsigned int));
+  i2++;
+  *(int*)i3 = i6;
+  i6 = n <= i2;
+  if (i6) goto l3;
+  i8 = i2 + 1;
+  i5 = (int)*Allocate__ColorGraph_s;
+  i4 = (int)_ashl(i2, 2, (unsigned int));
+  i3 = (int)_ashl(i8, 2, (unsigned int));
+  i4 = i5 + i4;
+  i5 += i3;
+  i3 = *(int*)i4;
+  i4 = *(int*)i5;
+  i5 = (int)*Allocate__ColorGraph_d;
+  i0 = (int)_ashl(i3, 2, (unsigned int));
   i6 = (int)_ashl(i4, 2, (unsigned int));
-  i6 = i0 + i6;
-  i6 = *(int*)i6;
-  i7 = (int)_ashl(i6, 2, (unsigned int));
-  i8 = i2 + i7;
-  i7 = *(int*)i1;
-  i6 = *(int*)i8;
-  i6 = i7 <= i6;
-  if (i6) goto l6;
-  i8 = i12;
-  i12 = i4;
+  i0 = i5 + i0;
+  i5 += i6;
+  i3 = *(int*)i0;
+  i4 = *(int*)i5;
+  i3 = i3 > i4;
+  if (i3) goto l4;
+l3:
+  i8 = i2;
+l4:
+  i6 = n >= i8;
+  if (!(i6)) goto l6;
+  i4 = (int)*Allocate__ColorGraph_s;
+  i3 = (int)_ashl(i8, 2, (unsigned int));
+  i3 = i4 + i3;
+  i3 = *(int*)i3;
+  i6 = (int)*Allocate__ColorGraph_d;
+  i4 = (int)_ashl(i3, 2, (unsigned int));
+  i5 = i6 + i7;
+  i4 = i6 + i4;
+  i5 = *(int*)i5;
+  i3 = *(int*)i4;
+  i3 = i5 <= i3;
+  if (i3) goto l6;
+  i6 = i10;
+  i10 = i8;
   goto l2;
 l5:
-  i12 = i;
+  i10 = i;
 l6:
-  i1 = (int)_ashl(i11, 2, (unsigned int));
-  i2 = (int)_ashl(i12, 2, (unsigned int));
-  i2 = i0 + i2;
-  i1 = i10 + i1;
-  *(int*)i2 = i11;
-  *(int*)i1 = i12;
+  i0 = (int)*Allocate__ColorGraph_s;
+  i1 = (int)_ashl(i10, 2, (unsigned int));
+  i1 = i0 + i1;
+  *(int*)i1 = i9;
+  i0 = (int)*Allocate__ColorGraph_ds;
+  i1 = (int)_ashl(i9, 2, (unsigned int));
+  i1 = i0 + i1;
+  *(int*)i1 = i10;
 }
 
 void Allocate__ColorGraph_BuildHeap(int n, Allocate__LongintVector *Allocate__ColorGraph_s, Allocate__LongintVector *Allocate__ColorGraph_d, Allocate__LongintVector *Allocate__ColorGraph_ds) {
@@ -3863,25 +3975,25 @@ void Allocate__ColorGraph(Data__Region r, Allocate__RangeInfo *ri, _Type ri__tag
   i0 = (int)ri + 16;
   i2 = (int)*(void**)i0;
   if (!(i1)) goto l4;
-  i9 = 0;
+  i6 = 0;
 l0:
-  i0 = (int)_ashl(i9, 2, (unsigned int));
+  i0 = (int)_ashl(i6, 2, (unsigned int));
   i7 = i4 + i0;
   i0 = *(int*)i7;
   i0 = i0 < 0;
   if (i0) goto l3;
-  i6 = *(int*)(i2-12);
-  i6 = (int)_ashl(i6, 2, (unsigned int));
-  i6 = i9 * i6;
-  i0 = i2 + i6;
+  i9 = *(int*)(i2-12);
+  i9 = (int)_ashl(i9, 2, (unsigned int));
+  i9 = i6 * i9;
+  i0 = i2 + i9;
   i8 = 0;
 l1:
   i3 = (int)_ashr(i8, 5, (unsigned int));
-  i6 = (int)_ashl(i3, 2, (unsigned int));
-  i6 = i0 + i6;
-  i3 = *(unsigned int*)i6;
-  i6 = i8 & 0x1FU;
-  i3 = (i3 & ((unsigned int)1 << i6)) != 0;
+  i9 = (int)_ashl(i3, 2, (unsigned int));
+  i9 = i0 + i9;
+  i3 = *(unsigned int*)i9;
+  i9 = i8 & 0x1FU;
+  i3 = (i3 & ((unsigned int)1 << i9)) != 0;
   if (!(i3)) goto l2;
   i3 = *(int*)i7;
   i3++;
@@ -3891,8 +4003,8 @@ l2:
   i3 = i8 <= i5;
   if (i3) goto l1;
 l3:
-  i9++;
-  i0 = i9 <= i5;
+  i6++;
+  i0 = i6 <= i5;
   if (i0) goto l0;
 l4:
   i0 = (int)ri + 32;
@@ -3931,235 +4043,236 @@ l8:
   ds = (void*)i0;
   Allocate__ColorGraph_BuildHeap((int)i16, (Allocate__LongintVector *)&s, (Allocate__LongintVector *)&d, (Allocate__LongintVector *)&ds);
   if (i6) goto l14;
-  i17 = i16;
+  i6 = i16;
 l9:
   i13 = *(int*)i3;
-  i6 = (int)_ashl(i17, 2, (unsigned int));
-  i6 = i3 + i6;
-  i7 = *(int*)i6;
-  *(int*)i3 = i7;
-  *(int*)i6 = i13;
-  i7 = *(int*)i3;
-  i8 = (int)_ashl(i7, 2, (unsigned int));
-  i8 = i0 + i8;
-  *(int*)i8 = 0;
-  i6 = *(int*)i6;
-  i14 = i17 - 1;
   i7 = (int)_ashl(i6, 2, (unsigned int));
+  i7 = i3 + i7;
+  i8 = *(int*)i7;
+  *(int*)i3 = i8;
+  *(int*)i7 = i13;
+  i8 = *(int*)i3;
+  i17 = (int)_ashl(i8, 2, (unsigned int));
+  i17 = i0 + i17;
+  *(int*)i17 = 0;
+  i7 = *(int*)i7;
+  i14 = i6 - 1;
+  i8 = (int)_ashl(i7, 2, (unsigned int));
   i12 = i14 > 0;
-  i7 = i0 + i7;
-  *(int*)i7 = i17;
+  i8 = i0 + i8;
+  *(int*)i8 = i6;
   if (!(i12)) goto l13;
   s = (void*)i3;
   d = (void*)i4;
   ds = (void*)i0;
   Allocate__ColorGraph_SiftToLeaf((int)0, (int)i14, (Allocate__LongintVector *)&s, (Allocate__LongintVector *)&d, (Allocate__LongintVector *)&ds);
   if (!(i1)) goto l13;
-  i17 = 0;
+  i6 = 0;
 l10:
-  i11 = (int)_ashl(i17, 2, (unsigned int));
-  i6 = i4 + i11;
-  i7 = *(int*)i6;
-  i11 = i7 < 0;
+  i11 = (int)_ashl(i6, 2, (unsigned int));
+  i7 = i4 + i11;
+  i8 = *(int*)i7;
+  i11 = i8 < 0;
   if (i11) goto l12;
-  i8 = *(int*)(i2-12);
-  i8 = (int)_ashl(i8, 2, (unsigned int));
-  i8 = i13 * i8;
-  i8 = i2 + i8;
-  i9 = (int)_ashr(i17, 5, (unsigned int));
+  i17 = *(int*)(i2-12);
+  i17 = (int)_ashl(i17, 2, (unsigned int));
+  i17 = i13 * i17;
+  i17 = i2 + i17;
+  i9 = (int)_ashr(i6, 5, (unsigned int));
   i15 = (int)_ashl(i9, 2, (unsigned int));
-  i8 += i15;
-  i8 = *(unsigned int*)i8;
-  i9 = i17 & 0x1FU;
-  i8 = (i8 & ((unsigned int)1 << i9)) != 0;
-  if (!(i8)) goto l12;
-  i7--;
-  *(int*)i6 = i7;
-  i6 = (int)_ashl(i17, 2, (unsigned int));
-  i6 = i0 + i6;
-  i11 = *(int*)i6;
-  i6 = i11 > i14;
-  if (i6) goto l12;
+  i17 += i15;
+  i17 = *(unsigned int*)i17;
+  i9 = i6 & 0x1FU;
+  i17 = (i17 & ((unsigned int)1 << i9)) != 0;
+  if (!(i17)) goto l12;
+  i8--;
+  *(int*)i7 = i8;
+  i7 = (int)_ashl(i6, 2, (unsigned int));
+  i7 = i0 + i7;
+  i11 = *(int*)i7;
+  i7 = i11 > i14;
+  if (i7) goto l12;
   i9 = i11 <= 0;
   if (i9) goto l12;
-  i7 = i11 - 1;
-  i8 = (int)_ashr(i7, 1, (unsigned int));
-  i7 = (int)_ashl(i11, 2, (unsigned int));
-  i10 = (int)_ashl(i8, 2, (unsigned int));
-  i7 = i3 + i7;
+  i8 = i11 - 1;
+  i17 = (int)_ashr(i8, 1, (unsigned int));
+  i8 = (int)_ashl(i11, 2, (unsigned int));
+  i10 = (int)_ashl(i17, 2, (unsigned int));
+  i8 = i3 + i8;
   i10 = i3 + i10;
-  i7 = *(int*)i7;
-  i8 = *(int*)i10;
-  i15 = (int)_ashl(i7, 2, (unsigned int));
-  i10 = (int)_ashl(i8, 2, (unsigned int));
+  i8 = *(int*)i8;
+  i17 = *(int*)i10;
+  i15 = (int)_ashl(i8, 2, (unsigned int));
+  i10 = (int)_ashl(i17, 2, (unsigned int));
   i15 = i4 + i15;
   i10 = i4 + i10;
-  i7 = *(int*)i15;
-  i8 = *(int*)i10;
-  i6 = i7 >= i8;
-  if (i6) goto l12;
+  i8 = *(int*)i15;
+  i17 = *(int*)i10;
+  i7 = i8 >= i17;
+  if (i7) goto l12;
 l11:
-  i7 = i11 - 1;
-  i15 = (int)_ashr(i7, 1, (unsigned int));
-  i7 = (int)_ashl(i15, 2, (unsigned int));
-  i10 = i3 + i7;
-  i7 = (int)_ashl(i11, 2, (unsigned int));
-  i9 = i3 + i7;
-  i7 = *(int*)i10;
+  i8 = i11 - 1;
+  i15 = (int)_ashr(i8, 1, (unsigned int));
+  i8 = (int)_ashl(i15, 2, (unsigned int));
+  i10 = i3 + i8;
+  i8 = (int)_ashl(i11, 2, (unsigned int));
+  i9 = i3 + i8;
+  i8 = *(int*)i10;
+  i17 = *(int*)i9;
+  *(int*)i9 = i8;
+  *(int*)i10 = i17;
   i8 = *(int*)i9;
-  *(int*)i9 = i7;
-  *(int*)i10 = i8;
-  i7 = *(int*)i9;
-  i8 = (int)_ashl(i7, 2, (unsigned int));
-  i8 = i0 + i8;
-  *(int*)i8 = i11;
+  i17 = (int)_ashl(i8, 2, (unsigned int));
+  i17 = i0 + i17;
+  *(int*)i17 = i11;
   i11 = *(int*)i10;
-  i7 = (int)_ashl(i11, 2, (unsigned int));
-  i7 = i0 + i7;
-  *(int*)i7 = i15;
+  i8 = (int)_ashl(i11, 2, (unsigned int));
+  i8 = i0 + i8;
+  *(int*)i8 = i15;
   i11 = i15 <= 0;
   if (i11) goto l12;
-  i8 = i15 - 1;
-  i8 = (int)_ashr(i8, 1, (unsigned int));
+  i17 = i15 - 1;
+  i17 = (int)_ashr(i17, 1, (unsigned int));
   i10 = *(int*)i10;
-  i7 = (int)_ashl(i8, 2, (unsigned int));
-  i7 = i3 + i7;
-  i8 = *(int*)i7;
-  i7 = (int)_ashl(i10, 2, (unsigned int));
-  i11 = (int)_ashl(i8, 2, (unsigned int));
-  i7 = i4 + i7;
+  i8 = (int)_ashl(i17, 2, (unsigned int));
+  i8 = i3 + i8;
+  i17 = *(int*)i8;
+  i8 = (int)_ashl(i10, 2, (unsigned int));
+  i11 = (int)_ashl(i17, 2, (unsigned int));
+  i8 = i4 + i8;
   i11 = i4 + i11;
-  i10 = *(int*)i7;
-  i8 = *(int*)i11;
-  i10 = i10 >= i8;
+  i10 = *(int*)i8;
+  i17 = *(int*)i11;
+  i10 = i10 >= i17;
   if (i10) goto l12;
   i11 = i15;
   goto l11;
 l12:
-  i17++;
-  i11 = i17 <= i5;
+  i6++;
+  i11 = i6 <= i5;
   if (i11) goto l10;
 l13:
   if (!(i12)) goto l14;
-  i17 = i14;
+  i6 = i14;
   goto l9;
 l14:
   i0 = i16 >= 0;
   Allocate__locCount = 0;
   if (!(i0)) goto l28;
   i0 = (int)ri + 36;
-  i11 = 0;
+  i10 = 0;
 l15:
   i6 = Allocate__locCount;
-  i10 = i6 - 1;
-  i7 = i10 < 0;
-  if (i7) goto l17;
-  i7 = (int)Allocate__locVector;
-  i12 = 0;
+  i12 = i6 - 1;
+  i6 = i12 < 0;
+  if (i6) goto l17;
+  i8 = 0;
 l16:
-  i13 = (int)_ashl(i12, 2, (unsigned int));
-  i13 = i7 + i13;
-  i13 = (int)*(void**)i13;
-  i12++;
-  i8 = i13 + 12;
-  i9 = i12 <= i10;
-  *(unsigned char*)i8 = 0;
+  i6 = (int)Allocate__locVector;
+  i7 = (int)_ashl(i8, 2, (unsigned int));
+  i6 += i7;
+  i6 = (int)*(void**)i6;
+  i8++;
+  i7 = i6 + 12;
+  i9 = i8 <= i12;
+  *(unsigned char*)i7 = 0;
   if (i9) goto l16;
 l17:
-  i7 = (int)_ashl(i11, 2, (unsigned int));
-  i7 = i3 + i7;
+  i6 = (int)_ashl(i10, 2, (unsigned int));
+  i6 = i3 + i6;
   if (!(i1)) goto l21;
   i12 = *(int*)(i2-12);
-  i10 = *(int*)i7;
+  i9 = *(int*)i6;
   i12 = (int)_ashl(i12, 2, (unsigned int));
-  i12 = i10 * i12;
-  i8 = i2 + i12;
-  i13 = 0;
+  i12 = i9 * i12;
+  i11 = i2 + i12;
+  i7 = 0;
 l18:
-  i9 = (int)_ashr(i13, 5, (unsigned int));
-  i12 = (int)_ashl(i9, 2, (unsigned int));
-  i12 = i8 + i12;
+  i8 = (int)_ashr(i7, 5, (unsigned int));
+  i12 = (int)_ashl(i8, 2, (unsigned int));
+  i12 = i11 + i12;
   i12 = *(unsigned int*)i12;
-  i9 = i13 & 0x1FU;
-  i9 = (i12 & ((unsigned int)1 << i9)) != 0;
-  if (!(i9)) goto l20;
+  i8 = i7 & 0x1FU;
+  i8 = (i12 & ((unsigned int)1 << i8)) != 0;
+  if (!(i8)) goto l20;
   i12 = (int)*(void**)i0;
-  i10 = (int)_ashl(i13, 2, (unsigned int));
-  i12 += i10;
-  i10 = (int)*(void**)i12;
-  i12 = *(int*)(i10-4);
+  i9 = (int)_ashl(i7, 2, (unsigned int));
+  i12 += i9;
+  i9 = (int)*(void**)i12;
+  i12 = *(int*)(i9-4);
   i12 = _type_test(i12, &Allocate__LocationDesc_td.td, 2);
   if (i12) goto l19;
-  i9 = i10 + 20;
+  i8 = i9 + 20;
+  i8 = (int)*(void**)i8;
+  i12 = i8 == 0;
+  if (i12) goto l20;
+  i12 = i8 + 12;
+  *(unsigned char*)i12 = 1;
+  goto l20;
+l19:
+  i9 += 8;
   i9 = (int)*(void**)i9;
   i12 = i9 == 0;
   if (i12) goto l20;
   i12 = i9 + 12;
   *(unsigned char*)i12 = 1;
-  goto l20;
-l19:
-  i10 += 8;
-  i10 = (int)*(void**)i10;
-  i12 = i10 == 0;
-  if (i12) goto l20;
-  i12 = i10 + 12;
-  *(unsigned char*)i12 = 1;
 l20:
-  i13++;
-  i9 = i13 <= i5;
-  if (i9) goto l18;
+  i7++;
+  i8 = i7 <= i5;
+  if (i8) goto l18;
 l21:
-  i13 = i6 != 0;
-  if (!(i13)) goto l23;
-  i13 = (int)Allocate__locVector;
-  i8 = (int)*(void**)i13;
-  i8 += 12;
-  i10 = *(unsigned char*)i8;
-  if (!(i10)) goto l23;
-  i9 = 0;
+  i7 = Allocate__locCount;
+  i8 = i7 == 0;
+  if (i8) goto l23;
+  i8 = (int)Allocate__locVector;
+  i9 = (int)*(void**)i8;
+  i9 += 12;
+  i12 = *(unsigned char*)i9;
+  if (!(i12)) goto l23;
+  i11 = 0;
 l22:
-  i9++;
-  i8 = i6 == i9;
-  if (i8) goto l24;
-  i8 = (int)_ashl(i9, 2, (unsigned int));
-  i8 = i13 + i8;
-  i8 = (int)*(void**)i8;
-  i8 += 12;
-  i8 = *(unsigned char*)i8;
-  if (i8) goto l22;
+  i11++;
+  i9 = i7 == i11;
+  if (i9) goto l24;
+  i9 = (int)_ashl(i11, 2, (unsigned int));
+  i9 = i8 + i9;
+  i9 = (int)*(void**)i9;
+  i9 += 12;
+  i9 = *(unsigned char*)i9;
+  if (i9) goto l22;
   goto l24;
 l23:
-  i9 = 0;
+  i11 = 0;
 l24:
-  i13 = i9 == i6;
-  if (!(i13)) goto l25;
+  i8 = i11 == i7;
+  if (!(i8)) goto l25;
   Allocate__ColorGraph_CreateLocation();
 l25:
-  i6 = *(int*)i7;
+  i6 = *(int*)i6;
   i7 = (int)*(void**)i0;
-  i13 = (int)_ashl(i6, 2, (unsigned int));
-  i7 += i13;
+  i8 = (int)_ashl(i6, 2, (unsigned int));
+  i7 += i8;
   i7 = (int)*(void**)i7;
   i6 = *(int*)(i7-4);
   i6 = _type_test(i6, &Allocate__LocationDesc_td.td, 2);
   if (i6) goto l26;
-  i6 = (int)Allocate__locVector;
-  i13 = (int)_ashl(i9, 2, (unsigned int));
-  i13 = i6 + i13;
-  i6 = i7 + 20;
-  i13 = (int)*(void**)i13;
-  *(void**)i6 = (void*)i13;
+  i8 = (int)Allocate__locVector;
+  i6 = (int)_ashl(i11, 2, (unsigned int));
+  i6 = i8 + i6;
+  i8 = i7 + 20;
+  i6 = (int)*(void**)i6;
+  *(void**)i8 = (void*)i6;
   goto l27;
 l26:
   i6 = (int)Allocate__locVector;
-  i13 = (int)_ashl(i9, 2, (unsigned int));
-  i13 = i6 + i13;
+  i8 = (int)_ashl(i11, 2, (unsigned int));
+  i8 = i6 + i8;
   i6 = i7 + 8;
-  i13 = (int)*(void**)i13;
-  *(void**)i6 = (void*)i13;
+  i8 = (int)*(void**)i8;
+  *(void**)i6 = (void*)i8;
 l27:
-  i11++;
-  i6 = i11 <= i16;
+  i10++;
+  i6 = i10 <= i16;
   if (i6) goto l15;
 l28:
   if (!(i1)) goto l37;
@@ -4226,17 +4339,17 @@ l36:
   if (i1) goto l29;
 l37:
   i0 = (int)r + 64;
-  i6 = (int)*(void**)i0;
-  i0 = i6 == 0;
+  i7 = (int)*(void**)i0;
+  i0 = i7 == 0;
   if (i0) goto l41;
   i0 = (int)_ashl(reg, 5, (unsigned int));
 l38:
-  i1 = i6 + 4;
+  i1 = i7 + 4;
   i1 = (int)*(void**)i1;
   i5 = i1 + i0;
   i1 = i5 + 4;
-  i7 = (int)*(void**)i1;
-  i1 = i7 == 0;
+  i6 = (int)*(void**)i1;
+  i1 = i6 == 0;
   if (i1) goto l40;
   i5 += 24;
   i1 = (int)*(void**)i5;
@@ -4245,97 +4358,101 @@ l39:
   i2 = (int)_ashl(i4, 2, (unsigned int));
   i2 = i1 + i2;
   i2 = (int)*(void**)i2;
-  i3 = i7 + 4;
+  i3 = i6 + 4;
   i3 = (int)*(void**)i3;
   i3 += 20;
-  i7 = (int)*(void**)i7;
+  i6 = (int)*(void**)i6;
   i5 = i2 + 8;
   i3 = (int)*(void**)i3;
   *(void**)i5 = (void*)i3;
-  i2 = i7 != 0;
+  i2 = i6 != 0;
   i4++;
   if (i2) goto l39;
 l40:
-  i1 = i6 + 68;
-  i6 = (int)*(void**)i1;
-  i1 = i6 != 0;
+  i1 = i7 + 68;
+  i7 = (int)*(void**)i1;
+  i1 = i7 != 0;
   if (i1) goto l38;
 l41:
-  i7 = (int)rf + 24;
+  i6 = (int)rf + 24;
   i0 = Allocate__locCount;
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i0 < 0) _invalid_length(i0, _P(81125));
+    if(i0 < 0) _invalid_length(i0, _P(81802));
     _mem = GC_malloc(_not_zero(i0*4)+8);
-    if (!_mem) _new_failed(_P(81105));
+    if (!_mem) _new_failed(_P(81782));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i0;
     i0 = (int)_var;
   }
-  *(void**)i7 = (void*)i0;
-  i5 = Allocate__locCount;
-  i8 = i5 - 1;
-  i0 = i8 >= 0;
-  if (!(i0)) goto l43;
-  i1 = (int)Allocate__locVector;
-  i3 = 0;
+  *(void**)i6 = (void*)i0;
+  i0 = Allocate__locCount;
+  i3 = i0 - 1;
+  i0 = i3 < 0;
+  if (i0) goto l43;
+  i2 = 0;
 l42:
-  i2 = (int)_ashl(i3, 2, (unsigned int));
-  i2 = i1 + i2;
-  i2 = (int)*(void**)i2;
-  i3++;
-  i4 = i2 + 12;
-  i6 = i3 <= i8;
-  *(unsigned char*)i4 = 0;
-  if (i6) goto l42;
-l43:
-  i1 = (int)rf + 4;
-  i4 = (int)*(void**)i1;
-  i1 = i4 == 0;
-  if (i1) goto l45;
-  i1 = (int)*(void**)i7;
-l44:
-  i2 = i4 + 4;
-  i3 = (int)*(void**)i2;
-  i2 = i3 + 8;
-  i2 = *(int*)i2;
-  i3 += 20;
-  i3 = (int)*(void**)i3;
-  i6 = (int)_ashl(i2, 2, (unsigned int));
-  i6 = i1 + i6;
-  *(void**)i6 = (void*)i3;
-  i4 = (int)*(void**)i4;
-  i6 = i3 + 12;
-  i2 = i4 != 0;
-  *(unsigned char*)i6 = 1;
-  if (i2) goto l44;
-l45:
-  i6 = *(int*)(int)rf;
-  if (!(i0)) goto l48;
   i0 = (int)Allocate__locVector;
-  i9 = 0;
-  i4 = i6;
-l46:
-  i1 = (int)_ashl(i9, 2, (unsigned int));
-  i1 = i0 + i1;
+  i1 = (int)_ashl(i2, 2, (unsigned int));
+  i0 += i1;
+  i0 = (int)*(void**)i0;
+  i2++;
+  i1 = i0 + 12;
+  i4 = i2 <= i3;
+  *(unsigned char*)i1 = 0;
+  if (i4) goto l42;
+l43:
+  i0 = (int)rf + 4;
+  i4 = (int)*(void**)i0;
+  i0 = i4 == 0;
+  if (i0) goto l45;
+  i0 = (int)*(void**)i6;
+l44:
+  i1 = i4 + 4;
   i2 = (int)*(void**)i1;
-  i1 = i2 + 12;
-  i1 = *(unsigned char*)i1;
-  if (i1) goto l47;
-  i3 = (int)*(void**)i7;
+  i1 = i2 + 8;
+  i1 = *(int*)i1;
+  i2 += 20;
+  i2 = (int)*(void**)i2;
+  i3 = (int)_ashl(i1, 2, (unsigned int));
+  i3 = i0 + i3;
+  *(void**)i3 = (void*)i2;
+  i4 = (int)*(void**)i4;
+  i3 = i2 + 12;
+  i1 = i4 != 0;
+  *(unsigned char*)i3 = 1;
+  if (i1) goto l44;
+l45:
+  i0 = Allocate__locCount;
+  i7 = i0 - 1;
+  i0 = i7 < 0;
+  i5 = *(int*)(int)rf;
+  if (i0) goto l48;
+  i4 = 0;
+  i3 = i5;
+l46:
+  i0 = (int)Allocate__locVector;
   i1 = (int)_ashl(i4, 2, (unsigned int));
-  i1 = i3 + i1;
-  *(void**)i1 = (void*)i2;
-  i3 = i4 + 1;
-  i4 = i3;
+  i0 += i1;
+  i1 = (int)*(void**)i0;
+  i0 = i1 + 12;
+  i0 = *(unsigned char*)i0;
+  if (i0) goto l47;
+  i2 = (int)*(void**)i6;
+  i0 = (int)_ashl(i3, 2, (unsigned int));
+  i0 = i2 + i0;
+  *(void**)i0 = (void*)i1;
+  i2 = i3 + 1;
+  i3 = i2;
 l47:
-  i9++;
-  i1 = i9 <= i8;
-  if (i1) goto l46;
+  i4++;
+  i0 = i4 <= i7;
+  if (i0) goto l46;
 l48:
-  i1 = i5 - i6;
+  i0 = Allocate__locCount;
+  i1 = i0 - i5;
   i0 = (int)rf + 12;
   *(int*)i0 = i1;
 }
@@ -4351,10 +4468,10 @@ void Allocate__UpdateSummary(Allocate__RangeInfo *ri, _Type ri__tag, Allocate__R
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i13 < 0) _invalid_length(i13, _P(82392));
-    if(i2 < 0) _invalid_length(i2, _P(82398));
+    if(i13 < 0) _invalid_length(i13, _P(83069));
+    if(i2 < 0) _invalid_length(i2, _P(83075));
     _mem = GC_malloc_atomic(_not_zero(i13*i2*4)+16);
-    if (!_mem) _new_failed(_P(82379));
+    if (!_mem) _new_failed(_P(83056));
     _var = _mem+16;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i13;
@@ -4579,7 +4696,7 @@ l1:
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(128)+8);
-    if (!_mem) _new_failed(_P(90853));
+    if (!_mem) _new_failed(_P(91530));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Allocate__RegionSummaryDesc_td.td;
     i5 = (int)_var;
@@ -4728,7 +4845,7 @@ l0:
     char *_mem, *_var;
     int* _dim_ptr;
     _mem = GC_malloc_atomic(_not_zero(8*1)+8);
-    if (!_mem) _new_failed(_P(93521));
+    if (!_mem) _new_failed(_P(94198));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 8;
@@ -4795,161 +4912,153 @@ l3:
 }
 
 void Allocate__GlobalRegion_MemoryLocations(Data__Region r, Data__GlobalRegion *Allocate__GlobalRegion_greg) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8;
+  register int i0, i1, i2, i3, i4, i5, i6, i7;
   i0 = (int)r + 56;
-  i7 = (int)*(void**)i0;
-  i0 = i7 == 0;
-  if (i0) goto l16;
+  i6 = (int)*(void**)i0;
+  i0 = i6 == 0;
+  if (i0) goto l15;
 l0:
-  i5 = *(int*)(i7-4);
-  i0 = _type_test(i5, &Data__RegionDesc_td.td, 5);
-  i8 = i7 + 36;
-  i4 = (int)*(void**)i8;
-  if (i0) goto l14;
-  i3 = i7 + 48;
-  i3 = *(unsigned int*)i3;
-  i3 = (i3 & ((unsigned int)1 << 11)) != 0;
-  i6 = i7 + 44;
-  i1 = *(short int*)i6;
-  if (!(i3)) goto l1;
-  i6 = i1 == 12;
-  if (i6) goto l5;
-  i6 = i1 == 13;
-  if (i6) goto l5;
-  i6 = i1 == 15;
-  if (i6) goto l5;
+  i4 = *(int*)(i6-4);
+  i0 = _type_test(i4, &Data__RegionDesc_td.td, 5);
+  i7 = i6 + 36;
+  i3 = (int)*(void**)i7;
+  if (i0) goto l13;
+  i2 = Allocate__PassThroughInstr((Data__Instruction)i6);
+  i1 = i6 + 44;
+  i7 = *(short int*)i1;
+  if (i2) goto l4;
+  i5 = i7 != 21;
+  if (i5) goto l1;
+  i1 = i6 + 24;
+  i1 = (int)*(void**)i1;
+  i1 = Classify__RegClass((Data__Struct)i1);
+  i2 = i6 + 28;
+  i5 = (int)*(void**)i2;
+  i5 = (int)Data__OpndDesc_OpndType((Data__Opnd)i5);
+  i5 = Classify__RegClass((Data__Struct)i5);
+  i1 = i1 == i5;
+  if (i1) goto l2;
 l1:
-  i2 = i1 == 21;
-  if (!(i2)) goto l2;
-  i6 = i7 + 24;
-  i6 = (int)*(void**)i6;
-  i6 = Classify__RegClass((Data__Struct)i6);
-  i3 = i7 + 28;
-  i2 = (int)*(void**)i3;
-  i2 = (int)Data__OpndDesc_OpndType((Data__Opnd)i2);
-  i2 = Classify__RegClass((Data__Struct)i2);
-  i6 = i6 == i2;
-  if (i6) goto l3;
+  i5 = i7;
+  goto l3;
 l2:
-  i2 = i1;
-  goto l4;
+  i1 = (int)*(void**)i2;
+  i2 = (int)((_Type)i4)->tbprocs[1];
+  i1 = (int)*(void**)i1;
+  ((_TBP_Data__UsableDesc_ReplaceUses)i2)((Data__Usable)i6, (Data__Usable)i1);
+  Data__InstructionDesc_Delete((Data__Instruction)i6);
+  i5 = -1;
 l3:
-  i3 = (int)*(void**)i3;
-  i5 = (int)((_Type)i5)->tbprocs[1];
-  i3 = (int)*(void**)i3;
-  ((_TBP_Data__UsableDesc_ReplaceUses)i5)((Data__Usable)i7, (Data__Usable)i3);
-  Data__InstructionDesc_Delete((Data__Instruction)i7);
-  i2 = -1;
+  i7 = i5;
+  goto l5;
 l4:
-  i1 = i2;
-  goto l6;
+  i4 = (int)((_Type)i4)->tbprocs[1];
+  i2 = i6 + 28;
+  i2 = (int)*(void**)i2;
+  i2 = (int)*(void**)i2;
+  ((_TBP_Data__UsableDesc_ReplaceUses)i4)((Data__Usable)i6, (Data__Usable)i2);
 l5:
-  i3 = (int)((_Type)i5)->tbprocs[1];
-  i6 = i7 + 28;
-  i6 = (int)*(void**)i6;
-  i6 = (int)*(void**)i6;
-  ((_TBP_Data__UsableDesc_ReplaceUses)i3)((Data__Usable)i7, (Data__Usable)i6);
+  i2 = i7 == 8;
+  if (i2) goto l6;
+  i5 = i7 != 21;
+  if (i5) goto l7;
+  i2 = i6 + 28;
+  i2 = (int)*(void**)i2;
+  i2 += 16;
+  i1 = (int)*(void**)i2;
+  i2 = i1 == 0;
+  if (i2) goto l7;
+  i1 = (int)*(void**)i1;
+  i2 = i1 + 68;
+  i5 = *(unsigned int*)i2;
+  i5 = i5 | ((unsigned int)1 << 25);
+  *(unsigned int*)i2 = i5;
+  goto l7;
 l6:
-  i3 = i1 == 8;
-  if (i3) goto l7;
-  i2 = i1 != 21;
-  if (i2) goto l8;
-  i3 = i7 + 28;
-  i3 = (int)*(void**)i3;
-  i3 += 16;
-  i6 = (int)*(void**)i3;
-  i3 = i6 == 0;
-  if (i3) goto l8;
-  i6 = (int)*(void**)i6;
-  i3 = i6 + 68;
-  i2 = *(unsigned int*)i3;
-  i2 = i2 | ((unsigned int)1 << 25);
-  *(unsigned int*)i3 = i2;
-  goto l8;
+  i1 = i6 + 28;
+  i1 = (int)*(void**)i1;
+  i1 = (int)*(void**)i1;
+  i2 = (int)*Allocate__GlobalRegion_greg;
+  i1 = (int)Allocate__GetAddressValue((Data__GlobalRegion)i2, (Data__Usable)i1, (unsigned char)1);
+  i2 = i6 + 20;
+  *(void**)i2 = (void*)i1;
 l7:
-  i6 = i7 + 28;
-  i6 = (int)*(void**)i6;
-  i6 = (int)*(void**)i6;
-  i3 = (int)*Allocate__GlobalRegion_greg;
-  i6 = (int)Allocate__GetAddressValue((Data__GlobalRegion)i3, (Data__Usable)i6, (unsigned char)1);
-  i3 = i7 + 20;
-  *(void**)i3 = (void*)i6;
-l8:
-  if (i1<=2 || (i1>=4 && i1<=19) || (i1>=21 && i1<=25) || (i1>=27 && i1<=36) || (i1>=38 && i1<=52) || i1>=54) goto l10;
-  if (!(i1==3 || i1==20 || i1==26 || i1==37 || i1==53)) goto l10;
+  if (i7<=2 || (i7>=4 && i7<=19) || (i7>=21 && i7<=25) || (i7>=27 && i7<=36) || (i7>=38 && i7<=52) || i7>=54) goto l9;
+  if (!(i7==3 || i7==20 || i7==26 || i7==37 || i7==53)) goto l9;
   i5 = (int)SymbolTable__mem;
-  i6 = (int)Data__InstructionDesc_GetOperand((Data__Instruction)i7, (Data__Addressable)i5, (short int)-3);
-  i5 = i6 == 0;
-  if (i5) goto l10;
-  i6 += 8;
-  i6 = (int)*(void**)i6;
-  i6 += 8;
-  i5 = (int)*(void**)i6;
-  i6 = i5 == 0;
-  if (i6) goto l10;
-l9:
-  i3 = i5 + 16;
-  i3 = (int)*(void**)i3;
-  i3 = (int)*(void**)i3;
-  i6 = i3 + 68;
-  i2 = *(unsigned int*)i6;
+  i1 = (int)Data__InstructionDesc_GetOperand((Data__Instruction)i6, (Data__Addressable)i5, (short int)-3);
+  i5 = i1 == 0;
+  if (i5) goto l9;
+  i1 += 8;
+  i1 = (int)*(void**)i1;
+  i1 += 8;
+  i5 = (int)*(void**)i1;
+  i1 = i5 == 0;
+  if (i1) goto l9;
+l8:
+  i2 = i5 + 16;
+  i2 = (int)*(void**)i2;
+  i2 = (int)*(void**)i2;
+  i1 = i2 + 68;
+  i4 = *(unsigned int*)i1;
   i5 += 8;
   i5 = (int)*(void**)i5;
-  i2 = i2 | ((unsigned int)1 << 25);
-  *(unsigned int*)i6 = i2;
-  i3 = i5 != 0;
-  if (i3) goto l9;
+  i4 = i4 | ((unsigned int)1 << 25);
+  *(unsigned int*)i1 = i4;
+  i2 = i5 != 0;
+  if (i2) goto l8;
+l9:
+  i2 = i7 >= 0;
+  if (!(i2)) goto l14;
+  i7 = i6 + 12;
+  i1 = (int)*(void**)i7;
+  i7 = i1 == 0;
+  if (i7) goto l14;
 l10:
-  i3 = i1 >= 0;
-  if (!(i3)) goto l15;
-  i8 = i7 + 12;
-  i6 = (int)*(void**)i8;
-  i8 = i6 == 0;
-  if (i8) goto l15;
+  i5 = i1 + 20;
+  i4 = (int)*(void**)i5;
+  i2 = i4 == 0;
+  if (i2) goto l12;
+  i0 = (int)*(void**)i1;
+  i0 = i0 == 0;
+  if (i0) goto l12;
+  i2 = (int)*(void**)i4;
+  i7 = *(int*)(i2-4);
+  i7 = _type_test(i7, &Data__ObjectDesc_td.td, 4);
+  if (!(i7)) goto l11;
+  i0 = (int)*Allocate__GlobalRegion_greg;
+  i7 = i2 + 40;
+  i0 += 80;
+  i7 = (int)*(void**)i7;
+  i0 = (int)*(void**)i0;
+  i0 = i7 != i0;
+  if (i0) goto l11;
+  i7 = i2 + 28;
+  i7 = *(signed char*)i7;
+  i7 = i7 != 3;
+  if (i7) goto l11;
+  i7 = i2 + 68;
+  i0 = *(unsigned int*)i7;
+  i0 = i0 | ((unsigned int)1 << 25);
+  *(unsigned int*)i7 = i0;
 l11:
-  i2 = i6 + 20;
-  i0 = (int)*(void**)i2;
-  i8 = i0 == 0;
-  if (i8) goto l13;
-  i5 = (int)*(void**)i6;
-  i5 = i5 == 0;
-  if (i5) goto l13;
-  i5 = (int)*(void**)i0;
-  i1 = (int)*Allocate__GlobalRegion_greg;
-  i3 = *(int*)(i5-4);
-  i3 = _type_test(i3, &Data__ObjectDesc_td.td, 4);
-  if (!(i3)) goto l12;
-  i8 = i5 + 40;
-  i3 = i1 + 80;
-  i8 = (int)*(void**)i8;
-  i3 = (int)*(void**)i3;
-  i8 = i8 != i3;
-  if (i8) goto l12;
-  i3 = i5 + 28;
-  i3 = *(signed char*)i3;
-  i3 = i3 != 3;
-  if (i3) goto l12;
-  i3 = i5 + 68;
-  i8 = *(unsigned int*)i3;
-  i8 = i8 | ((unsigned int)1 << 25);
-  *(unsigned int*)i3 = i8;
+  i7 = (int)*Allocate__GlobalRegion_greg;
+  i7 = (int)Allocate__TransformLocation((Data__GlobalRegion)i7, (Data__SymLocation)i4);
+  *(void**)i5 = (void*)i7;
 l12:
-  i3 = (int)Allocate__TransformLocation((Data__GlobalRegion)i1, (Data__SymLocation)i0);
-  *(void**)i2 = (void*)i3;
+  i2 = i1 + 12;
+  i1 = (int)*(void**)i2;
+  i2 = i1 != 0;
+  if (i2) goto l10;
+  goto l14;
 l13:
-  i8 = i6 + 12;
-  i6 = (int)*(void**)i8;
-  i8 = i6 != 0;
-  if (i8) goto l11;
-  goto l15;
+  Allocate__GlobalRegion_MemoryLocations((Data__Region)i6, (Data__GlobalRegion *)&*Allocate__GlobalRegion_greg);
 l14:
-  Allocate__GlobalRegion_MemoryLocations((Data__Region)i7, (Data__GlobalRegion *)&*Allocate__GlobalRegion_greg);
-l15:
-  i0 = i4 != 0;
-  if (!(i0)) goto l16;
-  i7 = i4;
+  i0 = i3 != 0;
+  if (!(i0)) goto l15;
+  i6 = i3;
   goto l0;
-l16:
+l15:
   ;
 }
 
@@ -4982,48 +5091,48 @@ l2:
 }
 
 void Allocate__GlobalRegion(Data__GlobalRegion greg) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7;
+  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9;
   Allocate__ResolveVarConflicts((Data__GlobalRegion)(int)greg);
   Data__GlobalRegionDesc_NumberDominanceTree((Data__GlobalRegion)(int)greg);
   Data__RegionDesc_ClearInfo((Data__Region)(int)greg, (int)-1);
   Allocate__GlobalRegion_MemoryLocations((Data__Region)(int)greg, (Data__GlobalRegion *)&greg);
   i0 = (int)greg + 4;
   Allocate__Region((Data__Region)(int)greg);
-  i6 = (int)*(void**)i0;
-  i0 = i6 + 32;
-  Allocate__GlobalRegion_AssignRegisters((Allocate__RegFileSummary *)i6, &Allocate__RegFileSummary_td.td, (const unsigned char*)(int)_c11, 2);
-  i1 = i6 + 64;
-  Allocate__GlobalRegion_AssignRegisters((Allocate__RegFileSummary *)i0, &Allocate__RegFileSummary_td.td, (const unsigned char*)(int)_c12, 2);
-  i0 = i6 + 96;
-  Allocate__GlobalRegion_AssignRegisters((Allocate__RegFileSummary *)i1, &Allocate__RegFileSummary_td.td, (const unsigned char*)(int)_c13, 2);
-  Allocate__GlobalRegion_AssignRegisters((Allocate__RegFileSummary *)i0, &Allocate__RegFileSummary_td.td, (const unsigned char*)(int)_c9, 2);
-  i7 = 0;
+  i8 = (int)*(void**)i0;
+  i1 = i8 + 32;
+  Allocate__GlobalRegion_AssignRegisters((Allocate__RegFileSummary *)i8, &Allocate__RegFileSummary_td.td, (const unsigned char*)(int)_c11, 2);
+  i0 = i8 + 64;
+  Allocate__GlobalRegion_AssignRegisters((Allocate__RegFileSummary *)i1, &Allocate__RegFileSummary_td.td, (const unsigned char*)(int)_c12, 2);
+  i1 = i8 + 96;
+  Allocate__GlobalRegion_AssignRegisters((Allocate__RegFileSummary *)i0, &Allocate__RegFileSummary_td.td, (const unsigned char*)(int)_c13, 2);
+  Allocate__GlobalRegion_AssignRegisters((Allocate__RegFileSummary *)i1, &Allocate__RegFileSummary_td.td, (const unsigned char*)(int)_c9, 2);
+  i0 = 0;
 l0:
-  i5 = i7 * 40;
-  i1 = (int)Allocate__rangeInfo + i5;
-  i5 = i1 + 4;
-  Allocate__GlobalRegion_PropagateRegisters((Data__Region)(int)greg, (signed char)i7);
-  i5 = *(int*)i5;
-  i0 = i5 - 1;
-  i5 = i0 < 0;
-  if (i5) goto l2;
-  i1 += 36;
-  i4 = (int)*(void**)i1;
-  i3 = 0;
+  i7 = i0 * 40;
+  i2 = (int)Allocate__rangeInfo + i7;
+  i7 = i2 + 4;
+  Allocate__GlobalRegion_PropagateRegisters((Data__Region)(int)greg, (signed char)i0);
+  i7 = *(int*)i7;
+  i1 = i7 - 1;
+  i7 = i1 < 0;
+  if (i7) goto l2;
+  i7 = i2 + 36;
+  i6 = 0;
 l1:
-  i2 = (int)_ashl(i3, 2, (unsigned int));
-  i2 = i4 + i2;
-  i1 = i3 + 1;
-  i5 = i1 > i0;
-  *(void**)i2 = (void*)0;
+  i4 = (int)*(void**)i7;
+  i9 = (int)_ashl(i6, 2, (unsigned int));
+  i9 = i4 + i9;
+  i3 = i6 + 1;
+  i5 = i3 > i1;
+  *(void**)i9 = (void*)0;
   if (i5) goto l2;
-  i3 = i1;
+  i6 = i3;
   goto l1;
 l2:
-  i7++;
-  i5 = i7 <= 3;
-  if (i5) goto l0;
-  i0 = i6 + 12;
+  i0++;
+  i7 = i0 <= 3;
+  if (i7) goto l0;
+  i0 = i8 + 12;
   i2 = *(int*)i0;
   i0 = i2 < 255;
   if (i0) goto l3;
@@ -5044,103 +5153,107 @@ l4:
 
 void Allocate__WriteRegType(TextRider__Writer w, signed char reg) {
   register int i0, i1, i2;
-  signed char form;
   unsigned char str[64];
-  if (!(reg<=11 || reg>=16)) goto l0;
-  i0 = 1;
-  goto l4;
+  if (!(reg==12)) goto l0;
+  i2 = 6;
+  goto l3;
 l0:
-  if (!(reg==12)) goto l1;
-  i0 = 0;
-  i1 = 6;
-  goto l4;
+  if (!(reg==13)) goto l1;
+  i2 = 7;
+  goto l3;
 l1:
-  if (!(reg==13)) goto l2;
-  i0 = 0;
-  i1 = 7;
-  goto l4;
+  if (!(reg==14)) goto l2;
+  i2 = 8;
+  goto l3;
 l2:
-  if (!(reg==14)) goto l3;
-  i0 = 0;
-  i1 = 8;
-  goto l4;
+  if (!(reg==15)) goto l3;
+  i2 = 9;
 l3:
-  if (!(reg==15)) goto l4;
-  i0 = 0;
-  i1 = 9;
-l4:
-  if (i0) goto l5;
-  i2 = *(int*)((int)w-4);
-  i0 = (int)((_Type)i2)->tbprocs[5];
-  StdTypes__BasicTypes((signed char)i1, (unsigned char*)(int)str, 64);
-  i1 = (int)((_Type)i2)->tbprocs[7];
-  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)str, 64);
-  ((_TBP_TextRider__WriterDesc_WriteChar)i1)((TextRider__Writer)(int)w, (unsigned char)32);
-l5:
-  ;
+  i0 = *(int*)((int)w-4);
+  i1 = (int)((_Type)i0)->tbprocs[5];
+  StdTypes__BasicTypes((signed char)i2, (unsigned char*)(int)str, 64);
+  i0 = (int)((_Type)i0)->tbprocs[7];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)(int)w, (const unsigned char*)(int)str, 64);
+  ((_TBP_TextRider__WriterDesc_WriteChar)i0)((TextRider__Writer)(int)w, (unsigned char)32);
 }
 
 void Allocate__EmitVariables_WriteRegisters_WriteDeclarations(const unsigned char* prefix__ref, int prefix_0d, signed char reg, signed char off, Data__GlobalRegion *Allocate__EmitVariables_greg, TextRider__Writer *Allocate__EmitVariables_w) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7;
+  register int i0, i1, i2, i3, i4, i5;
   unsigned char* prefix;
   char* _old_top_vs = _top_vs;
   _push_value(int, prefix, prefix__ref, prefix_0d);
-  i4 = (int)*Allocate__EmitVariables_greg;
-  i5 = i4 + 4;
-  i0 = (int)*(void**)i5;
-  i6 = (int)_ashl(reg, 5, (unsigned int));
-  i0 += i6;
+  i0 = (int)*Allocate__EmitVariables_greg;
+  i0 += 4;
+  i0 = (int)*(void**)i0;
+  i4 = (int)_ashl(reg, 5, (unsigned int));
+  i0 += i4;
   i0 += 12;
   i0 = *(int*)i0;
   i0 = i0 == 0;
   if (i0) goto l6;
-  i2 = (int)*Allocate__EmitVariables_w;
-  i1 = *(int*)(i2-4);
-  i7 = (int)((_Type)i1)->tbprocs[19];
+  i5 = (int)*Allocate__EmitVariables_w;
+  i3 = *(int*)(i5-4);
+  i2 = (int)((_Type)i3)->tbprocs[19];
   i3 = off == -1;
-  ((_TBP_TextRider__WriterDesc_WriteLn)i7)((TextRider__Writer)i2);
+  ((_TBP_TextRider__WriterDesc_WriteLn)i2)((TextRider__Writer)i5);
   if (i3) goto l1;
   i3 = off <= 0;
   if (i3) goto l2;
-  i3 = (int)((_Type)i1)->tbprocs[5];
-  i7 = off;
+  i5 = off;
 l0:
+  i2 = (int)*Allocate__EmitVariables_w;
+  i3 = *(int*)(i2-4);
+  i5--;
+  i3 = (int)((_Type)i3)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i2, (const unsigned char*)(int)_c14, 3);
-  i7--;
-  i0 = i7 > 0;
-  if (i0) goto l0;
+  i2 = i5 > 0;
+  if (i2) goto l0;
   goto l2;
 l1:
-  i7 = (int)((_Type)i1)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i7)((TextRider__Writer)i2, (const unsigned char*)(int)_c15, 12);
+  i3 = (int)*Allocate__EmitVariables_w;
+  i5 = *(int*)(i3-4);
+  i5 = (int)((_Type)i5)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i5)((TextRider__Writer)i3, (const unsigned char*)(int)_c15, 12);
 l2:
-  i7 = reg + 12;
-  Allocate__WriteRegType((TextRider__Writer)i2, (signed char)i7);
-  i7 = (int)*(void**)i5;
-  i7 += i6;
-  i7 += 12;
-  i7 = *(int*)i7;
-  i6 = i7 - 1;
-  i7 = i6 < 0;
-  if (i7) goto l5;
-  i7 = (int)((_Type)i1)->tbprocs[5];
-  i3 = (int)((_Type)i1)->tbprocs[8];
-  i4 = 0;
-l3:
-  i5 = i4 != 0;
-  if (!(i5)) goto l4;
-  ((_TBP_TextRider__WriterDesc_WriteString)i7)((TextRider__Writer)i2, (const unsigned char*)(int)_c16, 3);
-l4:
-  ((_TBP_TextRider__WriterDesc_WriteString)i7)((TextRider__Writer)i2, (const unsigned char*)(int)prefix, prefix_0d);
-  i0 = i4 + 1;
-  i5 = i0 > i6;
-  ((_TBP_TextRider__WriterDesc_WriteLInt)i3)((TextRider__Writer)i2, (int)i4, (int)0);
+  i5 = reg + 12;
+  i3 = (int)*Allocate__EmitVariables_w;
+  Allocate__WriteRegType((TextRider__Writer)i3, (signed char)i5);
+  i5 = (int)*Allocate__EmitVariables_greg;
+  i5 += 4;
+  i5 = (int)*(void**)i5;
+  i5 += i4;
+  i5 += 12;
+  i5 = *(int*)i5;
+  i1 = i5 - 1;
+  i5 = i1 < 0;
   if (i5) goto l5;
-  i4 = i0;
+  i5 = 0;
+l3:
+  i0 = i5 != 0;
+  if (!(i0)) goto l4;
+  i3 = (int)*Allocate__EmitVariables_w;
+  i0 = *(int*)(i3-4);
+  i0 = (int)((_Type)i0)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i3, (const unsigned char*)(int)_c16, 3);
+l4:
+  i3 = (int)*Allocate__EmitVariables_w;
+  i0 = *(int*)(i3-4);
+  i0 = (int)((_Type)i0)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i3, (const unsigned char*)(int)prefix, prefix_0d);
+  i0 = (int)*Allocate__EmitVariables_w;
+  i4 = *(int*)(i0-4);
+  i3 = i5 + 1;
+  i2 = (int)((_Type)i4)->tbprocs[8];
+  i4 = i3 > i1;
+  ((_TBP_TextRider__WriterDesc_WriteLInt)i2)((TextRider__Writer)i0, (int)i5, (int)0);
+  if (i4) goto l5;
+  i5 = i3;
   goto l3;
 l5:
-  i7 = (int)((_Type)i1)->tbprocs[7];
-  ((_TBP_TextRider__WriterDesc_WriteChar)i7)((TextRider__Writer)i2, (unsigned char)59);
+  i5 = (int)*Allocate__EmitVariables_w;
+  i3 = *(int*)(i5-4);
+  i3 = (int)((_Type)i3)->tbprocs[7];
+  ((_TBP_TextRider__WriterDesc_WriteChar)i3)((TextRider__Writer)i5, (unsigned char)59);
 l6:
   _top_vs = _old_top_vs;
 }
@@ -5153,7 +5266,7 @@ void Allocate__EmitVariables_WriteRegisters(signed char off, Data__GlobalRegion 
 }
 
 void Allocate__EmitVariables_WriteAssignments_WriteList(const unsigned char* prefix__ref, int prefix_0d, signed char reg, Data__GlobalRegion *Allocate__EmitVariables_greg, TextRider__Writer *Allocate__EmitVariables_w, unsigned char* Allocate__EmitVariables_WriteAssignments_aprefix0, int Allocate__EmitVariables_WriteAssignments_aprefix0_0d, unsigned char* Allocate__EmitVariables_WriteAssignments_aprefix1, int Allocate__EmitVariables_WriteAssignments_aprefix1_0d) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7;
+  register int i0, i1, i2, i3, i4;
   unsigned char* prefix;
   char* _old_top_vs = _top_vs;
   _push_value(int, prefix, prefix__ref, prefix_0d);
@@ -5164,32 +5277,54 @@ void Allocate__EmitVariables_WriteAssignments_WriteList(const unsigned char* pre
   i0 += i1;
   i0 += 12;
   i0 = *(int*)i0;
-  i7 = i0 - 1;
-  i0 = i7 < 0;
+  i3 = i0 - 1;
+  i0 = i3 < 0;
   if (i0) goto l1;
-  i1 = (int)*Allocate__EmitVariables_w;
-  i6 = *(int*)(i1-4);
-  i4 = (int)((_Type)i6)->tbprocs[5];
-  i3 = (int)((_Type)i6)->tbprocs[8];
-  i5 = (int)((_Type)i6)->tbprocs[19];
-  i2 = (int)((_Type)i6)->tbprocs[7];
-  i6 = 0;
+  i2 = 0;
 l0:
-  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i1, (const unsigned char*)(int)_c17, 3);
-  ((_TBP_TextRider__WriterDesc_WriteLn)i5)((TextRider__Writer)i1);
-  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i1, (const unsigned char*)(int)Allocate__EmitVariables_WriteAssignments_aprefix0, Allocate__EmitVariables_WriteAssignments_aprefix0_0d);
-  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i1, (const unsigned char*)(int)prefix, prefix_0d);
-  ((_TBP_TextRider__WriterDesc_WriteLInt)i3)((TextRider__Writer)i1, (int)i6, (int)0);
-  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i1, (const unsigned char*)(int)_c18, 4);
-  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i1, (const unsigned char*)(int)Allocate__EmitVariables_WriteAssignments_aprefix1, Allocate__EmitVariables_WriteAssignments_aprefix1_0d);
-  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i1, (const unsigned char*)(int)prefix, prefix_0d);
-  i0 = i6 + 1;
-  ((_TBP_TextRider__WriterDesc_WriteLInt)i3)((TextRider__Writer)i1, (int)i6, (int)0);
-  i6 = i0 > i7;
-  ((_TBP_TextRider__WriterDesc_WriteChar)i2)((TextRider__Writer)i1, (unsigned char)59);
-  if (i6) goto l1;
-  i6 = i0;
-  goto l0;
+  i1 = (int)*Allocate__EmitVariables_w;
+  i0 = *(int*)(i1-4);
+  i0 = (int)((_Type)i0)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c17, 3);
+  i0 = (int)*Allocate__EmitVariables_w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[19];
+  ((_TBP_TextRider__WriterDesc_WriteLn)i1)((TextRider__Writer)i0);
+  i0 = (int)*Allocate__EmitVariables_w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)Allocate__EmitVariables_WriteAssignments_aprefix0, Allocate__EmitVariables_WriteAssignments_aprefix0_0d);
+  i0 = (int)*Allocate__EmitVariables_w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)prefix, prefix_0d);
+  i0 = (int)*Allocate__EmitVariables_w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[8];
+  ((_TBP_TextRider__WriterDesc_WriteLInt)i1)((TextRider__Writer)i0, (int)i2, (int)0);
+  i0 = (int)*Allocate__EmitVariables_w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c18, 4);
+  i0 = (int)*Allocate__EmitVariables_w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)Allocate__EmitVariables_WriteAssignments_aprefix1, Allocate__EmitVariables_WriteAssignments_aprefix1_0d);
+  i0 = (int)*Allocate__EmitVariables_w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)prefix, prefix_0d);
+  i0 = (int)*Allocate__EmitVariables_w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[8];
+  ((_TBP_TextRider__WriterDesc_WriteLInt)i1)((TextRider__Writer)i0, (int)i2, (int)0);
+  i0 = (int)*Allocate__EmitVariables_w;
+  i1 = *(int*)(i0-4);
+  i2++;
+  i1 = (int)((_Type)i1)->tbprocs[7];
+  i4 = i2 <= i3;
+  ((_TBP_TextRider__WriterDesc_WriteChar)i1)((TextRider__Writer)i0, (unsigned char)59);
+  if (i4) goto l0;
 l1:
   _top_vs = _old_top_vs;
 }
@@ -5330,7 +5465,7 @@ void Allocate_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(28)+8);
-    if (!_mem) _new_failed(_P(105793));
+    if (!_mem) _new_failed(_P(106355));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ResultDesc_td.td;
     i0 = (int)_var;
@@ -5339,7 +5474,7 @@ void Allocate_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc_atomic(_not_zero(0)+8);
-    if (!_mem) _new_failed(_P(105814));
+    if (!_mem) _new_failed(_P(106376));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__InfoDesc_td.td;
     i0 = (int)_var;

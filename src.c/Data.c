@@ -290,9 +290,9 @@ l0:
   i2 = i1 + 12;
   i0 = (int)*Data__InstructionDesc_Operand_instr;
   *(void**)i2 = (void*)i0;
-  i0 = (int)*Data__InstructionDesc_Operand_arg;
-  i1 = (int)*opnd;
-  Data__InsertUse((Data__Usable)i0, (Data__Opnd)i1);
+  i0 = (int)*opnd;
+  i1 = (int)*Data__InstructionDesc_Operand_arg;
+  Data__InsertUse((Data__Usable)i1, (Data__Opnd)i0);
 l1:
   ;
 }
@@ -314,8 +314,8 @@ void Data__InstructionDesc_InsertOperand_Insert(Data__Opnd *list, Data__Instruct
     ((_Type*)_var)[-1] = &Data__OpndDesc_td.td;
     i0 = (int)_var;
   }
-  i1 = i0 + 12;
   Data__InitOpnd((Data__Opnd)i0);
+  i1 = i0 + 12;
   i2 = (int)*Data__InstructionDesc_InsertOperand_instr;
   *(void**)i1 = (void*)i2;
   i1 = (int)*Data__InstructionDesc_InsertOperand_arg;
@@ -375,9 +375,9 @@ l0:
   i1 = i2 + 16;
   i0 = (int)*Data__InstructionDesc_UniqueOperand_loc;
   *(void**)i1 = (void*)i0;
-  i0 = (int)*Data__InstructionDesc_UniqueOperand_arg;
-  i1 = (int)*opnd;
-  Data__InsertUse((Data__Usable)i0, (Data__Opnd)i1);
+  i0 = (int)*opnd;
+  i1 = (int)*Data__InstructionDesc_UniqueOperand_arg;
+  Data__InsertUse((Data__Usable)i1, (Data__Opnd)i0);
 l1:
   ;
 }
@@ -469,9 +469,9 @@ l0:
     i2 = (int)_var;
   }
   *res = (void*)i2;
-  i1 = (int)*res;
-  i2 = (int)*Data__InstructionDesc_AppendResult_type;
-  Data__InitResult((Data__Result)i1, (Data__Struct)i2);
+  i1 = (int)*Data__InstructionDesc_AppendResult_type;
+  i2 = (int)*res;
+  Data__InitResult((Data__Result)i2, (Data__Struct)i1);
   i2 = (int)*res;
   i1 = i2 + 20;
   i0 = (int)*Data__InstructionDesc_AppendResult_location;
@@ -480,9 +480,9 @@ l0:
   i1 = i2 + 12;
   *(void**)i1 = (void*)0;
   i0 = (int)*res;
-  i2 = (int)*Data__InstructionDesc_AppendResult_instr;
-  i1 = i0 + 16;
-  *(void**)i1 = (void*)i2;
+  i2 = i0 + 16;
+  i1 = (int)*Data__InstructionDesc_AppendResult_instr;
+  *(void**)i2 = (void*)i1;
   i2 = (int)*res;
 l1:
   return (void*)i2;
@@ -1707,8 +1707,8 @@ Data__Const Data__NewConst(Data__Struct type, int hash) {
   Data__InitConst((Data__Const)i0, (Data__Struct)(int)type);
   i2 = i0 + 12;
   i3 = (int)*(void**)i1;
-  *(void**)i1 = (void*)i0;
   *(void**)i2 = (void*)i3;
+  *(void**)i1 = (void*)i0;
   return (void*)i0;
 }
 
@@ -1859,8 +1859,8 @@ unsigned char Data__GetStringConst_Neq(unsigned char* a, int a_0d, unsigned char
   register int i0, i1, i2, i3, i4;
   i0 = lena != lenb;
   if (i0) goto l1;
-  *Data__GetStringConst_i = 0;
   i3 = *Data__GetStringConst_sizeChar;
+  *Data__GetStringConst_i = 0;
   i3 = lena * i3;
   i0 = i3 - 1;
   i3 = *Data__GetStringConst_i;
@@ -2032,59 +2032,60 @@ l15:
 }
 
 Data__Const Data__GetRangeConst(int from, int to, Data__Struct type) {
-  register int i0, i1, i2, i3;
-  i0 = (int)Data__constRange;
-  i1 = i0 == 0;
-  if (i1) goto l0;
-  i3 = i0 + 24;
-  i3 = *(int*)i3;
-  i3 = from != i3;
-  if (i3) goto l1;
-  i3 = i0 + 28;
-  i3 = *(int*)i3;
-  i3 = to != i3;
-  if (i3) goto l1;
+  register int i0, i1, i2;
+  i1 = (int)Data__constRange;
+  i0 = i1 == 0;
+  if (i0) goto l0;
+  i2 = i1 + 24;
+  i2 = *(int*)i2;
+  i2 = from != i2;
+  if (i2) goto l1;
+  i2 = i1 + 28;
+  i2 = *(int*)i2;
+  i2 = to != i2;
+  if (i2) goto l1;
 l0:
-  i3 = i0;
+  i2 = i1;
   goto l3;
 l1:
-  i3 = i0;
+  i2 = i1;
 l2:
-  i3 += 12;
-  i3 = (int)*(void**)i3;
-  i1 = i3 == 0;
-  if (i1) goto l3;
-  i1 = i3 + 24;
-  i1 = *(int*)i1;
-  i1 = from != i1;
-  if (i1) goto l2;
-  i1 = i3 + 28;
-  i1 = *(int*)i1;
-  i1 = to != i1;
-  if (i1) goto l2;
+  i2 += 12;
+  i2 = (int)*(void**)i2;
+  i0 = i2 == 0;
+  if (i0) goto l3;
+  i0 = i2 + 24;
+  i0 = *(int*)i0;
+  i0 = from != i0;
+  if (i0) goto l2;
+  i0 = i2 + 28;
+  i0 = *(int*)i0;
+  i0 = to != i0;
+  if (i0) goto l2;
 l3:
-  i1 = i3 == 0;
-  if (!(i1)) goto l4;
+  i0 = i2 == 0;
+  if (!(i0)) goto l4;
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(56)+8);
     if (!_mem) _new_failed(_P(64286));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ConstDesc_td.td;
-    i3 = (int)_var;
+    i2 = (int)_var;
   }
-  i2 = i3 + 16;
-  Data__InitConst((Data__Const)i3, (Data__Struct)0);
-  i1 = i3 + 24;
-  *(void**)i2 = (void*)(int)type;
-  i2 = i3 + 28;
+  i0 = i2 + 16;
+  Data__InitConst((Data__Const)i2, (Data__Struct)0);
+  i1 = i2 + 24;
+  *(void**)i0 = (void*)(int)type;
+  i0 = i2 + 28;
   *(int*)i1 = from;
-  i1 = i3 + 12;
-  *(int*)i2 = to;
-  *(void**)i1 = (void*)i0;
-  Data__constRange = (void*)i3;
+  *(int*)i0 = to;
+  i0 = i2 + 12;
+  i1 = (int)Data__constRange;
+  *(void**)i0 = (void*)i1;
+  Data__constRange = (void*)i2;
 l4:
-  return (void*)i3;
+  return (void*)i2;
 }
 
 Data__Const Data__ConvertString_To8(unsigned char* buffer, int buffer_0d, unsigned char* source, int source_0d, int len) {
@@ -2492,7 +2493,7 @@ l11:
 }
 
 Data__Object Data__ObjectDesc_Module(Data__Object obj) {
-  register int i0, i1, i2;
+  register int i0, i1;
   i0 = (int)obj + 28;
   i0 = *(signed char*)i0;
   i0 = i0 != 8;
@@ -2503,52 +2504,42 @@ Data__Object Data__ObjectDesc_Module(Data__Object obj) {
   i0 = *(short int*)i0;
   i0 = i0 >= 0;
   if (i0) goto l0;
-  i1 = 0;
-  i2 = (int)obj;
-  goto l5;
+  i1 = (int)obj;
+  goto l4;
 l0:
-  i2 = (int)obj;
+  i1 = (int)obj;
 l1:
-  i0 = i2 + 28;
+  i0 = i1 + 28;
   i0 = *(signed char*)i0;
-  if (!(i0<=5 || i0>=9)) goto l2;
-  i1 = 1;
-  goto l4;
+  if (!(i0==6 || i0==8)) goto l2;
+  i0 = i1 + 40;
+  i0 = (int)*(void**)i0;
+  i1 = i0;
+  goto l3;
 l2:
-  if (!(i0==6 || i0==8)) goto l3;
-  i0 = i2 + 40;
-  i0 = (int)*(void**)i0;
-  i1 = 0;
-  i2 = i0;
-  goto l4;
+  if (!(i0==7)) goto l3;
+  i1 += 52;
+  i1 = (int)*(void**)i1;
+  i1 += 24;
+  i1 = (int)*(void**)i1;
+  i1 += 36;
+  i1 = (int)*(void**)i1;
+  i1 += 40;
+  i0 = (int)*(void**)i1;
+  i1 = i0;
 l3:
-  if (!(i0==7)) goto l4;
-  i0 = i2 + 52;
-  i0 = (int)*(void**)i0;
-  i0 += 24;
-  i0 = (int)*(void**)i0;
-  i0 += 36;
-  i0 = (int)*(void**)i0;
-  i0 += 40;
-  i0 = (int)*(void**)i0;
-  i1 = 0;
-  i2 = i0;
-l4:
-  if (i1) goto l5;
-  i0 = i2 + 28;
+  i0 = i1 + 28;
   i0 = *(signed char*)i0;
   i0 = i0 != 8;
   if (i0) goto l1;
-  i0 = i2 + 40;
+  i0 = i1 + 40;
   i0 = (int)*(void**)i0;
   i0 += 48;
   i0 = *(short int*)i0;
   i0 = i0 >= 0;
   if (i0) goto l1;
-l5:
-  if (!(i1)) goto l6;
-l6:
-  return (void*)i2;
+l4:
+  return (void*)i1;
 }
 
 void Data__GlobalRegionDesc_NumberDominanceTree_RecNumberTree(Data__Region reg, short int *counter) {
@@ -3164,21 +3155,22 @@ l10:
 }
 
 void Data_init(void) {
-  register int i0, i1, i2;
+  register int i0, i1;
   _mid = _register_module(&Data_md.md, &Data__GlobalRegionDesc_td.td);
   Data__i = 0;
   i0 = Data__i;
   i0 = i0 > 21;
   if (i0) goto l1;
 l0:
-  i2 = Data__i;
-  i0 = (int)_ashl(i2, 2, (unsigned int));
-  i0 = (int)Data__struct + i0;
-  i1 = i2 + 1;
-  *(void**)i0 = (void*)0;
-  Data__i = i1;
-  i2 = i1 <= 21;
-  if (i2) goto l0;
+  i0 = Data__i;
+  i1 = (int)_ashl(i0, 2, (unsigned int));
+  i1 = (int)Data__struct + i1;
+  *(void**)i1 = (void*)0;
+  i0 = Data__i;
+  i0++;
+  Data__i = i0;
+  i0 = i0 <= 21;
+  if (i0) goto l0;
 l1:
   Data__i = 0;
   i0 = Data__i;
@@ -3188,10 +3180,11 @@ l2:
   i0 = Data__i;
   i1 = (int)_ashl(i0, 2, (unsigned int));
   i1 = (int)Data__constList + i1;
-  i2 = i0 + 1;
   *(void**)i1 = (void*)0;
-  Data__i = i2;
-  i0 = i2 <= 127;
+  i0 = Data__i;
+  i0++;
+  Data__i = i0;
+  i0 = i0 <= 127;
   if (i0) goto l2;
 l3:
   {

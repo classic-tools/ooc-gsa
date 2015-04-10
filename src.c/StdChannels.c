@@ -105,7 +105,7 @@ void StdChannels__Flush(void) {
 }
 
 void StdChannels_init(void) {
-  register int i0, i1, i2;
+  register int i0, i1;
   _mid = _register_module(&StdChannels_md.md, &StdChannels__ErrorContextDesc_td.td);
   {
     char *_mem, *_var;
@@ -163,19 +163,21 @@ void StdChannels_init(void) {
     if (!_mem) _new_failed(_P(4182));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &StdChannels__NullChannelDesc_td.td;
-    i1 = (int)_var;
+    i0 = (int)_var;
   }
-  StdChannels__null = (void*)i1;
+  StdChannels__null = (void*)i0;
+  i0 = (int)StdChannels__null;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[6];
+  ((_TBP_Channel__ChannelDesc_ClearError)i1)((Channel__Channel)i0);
+  i0 = (int)StdChannels__null;
+  i1 = i0 + 4;
+  *(unsigned char*)i1 = 0;
   i1 = (int)StdChannels__null;
-  i2 = *(int*)(i1-4);
-  i2 = (int)((_Type)i2)->tbprocs[6];
-  ((_TBP_Channel__ChannelDesc_ClearError)i2)((Channel__Channel)i1);
-  i2 = (int)StdChannels__null;
-  i0 = i2 + 4;
-  i1 = i2 + 5;
-  *(unsigned char*)i0 = 0;
-  i0 = i2 + 6;
-  *(unsigned char*)i1 = 1;
+  i0 = i1 + 5;
+  *(unsigned char*)i0 = 1;
+  i1 = (int)StdChannels__null;
+  i0 = i1 + 6;
   *(unsigned char*)i0 = 1;
   Termination__RegisterProc((Termination__Proc)(int)&StdChannels__Flush);
 }

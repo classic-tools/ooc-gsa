@@ -1102,7 +1102,7 @@ l5:
 }
 
 void RealMath_init(void) {
-  register int i0, i1, i2;
+  register int i0, i1;
   register float f0, f1;
   _mid = _register_module(&RealMath_md.md, NULL);
   f0 = LowReal__ulp((float)1.00000000F);
@@ -1154,25 +1154,25 @@ void RealMath_init(void) {
   *(float*)i0 = 5.94603539E-1F;
   i0 = (int)RealMath__a1 + 60;
   *(float*)i1 = 5.69394290E-1F;
-  i2 = (int)RealMath__a1 + 64;
+  i1 = (int)RealMath__a1 + 64;
   *(float*)i0 = 5.45253873E-1F;
   i0 = (int)RealMath__a1 + 68;
+  *(float*)i1 = 5.22136867E-1F;
   i1 = (int)RealMath__a2 + 4;
-  *(float*)i2 = 5.22136867E-1F;
-  i2 = (int)RealMath__a2 + 8;
-  *(float*)i1 = 4.92266405E-9F;
   *(float*)i0 = 5.00000000E-1F;
-  i0 = (int)RealMath__a2 + 12;
-  *(float*)i2 = 5.49867600E-8F;
-  i1 = (int)RealMath__a2 + 16;
-  *(float*)i0 = 4.91810859E-9F;
-  i0 = (int)RealMath__a2 + 20;
-  *(float*)i1 = 3.71001505E-8F;
-  i1 = (int)RealMath__a2 + 24;
-  *(float*)i0 = 5.45429693E-8F;
-  i0 = (int)RealMath__a2 + 28;
-  *(float*)i1 = 2.24841905E-8F;
-  i1 = (int)RealMath__a2 + 32;
-  *(float*)i0 = 2.69311116E-8F;
-  *(float*)i1 = 2.41673490E-8F;
+  i0 = (int)RealMath__a2 + 8;
+  *(float*)i1 = 4.92266405E-9F;
+  i1 = (int)RealMath__a2 + 12;
+  *(float*)i0 = 5.49867600E-8F;
+  i0 = (int)RealMath__a2 + 16;
+  *(float*)i1 = 4.91810859E-9F;
+  i1 = (int)RealMath__a2 + 20;
+  *(float*)i0 = 3.71001505E-8F;
+  i0 = (int)RealMath__a2 + 24;
+  *(float*)i1 = 5.45429693E-8F;
+  i1 = (int)RealMath__a2 + 28;
+  *(float*)i0 = 2.24841905E-8F;
+  i0 = (int)RealMath__a2 + 32;
+  *(float*)i1 = 2.69311116E-8F;
+  *(float*)i0 = 2.41673490E-8F;
 }

@@ -7,6 +7,7 @@
 #define Classify__prefixReal 102
 #define Classify__prefixLongReal 100
 #define Classify__prefixAuxiliary 97
+#define Classify__prefixLabel 108
 #define Classify__instrNoOutput 10
 #define Classify__instrVoid 11
 #define Classify__instrInt 12

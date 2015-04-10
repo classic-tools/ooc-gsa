@@ -1,7 +1,7 @@
-(*	$Id: Schedule.Mod,v 1.36 2000/12/27 16:33:57 ooc-devel Exp $	*)
+(*	$Id: Schedule.Mod,v 1.37 2001/04/07 10:29:47 ooc-devel Exp $	*)
 MODULE Schedule;
 (*  Instruction scheduler for ANSI-C back-end.
-    Copyright (C) 1996-2000  Michael van Acken
+    Copyright (C) 1996-2001  Michael van Acken
 
     This file is part of OOC.
 
@@ -335,7 +335,8 @@ PROCEDURE DataDependencies (greg: D.GlobalRegion; r: D.Region);
             opnd := instr. GetOperand (loc(D.SymLocation). var, D.symLocObject);
             AddAccesses (originalUpdate, opnd. arg)
           ELSIF (res. useList # NIL) &
-                ((res. useList. instr. opcode = Opc.updateField) OR
+                ((res. useList. instr. opcode = Opc.updateNonlocal) OR
+                 (res. useList. instr. opcode = Opc.updateField) OR
                  (res. useList. instr. opcode = Opc.updateElement)) &
                 (res. useList. OperandIndex() = 3) &
                 (Class.instrNoOutput IN res. useList. instr. flags) THEN

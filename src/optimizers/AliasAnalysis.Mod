@@ -1,7 +1,7 @@
-(*	$Id: AliasAnalysis.Mod,v 1.20 1999/03/15 18:55:09 acken Exp $	*)
+(*	$Id: AliasAnalysis.Mod,v 1.21 2001/04/07 10:30:44 ooc-devel Exp $	*)
 MODULE AliasAnalysis;
 (*  Inspects aliasing relationships between intructions.
-    Copyright (C) 1995-1999  Michael van Acken
+    Copyright (C) 1995-1999, 2001  Michael van Acken
 
     This file is part of OOC.
 
@@ -426,6 +426,23 @@ PROCEDURE Aliasing* (i0: D.Instruction; m0: SHORTINT;
           d[level]. type := d[level]. var(D.Object). type
         END FollowUpdate;
       
+      PROCEDURE MemCallSideEffect (update: D.Instruction): BOOLEAN;
+        VAR
+          res: D.Usable;
+        BEGIN
+          IF (update. opcode = Opc.updateNonlocal) THEN
+            (* return true if the new value is a side-effect of a procedure
+               call that also writes to $mem *)
+            res := update. opndList. nextOpnd. nextOpnd. nextOpnd. arg;
+            IF (res IS D.Result) & ~(res IS D.Instruction) &
+               (res(D.Result). instr. opcode = Opc.call) &
+               (res(D.Result). instr. GetResult (Sym.mem, D.symLocObject) # NIL) THEN
+              RETURN TRUE
+            END
+          END;
+          RETURN FALSE
+        END MemCallSideEffect;
+      
       BEGIN
         s. instr := i;
         CASE i. opcode OF
@@ -455,7 +472,11 @@ ASSERT ((i(D.Gate).var.name[0] # "$"));
         | Opc.accessNonlocal, Opc.updateNonlocal:
           s. category := catNonlocal;
           s. var := i. opndList. arg;
-          s. type := s. var(D.Object). type
+          s. type := s. var(D.Object). type;
+          
+          IF MemCallSideEffect (i) THEN
+            s. category := catMemory
+          END
         | Opc.accessVarParam, Opc.updateVarParam:
           s. category := catVarParam;
           s. var := i. opndList. arg;
@@ -713,7 +734,7 @@ ASSERT ((i(D.Gate).var.name[0] # "$"));
     
     (* there exist two kind of gates: gates bound to local variables of the
        procedure, and gates for $store values; since $store covers a lot of
-       room, we go to great lengths to determine whether an access ti $store
+       room, we go to great lengths to determine whether an access to $store
        aliases with a particular gate *)
     ELSIF (i0. opcode = Opc.gate) THEN
       RETURN HandleGate (i0(D.Gate), m0, i1, m1)
@@ -724,7 +745,14 @@ ASSERT ((i(D.Gate).var.name[0] # "$"));
       l0 := 0; l1 := 0;
       BuildDesignator (i0, d0, l0);
       BuildDesignator (i1, d1, l1);
-      IF (d0[l0]. category < d1[l1]. category) THEN
+      IF (d0[l0]. category = catNonlocal) OR
+         (d1[l1]. category = catNonlocal) THEN
+        (* a bug in the scheduler is triggered if alias analysis in done on
+           accesses to nonlocal variable (simply run a compiler bootstrap to
+           see the problem); I'm too lazy to fix the scheduler,
+           as a workaround all nonlocal accesses are assumed to alias ... *)
+        RETURN mayAlias
+      ELSIF (d0[l0]. category < d1[l1]. category) THEN
         res := ComputeAliasing (d0, l0, d1, l1)
       ELSE
         res := ComputeAliasing (d1, l1, d0, l0)

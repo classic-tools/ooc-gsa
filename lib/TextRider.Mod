@@ -1,4 +1,4 @@
-(*	$Id: TextRider.Mod,v 1.28 1999/12/15 12:20:39 ooc-devel Exp $	*)
+(*	$Id: TextRider.Mod,v 1.29 2001/07/15 15:51:16 ooc-devel Exp $	*)
 MODULE TextRider [OOC_EXTENSIONS];
 
 (*
@@ -1177,12 +1177,13 @@ PROCEDURE (s: Scanner) Scan*;
       IF (s. r. res # done) & (s. res = done) THEN
           s. res := s. r. res
       END;
-      IF (s. res # done) & (s. res. context = errorContext) &
-         ((s. res. code = invalidFormat) OR
-          (s. res. code = valueOutOfRange)) THEN
-        s. type := invalid
-      ELSE
-        s. type := error
+      IF (s. res # done) & (s. res. context = errorContext) THEN
+        IF ((s. res. code = invalidFormat) OR
+            (s. res. code = valueOutOfRange)) THEN
+          s. type := invalid
+        ELSE
+          s. type := error
+        END
       END
     END
   END Scan;

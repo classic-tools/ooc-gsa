@@ -137,9 +137,10 @@ l4:
   i7 = 0;
   i1 = 0;
 l5:
-  i5 = i1 == i2;
-  i4 = (int)r + 16;
-  *(int*)i4 = i1;
+  i5 = (int)r + 16;
+  *(int*)i5 = i1;
+  i5 = _program_argc;
+  i5 = i1 == i5;
   if (i5) goto l6;
   i5 = (int)r + 20;
   *(int*)i5 = i7;
@@ -156,70 +157,71 @@ l8:
 }
 
 void ProgramArgs__ReaderDesc_ReadByte(ProgramArgs__Reader r, unsigned char *x) {
-  register int i0, i1, i2, i3, i4, i5, i6;
-  i5 = (int)r + 4;
-  i0 = (int)*(void**)i5;
+  register int i0, i1, i2, i3, i4, i5;
+  i4 = (int)r + 4;
+  i0 = (int)*(void**)i4;
   i0 = i0 == 0;
   if (i0) goto l0;
   i0 = (int)r + 8;
   *(int*)i0 = 0;
   goto l6;
 l0:
-  i4 = (int)*(void**)(int)r;
-  i4 += 6;
-  i4 = *(unsigned char*)i4;
-  if (i4) goto l1;
-  i4 = (int)ProgramArgs__GetError((int)6);
-  *(void**)i5 = (void*)i4;
-  i4 = (int)r + 8;
-  *(int*)i4 = 0;
+  i3 = (int)*(void**)(int)r;
+  i3 += 6;
+  i3 = *(unsigned char*)i3;
+  if (i3) goto l1;
+  i3 = (int)ProgramArgs__GetError((int)6);
+  *(void**)i4 = (void*)i3;
+  i3 = (int)r + 8;
+  *(int*)i3 = 0;
   goto l6;
 l1:
-  i3 = (int)r + 16;
-  i2 = *(int*)i3;
-  i6 = _program_argc;
-  i0 = i2 == i6;
-  if (i0) goto l5;
-  i5 = (int)r + 20;
-  i0 = *(int*)i5;
-  i1 = (int)_program_argv;
-  i4 = (int)_ashl(i2, 2, (unsigned int));
-  i1 += i4;
-  i1 = (int)*(void**)i1;
-  i1 = i0 + i1;
-  i4 = *(unsigned char*)i1;
-  i1 = i4 == 0;
-  if (i1) goto l3;
-  i1 = i4 == 10;
-  if (i1) goto l2;
-  i1 = i0 + 1;
-  *(int*)i5 = i1;
+  i2 = (int)r + 16;
+  i5 = *(int*)i2;
+  i1 = _program_argc;
+  i1 = i5 == i1;
+  if (i1) goto l5;
+  i1 = (int)r + 20;
+  i3 = *(int*)i1;
+  i4 = (int)_program_argv;
+  i0 = (int)_ashl(i5, 2, (unsigned int));
+  i0 = i4 + i0;
+  i0 = (int)*(void**)i0;
+  i0 = i3 + i0;
+  i4 = *(unsigned char*)i0;
+  i0 = i4 == 0;
+  if (i0) goto l3;
+  i0 = i4 == 10;
+  if (i0) goto l2;
+  i0 = i3 + 1;
+  *(int*)i1 = i0;
   *x = i4;
   goto l6;
 l2:
-  i0++;
-  *(int*)i5 = i0;
+  i3++;
+  *(int*)i1 = i3;
   *x = 32;
   goto l6;
 l3:
-  i2++;
-  *(int*)i3 = i2;
+  i5++;
+  *(int*)i2 = i5;
   *x = 10;
-  i3 = *(int*)i3;
-  i3 = i3 == i6;
-  if (i3) goto l4;
-  *(int*)i5 = 0;
+  i2 = *(int*)i2;
+  i5 = _program_argc;
+  i2 = i2 == i5;
+  if (i2) goto l4;
+  *(int*)i1 = 0;
   goto l6;
 l4:
-  i6 = (int)*(void**)(int)r;
-  i3 = *(int*)(i6-4);
-  i3 = (int)((_Type)i3)->tbprocs[0];
-  i6 = ((_TBP_Channel__ChannelDesc_Length)i3)((Channel__Channel)i6);
-  *(int*)i5 = i6;
+  i2 = (int)*(void**)(int)r;
+  i5 = *(int*)(i2-4);
+  i5 = (int)((_Type)i5)->tbprocs[0];
+  i2 = ((_TBP_Channel__ChannelDesc_Length)i5)((Channel__Channel)i2);
+  *(int*)i1 = i2;
   goto l6;
 l5:
-  i0 = (int)ProgramArgs__GetError((int)5);
-  *(void**)i5 = (void*)i0;
+  i1 = (int)ProgramArgs__GetError((int)5);
+  *(void**)i4 = (void*)i1;
 l6:
   ;
 }
@@ -363,7 +365,7 @@ void ProgramArgs__ChannelDesc_Close(ProgramArgs__Channel ch) {
 }
 
 void ProgramArgs_init(void) {
-  register int i0, i1, i2;
+  register int i0, i1;
   _mid = _register_module(&ProgramArgs_md.md, &ProgramArgs__ErrorContextDesc_td.td);
   {
     char *_mem, *_var;
@@ -390,10 +392,12 @@ void ProgramArgs_init(void) {
   i1 = (int)((_Type)i1)->tbprocs[6];
   ((_TBP_Channel__ChannelDesc_ClearError)i1)((Channel__Channel)i0);
   i0 = (int)ProgramArgs__args;
-  i2 = i0 + 4;
-  i1 = i0 + 5;
-  *(unsigned char*)i2 = 1;
-  i2 = i0 + 6;
-  *(unsigned char*)i1 = 0;
-  *(unsigned char*)i2 = 1;
+  i1 = i0 + 4;
+  *(unsigned char*)i1 = 1;
+  i1 = (int)ProgramArgs__args;
+  i0 = i1 + 5;
+  *(unsigned char*)i0 = 0;
+  i1 = (int)ProgramArgs__args;
+  i0 = i1 + 6;
+  *(unsigned char*)i0 = 1;
 }

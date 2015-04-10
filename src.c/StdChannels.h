@@ -23,7 +23,8 @@ typedef struct StdChannels__NullChannelDesc {
   char _7pad;
   StdChannels__Writer writer;
 } StdChannels__NullChannelDesc;
-extern struct StdChannels__NullChannelDesc* StdChannels__null;
+typedef struct StdChannels__NullChannelDesc* StdChannels__NullChannel;
+extern StdChannels__NullChannel StdChannels__null;
 typedef int(* _TBP_StdChannels__WriterDesc_Pos)(StdChannels__Writer w);
 #define _TBN_StdChannels__WriterDesc_Pos 0
 extern int StdChannels__WriterDesc_Pos(StdChannels__Writer w);
@@ -36,7 +37,6 @@ extern void StdChannels__WriterDesc_WriteByte(StdChannels__Writer w, unsigned ch
 typedef void(* _TBP_StdChannels__WriterDesc_WriteBytes)(StdChannels__Writer w, unsigned char* x, int x_0d, int start, int n);
 #define _TBN_StdChannels__WriterDesc_WriteBytes 3
 extern void StdChannels__WriterDesc_WriteBytes(StdChannels__Writer w, unsigned char* x, int x_0d, int start, int n);
-typedef struct StdChannels__NullChannelDesc* StdChannels__NullChannel;
 typedef int(* _TBP_StdChannels__NullChannelDesc_Length)(StdChannels__NullChannel ch);
 #define _TBN_StdChannels__NullChannelDesc_Length 0
 extern int StdChannels__NullChannelDesc_Length(StdChannels__NullChannel ch);

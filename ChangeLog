@@ -1,6 +1,80 @@
 Note: Directory parts of files mentioned here refer to the
       OOC source tree, not the shrunk oo2c distribution.
 
+2001-09-29  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Allocate.Mod (ResolveVarConflicts):
+	Detect variable clashes that are propagated
+	through type guards or range checks.  Fixed off by one error in a
+	marker access.
+
+2001-08-23  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (CaseStatement):
+	If the CASE has no ELSE, and the run-time check for
+	ELSE is disabled, then elimiate the "else" branch completely.
+
+2001-07-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/TextRider.Mod (Scan):
+	Fix error reporting, as suggested by Stewart Greenhill.
+
+	* lib/LRealStr.Mod:
+	Update to fix rounding problems, provided by Mike Griebling.
+
+	* lib/Calendar.Mod (TimeToStr):
+	Patched boundary check, as reported by Tim Teulings.
+
+2001-05-25  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/Files.c (Register):
+	Added Stewart Greenhill's workaround for the "rename while
+	file descriptor open" problem with Cygwin for Win9X platforms.
+
+	* backend/ansi-c/oo2c.Mod (Compile):
+	Call GenDecl.Init after SymbolTable.Init.  Not nice, but
+	fixes a potential problem with C level type names for predefined
+	types.
+
+	* backend/ansi-c/GenDecl.Mod (Init):
+	New.  Initialize back-end specific data that is hooked into
+	the predefined modules.  Should be called after SymbolTable.Init.
+
+2001-04-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/CodeGen.Mod (EmitDeclarations):
+	For the header file, write a declaration if
+	`objInSymbolFile' is set.  Testing for `objIsExported' is not
+	sufficient if declarations are implicitly part of the public
+	interface.
+
+	* frontend/ParseStatm.Mod (CollectToMem, ReclaimFromMem):
+	Within the module body, all the module
+	global variable are treated as nonlocal.
+
+	* optimizers/AliasAnalysis.Mod (Aliasign):
+	Always assume that nonlocal access may alias.  This is a
+	workaround for a bug in the scheduler.
+
+	* backend/ansi-c/Schedule.Mod (InspectUpdate):
+	Also register anti-dependencies caused by a procedure
+	call that updates a nonlocal variable.  Note: Although this fixes one
+	bug, it also exposes another bug in the scheduler with respect to
+	alias handling on nonlocal accesses.  As a work around, I've changed
+	the AliasAnalysis module to always report that nonlocal accesses may
+	be aliasing.
+
+	* backend/ansi-c/Classify.Mod, backend/ansi-c/GenStatm.Mod, backend/ansi-c/GenDecl.Mod:
+	Prevent name clashes between labels and variable names.
+
+	* frontend/ParseStatm.Mod (PredefCall):
+	Don't crash if NEW, COPY, or LEN is called with too few
+	parameters.
+
+	* frontend/ParseExpr.Mod (Factor):
+	Enforce that predefined functions and procedures are never
+	used as procedure values.
+
 2001-03-18  Michael van Acken  <acken@informatik.uni-kl.de>
 
 	* frontend/ParseDecl.Mod (Type.CheckRestrictions):

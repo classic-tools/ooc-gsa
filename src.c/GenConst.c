@@ -303,7 +303,6 @@ l8:
   i0 = (int)((_Type)i0)->tbprocs[7];
   ((_TBP_TextRider__WriterDesc_WriteChar)i0)((TextRider__Writer)(int)w, (unsigned char)48);
 l9:
-  if (form<=11 || form>=16) goto l12;
   if (!(form==12)) goto l10;
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[7];
@@ -333,7 +332,6 @@ void GenConst__Const(TextRider__Writer w, Data__Const const_, Data__Object obj) 
   i1 = (int)*(void**)i1;
   i1 += 20;
   i0 = *(signed char*)i1;
-  if (i0<=0 || (i0>=10 && i0<=11) || (i0>=16 && i0<=17) || i0>=21) goto l8;
   if (!(i0==1)) goto l0;
   i1 = (int)const_ + 24;
   i1 = *(int*)i1;
@@ -402,18 +400,19 @@ l8:
 }
 
 void GenConst__EmitInitialization_NewLine(TextRider__Writer *GenConst__EmitInitialization_w) {
-  register int i0, i1, i2;
+  register int i0, i1;
   i0 = (int)*GenConst__EmitInitialization_w;
-  i2 = *(int*)(i0-4);
-  i1 = (int)((_Type)i2)->tbprocs[19];
-  i2 = (int)((_Type)i2)->tbprocs[5];
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[19];
   ((_TBP_TextRider__WriterDesc_WriteLn)i1)((TextRider__Writer)i0);
-  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i0, (const unsigned char*)(int)_c11, 3);
+  i0 = (int)*GenConst__EmitInitialization_w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c11, 3);
 }
 
 void GenConst__EmitInitialization(TextRider__Writer w, Data__Object obj, GenConst__UpdateList values, int len) {
   register int i0, i1, i2, i3, i4, i5, i6;
-  int width;
   i0 = (int)*(void**)(int)values;
   i0 = i0 == 0;
   if (i0) goto l0;
@@ -435,120 +434,101 @@ l2:
   i0 = (int)Data__InstructionDesc_NthArgument((Data__Instruction)i0, (short int)3);
   i0 += 16;
   i0 = (int)*(void**)i0;
-  i5 = (int)AlgebraicTransformation__GetZero((Data__Struct)i0);
-  i0 = i5 + 16;
+  i4 = (int)AlgebraicTransformation__GetZero((Data__Struct)i0);
+  i0 = i4 + 16;
   i0 = (int)*(void**)i0;
   i0 += 20;
   i0 = *(signed char*)i0;
-  if (!(i0<=0 || (i0>=10 && i0<=11) || i0>=16)) goto l3;
-  i0 = 1;
-  goto l15;
+  if (!(i0==1)) goto l3;
+  i2 = 1;
+  goto l14;
 l3:
-  if (!(i0==1)) goto l4;
-  i0 = 0;
-  i4 = 1;
-  goto l15;
+  if (!(i0==2)) goto l4;
+  i2 = 5;
+  goto l14;
 l4:
-  if (!(i0==2)) goto l5;
-  i0 = 0;
-  i4 = 5;
-  goto l15;
+  if (!(i0==3)) goto l5;
+  i2 = 5;
+  goto l14;
 l5:
-  if (!(i0==3)) goto l6;
-  i0 = 0;
-  i4 = 5;
-  goto l15;
+  if (!(i0==4)) goto l6;
+  i2 = 4;
+  goto l14;
 l6:
-  if (!(i0==4)) goto l7;
-  i0 = 0;
-  i4 = 4;
-  goto l15;
+  if (!(i0==5)) goto l7;
+  i2 = 6;
+  goto l14;
 l7:
-  if (!(i0==5)) goto l8;
-  i0 = 0;
-  i4 = 6;
-  goto l15;
+  if (!(i0==6)) goto l8;
+  i2 = 12;
+  goto l14;
 l8:
-  if (!(i0==6)) goto l9;
-  i0 = 0;
-  i4 = 12;
-  goto l15;
+  if (!(i0==7)) goto l9;
+  i2 = 24;
+  goto l14;
 l9:
-  if (!(i0==7)) goto l10;
-  i0 = 0;
-  i4 = 24;
-  goto l15;
+  if (!((i0>=8 && i0<=9))) goto l10;
+  i2 = 24;
+  goto l14;
 l10:
-  if (!((i0>=8 && i0<=9))) goto l11;
-  i0 = 0;
-  i4 = 24;
-  goto l15;
+  if (!(i0==12)) goto l11;
+  i2 = 18;
+  goto l14;
 l11:
-  if (!(i0==12)) goto l12;
-  i0 = 0;
-  i4 = 18;
-  goto l15;
+  if (!(i0==13)) goto l12;
+  i2 = 7;
+  goto l14;
 l12:
-  if (!(i0==13)) goto l13;
-  i0 = 0;
-  i4 = 7;
-  goto l15;
+  if (!(i0==14)) goto l13;
+  i2 = 11;
+  goto l14;
 l13:
-  if (!(i0==14)) goto l14;
-  i0 = 0;
-  i4 = 11;
-  goto l15;
+  if (!(i0==15)) goto l14;
+  i2 = 21;
 l14:
-  if (!(i0==15)) goto l15;
-  i0 = 0;
-  i4 = 21;
-l15:
-  if (i0) goto l22;
-  i3 = *(int*)((int)w-4);
-  i6 = len - 1;
-  i3 = (int)((_Type)i3)->tbprocs[5];
-  i2 = i6 >= 0;
-  i4 += 2;
-  _div(i1, 77, i4, int);
-  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c12, 5);
-  if (i2) goto l16;
-  i0 = (int)w;
-  goto l21;
-l16:
-  i2 = 0;
-  i0 = (int)w;
-l17:
-  _mod(i3, i2, i1, int);
-  i3 = i3 != 0;
-  if (i3) goto l18;
-  w = (void*)i0;
-  w = (void*)i0;
-  GenConst__EmitInitialization_NewLine((TextRider__Writer *)&w);
-  i0 = (int)w;
-l18:
-  i3 = (int)_ashl(i2, 2, (unsigned int));
-  i3 = (int)values + i3;
-  i4 = (int)*(void**)i3;
-  i3 = i4 == 0;
-  if (i3) goto l19;
-  i4 = (int)Data__InstructionDesc_NthArgument((Data__Instruction)i4, (short int)3);
-  GenConst__Const((TextRider__Writer)i0, (Data__Const)i4, (Data__Object)0);
+  i0 = *(int*)((int)w-4);
+  i5 = len - 1;
+  i1 = (int)((_Type)i0)->tbprocs[5];
+  i0 = i5 >= 0;
+  i2 += 2;
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c12, 5);
+  _div(i3, 77, i2, int);
+  if (i0) goto l15;
+  i6 = (int)w;
   goto l20;
+l15:
+  i1 = 0;
+  i6 = (int)w;
+l16:
+  _mod(i0, i1, i3, int);
+  i0 = i0 != 0;
+  if (i0) goto l17;
+  w = (void*)i6;
+  w = (void*)i6;
+  GenConst__EmitInitialization_NewLine((TextRider__Writer *)&w);
+  i6 = (int)w;
+l17:
+  i0 = (int)_ashl(i1, 2, (unsigned int));
+  i0 = (int)values + i0;
+  i2 = (int)*(void**)i0;
+  i0 = i2 == 0;
+  if (i0) goto l18;
+  i2 = (int)Data__InstructionDesc_NthArgument((Data__Instruction)i2, (short int)3);
+  GenConst__Const((TextRider__Writer)i6, (Data__Const)i2, (Data__Object)0);
+  goto l19;
+l18:
+  GenConst__Const((TextRider__Writer)i6, (Data__Const)i4, (Data__Object)0);
 l19:
-  GenConst__Const((TextRider__Writer)i0, (Data__Const)i5, (Data__Object)0);
+  i1++;
+  i2 = *(int*)(i6-4);
+  i0 = i1 <= i5;
+  i2 = (int)((_Type)i2)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i6, (const unsigned char*)(int)_c13, 3);
+  if (i0) goto l16;
 l20:
-  i2++;
-  i4 = *(int*)(i0-4);
-  i3 = i2 <= i6;
-  i4 = (int)((_Type)i4)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i0, (const unsigned char*)(int)_c13, 3);
-  if (i3) goto l17;
-l21:
-  i3 = *(int*)(i0-4);
-  i3 = (int)((_Type)i3)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i0, (const unsigned char*)(int)_c14, 3);
-l22:
-  ;
+  i0 = *(int*)(i6-4);
+  i0 = (int)((_Type)i0)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i6, (const unsigned char*)(int)_c14, 3);
 }
 
 void GenConst_init(void) {

@@ -76,13 +76,13 @@ typedef struct TextRider__ScannerDesc* TextRider__Scanner;
 typedef struct TextRider__ErrorContextDesc {
   Msg__StringPtr id;
 } TextRider__ErrorContextDesc;
+typedef struct TextRider__ErrorContextDesc* TextRider__ErrorContext;
 extern void TextRider__InitReader(TextRider__Reader r, Channel__Channel ch);
 extern TextRider__Reader TextRider__ConnectReader(Channel__Channel ch);
 extern void TextRider__InitWriter(TextRider__Writer w, Channel__Channel ch);
 extern TextRider__Writer TextRider__ConnectWriter(Channel__Channel ch);
 extern void TextRider__InitScanner(TextRider__Scanner s, Channel__Channel ch);
 extern TextRider__Scanner TextRider__ConnectScanner(Channel__Channel ch);
-typedef struct TextRider__ErrorContextDesc* TextRider__ErrorContext;
 typedef void(* _TBP_TextRider__ErrorContextDesc_GetTemplate)(TextRider__ErrorContext context, Msg__Msg msg, Msg__LString templ, int templ_0d);
 #define _TBN_TextRider__ErrorContextDesc_GetTemplate 0
 extern void TextRider__ErrorContextDesc_GetTemplate(TextRider__ErrorContext context, Msg__Msg msg, Msg__LString templ, int templ_0d);

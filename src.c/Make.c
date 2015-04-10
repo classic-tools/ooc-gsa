@@ -191,25 +191,26 @@ l2:
 }
 
 void Make__ScanSymbolFile_ReadImportList(BinaryRider__Reader *Make__ScanSymbolFile_r, Make__Module *Make__ScanSymbolFile_moduleList, Make__Module *Make__ScanSymbolFile_mod) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9;
+  register int i0, i1, i2, i3, i4, i5, i6, i7, i8;
   int magic;
-  i9 = (int)*Make__ScanSymbolFile_r;
   i1 = 0;
 l0:
-  i0 = (int)SymbolFile__ReadString((BinaryRider__Reader)i9);
+  i3 = (int)*Make__ScanSymbolFile_r;
+  i0 = (int)SymbolFile__ReadString((BinaryRider__Reader)i3);
   i8 = strcmp((const char*) i0, (const char*) (int)_c1) == 0;
   if (i8) goto l1;
-  i7 = (int)*Make__ScanSymbolFile_mod;
-  i5 = *(int*)(i9-4);
-  i6 = i7 + 16;
-  i5 = (int)((_Type)i5)->tbprocs[13];
+  i7 = (int)*Make__ScanSymbolFile_r;
+  i6 = *(int*)(i7-4);
+  i6 = (int)((_Type)i6)->tbprocs[13];
   magic = (int)i2;
   magic = (int)i2;
-  ((_TBP_BinaryRider__ReaderDesc_ReadLInt)i5)((BinaryRider__Reader)i9, (int *)(int)&magic);
+  ((_TBP_BinaryRider__ReaderDesc_ReadLInt)i6)((BinaryRider__Reader)i7, (int *)(int)&magic);
+  i6 = (int)*Make__ScanSymbolFile_mod;
+  i5 = i6 + 16;
   i3 = *(int*)(i0-8);
-  i5 = (int)*(void**)i6;
-  i4 = (int)*Make__ScanSymbolFile_moduleList;
-  Make__AddImport((Make__Module *)(int)(int)Make__ScanSymbolFile_moduleList, (Make__Import *)i6, (unsigned char*)i0, i3, (int)-1, (unsigned char)1, (int)magic);
+  i4 = (int)*(void**)i5;
+  i7 = (int)*Make__ScanSymbolFile_moduleList;
+  Make__AddImport((Make__Module *)(int)(int)Make__ScanSymbolFile_moduleList, (Make__Import *)i5, (unsigned char*)i0, i3, (int)-1, (unsigned char)1, (int)magic);
   i2 = magic;
 l1:
   if (!(i8)) goto l0;
@@ -643,35 +644,35 @@ void Make__TopSort_ErrorCyclic(Make__Module mod, unsigned char Make__TopSort_msg
   i0 = *(short int*)i0;
   i0 = i0 == 0;
   if (i0) goto l3;
-  i1 = (int)mod + 12;
-  i3 = Strings__Length((const unsigned char*)(int)Make__TopSort_msg, 8192);
-  i2 = *(unsigned int*)i1;
+  i3 = (int)mod + 12;
+  i1 = Strings__Length((const unsigned char*)(int)Make__TopSort_msg, 8192);
+  i2 = *(unsigned int*)i3;
   i0 = (i2 & ((unsigned int)1 << 6)) != 0;
   if (i0) goto l2;
   i2 = i2 | ((unsigned int)1 << 6);
-  *(unsigned int*)i1 = i2;
+  *(unsigned int*)i3 = i2;
   Strings__Append((const unsigned char*)(int)_c8, 2, (unsigned char*)(int)Make__TopSort_msg, 8192);
   i2 = (int)mod + 4;
   i2 = (int)*(void**)i2;
   i0 = *(int*)(i2-8);
   Strings__Append((const unsigned char*)i2, i0, (unsigned char*)(int)Make__TopSort_msg, 8192);
   i2 = (int)mod + 16;
-  i2 = (int)*(void**)i2;
-  i0 = i2 == 0;
-  if (i0) goto l1;
+  i0 = (int)*(void**)i2;
+  i2 = i0 == 0;
+  if (i2) goto l1;
 l0:
-  i0 = i2 + 4;
-  i0 = (int)*(void**)i0;
-  Make__TopSort_ErrorCyclic((Make__Module)i0, Make__TopSort_msg);
+  i2 = i0 + 4;
   i2 = (int)*(void**)i2;
-  i0 = i2 != 0;
-  if (i0) goto l0;
+  Make__TopSort_ErrorCyclic((Make__Module)i2, Make__TopSort_msg);
+  i0 = (int)*(void**)i0;
+  i2 = i0 != 0;
+  if (i2) goto l0;
 l1:
-  i2 = *(unsigned int*)i1;
-  i0 = (int)Make__TopSort_msg + i3;
+  i2 = *(unsigned int*)i3;
   i2 = i2 & ~((unsigned int)1 << 6);
-  *(unsigned char*)i0 = 0;
-  *(unsigned int*)i1 = i2;
+  *(unsigned int*)i3 = i2;
+  i2 = (int)Make__TopSort_msg + i1;
+  *(unsigned char*)i2 = 0;
   goto l3;
 l2:
   Parameter__FatalError((const unsigned char*)(int)Make__TopSort_msg, 8192);

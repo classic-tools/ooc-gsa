@@ -16,20 +16,20 @@ void ParamPragmas__Push(void) {
 
 void ParamPragmas__PrepareForModify(ParamOptions__Option opt) {
   register int i0, i1, i2, i3, i4, i5, i6;
-  i5 = (int)ParamPragmas__pragmas;
-  i0 = i5 + 24;
-  i4 = *(short int*)i0;
-  i0 = i4 == 0;
+  i4 = (int)ParamPragmas__pragmas;
+  i0 = i4 + 24;
+  i5 = *(short int*)i0;
+  i0 = i5 == 0;
   if (i0) goto l5;
-  i3 = i5 + 20;
-  i2 = (int)*(void**)i3;
-  i1 = i2 == 0;
-  if (i1) goto l0;
-  i1 = i2 + 4;
-  i1 = *(short int*)i1;
-  i1 = i1 != i4;
-  if (i1) goto l0;
-  i6 = i2;
+  i4 += 20;
+  i4 = (int)*(void**)i4;
+  i3 = i4 == 0;
+  if (i3) goto l0;
+  i3 = i4 + 4;
+  i3 = *(short int*)i3;
+  i5 = i3 != i5;
+  if (i5) goto l0;
+  i6 = i4;
   goto l1;
 l0:
   {
@@ -40,44 +40,49 @@ l0:
     ((_Type*)_var)[-1] = &ParamPragmas__PragmaStackDesc_td.td;
     i6 = (int)_var;
   }
-  *(void**)i6 = (void*)i2;
-  i1 = i6 + 4;
-  *(short int*)i1 = i4;
-  *(void**)i3 = (void*)i6;
-  i4 = i6 + 8;
-  *(void**)i4 = (void*)0;
-l1:
+  *(void**)i6 = (void*)i4;
+  i5 = (int)ParamPragmas__pragmas;
+  i5 += 24;
+  i3 = i6 + 4;
+  i5 = *(short int*)i5;
+  *(short int*)i3 = i5;
   i5 = i6 + 8;
-  i1 = (int)*(void**)i5;
-  i3 = i1 == 0;
-  if (i3) goto l3;
-  i4 = i1 + 4;
+  *(void**)i5 = (void*)0;
+  i5 = (int)ParamPragmas__pragmas;
+  i3 = i5 + 20;
+  *(void**)i3 = (void*)i6;
+l1:
+  i2 = i6 + 8;
+  i1 = (int)*(void**)i2;
+  i5 = i1 == 0;
+  if (i5) goto l3;
+  i3 = i1 + 4;
+  i3 = (int)*(void**)i3;
+  i4 = (int)opt + 4;
   i4 = (int)*(void**)i4;
-  i2 = (int)opt + 4;
-  i2 = (int)*(void**)i2;
-  i4 = strcmp((const char*) i4, (const char*) i2) == 0;
-  if (i4) goto l3;
+  i3 = strcmp((const char*) i3, (const char*) i4) == 0;
+  if (i3) goto l3;
   i0 = i1;
 l2:
   i0 = (int)*(void**)i0;
-  i3 = i0 == 0;
-  if (i3) goto l4;
-  i3 = i0 + 4;
-  i3 = (int)*(void**)i3;
-  i3 = strcmp((const char*) i3, (const char*) i2) != 0;
-  if (i3) goto l2;
+  i5 = i0 == 0;
+  if (i5) goto l4;
+  i5 = i0 + 4;
+  i5 = (int)*(void**)i5;
+  i5 = strcmp((const char*) i5, (const char*) i4) != 0;
+  if (i5) goto l2;
   goto l4;
 l3:
   i0 = i1;
 l4:
-  i3 = i0 == 0;
-  if (!(i3)) goto l5;
-  i2 = *(int*)((int)opt-4);
-  i2 = (int)((_Type)i2)->tbprocs[2];
-  i3 = (int)((_TBP_ParamOptions__OptionDesc_Copy)i2)((ParamOptions__Option)(int)opt);
-  i2 = (int)*(void**)i5;
-  *(void**)i5 = (void*)i3;
-  *(void**)i3 = (void*)i2;
+  i5 = i0 == 0;
+  if (!(i5)) goto l5;
+  i5 = *(int*)((int)opt-4);
+  i5 = (int)((_Type)i5)->tbprocs[2];
+  i4 = (int)((_TBP_ParamOptions__OptionDesc_Copy)i5)((ParamOptions__Option)(int)opt);
+  i5 = (int)*(void**)i2;
+  *(void**)i2 = (void*)i4;
+  *(void**)i4 = (void*)i5;
 l5:
   ;
 }
@@ -219,76 +224,79 @@ l1:
   i0 = i2;
   goto l1;
 l2:
-  i0 = (int)ParamPragmas__pragmas;
-  i1 = i0 + 20;
-  i1 = (int)*(void**)i1;
   *(void**)(int)state = (void*)i2;
-  i1 = (int)ParamPragmas__Save_CopyStack((ParamPragmas__PragmaStack)i1);
-  i2 = i0 + 24;
+  i0 = (int)ParamPragmas__pragmas;
+  i0 += 20;
+  i0 = (int)*(void**)i0;
+  i1 = (int)ParamPragmas__Save_CopyStack((ParamPragmas__PragmaStack)i0);
   i0 = (int)state + 4;
   *(void**)i0 = (void*)i1;
-  i1 = *(short int*)i2;
-  i0 = (int)state + 8;
-  *(short int*)i0 = i1;
+  i0 = (int)ParamPragmas__pragmas;
+  i0 += 24;
+  i0 = *(short int*)i0;
+  i1 = (int)state + 8;
+  *(short int*)i1 = i0;
 }
 
 void ParamPragmas__Restore(ParamPragmas__PragmaState *state, _Type state__tag) {
   register int i0, i1, i2, i3, i4, i5;
   i0 = (int)ParamPragmas__pragmas;
-  i1 = (int)state + 4;
-  i2 = i0 + 20;
-  i1 = (int)*(void**)i1;
-  *(void**)i2 = (void*)i1;
+  i2 = (int)state + 4;
+  i1 = i0 + 20;
+  i2 = (int)*(void**)i2;
+  *(void**)i1 = (void*)i2;
+  i0 = (int)ParamPragmas__pragmas;
   i1 = (int)state + 8;
   i2 = i0 + 24;
   i1 = *(short int*)i1;
   *(short int*)i2 = i1;
+  i0 = (int)ParamPragmas__pragmas;
   i0 += 16;
-  i5 = (int)*(void**)i0;
-  i0 = i5 == 0;
+  i4 = (int)*(void**)i0;
+  i0 = i4 == 0;
   if (i0) goto l6;
 l0:
-  i3 = (int)*(void**)(int)state;
-  i0 = i3 == 0;
+  i2 = (int)*(void**)(int)state;
+  i5 = i2 == 0;
+  if (i5) goto l2;
+  i1 = i2 + 4;
+  i0 = (int)*(void**)i1;
+  i1 = i4 + 4;
+  i1 = (int)*(void**)i1;
+  i0 = strcmp((const char*) i0, (const char*) i1) == 0;
   if (i0) goto l2;
-  i2 = i3 + 4;
-  i1 = (int)*(void**)i2;
-  i2 = i5 + 4;
-  i2 = (int)*(void**)i2;
-  i1 = strcmp((const char*) i1, (const char*) i2) == 0;
-  if (i1) goto l2;
-  i4 = i3;
+  i3 = i2;
 l1:
-  i4 = (int)*(void**)i4;
-  i0 = i4 == 0;
-  if (i0) goto l3;
-  i0 = i4 + 4;
-  i0 = (int)*(void**)i0;
-  i0 = strcmp((const char*) i0, (const char*) i2) != 0;
-  if (i0) goto l1;
+  i3 = (int)*(void**)i3;
+  i5 = i3 == 0;
+  if (i5) goto l3;
+  i5 = i3 + 4;
+  i5 = (int)*(void**)i5;
+  i5 = strcmp((const char*) i5, (const char*) i1) != 0;
+  if (i5) goto l1;
   goto l3;
 l2:
-  i4 = i3;
+  i3 = i2;
 l3:
-  i0 = (int)*(void**)i5;
-  i1 = i4 == 0;
-  if (i1) goto l4;
-  i1 = *(int*)(i4-4);
-  i1 = (int)((_Type)i1)->tbprocs[3];
-  ((_TBP_ParamOptions__OptionDesc_CopyValue)i1)((ParamOptions__Option)i4, (ParamOptions__Option)i5);
+  i5 = (int)*(void**)i4;
+  i0 = i3 == 0;
+  if (i0) goto l4;
+  i0 = *(int*)(i3-4);
+  i0 = (int)((_Type)i0)->tbprocs[3];
+  ((_TBP_ParamOptions__OptionDesc_CopyValue)i0)((ParamOptions__Option)i3, (ParamOptions__Option)i4);
   goto l5;
 l4:
-  i2 = (int)ParamPragmas__pragmas;
-  i5 += 4;
-  i5 = (int)*(void**)i5;
-  i3 = *(int*)(i2-4);
-  i1 = *(int*)(i5-8);
-  i3 = (int)((_Type)i3)->tbprocs[5];
-  ((_TBP_ParamOptions__OptionsSectionDesc_Remove)i3)((ParamOptions__OptionsSection)i2, (const unsigned char*)i5, i1);
+  i1 = (int)ParamPragmas__pragmas;
+  i4 += 4;
+  i4 = (int)*(void**)i4;
+  i2 = *(int*)(i1-4);
+  i0 = *(int*)(i4-8);
+  i2 = (int)((_Type)i2)->tbprocs[5];
+  ((_TBP_ParamOptions__OptionsSectionDesc_Remove)i2)((ParamOptions__OptionsSection)i1, (const unsigned char*)i4, i0);
 l5:
-  i1 = i0 != 0;
-  if (!(i1)) goto l6;
-  i5 = i0;
+  i0 = i5 != 0;
+  if (!(i0)) goto l6;
+  i4 = i5;
   goto l0;
 l6:
   ;
@@ -296,14 +304,15 @@ l6:
 
 void ParamPragmas__Init(signed char undef) {
   register int i0, i1;
+  i1 = (int)ParamPragmas__pragmas;
+  i0 = i1 + 12;
+  *(signed char*)i0 = undef;
   i0 = (int)ParamPragmas__pragmas;
-  i1 = i0 + 12;
-  *(signed char*)i1 = undef;
   Parameter__AddSection((const unsigned char*)(int)_c0, 8, (Parameter__Section)i0);
 }
 
 void ParamPragmas_init(void) {
-  register int i0, i1, i2;
+  register int i0, i1;
   _mid = _register_module(&ParamPragmas_md.md, &ParamPragmas__PragmaState_td.td);
   {
     char *_mem, *_var;
@@ -315,10 +324,12 @@ void ParamPragmas_init(void) {
   }
   ParamPragmas__pragmas = (void*)i0;
   i0 = (int)ParamPragmas__pragmas;
-  i2 = i0 + 16;
-  i1 = i0 + 20;
-  *(void**)i2 = (void*)0;
-  i2 = i0 + 24;
+  i1 = i0 + 16;
   *(void**)i1 = (void*)0;
-  *(short int*)i2 = 0;
+  i0 = (int)ParamPragmas__pragmas;
+  i1 = i0 + 20;
+  *(void**)i1 = (void*)0;
+  i0 = (int)ParamPragmas__pragmas;
+  i1 = i0 + 24;
+  *(short int*)i1 = 0;
 }

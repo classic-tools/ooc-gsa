@@ -1,7 +1,7 @@
-(*	$Id: Classify.Mod,v 1.27 1999/05/20 20:31:31 acken Exp $	*)
+(*	$Id: Classify.Mod,v 1.28 2001/04/07 08:10:32 ooc-devel Exp $	*)
 MODULE Classify;
 (*  Classifies GSA instruction with respect to their translation to ANSI-C.
-    Copyright (C) 1996-1999  Michael van Acken
+    Copyright (C) 1996-1999, 2001  Michael van Acken
 
     This file is part of OOC.
 
@@ -29,6 +29,7 @@ CONST
   prefixReal* = "f";
   prefixLongReal* = "d";
   prefixAuxiliary* = "a";
+  prefixLabel* = "l";
   
 CONST  
   (* list of instruction categories; categories are stored in 

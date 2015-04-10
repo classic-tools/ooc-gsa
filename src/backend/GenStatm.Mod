@@ -1,7 +1,7 @@
-(*	$Id: GenStatm.Mod,v 1.54 2000/12/27 16:34:31 ooc-devel Exp $	*)
+(*	$Id: GenStatm.Mod,v 1.55 2001/04/07 08:10:25 ooc-devel Exp $	*)
 MODULE GenStatm;
 (*  Translates GSA opcodes to C statements.
-    Copyright (C) 1996-2000  Michael van Acken
+    Copyright (C) 1996-2001  Michael van Acken
 
     This file is part of OOC.
 
@@ -1867,7 +1867,7 @@ PROCEDURE Label (instr: D.Instruction);
   BEGIN
     old := off; off := 0;
     NewLine;
-    w. WriteChar ("l");
+    w. WriteChar (Class.prefixLabel);
     w. WriteLInt (instr. marker, 0);
     w. WriteChar (":");
     off := old

@@ -35,6 +35,7 @@ unsigned char ParseExpr__Designator_AbstractSuperCall(Data__Object tbProc, Data_
 signed char ParseExpr__CheckOperandType(Attributes__Item *x, _Type x__tag, unsigned int legalTypes, unsigned int legalTypeGroups);
 void ParseExpr__Factor_Set_Element(Attributes__Item *x, _Type x__tag, Data__Region *ParseExpr__Factor_region, Data__Struct *ParseExpr__Factor_Set_type);
 void ParseExpr__Factor_Set(Data__Struct type, Attributes__Item *ParseExpr__Factor_x, _Type ParseExpr__Factor_x__tag, Data__Region *ParseExpr__Factor_region, int *ParseExpr__Factor_pos);
+unsigned char ParseExpr__Factor_PredefinedProc(Data__Object obj);
 void ParseExpr__Factor(Data__Region region, Attributes__Item *x, _Type x__tag);
 unsigned char ParseExpr__SwitchMergeOpnds(Data__Usable u, short int count);
 void ParseExpr__FixOldValues(Data__Region path);

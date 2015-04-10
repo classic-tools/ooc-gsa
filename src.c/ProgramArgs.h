@@ -18,10 +18,6 @@ typedef struct ProgramArgs__ChannelDesc {
   char _7pad;
 } ProgramArgs__ChannelDesc;
 typedef struct ProgramArgs__ChannelDesc* ProgramArgs__Channel;
-extern ProgramArgs__Channel ProgramArgs__args;
-typedef struct ProgramArgs__ErrorContextDesc {
-  Msg__StringPtr id;
-} ProgramArgs__ErrorContextDesc;
 typedef struct ProgramArgs__ReaderDesc {
   Channel__Channel base;
   Msg__Msg res;
@@ -32,6 +28,10 @@ typedef struct ProgramArgs__ReaderDesc {
   int pos1;
 } ProgramArgs__ReaderDesc;
 typedef struct ProgramArgs__ReaderDesc* ProgramArgs__Reader;
+extern ProgramArgs__Channel ProgramArgs__args;
+typedef struct ProgramArgs__ErrorContextDesc {
+  Msg__StringPtr id;
+} ProgramArgs__ErrorContextDesc;
 typedef int(* _TBP_ProgramArgs__ReaderDesc_Pos)(ProgramArgs__Reader r);
 #define _TBN_ProgramArgs__ReaderDesc_Pos 0
 extern int ProgramArgs__ReaderDesc_Pos(ProgramArgs__Reader r);

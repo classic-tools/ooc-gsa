@@ -141,10 +141,44 @@ l1:
   ;
 }
 
-void LRealStr__Scale(double x, LongInts__LongInt n, short int sigFigs, short int exp) {
+int LRealStr__MaxDigit(LongInts__LongInt n) {
+  register int i0, i1, i2, i3, i4;
+  i0 = 0;
+l0:
+  i2 = (int)_ashl(i0, 1, (unsigned int));
+  i2 = (int)n + i2;
+  i1 = *(short int*)i2;
+  i3 = i1 != 0;
+  if (i3) goto l1;
+  goto l4;
+l1:
+  i2 = i1 >= 10;
+  if (i2) goto l2;
+  i4 = i1;
+  goto l4;
+l2:
+  i4 = i1;
+l3:
+  _div(i4, i4, 10, int);
+  i2 = i4 >= 10;
+  if (i2) goto l3;
+l4:
+  i0++;
+  if (i3) goto l5;
+  i2 = i0 <= 169;
+  if (i2) goto l0;
+l5:
+  if (i3) goto l6;
+  i4 = 0;
+l6:
+  return (int)i4;
+}
+
+void LRealStr__Scale(double x, LongInts__LongInt n, short int sigFigs, short int exp, unsigned char *overflow) {
   register int i0, i1, i2, i3, i4;
   register double d0, d1;
   int d;
+  *overflow = 0;
   i0 = LowLReal__exponent((double)x);
   i0 = i0 == -1022;
   if (i0) goto l0;
@@ -166,73 +200,85 @@ l2:
   _mod(i0, i3, 15, int);
   d0 = LowLReal__fraction((double)d0);
   d1 = LowLReal__scale((double)d0, (short int)i0);
-  i2 = 165;
+  i0 = 165;
 l3:
-  i1 = (int)_ashl(i2, 1, (unsigned int));
-  i1 = (int)n + i1;
-  _entier(i0, d1);
-  *(short int*)i1 = i0;
-  i1 = *(short int*)i1;
-  d0 = i1;
-  i2++;
+  i2 = (int)_ashl(i0, 1, (unsigned int));
+  i2 = (int)n + i2;
+  _entier(i1, d1);
+  *(short int*)i2 = i1;
+  i2 = *(short int*)i2;
+  d0 = i2;
+  i0++;
   d0 = d1 - d0;
-  i1 = i2 <= 169;
+  i2 = i0 <= 169;
   d1 = d0 * 3.2768000000000000E+4;
-  if (i1) goto l3;
+  if (i2) goto l3;
   i2 = 0;
 l4:
-  i1 = (int)_ashl(i2, 1, (unsigned int));
-  i4 = i2 + 1;
-  i1 = (int)n + i1;
-  i0 = i4 > 164;
-  *(short int*)i1 = 0;
-  if (i0) goto l5;
-  i2 = i4;
+  i0 = (int)_ashl(i2, 1, (unsigned int));
+  i1 = i2 + 1;
+  i0 = (int)n + i0;
+  i4 = i1 > 164;
+  *(short int*)i0 = 0;
+  if (i4) goto l5;
+  i2 = i1;
   goto l4;
 l5:
   _div(i0, i3, 15, int);
   i1 = i0 - 4;
-  i0 = i1 >= 0;
-  i2 = sigFigs - exp;
-  i2--;
-  if (i0) goto l9;
-  i0 = i2 > 0;
-  if (i0) goto l6;
-  i0 = i1 + 1;
-  LongInts__TenPower((short int*)(int)n, (short int)i2);
-  LongInts__BPower((short int*)(int)n, (short int)i0);
+  i2 = i1 >= 0;
+  i0 = sigFigs - exp;
+  i0--;
+  if (i2) goto l9;
+  i2 = i0 > 0;
+  if (i2) goto l6;
+  i2 = i1 + 1;
+  LongInts__TenPower((short int*)(int)n, (short int)i0);
+  LongInts__BPower((short int*)(int)n, (short int)i2);
+  i2 = LRealStr__MaxDigit((short int*)(int)n);
   LongInts__AddDigit((short int*)(int)n, (int)16384);
   LongInts__DivDigit((short int*)(int)n, (int)32768, (int *)(int)&d);
   goto l10;
 l6:
-  i0 = i1 > 0;
-  LongInts__TenPower((short int*)(int)n, (short int)i2);
-  if (i0) goto l7;
-  i0 = i1 + 1;
-  LongInts__BPower((short int*)(int)n, (short int)i0);
+  i2 = i1 > 0;
+  LongInts__TenPower((short int*)(int)n, (short int)i0);
+  if (i2) goto l7;
+  i2 = i1 + 1;
+  LongInts__BPower((short int*)(int)n, (short int)i2);
   goto l8;
 l7:
-  i0 = i1 - 1;
-  LongInts__BPower((short int*)(int)n, (short int)i0);
+  i2 = i1 - 1;
+  LongInts__BPower((short int*)(int)n, (short int)i2);
 l8:
+  i2 = LRealStr__MaxDigit((short int*)(int)n);
   LongInts__AddDigit((short int*)(int)n, (int)16384);
   LongInts__DivDigit((short int*)(int)n, (int)32768, (int *)(int)&d);
   goto l10;
 l9:
   i1++;
   LongInts__BPower((short int*)(int)n, (short int)i1);
-  LongInts__TenPower((short int*)(int)n, (short int)i2);
+  LongInts__TenPower((short int*)(int)n, (short int)i0);
+  i2 = LRealStr__MaxDigit((short int*)(int)n);
   LongInts__AddDigit((short int*)(int)n, (int)16384);
   LongInts__DivDigit((short int*)(int)n, (int)32768, (int *)(int)&d);
 l10:
+  i0 = i2 == 9;
+  if (!(i0)) goto l11;
+  i0 = LRealStr__MaxDigit((short int*)(int)n);
+  i0 = i0 == 9;
+  if (i0) goto l11;
+  *overflow = 1;
+l11:
   ;
 }
 
 void LRealStr__RealToFloat(double real, short int sigFigs, unsigned char* str, int str_0d) {
   register int i0, i1, i2;
   register double d0;
+  int d;
   LongInts__LongInt in;
   unsigned char lstr[64];
+  unsigned char overflow;
   i0 = LowLReal__IsNaN((double)real);
   i1 = sigFigs <= 0;
   if (!(i0)) goto l0;
@@ -245,7 +291,7 @@ l1:
   i1 = 15;
 l2:
   (void)memcpy((void*) (int)lstr, (const void*) (int)_c3, 1);
-  if (i0) goto l7;
+  if (i0) goto l11;
   i2 = real < 0.0000000000000000;
   if (i2) goto l3;
   d0 = real;
@@ -259,24 +305,39 @@ l4:
   Strings__Append((const unsigned char*)(int)_c7, 9, (unsigned char*)(int)lstr, 64);
   _string_copy((int)str, (int)lstr, str_0d);
 l5:
-  if (i2) goto l7;
-  i2 = LowLReal__exponent10((double)d0);
-  LRealStr__Scale((double)d0, (short int*)(int)in, (short int)i1, (short int)i2);
-  i0 = i2 == 0;
-  LRealStr__AppendFraction((short int*)(int)in, (short int)i1, (short int)1, (unsigned char*)(int)lstr, 64);
-  if (i0) goto l6;
-  LRealStr__AppendExponent((short int)i2, (unsigned char*)(int)lstr, 64);
+  if (i2) goto l11;
+  i0 = LowLReal__exponent10((double)d0);
+  LRealStr__Scale((double)d0, (short int*)(int)in, (short int)i1, (short int)i0, (unsigned char *)(int)&overflow);
+  if (overflow) goto l6;
+  i2 = i0;
+  goto l9;
 l6:
-  _string_copy((int)str, (int)lstr, str_0d);
+  i2 = i0 >= 0;
+  if (i2) goto l7;
+  i2 = i0 - 1;
+  goto l8;
 l7:
+  i2 = i0 + 1;
+l8:
+  LongInts__DivDigit((short int*)(int)in, (int)10, (int *)(int)&d);
+l9:
+  LRealStr__AppendFraction((short int*)(int)in, (short int)i1, (short int)1, (unsigned char*)(int)lstr, 64);
+  i0 = i2 == 0;
+  if (i0) goto l10;
+  LRealStr__AppendExponent((short int)i2, (unsigned char*)(int)lstr, 64);
+l10:
+  _string_copy((int)str, (int)lstr, str_0d);
+l11:
   ;
 }
 
 void LRealStr__RealToEng(double real, short int sigFigs, unsigned char* str, int str_0d) {
   register int i0, i1, i2, i3;
   register double d0;
+  int d;
   LongInts__LongInt in;
   unsigned char lstr[64];
+  unsigned char overflow;
   i0 = LowLReal__IsNaN((double)real);
   i1 = sigFigs <= 0;
   if (!(i0)) goto l0;
@@ -289,7 +350,7 @@ l1:
   i2 = 15;
 l2:
   (void)memcpy((void*) (int)lstr, (const void*) (int)_c3, 1);
-  if (i0) goto l7;
+  if (i0) goto l11;
   i1 = real < 0.0000000000000000;
   if (i1) goto l3;
   d0 = real;
@@ -303,78 +364,100 @@ l4:
   Strings__Append((const unsigned char*)(int)_c7, 9, (unsigned char*)(int)lstr, 64);
   _string_copy((int)str, (int)lstr, str_0d);
 l5:
-  if (i1) goto l7;
+  if (i1) goto l11;
   i3 = LowLReal__exponent10((double)d0);
-  _mod(i1, i3, 3, short int);
-  i0 = i3 - i1;
-  LRealStr__Scale((double)d0, (short int*)(int)in, (short int)i2, (short int)i3);
-  i1++;
+  LRealStr__Scale((double)d0, (short int*)(int)in, (short int)i2, (short int)i3, (unsigned char *)(int)&overflow);
+  if (overflow) goto l6;
+  i0 = i3;
+  goto l9;
+l6:
+  i0 = i3 >= 0;
+  if (i0) goto l7;
+  i0 = i3 - 1;
+  goto l8;
+l7:
+  i0 = i3 + 1;
+l8:
+  LongInts__DivDigit((short int*)(int)in, (int)10, (int *)(int)&d);
+l9:
+  _mod(i3, i0, 3, short int);
+  i0 -= i3;
+  i1 = i3 + 1;
   i3 = i0 == 0;
   LRealStr__AppendFraction((short int*)(int)in, (short int)i2, (short int)i1, (unsigned char*)(int)lstr, 64);
-  if (i3) goto l6;
+  if (i3) goto l10;
   LRealStr__AppendExponent((short int)i0, (unsigned char*)(int)lstr, 64);
-l6:
+l10:
   _string_copy((int)str, (int)lstr, str_0d);
-l7:
+l11:
   ;
 }
 
 void LRealStr__RealToFixed(double real, short int place, unsigned char* str, int str_0d) {
-  register int i0, i1, i2, i3, i4;
+  register int i0, i1, i2, i3, i4, i5;
   register double d0;
   LongInts__LongInt in;
   unsigned char lstr[256];
+  unsigned char overflow;
   i0 = LowLReal__IsNaN((double)real);
   if (!(i0)) goto l0;
   _string_copy((int)str, (int)_c6, str_0d);
 l0:
   (void)memcpy((void*) (int)lstr, (const void*) (int)_c3, 1);
-  i3 = place != 0;
-  if (i0) goto l10;
-  i2 = real < 0.0000000000000000;
-  if (i2) goto l1;
+  i4 = place != 0;
+  if (i0) goto l12;
+  i3 = real < 0.0000000000000000;
+  if (i3) goto l1;
   d0 = real;
   goto l2;
 l1:
   Strings__Append((const unsigned char*)(int)_c2, 2, (unsigned char*)(int)lstr, 256);
   d0 = - real;
 l2:
-  i2 = LowLReal__IsInfinity((double)d0);
-  if (!(i2)) goto l3;
+  i3 = LowLReal__IsInfinity((double)d0);
+  if (!(i3)) goto l3;
   Strings__Append((const unsigned char*)(int)_c7, 9, (unsigned char*)(int)lstr, 256);
   _string_copy((int)str, (int)lstr, str_0d);
 l3:
-  if (i2) goto l10;
+  if (i3) goto l12;
   i1 = place < 0;
   i0 = LowLReal__exponent10((double)d0);
   if (i1) goto l4;
-  i4 = place + i0;
-  i4++;
+  i2 = place + i0;
+  i2++;
   goto l5;
 l4:
-  i4 = place + i0;
-  i4 += 2;
+  i2 = place + i0;
+  i2 += 2;
 l5:
-  i2 = i0 < 0;
-  LRealStr__Scale((double)d0, (short int*)(int)in, (short int)i4, (short int)i0);
-  if (i2) goto l6;
-  i0++;
-  LRealStr__AppendFraction((short int*)(int)in, (short int)i4, (short int)i0, (unsigned char*)(int)lstr, 256);
-  LRealStr__RemoveLeadingZeros((unsigned char*)(int)lstr, 256);
-  goto l8;
+  LRealStr__Scale((double)d0, (short int*)(int)in, (short int)i2, (short int)i0, (unsigned char *)(int)&overflow);
+  if (overflow) goto l6;
+  i5 = i0;
+  i3 = i2;
+  goto l7;
 l6:
-  if (i1) goto l7;
+  i5 = i0 + 1;
+  i3 = i2 + 1;
+l7:
+  i0 = i5 < 0;
+  if (i0) goto l8;
+  i5++;
+  LRealStr__AppendFraction((short int*)(int)in, (short int)i3, (short int)i5, (unsigned char*)(int)lstr, 256);
+  LRealStr__RemoveLeadingZeros((unsigned char*)(int)lstr, 256);
+  goto l10;
+l8:
+  if (i1) goto l9;
   i1 = place + 1;
   LRealStr__AppendFraction((short int*)(int)in, (short int)i1, (short int)1, (unsigned char*)(int)lstr, 256);
-  goto l8;
-l7:
-  LRealStr__AppendFraction((short int*)(int)in, (short int)1, (short int)1, (unsigned char*)(int)lstr, 256);
-l8:
-  if (i3) goto l9;
-  Strings__Append((const unsigned char*)(int)_c4, 2, (unsigned char*)(int)lstr, 256);
+  goto l10;
 l9:
-  _string_copy((int)str, (int)lstr, str_0d);
+  LRealStr__AppendFraction((short int*)(int)in, (short int)1, (short int)1, (unsigned char*)(int)lstr, 256);
 l10:
+  if (i4) goto l11;
+  Strings__Append((const unsigned char*)(int)_c4, 2, (unsigned char*)(int)lstr, 256);
+l11:
+  _string_copy((int)str, (int)lstr, str_0d);
+l12:
   ;
 }
 
@@ -452,103 +535,6 @@ l10:
   if (i3) goto l10;
 l11:
   ;
-}
-
-void LRealStr__Test(void) {
-  register int i0;
-  double n;
-  signed char res;
-  unsigned char str[80];
-  LRealStr__RealToFloat((double)1.0380093453647217E+21, (short int)17, (unsigned char*)(int)str, 80);
-  LRealStr__RealToFloat((double)9.9999999999999991E-308, (short int)17, (unsigned char*)(int)str, 80);
-  LRealStr__RealToFloat((double)2.4000000000000001E-308, (short int)17, (unsigned char*)(int)str, 80);
-  LRealStr__RealToFloat((double)3.9230089999999998E-4, (short int)17, (unsigned char*)(int)str, 80);
-  LRealStr__RealToFloat((double)1.2345679360000000E+9, (short int)17, (unsigned char*)(int)str, 80);
-  LRealStr__RealToFloat((double)-1.7976931348623157E+308, (short int)17, (unsigned char*)(int)str, 80);
-  n = (double)-1.7976931348623157E+308;
-  n = (double)-1.7976931348623157E+308;
-  LRealStr__StrToReal((const unsigned char*)(int)str, 80, (double *)(int)&n, (signed char *)(int)&res);
-  LRealStr__RealToFloat((double)1.7976931348623157E+308, (short int)17, (unsigned char*)(int)str, 80);
-  n = (double)1.7976931348623157E+308;
-  n = (double)1.7976931348623157E+308;
-  LRealStr__StrToReal((const unsigned char*)(int)str, 80, (double *)(int)&n, (signed char *)(int)&res);
-  LRealStr__RealToFloat((double)3.9230090000000000E+6, (short int)1, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFloatReal((double)3.9230090000000000E+6, (short int)1);
-  LRealStr__RealToFloat((double)3.9230090000000000E+6, (short int)2, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFloatReal((double)3.9230090000000000E+6, (short int)2);
-  LRealStr__RealToFloat((double)3.9230090000000000E+6, (short int)5, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFloatReal((double)3.9230090000000000E+6, (short int)5);
-  LRealStr__RealToFloat((double)3.9230089999999997E+1, (short int)1, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFloatReal((double)3.9230089999999997E+1, (short int)1);
-  LRealStr__RealToFloat((double)3.9230089999999997E+1, (short int)2, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFloatReal((double)3.9230089999999997E+1, (short int)2);
-  LRealStr__RealToFloat((double)3.9230089999999997E+1, (short int)5, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFloatReal((double)3.9230089999999997E+1, (short int)5);
-  LRealStr__RealToFloat((double)3.9230089999999998E-4, (short int)1, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFloatReal((double)3.9230089999999998E-4, (short int)1);
-  LRealStr__RealToFloat((double)3.9230089999999998E-4, (short int)2, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFloatReal((double)3.9230089999999998E-4, (short int)2);
-  LRealStr__RealToFloat((double)3.9230089999999998E-4, (short int)5, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFloatReal((double)3.9230089999999998E-4, (short int)5);
-  LRealStr__RealToEng((double)3.9230090000000000E+6, (short int)1, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthEngReal((double)3.9230090000000000E+6, (short int)1);
-  LRealStr__RealToEng((double)3.9230090000000000E+6, (short int)2, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthEngReal((double)3.9230090000000000E+6, (short int)2);
-  LRealStr__RealToEng((double)3.9230090000000000E+6, (short int)5, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthEngReal((double)3.9230090000000000E+6, (short int)5);
-  LRealStr__RealToEng((double)3.9230089999999997E+1, (short int)1, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthEngReal((double)3.9230089999999997E+1, (short int)1);
-  LRealStr__RealToEng((double)3.9230089999999997E+1, (short int)2, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthEngReal((double)3.9230089999999997E+1, (short int)2);
-  LRealStr__RealToEng((double)3.9230089999999997E+1, (short int)5, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthEngReal((double)3.9230089999999997E+1, (short int)5);
-  LRealStr__RealToEng((double)3.9230089999999998E-4, (short int)1, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthEngReal((double)3.9230089999999998E-4, (short int)1);
-  LRealStr__RealToEng((double)3.9230089999999998E-4, (short int)2, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthEngReal((double)3.9230089999999998E-4, (short int)2);
-  LRealStr__RealToEng((double)3.9230089999999998E-4, (short int)5, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthEngReal((double)3.9230089999999998E-4, (short int)5);
-  LRealStr__RealToFixed((double)3.9230090000000000E+6, (short int)-5, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230090000000000E+6, (short int)-5);
-  LRealStr__RealToFixed((double)3.9230090000000000E+6, (short int)-2, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230090000000000E+6, (short int)-2);
-  LRealStr__RealToFixed((double)3.9230090000000000E+6, (short int)-1, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230090000000000E+6, (short int)-1);
-  LRealStr__RealToFixed((double)3.9230090000000000E+6, (short int)0, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230090000000000E+6, (short int)0);
-  LRealStr__RealToFixed((double)3.9230090000000000E+6, (short int)1, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230090000000000E+6, (short int)1);
-  LRealStr__RealToFixed((double)3.9230090000000000E+6, (short int)4, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230090000000000E+6, (short int)4);
-  LRealStr__RealToFixed((double)3.9230090000000000, (short int)-5, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230090000000000, (short int)-5);
-  LRealStr__RealToFixed((double)3.9230090000000000, (short int)-2, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230090000000000, (short int)-2);
-  LRealStr__RealToFixed((double)3.9230090000000000, (short int)-1, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230090000000000, (short int)-1);
-  LRealStr__RealToFixed((double)3.9230090000000000, (short int)0, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230090000000000, (short int)0);
-  LRealStr__RealToFixed((double)3.9230090000000000, (short int)1, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230090000000000, (short int)1);
-  LRealStr__RealToFixed((double)3.9230090000000000, (short int)4, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230090000000000, (short int)4);
-  LRealStr__RealToFixed((double)3.9230089999999998E-4, (short int)-5, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230089999999998E-4, (short int)-5);
-  LRealStr__RealToFixed((double)3.9230089999999998E-4, (short int)-2, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230089999999998E-4, (short int)-2);
-  LRealStr__RealToFixed((double)3.9230089999999998E-4, (short int)-1, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230089999999998E-4, (short int)-1);
-  LRealStr__RealToFixed((double)3.9230089999999998E-4, (short int)0, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230089999999998E-4, (short int)0);
-  LRealStr__RealToFixed((double)3.9230089999999998E-4, (short int)1, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230089999999998E-4, (short int)1);
-  LRealStr__RealToFixed((double)3.9230089999999998E-4, (short int)4, (unsigned char*)(int)str, 80);
-  i0 = LRealConv__LengthFixedReal((double)3.9230089999999998E-4, (short int)4);
-  LRealStr__StrToReal((const unsigned char*)(int)_c8, 10, (double *)(int)&n, (signed char *)(int)&res);
-  LRealStr__StrToReal((const unsigned char*)(int)_c9, 13, (double *)(int)&n, (signed char *)(int)&res);
-  LRealStr__StrToReal((const unsigned char*)(int)_c10, 18, (double *)(int)&n, (signed char *)(int)&res);
-  LRealStr__StrToReal((const unsigned char*)(int)_c11, 8, (double *)(int)&n, (signed char *)(int)&res);
-  LRealStr__StrToReal((const unsigned char*)(int)_c12, 22, (double *)(int)&n, (signed char *)(int)&res);
 }
 
 void LRealStr_init(void) {

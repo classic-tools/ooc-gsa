@@ -72,12 +72,13 @@ void GenDecl__InitReservedWords_RW(const unsigned char* id__ref, int id_0d);
 static const struct {
   int length;
   void* pad;
-  const void* list[15];
-} _p0 = {15, NULL, {
+  const void* list[16];
+} _p0 = {16, NULL, {
   (const void*)&GenDecl__AssignNames,
   (const void*)&GenDecl__BuildObjList,
   (const void*)&GenDecl__Declaration,
   (const void*)&GenDecl__EnumerateSideEffects,
+  (const void*)&GenDecl__Init,
   (const void*)&GenDecl__ModuleDescriptor,
   (const void*)&GenDecl__NewLine,
   (const void*)&GenDecl__PatchTBCalls,
@@ -114,7 +115,7 @@ static struct _MD GenDecl_md = {
     NULL,
     _p0.list,
     _p1.list,
-    530678467
+    -736963712
   }
 };
 
@@ -273,11 +274,11 @@ static const unsigned char _c32[] = "const ";
 static const unsigned char _c31[] = "volatile ";
 static const unsigned char _c30[] = "extern ";
 static const unsigned char _c29[] = "static ";
-static const unsigned char _c28[] = ")";
-static const unsigned char _c27[] = " ";
-static const unsigned char _c26[] = "(* _TBP_";
-static const unsigned char _c25[] = "#define _TBN_";
-static const unsigned char _c24[] = ";";
+static const unsigned char _c28[] = " ";
+static const unsigned char _c27[] = "#define _TBN_";
+static const unsigned char _c26[] = ";";
+static const unsigned char _c25[] = ")";
+static const unsigned char _c24[] = "(* _TBP_";
 static const unsigned char _c23[] = "typedef ";
 static const unsigned char _c22[] = " __cdecl";
 static const unsigned char _c21[] = " __stdcall";

@@ -14,7 +14,8 @@ void LRealStr__AppendDigit(int dig, unsigned char* str, int str_0d);
 void LRealStr__AppendExponent(short int exp, unsigned char* str, int str_0d);
 void LRealStr__AppendFraction(LongInts__LongInt n, short int sigFigs, short int place, unsigned char* str, int str_0d);
 void LRealStr__RemoveLeadingZeros(unsigned char* str, int str_0d);
-void LRealStr__Scale(double x, LongInts__LongInt n, short int sigFigs, short int exp);
+int LRealStr__MaxDigit(LongInts__LongInt n);
+void LRealStr__Scale(double x, LongInts__LongInt n, short int sigFigs, short int exp, unsigned char *overflow);
 
 /* module and type descriptors */
 static const struct {
@@ -54,11 +55,6 @@ static struct _MD LRealStr_md = {
 };
 
 /* local strings */
-static const unsigned char _c12[] = "1234.1234123412341234";
-static const unsigned char _c11[] = "345,234";
-static const unsigned char _c10[] = "-0.0002345097E+10";
-static const unsigned char _c9[] = "  1234567890";
-static const unsigned char _c8[] = "1.234D-10";
 static const unsigned char _c7[] = "Infinity";
 static const unsigned char _c6[] = "NaN";
 static const unsigned char _c5[] = "0";

@@ -187,65 +187,47 @@ External__Lib External__GetLib(signed char mode, const unsigned char* name__ref,
   i0 = (int)External__libList;
   i1 = i0 == 0;
   if (i1) goto l1;
-  i3 = i0 + 20;
-  i3 = (int)*(void**)i3;
-  i1 = strcmp((const char*) (int)name, (const char*) i3) == 0;
-  if (i1) goto l1;
-  i2 = i0;
-l0:
-  i2 += 16;
+  i2 = i0 + 20;
   i2 = (int)*(void**)i2;
-  i3 = i2 == 0;
-  if (i3) goto l2;
-  i3 = i2 + 20;
+  i1 = strcmp((const char*) (int)name, (const char*) i2) == 0;
+  if (i1) goto l1;
+  i3 = i0;
+l0:
+  i3 += 16;
   i3 = (int)*(void**)i3;
-  i3 = strcmp((const char*) (int)name, (const char*) i3) != 0;
-  if (i3) goto l0;
+  i2 = i3 == 0;
+  if (i2) goto l2;
+  i2 = i3 + 20;
+  i2 = (int)*(void**)i2;
+  i2 = strcmp((const char*) (int)name, (const char*) i2) != 0;
+  if (i2) goto l0;
   goto l2;
 l1:
-  i2 = i0;
+  i3 = i0;
 l2:
-  i1 = i2 == 0;
-  if (i1) goto l9;
-  if (!(mode<=2 || mode>=5)) goto l3;
-  i0 = 1;
-  goto l7;
+  i1 = i3 == 0;
+  if (i1) goto l4;
+  if (mode==4) goto l5;
+  if (!(mode==3)) goto l5;
+  i1 = i3 + 8;
+  i0 = *(signed char*)i1;
+  if (!(i0==4)) goto l3;
+  *(signed char*)i1 = 3;
+  goto l5;
 l3:
-  if (!(mode==4)) goto l4;
-  i0 = 0;
-  goto l7;
+  if (!(i0==3)) goto l5;
+  goto l5;
 l4:
-  if (!(mode==3)) goto l7;
-  i0 = i2 + 8;
-  i1 = *(signed char*)i0;
-  if (!(i1<=2 || i1>=5)) goto l5;
-  i0 = 1;
-  goto l7;
+  i3 = (int)External__GetLib_NewLib((signed char)mode, (unsigned char*)(int)name, name_0d, (unsigned char*)(int)version, version_0d);
 l5:
-  if (!(i1==4)) goto l6;
-  *(signed char*)i0 = 3;
-  i0 = 0;
-  goto l7;
-l6:
-  if (!(i1==3)) goto l7;
-  i0 = 0;
-l7:
-  if (i0) goto l8;
-  i1 = i2;
-  goto l10;
-l8:
-  goto l10;
-l9:
-  i1 = (int)External__GetLib_NewLib((signed char)mode, (unsigned char*)(int)name, name_0d, (unsigned char*)(int)version, version_0d);
-l10:
   _top_vs = _old_top_vs;
-  return (void*)i1;
+  return (void*)i3;
 }
 
 void External__ClearLibList(External__Lib leave) {
   register int i0;
-  i0 = (int)leave + 16;
   External__libList = (void*)(int)leave;
+  i0 = (int)leave + 16;
   *(void**)i0 = (void*)0;
   i0 = (int)leave + 32;
   *(void**)i0 = (void*)0;
@@ -413,17 +395,18 @@ Parameter__String External__ReadString(BinaryRider__Reader r) {
 }
 
 void External__ReadOptionNames_ReadNameList(External__NameList *list, BinaryRider__Reader *External__ReadOptionNames_r) {
-  register int i0, i1, i2;
+  register int i0, i1;
+  i0 = (int)*External__ReadOptionNames_r;
+  i0 = (int)External__ReadString((BinaryRider__Reader)i0);
+  i1 = strcmp((const char*) i0, (const char*) (int)_c0) == 0;
+  if (i1) goto l1;
+l0:
+  i1 = (int)*list;
+  External__AddName((External__NameList *)(int)(int)list, (Parameter__String)i0);
   i1 = (int)*External__ReadOptionNames_r;
   i0 = (int)External__ReadString((BinaryRider__Reader)i1);
-  i2 = strcmp((const char*) i0, (const char*) (int)_c0) == 0;
-  if (i2) goto l1;
-l0:
-  i2 = (int)*list;
-  External__AddName((External__NameList *)(int)(int)list, (Parameter__String)i0);
-  i0 = (int)External__ReadString((BinaryRider__Reader)i1);
-  i2 = strcmp((const char*) i0, (const char*) (int)_c0) != 0;
-  if (i2) goto l0;
+  i1 = strcmp((const char*) i0, (const char*) (int)_c0) != 0;
+  if (i1) goto l0;
 l1:
   ;
 }
@@ -437,16 +420,17 @@ void External__ReadOptionNames(BinaryRider__Reader r, External__NameList *prefix
 }
 
 void External__ReadRefList_ReadDependence(External__Lib lib, BinaryRider__Reader *External__ReadRefList_r) {
-  register int i0, i1, i2;
-  i1 = (int)*External__ReadRefList_r;
-  i0 = (int)External__ReadString((BinaryRider__Reader)i1);
-  i2 = strcmp((const char*) i0, (const char*) (int)_c0) == 0;
-  if (i2) goto l1;
+  register int i0, i1;
+  i0 = (int)*External__ReadRefList_r;
+  i0 = (int)External__ReadString((BinaryRider__Reader)i0);
+  i1 = strcmp((const char*) i0, (const char*) (int)_c0) == 0;
+  if (i1) goto l1;
 l0:
   External__AppendDep((External__Lib)(int)lib, (Parameter__String)i0);
-  i0 = (int)External__ReadString((BinaryRider__Reader)i1);
-  i2 = strcmp((const char*) i0, (const char*) (int)_c0) != 0;
-  if (i2) goto l0;
+  i0 = (int)*External__ReadRefList_r;
+  i0 = (int)External__ReadString((BinaryRider__Reader)i0);
+  i1 = strcmp((const char*) i0, (const char*) (int)_c0) != 0;
+  if (i1) goto l0;
 l1:
   ;
 }
@@ -538,19 +522,20 @@ void External__WriteString(BinaryRider__Writer w, unsigned char* str, int str_0d
 void External__WriteOptionNames_WriteNameList(External__NameList list, BinaryRider__Writer *External__WriteOptionNames_w) {
   register int i0, i1, i2, i3;
   i0 = (int)list == 0;
-  i2 = (int)*External__WriteOptionNames_w;
   if (i0) goto l1;
-  i1 = (int)list;
+  i2 = (int)list;
 l0:
-  i3 = i1 + 4;
-  i3 = (int)*(void**)i3;
-  i0 = *(int*)(i3-8);
-  External__WriteString((BinaryRider__Writer)i2, (unsigned char*)i3, i0);
-  i1 = (int)*(void**)i1;
-  i3 = i1 != 0;
-  if (i3) goto l0;
+  i0 = i2 + 4;
+  i0 = (int)*(void**)i0;
+  i3 = *(int*)(i0-8);
+  i1 = (int)*External__WriteOptionNames_w;
+  External__WriteString((BinaryRider__Writer)i1, (unsigned char*)i0, i3);
+  i2 = (int)*(void**)i2;
+  i0 = i2 != 0;
+  if (i0) goto l0;
 l1:
-  External__WriteString((BinaryRider__Writer)i2, (unsigned char*)(int)External__emptyString, 2);
+  i0 = (int)*External__WriteOptionNames_w;
+  External__WriteString((BinaryRider__Writer)i0, (unsigned char*)(int)External__emptyString, 2);
 }
 
 void External__WriteOptionNames(BinaryRider__Writer w, External__NameList prefix, External__NameList suffix) {
@@ -561,21 +546,22 @@ void External__WriteOptionNames(BinaryRider__Writer w, External__NameList prefix
 void External__WriteRefList_WriteDependence(External__Dependence depList, BinaryRider__Writer *External__WriteRefList_w) {
   register int i0, i1, i2, i3;
   i0 = (int)depList == 0;
-  i2 = (int)*External__WriteRefList_w;
   if (i0) goto l1;
-  i1 = (int)depList;
+  i2 = (int)depList;
 l0:
-  i3 = i1 + 4;
-  i3 = (int)*(void**)i3;
-  i3 += 20;
-  i3 = (int)*(void**)i3;
-  i0 = *(int*)(i3-8);
-  External__WriteString((BinaryRider__Writer)i2, (unsigned char*)i3, i0);
-  i1 = (int)*(void**)i1;
-  i3 = i1 != 0;
-  if (i3) goto l0;
+  i0 = i2 + 4;
+  i0 = (int)*(void**)i0;
+  i0 += 20;
+  i0 = (int)*(void**)i0;
+  i3 = *(int*)(i0-8);
+  i1 = (int)*External__WriteRefList_w;
+  External__WriteString((BinaryRider__Writer)i1, (unsigned char*)i0, i3);
+  i2 = (int)*(void**)i2;
+  i0 = i2 != 0;
+  if (i0) goto l0;
 l1:
-  External__WriteString((BinaryRider__Writer)i2, (unsigned char*)(int)External__emptyString, 2);
+  i0 = (int)*External__WriteRefList_w;
+  External__WriteString((BinaryRider__Writer)i0, (unsigned char*)(int)External__emptyString, 2);
 }
 
 void External__WriteRefList(BinaryRider__Writer w, External__Ref list) {
@@ -834,7 +820,7 @@ l3:
 }
 
 void External__ReadLibFile_ReadModList_AddModule(Parameter__String *External__ReadLibFile_ReadModList_name, int *External__ReadLibFile_ReadModList_magicId, External__Lib *External__ReadLibFile_ReadModList_lib) {
-  register int i0, i1, i2, i3, i4, i5;
+  register int i0, i1, i2;
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(12)+8);
@@ -843,17 +829,19 @@ void External__ReadLibFile_ReadModList_AddModule(Parameter__String *External__Re
     ((_Type*)_var)[-1] = &External__ModuleIdDesc_td.td;
     i0 = (int)_var;
   }
-  i5 = i0 + 4;
+  i1 = i0 + 4;
+  i2 = (int)*External__ReadLibFile_ReadModList_name;
+  *(void**)i1 = (void*)i2;
+  i1 = i0 + 8;
+  i2 = *External__ReadLibFile_ReadModList_magicId;
+  *(int*)i1 = i2;
   i1 = (int)*External__ReadLibFile_ReadModList_lib;
-  i2 = i1 + 36;
-  i3 = i0 + 8;
-  i4 = (int)*External__ReadLibFile_ReadModList_name;
-  *(void**)i5 = (void*)i4;
-  i4 = *External__ReadLibFile_ReadModList_magicId;
-  *(int*)i3 = i4;
-  i3 = (int)*(void**)i2;
-  *(void**)i2 = (void*)i0;
-  *(void**)i0 = (void*)i3;
+  i1 += 36;
+  i1 = (int)*(void**)i1;
+  *(void**)i0 = (void*)i1;
+  i2 = (int)*External__ReadLibFile_ReadModList_lib;
+  i1 = i2 + 36;
+  *(void**)i1 = (void*)i0;
 }
 
 void External__ReadLibFile_ReadModList(BinaryRider__Reader r, External__Lib lib) {
@@ -1016,39 +1004,39 @@ l2:
 }
 
 External__Ref External__SortMarkedLibraries(void) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10;
+  register int i0, i1, i2, i3, i4, i5, i6;
   i1 = (int)External__libList;
-  i7 = i1 != 0;
-  if (!(i7)) goto l1;
-  i2 = i1;
+  i0 = i1 == 0;
+  if (i0) goto l1;
 l0:
-  i0 = i2 + 50;
+  i0 = i1 + 50;
   *(short int*)i0 = 0;
-  i0 = i2 + 16;
-  i2 = (int)*(void**)i0;
-  i0 = i2 != 0;
+  i0 = i1 + 16;
+  i1 = (int)*(void**)i0;
+  i0 = i1 != 0;
   if (i0) goto l0;
 l1:
-  if (!(i7)) goto l5;
-  i4 = i1;
+  i4 = (int)External__libList;
+  i0 = i4 == 0;
+  if (i0) goto l5;
 l2:
   i0 = i4 + 48;
   i0 = *(signed char*)i0;
   i0 = i0 == 0;
   if (i0) goto l4;
   i3 = i4 + 32;
-  i2 = (int)*(void**)i3;
-  i3 = i2 == 0;
+  i1 = (int)*(void**)i3;
+  i3 = i1 == 0;
   if (i3) goto l4;
 l3:
-  i0 = i2 + 4;
+  i0 = i1 + 4;
   i0 = (int)*(void**)i0;
   i3 = i0 + 50;
-  i5 = *(short int*)i3;
-  i2 = (int)*(void**)i2;
-  i5++;
-  *(short int*)i3 = i5;
-  i0 = i2 != 0;
+  i2 = *(short int*)i3;
+  i1 = (int)*(void**)i1;
+  i2++;
+  *(short int*)i3 = i2;
+  i0 = i1 != 0;
   if (i0) goto l3;
 l4:
   i0 = i4 + 16;
@@ -1056,66 +1044,70 @@ l4:
   i0 = i4 != 0;
   if (i0) goto l2;
 l5:
-  i8 = i1 + 48;
-  i9 = i1 + 50;
   i0 = 0;
 l6:
-  if (!(i7)) goto l7;
-  i6 = *(signed char*)i8;
-  i6 = i6 == 0;
-  if (i6) goto l8;
-  i6 = *(short int*)i9;
-  i6 = i6 != 0;
-  if (i6) goto l8;
+  i5 = (int)External__libList;
+  i6 = i5 == 0;
+  if (i6) goto l7;
+  i2 = i5 + 48;
+  i2 = *(signed char*)i2;
+  i2 = i2 == 0;
+  if (i2) goto l8;
+  i2 = i5 + 50;
+  i2 = *(short int*)i2;
+  i2 = i2 != 0;
+  if (i2) goto l8;
 l7:
-  i3 = i1;
+  i2 = i5;
   goto l10;
 l8:
-  i3 = i1;
+  i2 = i5;
 l9:
-  i3 += 16;
-  i3 = (int)*(void**)i3;
-  i6 = i3 == 0;
+  i2 += 16;
+  i2 = (int)*(void**)i2;
+  i6 = i2 == 0;
   if (i6) goto l10;
-  i6 = i3 + 48;
+  i6 = i2 + 48;
   i6 = *(signed char*)i6;
   i6 = i6 == 0;
   if (i6) goto l9;
-  i6 = i3 + 50;
+  i6 = i2 + 50;
   i6 = *(short int*)i6;
   i6 = i6 != 0;
   if (i6) goto l9;
 l10:
-  i4 = i3 == 0;
-  if (i4) goto l13;
-  i2 = i3 + 4;
-  *(void**)i2 = (void*)i0;
-  i2 = i3 + 48;
-  *(signed char*)i2 = 0;
-  i2 = i3 + 32;
-  i5 = (int)*(void**)i2;
-  i2 = i5 == 0;
-  if (i2) goto l12;
+  i3 = i2 == 0;
+  if (i3) goto l13;
+  i4 = i2 + 4;
+  *(void**)i4 = (void*)i0;
+  i4 = i2 + 48;
+  *(signed char*)i4 = 0;
+  i4 = i2 + 32;
+  i5 = (int)*(void**)i4;
+  i4 = i5 == 0;
+  if (i4) goto l12;
 l11:
-  i2 = i5 + 4;
-  i2 = (int)*(void**)i2;
-  i10 = i2 + 50;
-  i6 = *(short int*)i10;
+  i4 = i5 + 4;
+  i4 = (int)*(void**)i4;
+  i6 = i4 + 50;
+  i1 = *(short int*)i6;
   i5 = (int)*(void**)i5;
-  i6--;
-  *(short int*)i10 = i6;
-  i2 = i5 != 0;
-  if (i2) goto l11;
+  i1--;
+  *(short int*)i6 = i1;
+  i4 = i5 != 0;
+  if (i4) goto l11;
 l12:
-  i0 = i3;
+  i0 = i2;
 l13:
-  if (!(i4)) goto l6;
-  if (!(i7)) goto l15;
-  i3 = i1 + 48;
+  if (!(i3)) goto l6;
+  i2 = (int)External__libList;
+  i1 = i2 == 0;
+  if (i1) goto l15;
+  i3 = i2 + 48;
   i3 = *(signed char*)i3;
-  i2 = i3 != 0;
-  if (i2) goto l15;
-  i4 = i1;
+  i1 = i3 != 0;
+  if (i1) goto l15;
+  i4 = i2;
 l14:
   i4 += 16;
   i4 = (int)*(void**)i4;
@@ -1127,7 +1119,7 @@ l14:
   if (i3) goto l14;
   goto l16;
 l15:
-  i4 = i1;
+  i4 = i2;
 l16:
   i1 = i4 != 0;
   if (!(i1)) goto l17;
@@ -1139,15 +1131,15 @@ l17:
   goto l20;
 l18:
   i4 = i0;
-  i3 = 0;
+  i2 = 0;
 l19:
   i1 = i4 + 4;
-  i2 = (int)*(void**)i1;
-  *(void**)i1 = (void*)i3;
-  i1 = i2 == 0;
+  i3 = (int)*(void**)i1;
+  *(void**)i1 = (void*)i2;
+  i1 = i3 == 0;
   if (i1) goto l20;
-  i3 = i4;
-  i4 = i2;
+  i2 = i4;
+  i4 = i3;
   goto l19;
 l20:
   return (void*)i4;
@@ -1165,6 +1157,6 @@ void External_init(void) {
   *(unsigned char*)i0 = 82;
   i0 = (int)External__libFileId + 4;
   *(unsigned char*)i1 = 108;
-  (void)memcpy((void*) (int)External__emptyString, (const void*) (int)_c0, 1);
   *(unsigned char*)i0 = 0;
+  (void)memcpy((void*) (int)External__emptyString, (const void*) (int)_c0, 1);
 }

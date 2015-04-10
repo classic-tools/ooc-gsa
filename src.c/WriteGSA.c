@@ -295,195 +295,151 @@ l12:
 }
 
 void WriteGSA__Class(short int ccode, unsigned char* str, int str_0d) {
-  register int i0;
   unsigned char c[16];
-  if (!(ccode<=-1 || ccode==1 || ccode>=37)) goto l0;
-  i0 = 1;
-  goto l36;
-l0:
-  if (!(ccode==0)) goto l1;
+  if (!(ccode==0)) goto l0;
   (void)memcpy((void*) (int)c, (const void*) (int)_c32, 8);
-  i0 = 0;
-  goto l36;
-l1:
-  if (!(ccode==2)) goto l2;
+  goto l35;
+l0:
+  if (!(ccode==2)) goto l1;
   (void)memcpy((void*) (int)c, (const void*) (int)_c33, 7);
-  i0 = 0;
-  goto l36;
-l2:
-  if (!(ccode==3)) goto l3;
+  goto l35;
+l1:
+  if (!(ccode==3)) goto l2;
   (void)memcpy((void*) (int)c, (const void*) (int)_c34, 7);
-  i0 = 0;
-  goto l36;
-l3:
-  if (!(ccode==4)) goto l4;
+  goto l35;
+l2:
+  if (!(ccode==4)) goto l3;
   (void)memcpy((void*) (int)c, (const void*) (int)_c35, 6);
-  i0 = 0;
-  goto l36;
-l4:
-  if (!(ccode==5)) goto l5;
+  goto l35;
+l3:
+  if (!(ccode==5)) goto l4;
   (void)memcpy((void*) (int)c, (const void*) (int)_c36, 6);
-  i0 = 0;
-  goto l36;
-l5:
-  if (!(ccode==6)) goto l6;
+  goto l35;
+l4:
+  if (!(ccode==6)) goto l5;
   (void)memcpy((void*) (int)c, (const void*) (int)_c37, 5);
-  i0 = 0;
-  goto l36;
-l6:
-  if (!(ccode==7)) goto l7;
+  goto l35;
+l5:
+  if (!(ccode==7)) goto l6;
   (void)memcpy((void*) (int)c, (const void*) (int)_c38, 5);
-  i0 = 0;
-  goto l36;
-l7:
-  if (!(ccode==8)) goto l8;
+  goto l35;
+l6:
+  if (!(ccode==8)) goto l7;
   (void)memcpy((void*) (int)c, (const void*) (int)_c39, 4);
-  i0 = 0;
-  goto l36;
-l8:
-  if (!(ccode==9)) goto l9;
+  goto l35;
+l7:
+  if (!(ccode==9)) goto l8;
   (void)memcpy((void*) (int)c, (const void*) (int)_c40, 4);
-  i0 = 0;
-  goto l36;
-l9:
-  if (!(ccode==10)) goto l10;
+  goto l35;
+l8:
+  if (!(ccode==10)) goto l9;
   (void)memcpy((void*) (int)c, (const void*) (int)_c41, 5);
-  i0 = 0;
-  goto l36;
-l10:
-  if (!(ccode==11)) goto l11;
+  goto l35;
+l9:
+  if (!(ccode==11)) goto l10;
   (void)memcpy((void*) (int)c, (const void*) (int)_c42, 5);
-  i0 = 0;
-  goto l36;
-l11:
-  if (!(ccode==12)) goto l12;
+  goto l35;
+l10:
+  if (!(ccode==12)) goto l11;
   (void)memcpy((void*) (int)c, (const void*) (int)_c43, 5);
-  i0 = 0;
-  goto l36;
-l12:
-  if (!(ccode==13)) goto l13;
+  goto l35;
+l11:
+  if (!(ccode==13)) goto l12;
   (void)memcpy((void*) (int)c, (const void*) (int)_c44, 4);
-  i0 = 0;
-  goto l36;
-l13:
-  if (!(ccode==14)) goto l14;
+  goto l35;
+l12:
+  if (!(ccode==14)) goto l13;
   (void)memcpy((void*) (int)c, (const void*) (int)_c45, 4);
-  i0 = 0;
-  goto l36;
-l14:
-  if (!(ccode==21)) goto l15;
+  goto l35;
+l13:
+  if (!(ccode==21)) goto l14;
   (void)memcpy((void*) (int)c, (const void*) (int)_c46, 6);
-  i0 = 0;
-  goto l36;
-l15:
-  if (!(ccode==22)) goto l16;
+  goto l35;
+l14:
+  if (!(ccode==22)) goto l15;
   (void)memcpy((void*) (int)c, (const void*) (int)_c47, 8);
-  i0 = 0;
-  goto l36;
-l16:
-  if (!(ccode==23)) goto l17;
+  goto l35;
+l15:
+  if (!(ccode==23)) goto l16;
   (void)memcpy((void*) (int)c, (const void*) (int)_c48, 6);
-  i0 = 0;
-  goto l36;
-l17:
-  if (!(ccode==24)) goto l18;
+  goto l35;
+l16:
+  if (!(ccode==24)) goto l17;
   (void)memcpy((void*) (int)c, (const void*) (int)_c49, 5);
-  i0 = 0;
-  goto l36;
-l18:
-  if (!(ccode==25)) goto l19;
+  goto l35;
+l17:
+  if (!(ccode==25)) goto l18;
   (void)memcpy((void*) (int)c, (const void*) (int)_c50, 6);
-  i0 = 0;
-  goto l36;
-l19:
-  if (!(ccode==26)) goto l20;
+  goto l35;
+l18:
+  if (!(ccode==26)) goto l19;
   (void)memcpy((void*) (int)c, (const void*) (int)_c51, 7);
-  i0 = 0;
-  goto l36;
-l20:
-  if (!(ccode==27)) goto l21;
+  goto l35;
+l19:
+  if (!(ccode==27)) goto l20;
   (void)memcpy((void*) (int)c, (const void*) (int)_c52, 9);
-  i0 = 0;
-  goto l36;
-l21:
-  if (!(ccode==28)) goto l22;
+  goto l35;
+l20:
+  if (!(ccode==28)) goto l21;
   (void)memcpy((void*) (int)c, (const void*) (int)_c53, 9);
-  i0 = 0;
-  goto l36;
-l22:
-  if (!(ccode==29)) goto l23;
+  goto l35;
+l21:
+  if (!(ccode==29)) goto l22;
   (void)memcpy((void*) (int)c, (const void*) (int)_c54, 8);
-  i0 = 0;
-  goto l36;
-l23:
-  if (!(ccode==30)) goto l24;
+  goto l35;
+l22:
+  if (!(ccode==30)) goto l23;
   (void)memcpy((void*) (int)c, (const void*) (int)_c55, 4);
-  i0 = 0;
-  goto l36;
-l24:
-  if (!(ccode==15)) goto l25;
+  goto l35;
+l23:
+  if (!(ccode==15)) goto l24;
   (void)memcpy((void*) (int)c, (const void*) (int)_c56, 4);
-  i0 = 0;
-  goto l36;
-l25:
-  if (!(ccode==16)) goto l26;
+  goto l35;
+l24:
+  if (!(ccode==16)) goto l25;
   (void)memcpy((void*) (int)c, (const void*) (int)_c57, 4);
-  i0 = 0;
-  goto l36;
-l26:
-  if (!(ccode==17)) goto l27;
+  goto l35;
+l25:
+  if (!(ccode==17)) goto l26;
   (void)memcpy((void*) (int)c, (const void*) (int)_c58, 4);
-  i0 = 0;
-  goto l36;
-l27:
-  if (!(ccode==18)) goto l28;
+  goto l35;
+l26:
+  if (!(ccode==18)) goto l27;
   (void)memcpy((void*) (int)c, (const void*) (int)_c59, 4);
-  i0 = 0;
-  goto l36;
-l28:
-  if (!(ccode==19)) goto l29;
+  goto l35;
+l27:
+  if (!(ccode==19)) goto l28;
   (void)memcpy((void*) (int)c, (const void*) (int)_c60, 4);
-  i0 = 0;
-  goto l36;
-l29:
-  if (!(ccode==20)) goto l30;
+  goto l35;
+l28:
+  if (!(ccode==20)) goto l29;
   (void)memcpy((void*) (int)c, (const void*) (int)_c61, 4);
-  i0 = 0;
-  goto l36;
-l30:
-  if (!(ccode==31)) goto l31;
+  goto l35;
+l29:
+  if (!(ccode==31)) goto l30;
   (void)memcpy((void*) (int)c, (const void*) (int)_c62, 4);
-  i0 = 0;
-  goto l36;
-l31:
-  if (!(ccode==32)) goto l32;
+  goto l35;
+l30:
+  if (!(ccode==32)) goto l31;
   (void)memcpy((void*) (int)c, (const void*) (int)_c63, 4);
-  i0 = 0;
-  goto l36;
-l32:
-  if (!(ccode==33)) goto l33;
+  goto l35;
+l31:
+  if (!(ccode==33)) goto l32;
   (void)memcpy((void*) (int)c, (const void*) (int)_c64, 4);
-  i0 = 0;
-  goto l36;
-l33:
-  if (!(ccode==34)) goto l34;
+  goto l35;
+l32:
+  if (!(ccode==34)) goto l33;
   (void)memcpy((void*) (int)c, (const void*) (int)_c65, 4);
-  i0 = 0;
-  goto l36;
-l34:
-  if (!(ccode==35)) goto l35;
+  goto l35;
+l33:
+  if (!(ccode==35)) goto l34;
   (void)memcpy((void*) (int)c, (const void*) (int)_c66, 4);
-  i0 = 0;
-  goto l36;
-l35:
-  if (!(ccode==36)) goto l36;
+  goto l35;
+l34:
+  if (!(ccode==36)) goto l35;
   (void)memcpy((void*) (int)c, (const void*) (int)_c67, 4);
-  i0 = 0;
-l36:
-  if (i0) goto l37;
+l35:
   _string_copy((int)str, (int)c, str_0d);
-l37:
-  ;
 }
 
 void WriteGSA__Opcode_Operator(short int opcode, unsigned char* str, int str_0d) {
@@ -992,24 +948,25 @@ l1:
 
 void WriteGSA__SetMarkers_MarkInstr(Data__Instruction instr, int *WriteGSA__SetMarkers_counter) {
   register int i0, i1;
-  i1 = *WriteGSA__SetMarkers_counter;
   i0 = (int)instr + 8;
+  i1 = *WriteGSA__SetMarkers_counter;
   *(int*)i0 = i1;
-  i0 = i1 + 1;
+  i0 = *WriteGSA__SetMarkers_counter;
+  i0++;
   *WriteGSA__SetMarkers_counter = i0;
   i0 = *(int*)((int)instr-4);
   i0 = _type_test(i0, &Data__RegionDesc_td.td, 5);
   if (!(i0)) goto l1;
-  i1 = (int)instr + 56;
-  i1 = (int)*(void**)i1;
-  i0 = i1 == 0;
-  if (i0) goto l1;
+  i0 = (int)instr + 56;
+  i0 = (int)*(void**)i0;
+  i1 = i0 == 0;
+  if (i1) goto l1;
 l0:
-  i0 = i1 + 36;
-  WriteGSA__SetMarkers_MarkInstr((Data__Instruction)i1, &*WriteGSA__SetMarkers_counter);
-  i1 = (int)*(void**)i0;
-  i0 = i1 != 0;
-  if (i0) goto l0;
+  i1 = i0 + 36;
+  WriteGSA__SetMarkers_MarkInstr((Data__Instruction)i0, &*WriteGSA__SetMarkers_counter);
+  i0 = (int)*(void**)i1;
+  i1 = i0 != 0;
+  if (i1) goto l0;
 l1:
   ;
 }
@@ -1022,24 +979,25 @@ void WriteGSA__SetMarkers(Data__Region greg) {
 
 void WriteGSA__SetMarkersPos_MarkInstr(Data__Instruction instr, int *WriteGSA__SetMarkersPos_counter) {
   register int i0, i1;
-  i1 = *WriteGSA__SetMarkersPos_counter;
   i0 = (int)instr + 52;
+  i1 = *WriteGSA__SetMarkersPos_counter;
   *(int*)i0 = i1;
-  i0 = i1 + 1;
+  i0 = *WriteGSA__SetMarkersPos_counter;
+  i0++;
   *WriteGSA__SetMarkersPos_counter = i0;
   i0 = *(int*)((int)instr-4);
   i0 = _type_test(i0, &Data__RegionDesc_td.td, 5);
   if (!(i0)) goto l1;
-  i1 = (int)instr + 56;
-  i1 = (int)*(void**)i1;
-  i0 = i1 == 0;
-  if (i0) goto l1;
+  i0 = (int)instr + 56;
+  i0 = (int)*(void**)i0;
+  i1 = i0 == 0;
+  if (i1) goto l1;
 l0:
-  i0 = i1 + 36;
-  WriteGSA__SetMarkersPos_MarkInstr((Data__Instruction)i1, &*WriteGSA__SetMarkersPos_counter);
-  i1 = (int)*(void**)i0;
-  i0 = i1 != 0;
-  if (i0) goto l0;
+  i1 = i0 + 36;
+  WriteGSA__SetMarkersPos_MarkInstr((Data__Instruction)i0, &*WriteGSA__SetMarkersPos_counter);
+  i0 = (int)*(void**)i1;
+  i1 = i0 != 0;
+  if (i1) goto l0;
 l1:
   ;
 }
@@ -1105,59 +1063,59 @@ l3:
 void WriteGSA_init(void) {
   register int i0, i1, i2;
   _mid = _register_module(&WriteGSA_md.md, NULL);
-  i1 = (int)ParamOptions__CreateBoolean((const unsigned char*)(int)_c137, 14, (unsigned char)0);
+  i0 = (int)ParamOptions__CreateBoolean((const unsigned char*)(int)_c137, 14, (unsigned char)0);
+  WriteGSA__writeInstrPos = (void*)i0;
   i0 = (int)ParamOptions__options;
-  WriteGSA__writeInstrPos = (void*)i1;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[2];
   ((_TBP_Parameter__SectionDesc_CmdLineOption)i1)((Parameter__Section)i0, (const unsigned char*)(int)_c138, 16, (const unsigned char*)(int)_c139, 20);
   i2 = (int)ParamOptions__options;
-  i0 = (int)WriteGSA__writeInstrPos;
-  i1 = *(int*)(i2-4);
-  i1 = (int)((_Type)i1)->tbprocs[4];
-  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i1)((ParamOptions__OptionsSection)i2, (ParamOptions__Option)i0);
+  i0 = *(int*)(i2-4);
+  i1 = (int)WriteGSA__writeInstrPos;
+  i0 = (int)((_Type)i0)->tbprocs[4];
+  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i0)((ParamOptions__OptionsSection)i2, (ParamOptions__Option)i1);
   i0 = (int)ParamOptions__CreateBoolean((const unsigned char*)(int)_c140, 13, (unsigned char)0);
-  i1 = (int)ParamOptions__options;
   WriteGSA__writeOpndPos = (void*)i0;
-  i0 = *(int*)(i1-4);
-  i0 = (int)((_Type)i0)->tbprocs[2];
-  ((_TBP_Parameter__SectionDesc_CmdLineOption)i0)((Parameter__Section)i1, (const unsigned char*)(int)_c141, 15, (const unsigned char*)(int)_c142, 19);
   i0 = (int)ParamOptions__options;
-  i1 = (int)WriteGSA__writeOpndPos;
-  i2 = *(int*)(i0-4);
-  i2 = (int)((_Type)i2)->tbprocs[4];
-  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i2)((ParamOptions__OptionsSection)i0, (ParamOptions__Option)i1);
-  i0 = (int)ParamOptions__CreateBoolean((const unsigned char*)(int)_c143, 13, (unsigned char)0);
-  i1 = (int)ParamOptions__options;
-  WriteGSA__writeGateOld = (void*)i0;
-  i0 = *(int*)(i1-4);
-  i0 = (int)((_Type)i0)->tbprocs[2];
-  ((_TBP_Parameter__SectionDesc_CmdLineOption)i0)((Parameter__Section)i1, (const unsigned char*)(int)_c144, 15, (const unsigned char*)(int)_c145, 19);
-  i0 = (int)ParamOptions__options;
-  i1 = (int)WriteGSA__writeGateOld;
-  i2 = *(int*)(i0-4);
-  i2 = (int)((_Type)i2)->tbprocs[4];
-  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i2)((ParamOptions__OptionsSection)i0, (ParamOptions__Option)i1);
-  i0 = (int)ParamOptions__CreateBoolean((const unsigned char*)(int)_c146, 17, (unsigned char)0);
-  i1 = (int)ParamOptions__options;
-  WriteGSA__writeAssignHints = (void*)i0;
-  i0 = *(int*)(i1-4);
-  i0 = (int)((_Type)i0)->tbprocs[2];
-  ((_TBP_Parameter__SectionDesc_CmdLineOption)i0)((Parameter__Section)i1, (const unsigned char*)(int)_c147, 13, (const unsigned char*)(int)_c148, 23);
-  i0 = (int)ParamOptions__options;
-  i1 = (int)WriteGSA__writeAssignHints;
-  i2 = *(int*)(i0-4);
-  i2 = (int)((_Type)i2)->tbprocs[4];
-  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i2)((ParamOptions__OptionsSection)i0, (ParamOptions__Option)i1);
-  i1 = (int)ParamOptions__CreateBoolean((const unsigned char*)(int)_c149, 15, (unsigned char)0);
-  i0 = (int)ParamOptions__options;
-  WriteGSA__writeQualNames = (void*)i1;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[2];
-  ((_TBP_Parameter__SectionDesc_CmdLineOption)i1)((Parameter__Section)i0, (const unsigned char*)(int)_c150, 13, (const unsigned char*)(int)_c151, 21);
+  ((_TBP_Parameter__SectionDesc_CmdLineOption)i1)((Parameter__Section)i0, (const unsigned char*)(int)_c141, 15, (const unsigned char*)(int)_c142, 19);
+  i2 = (int)ParamOptions__options;
+  i1 = *(int*)(i2-4);
+  i0 = (int)WriteGSA__writeOpndPos;
+  i1 = (int)((_Type)i1)->tbprocs[4];
+  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i1)((ParamOptions__OptionsSection)i2, (ParamOptions__Option)i0);
+  i0 = (int)ParamOptions__CreateBoolean((const unsigned char*)(int)_c143, 13, (unsigned char)0);
+  WriteGSA__writeGateOld = (void*)i0;
   i0 = (int)ParamOptions__options;
-  i2 = (int)WriteGSA__writeQualNames;
   i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[2];
+  ((_TBP_Parameter__SectionDesc_CmdLineOption)i1)((Parameter__Section)i0, (const unsigned char*)(int)_c144, 15, (const unsigned char*)(int)_c145, 19);
+  i2 = (int)ParamOptions__options;
+  i0 = *(int*)(i2-4);
+  i1 = (int)WriteGSA__writeGateOld;
+  i0 = (int)((_Type)i0)->tbprocs[4];
+  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i0)((ParamOptions__OptionsSection)i2, (ParamOptions__Option)i1);
+  i0 = (int)ParamOptions__CreateBoolean((const unsigned char*)(int)_c146, 17, (unsigned char)0);
+  WriteGSA__writeAssignHints = (void*)i0;
+  i0 = (int)ParamOptions__options;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[2];
+  ((_TBP_Parameter__SectionDesc_CmdLineOption)i1)((Parameter__Section)i0, (const unsigned char*)(int)_c147, 13, (const unsigned char*)(int)_c148, 23);
+  i0 = (int)ParamOptions__options;
+  i1 = *(int*)(i0-4);
+  i2 = (int)WriteGSA__writeAssignHints;
   i1 = (int)((_Type)i1)->tbprocs[4];
   ((_TBP_ParamOptions__OptionsSectionDesc_Add)i1)((ParamOptions__OptionsSection)i0, (ParamOptions__Option)i2);
+  i0 = (int)ParamOptions__CreateBoolean((const unsigned char*)(int)_c149, 15, (unsigned char)0);
+  WriteGSA__writeQualNames = (void*)i0;
+  i1 = (int)ParamOptions__options;
+  i0 = *(int*)(i1-4);
+  i0 = (int)((_Type)i0)->tbprocs[2];
+  ((_TBP_Parameter__SectionDesc_CmdLineOption)i0)((Parameter__Section)i1, (const unsigned char*)(int)_c150, 13, (const unsigned char*)(int)_c151, 21);
+  i0 = (int)ParamOptions__options;
+  i2 = *(int*)(i0-4);
+  i1 = (int)WriteGSA__writeQualNames;
+  i2 = (int)((_Type)i2)->tbprocs[4];
+  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i2)((ParamOptions__OptionsSection)i0, (ParamOptions__Option)i1);
 }

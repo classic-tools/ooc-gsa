@@ -6,56 +6,60 @@
 static _ModId _mid;
 
 void UndefVar__AddToTrue(GuardCond__Condition *c, _Type c__tag) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7;
-  i6 = (int)*(void**)(int)c;
-  i0 = *(int*)(i6-4);
+  register int i0, i1, i2, i3, i4, i5;
+  i4 = (int)*(void**)(int)c;
+  i0 = *(int*)(i4-4);
   i0 = _type_test(i0, &Data__ResultDesc_td.td, 3);
   if (!(i0)) goto l3;
-  i1 = UndefVar__topOfStack;
-  i5 = i6 + 8;
-  i7 = (int)UndefVar__trueList;
-  i4 = *(int*)i5;
-  i4 *= i1;
-  i3 = *(int*)(i7-8);
-  i3 = i3 != i1;
-  *(int*)i5 = i4;
+  i3 = i4 + 8;
+  i2 = UndefVar__topOfStack;
+  i1 = *(int*)i3;
+  i2 = i1 * i2;
+  *(int*)i3 = i2;
+  i5 = UndefVar__topOfStack;
+  i3 = (int)UndefVar__trueList;
+  i3 = *(int*)(i3-8);
+  i3 = i3 != i5;
   if (i3) goto l2;
-  i4 = i1 - 1;
-  i2 = i4 < 0;
-  i3 = i1 + 128;
+  i0 = i5 - 1;
+  i1 = i0 < 0;
+  i5 += 128;
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i3 < 0) _invalid_length(i3, _P(3040));
-    _mem = GC_malloc(_not_zero(i3*8)+8);
+    if(i5 < 0) _invalid_length(i5, _P(3040));
+    _mem = GC_malloc(_not_zero(i5*8)+8);
     if (!_mem) _new_failed(_P(3016));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
-    *(--_dim_ptr) = i3;
-    i6 = (int)_var;
+    *(--_dim_ptr) = i5;
+    i2 = (int)_var;
   }
-  if (i2) goto l1;
-  i2 = 0;
+  if (i1) goto l1;
+  i1 = 0;
 l0:
-  i3 = (int)_ashl(i2, 3, (unsigned int));
-  i3 = i6 + i3;
-  i5 = (int)_ashl(i2, 3, (unsigned int));
-  i0 = i7 + i5;
-  i5 = i2 + 1;
-  (void)memcpy((void*) i3, (const void*) i0, 8);
-  i2 = i5 > i4;
-  if (i2) goto l1;
-  i2 = i5;
-  goto l0;
-l1:
-  UndefVar__trueList = (void*)i6;
-l2:
   i4 = (int)UndefVar__trueList;
   i5 = (int)_ashl(i1, 3, (unsigned int));
-  i6 = i4 + i5;
-  i5 = i1 + 1;
-  (void)memcpy((void*) i6, (const void*) (int)c, 8);
-  UndefVar__topOfStack = i5;
+  i5 = i2 + i5;
+  i3 = (int)_ashl(i1, 3, (unsigned int));
+  i4 += i3;
+  i3 = i1 + 1;
+  (void)memcpy((void*) i5, (const void*) i4, 8);
+  i1 = i3 > i0;
+  if (i1) goto l1;
+  i1 = i3;
+  goto l0;
+l1:
+  UndefVar__trueList = (void*)i2;
+l2:
+  i3 = UndefVar__topOfStack;
+  i2 = (int)UndefVar__trueList;
+  i4 = (int)_ashl(i3, 3, (unsigned int));
+  i4 = i2 + i4;
+  (void)memcpy((void*) i4, (const void*) (int)c, 8);
+  i3 = UndefVar__topOfStack;
+  i3++;
+  UndefVar__topOfStack = i3;
 l3:
   ;
 }
@@ -288,32 +292,32 @@ l13:
 }
 
 void UndefVar__Reachable_PopTrue(short int oldCount) {
-  register int i0, i1, i2, i3, i4, i5;
+  register int i0, i1, i2, i3, i4;
   i0 = UndefVar__topOfStack;
-  i4 = i0 - 1;
-  i0 = oldCount > i4;
+  i3 = i0 - 1;
+  i0 = oldCount > i3;
   if (i0) goto l3;
-  i0 = (int)UndefVar__trueList;
-  i3 = oldCount;
+  i2 = oldCount;
 l0:
-  i5 = (int)_ashl(i3, 3, (unsigned int));
-  i5 = i0 + i5;
-  i2 = (int)*(void**)i5;
-  i5 = *(int*)(i2-4);
-  i5 = _type_test(i5, &Data__ResultDesc_td.td, 3);
-  if (!(i5)) goto l2;
-  i1 = i2 + 8;
-  i5 = *(int*)i1;
-  i5 = i5 < 0;
-  if (i5) goto l1;
-  *(int*)i1 = 1;
+  i4 = (int)UndefVar__trueList;
+  i0 = (int)_ashl(i2, 3, (unsigned int));
+  i4 += i0;
+  i1 = (int)*(void**)i4;
+  i4 = *(int*)(i1-4);
+  i4 = _type_test(i4, &Data__ResultDesc_td.td, 3);
+  if (!(i4)) goto l2;
+  i0 = i1 + 8;
+  i4 = *(int*)i0;
+  i4 = i4 < 0;
+  if (i4) goto l1;
+  *(int*)i0 = 1;
   goto l2;
 l1:
-  *(int*)i1 = -1;
+  *(int*)i0 = -1;
 l2:
-  i3++;
-  i5 = i3 <= i4;
-  if (i5) goto l0;
+  i2++;
+  i4 = i2 <= i3;
+  if (i4) goto l0;
 l3:
   UndefVar__topOfStack = oldCount;
 }
@@ -334,40 +338,41 @@ unsigned char UndefVar__Reachable_Test(short int i, Data__Opnd opnd, Data__Objec
   i1 = (int)*(void**)i1;
   i7 = i1 != i7;
   if (i7) goto l15;
-  i7 = (int)UndefVar__infoList;
-  i6 = *(int*)(i7-8);
+  i6 = (int)UndefVar__infoList;
+  i6 = *(int*)(i6-8);
   i6 = i6 != i;
   if (i6) goto l2;
-  i5 = i - 1;
-  i8 = i5 < 0;
-  i1 = i + 128;
+  i4 = i - 1;
+  i1 = i4 < 0;
+  i2 = i + 128;
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i1 < 0) _invalid_length(i1, _P(8155));
-    _mem = GC_malloc(_not_zero(i1*4)+8);
+    if(i2 < 0) _invalid_length(i2, _P(8155));
+    _mem = GC_malloc(_not_zero(i2*4)+8);
     if (!_mem) _new_failed(_P(8140));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
-    *(--_dim_ptr) = i1;
-    i4 = (int)_var;
+    *(--_dim_ptr) = i2;
+    i5 = (int)_var;
   }
-  if (i8) goto l1;
-  i8 = 0;
-l0:
-  i1 = (int)_ashl(i8, 2, (unsigned int));
-  i1 = i7 + i1;
-  i6 = (int)_ashl(i8, 2, (unsigned int));
-  i6 = i4 + i6;
-  i2 = i8 + 1;
-  i3 = (int)*(void**)i1;
-  i1 = i2 > i5;
-  *(void**)i6 = (void*)i3;
   if (i1) goto l1;
-  i8 = i2;
+  i6 = 0;
+l0:
+  i1 = (int)UndefVar__infoList;
+  i2 = (int)_ashl(i6, 2, (unsigned int));
+  i7 = i1 + i2;
+  i1 = (int)_ashl(i6, 2, (unsigned int));
+  i1 = i5 + i1;
+  i2 = i6 + 1;
+  i3 = (int)*(void**)i7;
+  i7 = i2 > i4;
+  *(void**)i1 = (void*)i3;
+  if (i7) goto l1;
+  i6 = i2;
   goto l0;
 l1:
-  UndefVar__infoList = (void*)i4;
+  UndefVar__infoList = (void*)i5;
 l2:
   i0 += 28;
   i7 = (int)*(void**)i0;
@@ -472,46 +477,53 @@ unsigned char UndefVar__Reachable(Data__Object var, Data__Opnd opnd) {
 }
 
 void UndefVar__InspectUses_PushUse(Data__Opnd use) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7;
-  i6 = (int)UndefVar__useStack;
-  i4 = UndefVar__useStackSize;
-  i5 = *(int*)(i6-8);
-  i0 = i5 != i4;
+  register int i0, i1, i2, i3, i4, i5, i6;
+  i0 = (int)UndefVar__useStack;
+  i6 = *(int*)(i0-8);
+  i0 = UndefVar__useStackSize;
+  i0 = i6 != i0;
   if (i0) goto l1;
-  i2 = i5 - 1;
-  i3 = i2 < 0;
-  i5 = (int)_ashl(i5, 1, (unsigned int));
+  i2 = i6 - 1;
+  i5 = i2 < 0;
+  i6 = (int)_ashl(i6, 1, (unsigned int));
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i5 < 0) _invalid_length(i5, _P(10542));
-    _mem = GC_malloc(_not_zero(i5*4)+8);
+    if(i6 < 0) _invalid_length(i6, _P(10542));
+    _mem = GC_malloc(_not_zero(i6*4)+8);
     if (!_mem) _new_failed(_P(10517));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
-    *(--_dim_ptr) = i5;
+    *(--_dim_ptr) = i6;
     i1 = (int)_var;
   }
-  if (i3) goto l1;
-  i3 = 0;
+  if (i5) goto l1;
+  i5 = 0;
 l0:
-  i5 = (int)_ashl(i3, 2, (unsigned int));
-  i5 = i6 + i5;
-  i0 = (int)_ashl(i3, 2, (unsigned int));
-  i0 = i1 + i0;
-  i7 = (int)*(void**)i5;
-  *(void**)i0 = (void*)i7;
-  i7 = i3 + 1;
-  i0 = i7 > i2;
-  *(void**)i5 = (void*)0;
+  i0 = (int)UndefVar__useStack;
+  i6 = (int)_ashl(i5, 2, (unsigned int));
+  i0 += i6;
+  i6 = (int)_ashl(i5, 2, (unsigned int));
+  i6 = i1 + i6;
+  i0 = (int)*(void**)i0;
+  *(void**)i6 = (void*)i0;
+  i6 = (int)UndefVar__useStack;
+  i0 = (int)_ashl(i5, 2, (unsigned int));
+  i4 = i6 + i0;
+  i3 = i5 + 1;
+  i0 = i3 > i2;
+  *(void**)i4 = (void*)0;
   if (i0) goto l1;
-  i3 = i7;
+  i5 = i3;
   goto l0;
 l1:
-  i0 = (int)_ashl(i4, 2, (unsigned int));
-  i0 = i6 + i0;
-  *(void**)i0 = (void*)(int)use;
-  i0 = i4 + 1;
+  i0 = (int)UndefVar__useStack;
+  i1 = UndefVar__useStackSize;
+  i2 = (int)_ashl(i1, 2, (unsigned int));
+  i2 = i0 + i2;
+  *(void**)i2 = (void*)(int)use;
+  i0 = UndefVar__useStackSize;
+  i0++;
   UndefVar__useStackSize = i0;
 }
 

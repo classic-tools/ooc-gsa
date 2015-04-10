@@ -117,8 +117,7 @@ l13:
 }
 
 signed char AliasAnalysis__Aliasing_HandleGate_CheckStoreGate(Data__Instruction baseInstr, signed char baseMode, Data__Instruction gate, signed char gateMode, Data__Region outerRegion, Data__Instruction *AliasAnalysis__Aliasing_HandleGate_ref) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10;
-  Data__Opnd opnd0;
+  register int i0, i1, i2, i3, i4, i5, i6;
   i0 = (int)gate + 28;
   i0 = (int)*(void**)i0;
   i1 = (int)*(void**)i0;
@@ -127,128 +126,104 @@ signed char AliasAnalysis__Aliasing_HandleGate_CheckStoreGate(Data__Instruction 
   i1 = i1 != 82;
   if (i1) goto l0;
   i1 = (int)gate + 44;
-  i10 = *(short int*)i1;
-  i10 = i10 > -1;
-  if (i10) goto l20;
+  i6 = *(short int*)i1;
+  i6 = i6 > -1;
+  if (i6) goto l17;
 l0:
   i0 += 8;
-  i3 = (int)*(void**)i0;
-  i0 = i3 != 0;
+  i2 = (int)*(void**)i0;
+  i0 = i2 != 0;
   if (i0) goto l1;
   i1 = 0;
-  i2 = 0;
-  goto l19;
+  goto l16;
 l1:
 l2:
-  i0 = (int)*(void**)i3;
+  i0 = (int)*(void**)i2;
   i0 += 16;
-  i6 = (int)*(void**)i0;
-  i0 = i6 == 0;
-  if (i0) goto l15;
-  i8 = i6 + 32;
-  i8 = (int)*(void**)i8;
-  i9 = Data__RegionDesc_Dominates((Data__Region)i8, (Data__Region)(int)outerRegion);
-  if (i9) goto l15;
-  i7 = i5;
-  i4 = i6;
+  i4 = (int)*(void**)i0;
+  i0 = i4 == 0;
+  if (i0) goto l12;
+  i5 = i4 + 32;
+  i5 = (int)*(void**)i5;
+  i0 = Data__RegionDesc_Dominates((Data__Region)i5, (Data__Region)(int)outerRegion);
+  if (i0) goto l12;
+  i3 = i4;
 l3:
-  i8 = i4 + 44;
-  i2 = *(short int*)i8;
-  i2 = i2 == 19;
-  if (i2) goto l4;
-  i2 = AliasAnalysis__Aliasing((Data__Instruction)(int)baseInstr, (signed char)baseMode, (Data__Instruction)i4, (signed char)gateMode);
+  i5 = i3 + 44;
+  i1 = *(short int*)i5;
+  i1 = i1 == 19;
+  if (i1) goto l4;
+  i1 = AliasAnalysis__Aliasing((Data__Instruction)(int)baseInstr, (signed char)baseMode, (Data__Instruction)i3, (signed char)gateMode);
   goto l5;
 l4:
-  i2 = AliasAnalysis__Aliasing_HandleGate_CheckStoreGate((Data__Instruction)(int)baseInstr, (signed char)baseMode, (Data__Instruction)i4, (signed char)gateMode, (Data__Region)(int)outerRegion, (Data__Instruction *)&*AliasAnalysis__Aliasing_HandleGate_ref);
+  i1 = AliasAnalysis__Aliasing_HandleGate_CheckStoreGate((Data__Instruction)(int)baseInstr, (signed char)baseMode, (Data__Instruction)i3, (signed char)gateMode, (Data__Region)(int)outerRegion, (Data__Instruction *)&*AliasAnalysis__Aliasing_HandleGate_ref);
 l5:
-  i2 = i2 != -1;
-  if (i2) goto l12;
-  i2 = *(short int*)i8;
-  i8 = i2 == 19;
-  if (i8) goto l10;
-  i8 = i2 <= -1;
-  if (i8) goto l10;
-  if (!(i2<=2 || (i2>=4 && i2<=49) || i2>=53)) goto l6;
-  i1 = 1;
-  i10 = i7;
-  goto l8;
+  i1 = i1 != -1;
+  if (i1) goto l10;
+  i6 = *(short int*)i5;
+  i5 = i6 == 19;
+  if (i5) goto l8;
+  i5 = i6 <= -1;
+  if (i5) goto l8;
+  if (!((i6>=50 && i6<=52))) goto l6;
+  i1 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)i3, (short int)2);
+  goto l7;
 l6:
-  if (!((i2>=50 && i2<=52))) goto l7;
-  i10 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)i4, (short int)2);
-  i1 = 0;
-  goto l8;
+  if (!(i6==3)) goto l7;
+  i1 = (int)SymbolTable__store;
+  i1 = (int)Data__InstructionDesc_GetOperand((Data__Instruction)i3, (Data__Addressable)i1, (short int)-3);
 l7:
-  if (!(i2==3)) goto l8;
-  i10 = (int)SymbolTable__store;
-  i10 = (int)Data__InstructionDesc_GetOperand((Data__Instruction)i4, (Data__Addressable)i10, (short int)-3);
-  i1 = 0;
+  i1 = (int)*(void**)i1;
+  i1 += 16;
+  i1 = (int)*(void**)i1;
+  goto l9;
 l8:
-  if (i1) goto l9;
-  i0 = (int)*(void**)i10;
-  i0 += 16;
-  i0 = (int)*(void**)i0;
-  goto l11;
+  i1 = 0;
 l9:
-  i0 = i4;
+  i3 = i1;
+  i1 = 0;
   goto l11;
 l10:
-  i10 = i7;
-  i1 = 0;
-  i0 = 0;
+  i6 = 0;
+  i1 = 1;
 l11:
-  i4 = i0;
-  i7 = i10;
-  i2 = 0;
+  if (i1) goto l13;
+  i5 = i3 == 0;
+  if (i5) goto l13;
+  i5 = i3 + 32;
+  i5 = (int)*(void**)i5;
+  i5 = Data__RegionDesc_Dominates((Data__Region)i5, (Data__Region)(int)outerRegion);
+  if (!(i5)) goto l3;
   goto l13;
 l12:
+  i3 = i4;
   i1 = 0;
-  i10 = 0;
-  i2 = 1;
 l13:
-  if (i2) goto l14;
-  if (i1) goto l14;
-  i8 = i4 == 0;
-  if (i8) goto l14;
-  i8 = i4 + 32;
-  i8 = (int)*(void**)i8;
-  i8 = Data__RegionDesc_Dominates((Data__Region)i8, (Data__Region)(int)outerRegion);
-  if (!(i8)) goto l3;
-l14:
-  i5 = i7;
-  goto l16;
-l15:
-  i4 = i6;
-  i1 = 0;
-  i2 = 0;
-l16:
-  if (i2) goto l18;
-  if (i1) goto l18;
-  i0 = i4 == 0;
-  if (i0) goto l17;
+  if (i1) goto l15;
+  i0 = i3 == 0;
+  if (i0) goto l14;
   i0 = (int)*AliasAnalysis__Aliasing_HandleGate_ref;
   i0 = i0 != 0;
-  if (i0) goto l17;
-  *AliasAnalysis__Aliasing_HandleGate_ref = (void*)i4;
-l17:
-  i4 = i3 + 8;
-  i0 = (int)*(void**)i4;
-  i3 = i0;
-l18:
-  if (i2) goto l19;
-  if (i1) goto l19;
-  i0 = i3 != 0;
+  if (i0) goto l14;
+  *AliasAnalysis__Aliasing_HandleGate_ref = (void*)i3;
+l14:
+  i3 = i2 + 8;
+  i0 = (int)*(void**)i3;
+  i2 = i0;
+l15:
+  if (i1) goto l16;
+  i0 = i2 != 0;
   if (i0) goto l2;
-l19:
-  if (i2) goto l21;
-  if (i1) goto l21;
-  i10 = -1;
-  goto l21;
-l20:
+l16:
+  if (i1) goto l18;
+  i6 = -1;
+  goto l18;
+l17:
   *(short int*)i1 = -19;
-  i10 = AliasAnalysis__Aliasing_HandleGate_CheckStoreGate((Data__Instruction)(int)baseInstr, (signed char)baseMode, (Data__Instruction)(int)gate, (signed char)gateMode, (Data__Region)(int)outerRegion, (Data__Instruction *)&*AliasAnalysis__Aliasing_HandleGate_ref);
+  i6 = AliasAnalysis__Aliasing_HandleGate_CheckStoreGate((Data__Instruction)(int)baseInstr, (signed char)baseMode, (Data__Instruction)(int)gate, (signed char)gateMode, (Data__Region)(int)outerRegion, (Data__Instruction *)&*AliasAnalysis__Aliasing_HandleGate_ref);
   *(short int*)i1 = 19;
-l21:
-  return (signed char)i10;
+l18:
+  return (signed char)i6;
 }
 
 signed char AliasAnalysis__Aliasing_HandleGate(Data__Gate gate, signed char gateMode, Data__Instruction i, signed char iMode) {
@@ -687,13 +662,54 @@ l7:
   ;
 }
 
+unsigned char AliasAnalysis__Aliasing_BuildDesignator_SetSelector_MemCallSideEffect(Data__Instruction update) {
+  register int i0, i1, i2;
+  i0 = (int)update + 44;
+  i0 = *(short int*)i0;
+  i0 = i0 == 51;
+  if (i0) goto l0;
+  i2 = 0;
+  goto l3;
+l0:
+  i2 = (int)update + 28;
+  i2 = (int)*(void**)i2;
+  i2 += 8;
+  i2 = (int)*(void**)i2;
+  i2 += 8;
+  i2 = (int)*(void**)i2;
+  i2 += 8;
+  i2 = (int)*(void**)i2;
+  i1 = (int)*(void**)i2;
+  i0 = *(int*)(i1-4);
+  i2 = _type_test(i0, &Data__ResultDesc_td.td, 3);
+  if (!(i2)) goto l1;
+  i0 = _type_test(i0, &Data__InstructionDesc_td.td, 4);
+  if (i0) goto l1;
+  i1 += 16;
+  i1 = (int)*(void**)i1;
+  i0 = i1 + 44;
+  i0 = *(short int*)i0;
+  i0 = i0 != 3;
+  if (i0) goto l1;
+  i0 = (int)SymbolTable__mem;
+  i1 = (int)Data__InstructionDesc_GetResult((Data__Instruction)i1, (Data__Addressable)i0, (short int)-3);
+  i1 = i1 != 0;
+  if (i1) goto l2;
+l1:
+  i2 = 0;
+  goto l3;
+l2:
+  i2 = 1;
+l3:
+  return (unsigned char)i2;
+}
+
 void AliasAnalysis__Aliasing_BuildDesignator_SetSelector(Data__Instruction i, AliasAnalysis__Aliasing_Selector *s, _Type s__tag, short int *AliasAnalysis__Aliasing_BuildDesignator_level, Data__Usable *AliasAnalysis__Aliasing_BuildDesignator_rvalue, AliasAnalysis__Aliasing_Selector AliasAnalysis__Aliasing_BuildDesignator_d[16]) {
   register int i0, i1, i2, i3, i4, i5, i6, i7, i8;
   i0 = (int)i + 44;
   i7 = *(short int*)i0;
   i0 = (int)s + 12;
   *(void**)i0 = (void*)(int)i;
-  if (i7<=2 || (i7>=4 && i7<=7) || (i7>=9 && i7<=14) || i7==18 || (i7>=20 && i7<=31) || (i7>=38 && i7<=47) || i7>=54) goto l20;
   if (!(i7==3)) goto l0;
   i0 = (int)s + 4;
   *(signed char*)(int)s = 1;
@@ -770,6 +786,9 @@ l5:
   i0 = (int)*(void**)i1;
   i1 = (int)s + 8;
   *(void**)i1 = (void*)i0;
+  i1 = AliasAnalysis__Aliasing_BuildDesignator_SetSelector_MemCallSideEffect((Data__Instruction)(int)i);
+  if (!(i1)) goto l20;
+  *(signed char*)(int)s = 0;
   goto l20;
 l6:
   if (!(i7==36 || i7==52)) goto l7;
@@ -794,32 +813,32 @@ l7:
 l8:
   *(signed char*)(int)s = 6;
 l9:
-  i6 = (int)i + 28;
-  i5 = (int)*(void**)i6;
-  i5 += 8;
-  i5 = (int)*(void**)i5;
-  i5 += 8;
-  i5 = (int)*(void**)i5;
-  i5 = (int)*(void**)i5;
-  i4 = (int)s + 4;
-  *(void**)i4 = (void*)i5;
-  i5 = (int)i + 24;
-  i5 = (int)*(void**)i5;
-  i4 = (int)s + 8;
-  *(void**)i4 = (void*)i5;
-  i5 = *AliasAnalysis__Aliasing_BuildDesignator_level;
-  i5++;
-   *AliasAnalysis__Aliasing_BuildDesignator_level = i5;
-  i1 = (int)*(void**)i6;
+  i1 = (int)i + 28;
   i6 = (int)*(void**)i1;
+  i6 += 8;
+  i6 = (int)*(void**)i6;
+  i6 += 8;
+  i6 = (int)*(void**)i6;
+  i6 = (int)*(void**)i6;
+  i5 = (int)s + 4;
+  *(void**)i5 = (void*)i6;
+  i6 = (int)i + 24;
+  i6 = (int)*(void**)i6;
+  i5 = (int)s + 8;
+  *(void**)i5 = (void*)i6;
+  i6 = *AliasAnalysis__Aliasing_BuildDesignator_level;
+  i6++;
+   *AliasAnalysis__Aliasing_BuildDesignator_level = i6;
+  i6 = (int)*(void**)i1;
+  i6 = (int)*(void**)i6;
   *AliasAnalysis__Aliasing_BuildDesignator_rvalue = (void*)i6;
   i2 = (int)*AliasAnalysis__Aliasing_BuildDesignator_rvalue;
   i8 = *(int*)(i2-4);
   i6 = _type_test(i8, &Data__ResultDesc_td.td, 3);
   if (!(i6)) goto l10;
   i3 = i2 + 16;
-  i5 = (int)*(void**)i3;
-  i3 = i5 + 44;
+  i0 = (int)*(void**)i3;
+  i3 = i0 + 44;
   i3 = *(short int*)i3;
   i3 = i3 == 1;
   if (i3) goto l15;
@@ -841,6 +860,7 @@ l11:
   i6 = i6 == 3;
   if (i6) goto l13;
 l12:
+  i1 = (int)*(void**)i1;
   i1 += 8;
   i1 = (int)*(void**)i1;
   i1 = (int)*(void**)i1;
@@ -852,7 +872,8 @@ l13:
   goto l20;
 l14:
   i3 = *AliasAnalysis__Aliasing_BuildDesignator_level;
-  i8 = i1 + 8;
+  i8 = (int)*(void**)i1;
+  i8 += 8;
   i4 = (int)*(void**)i8;
   i8 = (int)_ashl(i3, 4, (unsigned int));
   i8 = (int)AliasAnalysis__Aliasing_BuildDesignator_d + i8;
@@ -874,22 +895,22 @@ l14:
   *(void**)i5 = (void*)i4;
   goto l20;
 l15:
-  i4 = *AliasAnalysis__Aliasing_BuildDesignator_level;
-  i0 = (int)_ashl(i4, 4, (unsigned int));
-  i0 = (int)AliasAnalysis__Aliasing_BuildDesignator_d + i0;
+  i5 = *AliasAnalysis__Aliasing_BuildDesignator_level;
+  i4 = (int)_ashl(i5, 4, (unsigned int));
+  i4 = (int)AliasAnalysis__Aliasing_BuildDesignator_d + i4;
   i3 = i2 + 20;
-  i6 = i0 + 12;
+  i6 = i4 + 12;
   i3 = (int)*(void**)i3;
-  *(void**)i6 = (void*)i5;
-  i6 = i0 + 4;
-  i5 = (int)*(void**)i3;
-  *(signed char*)i0 = 5;
-  *(void**)i6 = (void*)i5;
+  *(void**)i6 = (void*)i0;
+  i6 = i4 + 4;
+  i0 = (int)*(void**)i3;
+  *(signed char*)i4 = 5;
+  *(void**)i6 = (void*)i0;
   i6 = (int)*(void**)i6;
-  i5 = i6 + 24;
-  i6 = i0 + 8;
-  i5 = (int)*(void**)i5;
-  *(void**)i6 = (void*)i5;
+  i0 = i6 + 24;
+  i6 = i4 + 8;
+  i0 = (int)*(void**)i0;
+  *(void**)i6 = (void*)i0;
   goto l20;
 l16:
   if (!((i7>=48 && i7<=49))) goto l19;
@@ -964,517 +985,511 @@ l2:
   return (unsigned char)i0;
 }
 
-signed char AliasAnalysis__Aliasing_ComputeAliasing(AliasAnalysis__Aliasing_Selector d0_[16], short int l0, AliasAnalysis__Aliasing_Selector d1_[16], short int l1) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13;
-  i0 = (int)_ashl(l0, 4, (unsigned int));
+signed char AliasAnalysis__Aliasing_ComputeAliasing(AliasAnalysis__Aliasing_Selector d0_[16], short int l0_, AliasAnalysis__Aliasing_Selector d1_[16], short int l1_) {
+  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12;
+  i0 = (int)_ashl(l0_, 4, (unsigned int));
   i0 = (int)d0_ + i0;
   i4 = *(signed char*)i0;
-  if (!(i4<=-1 || i4>=6)) goto l0;
-  i12 = 1;
-  i1 = 0;
-  i3 = 0;
-  goto l31;
-l0:
-  if (!(i4==0)) goto l1;
-  i12 = 0;
+  if (!(i4==0)) goto l0;
   i1 = 0;
   i2 = 0;
   i3 = 1;
-  goto l31;
-l1:
-  if (!(i4==1)) goto l8;
-  i2 = (int)_ashl(l1, 4, (unsigned int));
+  goto l27;
+l0:
+  if (!(i4==1)) goto l7;
+  i2 = (int)_ashl(l1_, 4, (unsigned int));
   i2 = (int)d1_ + i2;
   i1 = *(signed char*)i2;
   i1 = i1 == 4;
-  if (i1) goto l2;
+  if (i1) goto l1;
   i1 = 0;
-  goto l5;
-l2:
+  goto l4;
+l1:
   i1 = i2 + 8;
   i1 = (int)*(void**)i1;
   i1 = SymbolTable__TypeInGroup((Data__Struct)i1, (signed char)47);
-  if (i1) goto l3;
+  if (i1) goto l2;
   i1 = i0 + 12;
   i2 += 4;
   i1 = (int)*(void**)i1;
   i2 = (int)*(void**)i2;
   i2 = AliasAnalysis__Aliasing_GetsVarAddress((Data__Instruction)i1, (Data__Object)i2);
-  if (!(i2)) goto l4;
-l3:
+  if (!(i2)) goto l3;
+l2:
   i1 = 0;
-  goto l5;
-l4:
+  goto l4;
+l3:
   i1 = 1;
-l5:
-  if (i1) goto l6;
+l4:
+  if (i1) goto l5;
   i2 = 0;
-  goto l7;
-l6:
+  goto l6;
+l5:
   i2 = -1;
-l7:
-  i12 = 0;
+l6:
   i1 = 0;
   i3 = 1;
-  goto l31;
-l8:
-  if (!(i4==2)) goto l19;
-  i1 = (int)_ashl(l1, 4, (unsigned int));
+  goto l27;
+l7:
+  if (!(i4==2)) goto l17;
+  i1 = (int)_ashl(l1_, 4, (unsigned int));
   i4 = (int)d1_ + i1;
   i1 = *(signed char*)i4;
   i5 = i1 == 2;
-  if (!(i5)) goto l9;
+  if (!(i5)) goto l8;
   i2 = i0 + 4;
   i3 = i4 + 4;
   i2 = (int)*(void**)i2;
   i3 = (int)*(void**)i3;
   i3 = i2 == i3;
-  if (i3) goto l17;
-l9:
+  if (i3) goto l16;
+l8:
   i1 = i1 == 5;
-  if (i1) goto l15;
+  if (i1) goto l14;
   i1 = i0 + 12;
   i1 = (int)*(void**)i1;
   i1 = AliasAnalysis__Aliasing_ComputeAliasing_ArrayOfByte((Data__Instruction)i1);
-  if (i1) goto l14;
-  if (!(i5)) goto l10;
+  if (i1) goto l13;
+  if (!(i5)) goto l9;
   i5 = i4 + 12;
   i5 = (int)*(void**)i5;
   i5 = AliasAnalysis__Aliasing_ComputeAliasing_ArrayOfByte((Data__Instruction)i5);
-  if (i5) goto l14;
-l10:
+  if (i5) goto l13;
+l9:
   i3 = i0 + 8;
   i5 = i4 + 8;
   i1 = (int)*(void**)i3;
   i2 = (int)*(void**)i5;
   i2 = AliasAnalysis__SubtypeOf((Data__Struct)i1, (Data__Struct)i2, (unsigned char)1);
-  if (i2) goto l11;
+  if (i2) goto l10;
   i2 = *(signed char*)i4;
   i3 = (int)*(void**)i3;
   i5 = (int)*(void**)i5;
   i2 = i2 == 2;
   i2 = AliasAnalysis__SubtypeOf((Data__Struct)i5, (Data__Struct)i3, (unsigned char)i2);
-  if (!(i2)) goto l13;
-l11:
+  if (!(i2)) goto l12;
+l10:
   i4 = *(signed char*)i4;
   i3 = i4 == 2;
-  if (i3) goto l12;
-  goto l16;
+  if (i3) goto l11;
+  goto l15;
+l11:
+  i2 = 0;
+  goto l15;
 l12:
-  i2 = 0;
-  goto l16;
+  i3 = 1;
+  i2 = -1;
+  goto l15;
 l13:
-  i3 = 1;
-  i2 = -1;
-  goto l16;
-l14:
   i2 = 0;
   i3 = 1;
-  goto l16;
+  goto l15;
+l14:
+  i2 = -1;
+  i3 = 1;
 l15:
-  i2 = -1;
-  i3 = 1;
+  i1 = 0;
+  goto l27;
 l16:
-  i1 = 0;
-  goto l18;
+  i3 = 0;
+  i1 = 1;
+  goto l27;
 l17:
-  i3 = 0;
-  i1 = 1;
+  if (!(i4==3)) goto l24;
+  i5 = (int)_ashl(l1_, 4, (unsigned int));
+  i6 = (int)d1_ + i5;
+  i5 = *(signed char*)i6;
+  i5 = i5 == 3;
+  if (i5) goto l18;
+  i1 = 0;
+  i2 = -1;
+  i3 = 1;
+  goto l27;
 l18:
-  i12 = 0;
-  goto l31;
-l19:
-  if (!(i4==3)) goto l27;
-  i6 = (int)_ashl(l1, 4, (unsigned int));
-  i4 = (int)d1_ + i6;
-  i6 = *(signed char*)i4;
-  i6 = i6 == 3;
-  if (i6) goto l20;
-  i1 = 0;
-  i2 = -1;
-  i3 = 1;
-  goto l26;
-l20:
-  i5 = i0 + 12;
-  i1 = i4 + 12;
-  i5 = (int)*(void**)i5;
+  i4 = i0 + 12;
+  i1 = i6 + 12;
+  i4 = (int)*(void**)i4;
   i1 = (int)*(void**)i1;
-  i5 += 28;
+  i4 += 28;
   i1 += 28;
-  i5 = (int)*(void**)i5;
+  i4 = (int)*(void**)i4;
   i1 = (int)*(void**)i1;
-  i5 += 8;
+  i4 += 8;
   i1 += 8;
-  i5 = (int)*(void**)i5;
+  i4 = (int)*(void**)i4;
   i1 = (int)*(void**)i1;
-  i5 = (int)*(void**)i5;
+  i4 = (int)*(void**)i4;
   i1 = (int)*(void**)i1;
-  i1 = i5 != i1;
-  if (i1) goto l21;
+  i1 = i4 != i1;
+  if (i1) goto l19;
   i1 = i0 + 8;
-  i5 = i4 + 8;
+  i4 = i6 + 8;
   i1 = (int)*(void**)i1;
-  i5 = (int)*(void**)i5;
-  i5 = i1 == i5;
-  if (i5) goto l25;
-l21:
-  i5 = i0 + 8;
-  i6 = i4 + 8;
-  i2 = (int)*(void**)i5;
-  i3 = (int)*(void**)i6;
+  i4 = (int)*(void**)i4;
+  i4 = i1 == i4;
+  if (i4) goto l23;
+l19:
+  i4 = i0 + 8;
+  i5 = i6 + 8;
+  i2 = (int)*(void**)i4;
+  i3 = (int)*(void**)i5;
   i1 = i2 == i3;
-  if (i1) goto l22;
+  if (i1) goto l20;
   i3 = SymbolTable__ExtensionOf((Data__Struct)i2, (Data__Struct)i3);
-  if (i3) goto l22;
-  i4 = (int)*(void**)i6;
-  i5 = (int)*(void**)i5;
-  i4 = SymbolTable__ExtensionOf((Data__Struct)i4, (Data__Struct)i5);
-  if (!(i4)) goto l23;
-l22:
+  if (i3) goto l20;
+  i6 = (int)*(void**)i5;
+  i4 = (int)*(void**)i4;
+  i6 = SymbolTable__ExtensionOf((Data__Struct)i6, (Data__Struct)i4);
+  if (!(i6)) goto l21;
+l20:
   i3 = 0;
-  goto l24;
-l23:
+  goto l22;
+l21:
   i2 = -1;
   i3 = 1;
-l24:
+l22:
   i1 = 0;
-  goto l26;
-l25:
+  goto l27;
+l23:
   i3 = 0;
   i1 = 1;
-l26:
-  i12 = 0;
-  goto l31;
-l27:
-  if (!((i4>=4 && i4<=5))) goto l31;
-  i1 = (int)_ashl(l1, 4, (unsigned int));
+  goto l27;
+l24:
+  if (!((i4>=4 && i4<=5))) goto l27;
+  i1 = (int)_ashl(l1_, 4, (unsigned int));
   i1 = (int)d1_ + i1;
   i3 = *(signed char*)i1;
   i3 = i4 != i3;
-  if (i3) goto l28;
+  if (i3) goto l25;
   i3 = i0 + 4;
   i1 += 4;
   i3 = (int)*(void**)i3;
   i1 = (int)*(void**)i1;
   i1 = i3 == i1;
-  if (i1) goto l29;
-l28:
+  if (i1) goto l26;
+l25:
   i2 = -1;
   i3 = 1;
   i1 = 0;
-  goto l30;
-l29:
+  goto l27;
+l26:
   i3 = 0;
   i1 = 1;
-l30:
-  i12 = 0;
-l31:
-  if (i3) goto l32;
-  if (!(i12)) goto l33;
-l32:
-  i13 = i2;
-  goto l63;
-l33:
-  i4 = *(signed char*)i0;
-  i4 = i4 == 2;
-  if (i4) goto l38;
-  i9 = (int)_ashl(l1, 4, (unsigned int));
-  i4 = (int)d1_ + i9;
-  i9 = *(signed char*)i4;
-  i9 = i9 == 2;
-  if (i9) goto l34;
-  i10 = l0;
-  goto l37;
-l34:
-  i5 = l0 >= 0;
-  if (!(i5)) goto l36;
-  i6 = i4 + 8;
-  i13 = i0 + 8;
-  i8 = (int)*(void**)i6;
-  i9 = (int)*(void**)i13;
-  i9 = SymbolTable__EqualTypes((Data__Struct)i8, (Data__Struct)i9);
-  if (i9) goto l36;
-  i5 = (int)*(void**)i6;
-  i13 = (int)*(void**)i13;
-  i8 = AliasAnalysis__ArrayCompatible((Data__Struct)i5, (Data__Struct)i13);
-  if (i8) goto l36;
-  i10 = l0;
-l35:
-  i10--;
-  i9 = i10 < 0;
-  if (i9) goto l37;
-  i5 = (int)_ashl(i10, 4, (unsigned int));
-  i13 = (int)d0_ + i5;
-  i9 = i13 + 8;
-  i7 = (int)*(void**)i6;
-  i5 = (int)*(void**)i9;
-  i5 = SymbolTable__EqualTypes((Data__Struct)i7, (Data__Struct)i5);
-  if (i5) goto l37;
-  i13 = (int)*(void**)i6;
-  i9 = (int)*(void**)i9;
-  i9 = AliasAnalysis__ArrayCompatible((Data__Struct)i13, (Data__Struct)i9);
-  if (!(i9)) goto l35;
-  goto l37;
-l36:
-  i10 = l0;
-l37:
-  i4 = l1;
-  goto l42;
-l38:
-  i8 = l1 >= 0;
-  if (!(i8)) goto l40;
-  i7 = i0 + 8;
-  i5 = (int)_ashl(l1, 4, (unsigned int));
-  i13 = (int)d1_ + i5;
-  i6 = i13 + 8;
-  i9 = (int)*(void**)i7;
-  i5 = (int)*(void**)i6;
-  i5 = SymbolTable__EqualTypes((Data__Struct)i9, (Data__Struct)i5);
-  if (i5) goto l40;
-  i13 = (int)*(void**)i7;
+l27:
+  if (i3) goto l57;
+  i11 = *(signed char*)i0;
+  i11 = i11 == 2;
+  if (i11) goto l32;
+  i6 = (int)_ashl(l1_, 4, (unsigned int));
+  i11 = (int)d1_ + i6;
+  i6 = *(signed char*)i11;
+  i6 = i6 == 2;
+  if (i6) goto l28;
+  i5 = l0_;
+  goto l31;
+l28:
+  i10 = l0_ >= 0;
+  if (!(i10)) goto l30;
+  i9 = i11 + 8;
+  i2 = i0 + 8;
+  i7 = (int)*(void**)i9;
+  i6 = (int)*(void**)i2;
+  i6 = SymbolTable__EqualTypes((Data__Struct)i7, (Data__Struct)i6);
+  if (i6) goto l30;
+  i10 = (int)*(void**)i9;
+  i2 = (int)*(void**)i2;
+  i7 = AliasAnalysis__ArrayCompatible((Data__Struct)i10, (Data__Struct)i2);
+  if (i7) goto l30;
+  i5 = l0_;
+l29:
+  i5--;
+  i6 = i5 < 0;
+  if (i6) goto l31;
+  i10 = (int)_ashl(i5, 4, (unsigned int));
+  i2 = (int)d0_ + i10;
+  i6 = i2 + 8;
+  i8 = (int)*(void**)i9;
+  i10 = (int)*(void**)i6;
+  i10 = SymbolTable__EqualTypes((Data__Struct)i8, (Data__Struct)i10);
+  if (i10) goto l31;
+  i2 = (int)*(void**)i9;
   i6 = (int)*(void**)i6;
-  i8 = AliasAnalysis__ArrayCompatible((Data__Struct)i13, (Data__Struct)i6);
-  if (i8) goto l40;
-  i4 = l1;
+  i6 = AliasAnalysis__ArrayCompatible((Data__Struct)i2, (Data__Struct)i6);
+  if (!(i6)) goto l29;
+  goto l31;
+l30:
+  i5 = l0_;
+l31:
+  i11 = l1_;
+  goto l36;
+l32:
+  i7 = l1_ >= 0;
+  if (!(i7)) goto l34;
+  i8 = i0 + 8;
+  i10 = (int)_ashl(l1_, 4, (unsigned int));
+  i2 = (int)d1_ + i10;
+  i9 = i2 + 8;
+  i6 = (int)*(void**)i8;
+  i10 = (int)*(void**)i9;
+  i10 = SymbolTable__EqualTypes((Data__Struct)i6, (Data__Struct)i10);
+  if (i10) goto l34;
+  i2 = (int)*(void**)i8;
+  i9 = (int)*(void**)i9;
+  i7 = AliasAnalysis__ArrayCompatible((Data__Struct)i2, (Data__Struct)i9);
+  if (i7) goto l34;
+  i11 = l1_;
+l33:
+  i11--;
+  i10 = i11 < 0;
+  if (i10) goto l35;
+  i2 = (int)_ashl(i11, 4, (unsigned int));
+  i9 = (int)d1_ + i2;
+  i10 = i9 + 8;
+  i6 = (int)*(void**)i8;
+  i2 = (int)*(void**)i10;
+  i2 = SymbolTable__EqualTypes((Data__Struct)i6, (Data__Struct)i2);
+  if (i2) goto l35;
+  i9 = (int)*(void**)i8;
+  i10 = (int)*(void**)i10;
+  i10 = AliasAnalysis__ArrayCompatible((Data__Struct)i9, (Data__Struct)i10);
+  if (!(i10)) goto l33;
+  goto l35;
+l34:
+  i11 = l1_;
+l35:
+  i5 = l0_;
+l36:
+  i5--;
+  i12 = i11 - 1;
+  i0 = i5 < 0;
+  if (i0) goto l53;
+  i2 = i12 < 0;
+  if (i2) goto l53;
+  i10 = i5;
+  i11 = i12;
+  i0 = i1;
+l37:
+  i3 = (int)_ashl(i10, 4, (unsigned int));
+  i3 = (int)d0_ + i3;
+  i6 = *(signed char*)i3;
+  if (!(i6<=5 || i6>=8)) goto l38;
+  i4 = 0;
+  i0 = 0;
+  goto l51;
+l38:
+  if (!(i6==6)) goto l44;
+  i4 = (int)_ashl(i11, 4, (unsigned int));
+  i4 = (int)d1_ + i4;
+  i4 += 4;
+  i6 = (int)*(void**)i4;
+  i4 = i6 + 24;
+  i7 = (int)*(void**)i4;
+  i4 = i3 + 4;
+  i4 = (int)*(void**)i4;
+  i8 = i6 + 60;
+  i9 = i7 + 48;
+  i7 = *(int*)i8;
+  i8 = i4 + 60;
+  i9 = *(int*)i9;
+  i8 = *(int*)i8;
+  i9 = i7 + i9;
+  i9 = i8 >= i9;
+  if (i9) goto l42;
+  i9 = i4 + 24;
+  i9 = (int)*(void**)i9;
+  i9 += 48;
+  i9 = *(int*)i9;
+  i8 += i9;
+  i8 = i7 >= i8;
+  if (i8) goto l42;
+  i9 = i0 != 1;
+  if (i9) goto l39;
+  i6 = i4 != i6;
+  if (i6) goto l40;
 l39:
-  i4--;
-  i5 = i4 < 0;
-  if (i5) goto l41;
-  i13 = (int)_ashl(i4, 4, (unsigned int));
-  i6 = (int)d1_ + i13;
-  i5 = i6 + 8;
-  i9 = (int)*(void**)i7;
-  i13 = (int)*(void**)i5;
-  i13 = SymbolTable__EqualTypes((Data__Struct)i9, (Data__Struct)i13);
-  if (i13) goto l41;
-  i6 = (int)*(void**)i7;
-  i5 = (int)*(void**)i5;
-  i5 = AliasAnalysis__ArrayCompatible((Data__Struct)i6, (Data__Struct)i5);
-  if (!(i5)) goto l39;
+  i9 = i0;
   goto l41;
 l40:
-  i4 = l1;
+  i9 = 0;
 l41:
-  i10 = l0;
+  i4 = 0;
+  goto l43;
 l42:
-  i10--;
-  i11 = i4 - 1;
-  i0 = i10 < 0;
-  if (i0) goto l59;
-  i13 = i11 < 0;
-  if (i13) goto l59;
-  i5 = i10;
-  i4 = i11;
-  i0 = i1;
+  i9 = i0;
+  i4 = 1;
 l43:
-  i3 = (int)_ashl(i5, 4, (unsigned int));
-  i3 = (int)d0_ + i3;
-  i9 = *(signed char*)i3;
-  if (!(i9<=5 || i9>=8)) goto l44;
-  i12 = 0;
-  i0 = 0;
-  goto l57;
+  i0 = i9;
+  goto l51;
 l44:
-  if (!(i9==6)) goto l50;
-  i12 = (int)_ashl(i4, 4, (unsigned int));
-  i12 = (int)d1_ + i12;
-  i12 += 4;
-  i9 = (int)*(void**)i12;
-  i12 = i9 + 24;
-  i8 = (int)*(void**)i12;
-  i12 = i3 + 4;
-  i12 = (int)*(void**)i12;
-  i7 = i9 + 60;
-  i6 = i8 + 48;
-  i8 = *(int*)i7;
-  i7 = i12 + 60;
-  i6 = *(int*)i6;
-  i7 = *(int*)i7;
-  i6 = i8 + i6;
-  i6 = i7 >= i6;
-  if (i6) goto l48;
-  i6 = i12 + 24;
-  i6 = (int)*(void**)i6;
-  i6 += 48;
-  i6 = *(int*)i6;
-  i7 += i6;
-  i7 = i8 >= i7;
-  if (i7) goto l48;
+  if (!(i6==7)) goto l51;
   i6 = i0 != 1;
   if (i6) goto l45;
-  i9 = i12 != i9;
-  if (i9) goto l46;
+  i6 = (int)_ashl(i11, 4, (unsigned int));
+  i6 = (int)d1_ + i6;
+  i4 = i3 + 4;
+  i6 += 4;
+  i4 = (int)*(void**)i4;
+  i6 = (int)*(void**)i6;
+  i6 = i4 != i6;
+  if (i6) goto l49;
 l45:
-  i6 = i0;
-  goto l47;
-l46:
-  i6 = 0;
-l47:
-  i12 = 0;
-  goto l49;
-l48:
-  i6 = i0;
-  i12 = 1;
-l49:
-  i0 = i6;
-  goto l57;
-l50:
-  if (!(i9==7)) goto l57;
-  i9 = i0 != 1;
-  if (i9) goto l51;
-  i9 = (int)_ashl(i4, 4, (unsigned int));
-  i9 = (int)d1_ + i9;
-  i12 = i3 + 4;
-  i9 += 4;
-  i12 = (int)*(void**)i12;
-  i9 = (int)*(void**)i9;
-  i9 = i12 != i9;
-  if (i9) goto l55;
-l51:
   i3 += 4;
-  i12 = (int)*(void**)i3;
-  i3 = *(int*)(i12-4);
+  i4 = (int)*(void**)i3;
+  i3 = *(int*)(i4-4);
   i3 = _type_test(i3, &Data__ConstDesc_td.td, 3);
-  if (!(i3)) goto l52;
-  i3 = (int)_ashl(i4, 4, (unsigned int));
+  if (!(i3)) goto l46;
+  i3 = (int)_ashl(i11, 4, (unsigned int));
   i3 = (int)d1_ + i3;
   i3 += 4;
   i3 = (int)*(void**)i3;
-  i9 = *(int*)(i3-4);
-  i9 = _type_test(i9, &Data__ConstDesc_td.td, 3);
-  if (!(i9)) goto l52;
-  i12 += 24;
+  i6 = *(int*)(i3-4);
+  i6 = _type_test(i6, &Data__ConstDesc_td.td, 3);
+  if (!(i6)) goto l46;
+  i4 += 24;
   i3 += 24;
-  i12 = *(int*)i12;
+  i4 = *(int*)i4;
   i3 = *(int*)i3;
-  i3 = i12 != i3;
-  if (i3) goto l53;
+  i3 = i4 != i3;
+  if (i3) goto l47;
+l46:
+  i4 = 0;
+  goto l48;
+l47:
+  i4 = 1;
+l48:
+  i6 = i0;
+  goto l50;
+l49:
+  i4 = 0;
+  i6 = 0;
+l50:
+  i0 = i6;
+l51:
+  if (i4) goto l52;
+  i6 = i10 - 1;
+  i3 = i11 - 1;
+  i11 = i3;
+  i10 = i6;
 l52:
-  i12 = 0;
+  if (i4) goto l54;
+  i3 = i10 < 0;
+  if (i3) goto l54;
+  i3 = i11 >= 0;
+  if (i3) goto l37;
   goto l54;
 l53:
-  i12 = 1;
-l54:
-  i9 = i0;
-  goto l56;
-l55:
-  i12 = 0;
-  i9 = 0;
-l56:
-  i0 = i9;
-l57:
-  if (i12) goto l58;
-  i9 = i5 - 1;
-  i3 = i4 - 1;
-  i4 = i3;
-  i5 = i9;
-l58:
-  if (i12) goto l60;
-  i3 = i5 < 0;
-  if (i3) goto l60;
-  i3 = i4 >= 0;
-  if (i3) goto l43;
-  goto l60;
-l59:
-  i12 = 0;
+  i4 = 0;
   i0 = i1;
-  i4 = i11;
-  i5 = i10;
-l60:
-  if (i12) goto l62;
-  i4 = i5 != i4;
-  if (i4) goto l61;
-  i13 = i0;
-  goto l63;
-l61:
-  i13 = 0;
-  goto l63;
-l62:
-  i13 = -1;
-l63:
-  return (signed char)i13;
+  i11 = i12;
+  i10 = i5;
+l54:
+  if (i4) goto l56;
+  i11 = i10 != i11;
+  if (i11) goto l55;
+  i2 = i0;
+  goto l57;
+l55:
+  i2 = 0;
+  goto l57;
+l56:
+  i2 = -1;
+l57:
+  return (signed char)i2;
 }
 
 signed char AliasAnalysis__Aliasing(Data__Instruction i0_, signed char m0, Data__Instruction i1_, signed char m1) {
-  register int i0, i1, i2, i3, i4, i5;
+  register int i0, i1, i2, i3, i4, i5, i6;
   AliasAnalysis__Aliasing_Selector d0_[16];
   AliasAnalysis__Aliasing_Selector d1_[16];
-  short int l0;
-  short int l1;
+  short int l0_;
+  short int l1_;
+  signed char res;
   i0 = (int)i0_ == (int)i1_;
-  if (i0) goto l8;
-  i4 = (int)i0_ + 44;
-  i0 = *(short int*)i4;
-  i4 = AliasAnalysis__Aliasing_WildOpcode((short int)i0);
-  if (i4) goto l0;
+  if (i0) goto l11;
+  i5 = (int)i0_ + 44;
+  i0 = *(short int*)i5;
+  i5 = AliasAnalysis__Aliasing_WildOpcode((short int)i0);
+  if (i5) goto l0;
   i1 = (int)i1_ + 44;
-  i3 = *(short int*)i1;
-  i1 = AliasAnalysis__Aliasing_WildOpcode((short int)i3);
+  i4 = *(short int*)i1;
+  i1 = AliasAnalysis__Aliasing_WildOpcode((short int)i4);
   if (i1) goto l0;
-  i2 = AliasAnalysis__enabled;
-  if (i2) goto l1;
+  i3 = AliasAnalysis__enabled;
+  if (i3) goto l1;
 l0:
-  i5 = 0;
-  goto l9;
+  i6 = 0;
+  goto l12;
 l1:
-  i4 = i0 <= -1;
-  if (i4) goto l7;
-  i4 = i3 <= -1;
-  if (i4) goto l7;
-  i2 = i0 == 22;
-  if (i2) goto l6;
-  i2 = i0 == 23;
-  if (i2) goto l6;
-  i1 = i3 == 22;
-  if (i1) goto l5;
-  i1 = i3 == 23;
-  if (i1) goto l5;
+  i1 = i0 <= -1;
+  if (i1) goto l10;
+  i1 = i4 <= -1;
+  if (i1) goto l10;
+  i5 = i0 == 22;
+  if (i5) goto l9;
+  i5 = i0 == 23;
+  if (i5) goto l9;
+  i2 = i4 == 22;
+  if (i2) goto l8;
+  i2 = i4 == 23;
+  if (i2) goto l8;
   i0 = i0 == 19;
+  if (i0) goto l7;
+  i4 = i4 == 19;
+  if (i4) goto l6;
+  l0_ = (short int)0;
+  l0_ = (short int)0;
+  AliasAnalysis__Aliasing_BuildDesignator((Data__Instruction)(int)i0_, (AliasAnalysis__Aliasing_Selector*)(int)d0_, (short int *)(int)&l0_);
+  i0 = (int)_ashl(l0_, 4, (unsigned int));
+  i0 = (int)d0_ + i0;
+  i4 = *(signed char*)i0;
+  i0 = i4 == 4;
+  l1_ = (short int)0;
+  l1_ = (short int)0;
+  AliasAnalysis__Aliasing_BuildDesignator((Data__Instruction)(int)i1_, (AliasAnalysis__Aliasing_Selector*)(int)d1_, (short int *)(int)&l1_);
   if (i0) goto l4;
-  i3 = i3 == 19;
-  if (i3) goto l3;
-  l0 = (short int)0;
-  l0 = (short int)0;
-  AliasAnalysis__Aliasing_BuildDesignator((Data__Instruction)(int)i0_, (AliasAnalysis__Aliasing_Selector*)(int)d0_, (short int *)(int)&l0);
-  l1 = (short int)0;
-  l1 = (short int)0;
-  AliasAnalysis__Aliasing_BuildDesignator((Data__Instruction)(int)i1_, (AliasAnalysis__Aliasing_Selector*)(int)d1_, (short int *)(int)&l1);
-  i5 = (int)_ashl(l0, 4, (unsigned int));
-  i3 = (int)d0_ + i5;
-  i5 = (int)_ashl(l1, 4, (unsigned int));
-  i5 = (int)d1_ + i5;
-  i3 = *(signed char*)i3;
-  i5 = *(signed char*)i5;
-  i5 = i3 < i5;
-  if (i5) goto l2;
-  i5 = AliasAnalysis__Aliasing_ComputeAliasing((AliasAnalysis__Aliasing_Selector*)(int)d1_, (short int)l1, (AliasAnalysis__Aliasing_Selector*)(int)d0_, (short int)l0);
-  goto l9;
+  i3 = (int)_ashl(l1_, 4, (unsigned int));
+  i3 = (int)d1_ + i3;
+  i0 = *(signed char*)i3;
+  i3 = i0 == 4;
+  if (i3) goto l4;
+  i0 = i4 < i0;
+  if (i0) goto l2;
+  i6 = AliasAnalysis__Aliasing_ComputeAliasing((AliasAnalysis__Aliasing_Selector*)(int)d1_, (short int)l1_, (AliasAnalysis__Aliasing_Selector*)(int)d0_, (short int)l0_);
+  goto l3;
 l2:
-  i5 = AliasAnalysis__Aliasing_ComputeAliasing((AliasAnalysis__Aliasing_Selector*)(int)d0_, (short int)l0, (AliasAnalysis__Aliasing_Selector*)(int)d1_, (short int)l1);
-  goto l9;
+  i6 = AliasAnalysis__Aliasing_ComputeAliasing((AliasAnalysis__Aliasing_Selector*)(int)d0_, (short int)l0_, (AliasAnalysis__Aliasing_Selector*)(int)d1_, (short int)l1_);
 l3:
-  AliasAnalysis__enabled = (unsigned char)1;
-  i5 = AliasAnalysis__Aliasing_HandleGate((Data__Gate)(int)i1_, (signed char)m1, (Data__Instruction)(int)i0_, (signed char)m0);
-  goto l9;
+  i0 = 0;
+  goto l5;
 l4:
-  AliasAnalysis__enabled = (unsigned char)1;
-  i5 = AliasAnalysis__Aliasing_HandleGate((Data__Gate)(int)i0_, (signed char)m0, (Data__Instruction)(int)i1_, (signed char)m1);
-  goto l9;
+  i0 = 1;
 l5:
-  AliasAnalysis__enabled = (unsigned char)1;
-  i5 = AliasAnalysis__Aliasing_CopyAlias((Data__Instruction)(int)i1_, (signed char)m1, (Data__Instruction)(int)i0_, (signed char)m0);
-  goto l9;
+  if (!(i0)) goto l12;
+  i6 = 0;
+  goto l12;
 l6:
   AliasAnalysis__enabled = (unsigned char)1;
-  i5 = AliasAnalysis__Aliasing_CopyAlias((Data__Instruction)(int)i0_, (signed char)m0, (Data__Instruction)(int)i1_, (signed char)m1);
-  goto l9;
+  i6 = AliasAnalysis__Aliasing_HandleGate((Data__Gate)(int)i1_, (signed char)m1, (Data__Instruction)(int)i0_, (signed char)m0);
+  goto l12;
 l7:
-  i5 = -1;
-  goto l9;
+  AliasAnalysis__enabled = (unsigned char)1;
+  i6 = AliasAnalysis__Aliasing_HandleGate((Data__Gate)(int)i0_, (signed char)m0, (Data__Instruction)(int)i1_, (signed char)m1);
+  goto l12;
 l8:
-  i5 = 1;
+  AliasAnalysis__enabled = (unsigned char)1;
+  i6 = AliasAnalysis__Aliasing_CopyAlias((Data__Instruction)(int)i1_, (signed char)m1, (Data__Instruction)(int)i0_, (signed char)m0);
+  goto l12;
 l9:
-  return (signed char)i5;
+  AliasAnalysis__enabled = (unsigned char)1;
+  i6 = AliasAnalysis__Aliasing_CopyAlias((Data__Instruction)(int)i0_, (signed char)m0, (Data__Instruction)(int)i1_, (signed char)m1);
+  goto l12;
+l10:
+  i6 = -1;
+  goto l12;
+l11:
+  i6 = 1;
+l12:
+  return (signed char)i6;
 }
 
 unsigned char AliasAnalysis__TransitiveStoreAlias(Data__Instruction a, Data__Instruction b) {
@@ -1543,48 +1558,37 @@ l2:
 }
 
 Data__Opnd AliasAnalysis__SimplifyAccess_GetGateBase(Data__Opnd opnd, Data__Region outerRegion) {
-  register int i0, i1, i2;
-  i2 = (int)opnd;
+  register int i0, i1;
+  i1 = (int)opnd;
 l0:
-  i0 = (int)*(void**)i2;
+  i0 = (int)*(void**)i1;
   i0 += 16;
   i0 = (int)*(void**)i0;
   i1 = i0 + 44;
   i1 = *(short int*)i1;
-  if (!(i1<=2 || (i1>=4 && i1<=18) || (i1>=20 && i1<=49) || i1>=53)) goto l1;
-  i1 = 1;
-  goto l4;
+  if (!(i1==19)) goto l1;
+  i1 = i0 + 28;
+  i1 = (int)*(void**)i1;
+  i1 += 8;
+  i1 = (int)*(void**)i1;
+  goto l3;
 l1:
-  if (!(i1==19)) goto l2;
-  i2 = i0 + 28;
-  i2 = (int)*(void**)i2;
-  i2 += 8;
-  i2 = (int)*(void**)i2;
-  i1 = 0;
-  goto l4;
+  if (!(i1==3)) goto l2;
+  i1 = (int)SymbolTable__store;
+  i1 = (int)Data__InstructionDesc_GetOperand((Data__Instruction)i0, (Data__Addressable)i1, (short int)-3);
+  goto l3;
 l2:
-  if (!(i1==3)) goto l3;
-  i2 = (int)SymbolTable__store;
-  i2 = (int)Data__InstructionDesc_GetOperand((Data__Instruction)i0, (Data__Addressable)i2, (short int)-3);
-  i1 = 0;
-  goto l4;
+  if (!((i1>=50 && i1<=52))) goto l3;
+  i1 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)i0, (short int)2);
 l3:
-  if (!((i1>=50 && i1<=52))) goto l4;
-  i2 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)i0, (short int)2);
-  i1 = 0;
-l4:
-  if (i1) goto l5;
-  i0 = (int)*(void**)i2;
+  i0 = (int)*(void**)i1;
   i0 += 16;
   i0 = (int)*(void**)i0;
   i0 += 32;
   i0 = (int)*(void**)i0;
   i0 = Data__RegionDesc_Dominates((Data__Region)i0, (Data__Region)(int)outerRegion);
   if (!(i0)) goto l0;
-l5:
-  if (!(i1)) goto l6;
-l6:
-  return (void*)i2;
+  return (void*)i1;
 }
 
 void AliasAnalysis__SimplifyAccess(Data__Instruction instr) {

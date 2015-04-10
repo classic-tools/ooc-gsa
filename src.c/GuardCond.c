@@ -378,139 +378,134 @@ l3:
 }
 
 GuardCond__RegionInfo GuardCond__InitRegions_CreateRegionInfo(Data__Region region, short int *GuardCond__InitRegions_id, GuardCond__RegionSummary *GuardCond__InitRegions_summary) {
-  register int i0, i1, i2, i3, i4, i5, i6;
+  register int i0, i1, i2, i3, i4, i5;
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(24)+8);
     if (!_mem) _new_failed(_P(10146));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &GuardCond__RegionInfoDesc_td.td;
-    i5 = (int)_var;
+    i4 = (int)_var;
   }
-  i4 = i5 + 16;
-  i3 = (int)*GuardCond__InitRegions_summary;
-  i0 = *GuardCond__InitRegions_id;
-  *(short int*)i4 = i0;
-  i0 = (int)*(void**)i3;
-  *(void**)i5 = (void*)(int)region;
+  i0 = i4 + 16;
   i1 = *GuardCond__InitRegions_id;
-  i2 = (int)_ashl(i1, 2, (unsigned int));
-  i2 = i0 + i2;
-  *(void**)i2 = (void*)i5;
-  i0 = i5 + 20;
-  *(void**)i0 = (void*)i3;
-  i0 = *(int*)((int)region-4);
+  *(short int*)i0 = i1;
+  *(void**)i4 = (void*)(int)region;
+  i1 = *GuardCond__InitRegions_id;
+  i2 = (int)*GuardCond__InitRegions_summary;
+  i2 = (int)*(void**)i2;
+  i3 = (int)_ashl(i1, 2, (unsigned int));
+  i3 = i2 + i3;
+  *(void**)i3 = (void*)i4;
+  i1 = i4 + 20;
+  i2 = (int)*GuardCond__InitRegions_summary;
+  *(void**)i1 = (void*)i2;
+  i3 = *(int*)((int)region-4);
   i1 = *GuardCond__InitRegions_id;
   i1++;
    *GuardCond__InitRegions_id = i1;
-  i1 = _type_test(i0, &Data__GuardDesc_td.td, 6);
+  i1 = _type_test(i3, &Data__GuardDesc_td.td, 6);
   if (i1) goto l1;
-  i3 = _type_test(i0, &Data__MergeDesc_td.td, 6);
-  if (!(i3)) goto l0;
-  i2 = i5 + 4;
-  i6 = (int)region + 32;
-  i1 = (int)*(void**)i6;
-  i6 = (int)SymbolTable__constTrue;
-  *(void**)i2 = (void*)i6;
-  i6 = i2 + 4;
-  i0 = i1 + 4;
-  i1 = i5 + 12;
-  *(unsigned char*)i6 = 0;
-  i2 = (int)*(void**)i0;
-  *(void**)i1 = (void*)i2;
+  i1 = _type_test(i3, &Data__MergeDesc_td.td, 6);
+  if (!(i1)) goto l0;
+  i2 = i4 + 4;
+  i5 = (int)SymbolTable__constTrue;
+  i0 = (int)region + 32;
+  i0 = (int)*(void**)i0;
+  *(void**)i2 = (void*)i5;
+  i5 = i2 + 4;
+  i3 = i0 + 4;
+  i0 = i4 + 12;
+  *(unsigned char*)i5 = 0;
+  i2 = (int)*(void**)i3;
+  *(void**)i0 = (void*)i2;
 l0:
-  i6 = ! i3;
+  i5 = ! i1;
   goto l9;
 l1:
-  i0 = (int)region + 44;
-  i2 = *(short int*)i0;
-  if (!(i2<=63 || i2>=68)) goto l2;
-  i6 = 1;
-  goto l6;
-l2:
-  if (!(i2==65)) goto l3;
-  i1 = i5 + 4;
+  i1 = (int)region + 44;
+  i3 = *(short int*)i1;
+  if (!(i3==65)) goto l2;
+  i5 = i4 + 4;
   i2 = (int)region + 28;
-  i6 = (int)*(void**)i2;
-  i2 = (int)*(void**)i1;
-  i6 = (int)*(void**)i6;
-  i2 = GuardCond__TraceValue((Data__Usable)i6, (Data__Usable *)i1, (unsigned char)1);
-  i6 = i1 + 4;
-  *(unsigned char*)i6 = i2;
-  i6 = 0;
-  goto l6;
+  i3 = (int)*(void**)i2;
+  i2 = (int)*(void**)i5;
+  i3 = (int)*(void**)i3;
+  i2 = GuardCond__TraceValue((Data__Usable)i3, (Data__Usable *)i5, (unsigned char)1);
+  i3 = i5 + 4;
+  *(unsigned char*)i3 = i2;
+  goto l5;
+l2:
+  if (!(i3==64)) goto l3;
+  i5 = i4 + 4;
+  i2 = (int)region + 28;
+  i3 = (int)*(void**)i2;
+  i2 = (int)*(void**)i5;
+  i3 = (int)*(void**)i3;
+  i3 = GuardCond__TraceValue((Data__Usable)i3, (Data__Usable *)i5, (unsigned char)1);
+  i2 = i5 + 4;
+  i3 = ! i3;
+  *(unsigned char*)i2 = i3;
+  goto l5;
 l3:
-  if (!(i2==64)) goto l4;
-  i1 = i5 + 4;
-  i6 = (int)region + 28;
-  i2 = (int)*(void**)i6;
-  i6 = (int)*(void**)i1;
-  i2 = (int)*(void**)i2;
-  i2 = GuardCond__TraceValue((Data__Usable)i2, (Data__Usable *)i1, (unsigned char)1);
-  i6 = i1 + 4;
-  i2 = ! i2;
-  *(unsigned char*)i6 = i2;
-  i6 = 0;
-  goto l6;
+  if (!(i3==66)) goto l4;
+  i2 = i4 + 4;
+  i3 = (int)SymbolTable__constTrue;
+  *(void**)i2 = (void*)i3;
+  i3 = i2 + 4;
+  *(unsigned char*)i3 = 0;
+  goto l5;
 l4:
-  if (!(i2==66)) goto l5;
-  i1 = i5 + 4;
-  i2 = (int)SymbolTable__constTrue;
-  *(void**)i1 = (void*)i2;
-  i2 = i1 + 4;
-  *(unsigned char*)i2 = 0;
-  i6 = 0;
-  goto l6;
+  if (!(i3==67)) goto l5;
+  i2 = i4 + 4;
+  i3 = i2 + 4;
+  *(void**)i2 = (void*)(int)region;
+  *(unsigned char*)i3 = 0;
 l5:
-  if (!(i2==67)) goto l6;
-  i1 = i5 + 4;
-  i2 = i1 + 4;
-  *(void**)i1 = (void*)(int)region;
-  *(unsigned char*)i2 = 0;
-  i6 = 0;
-l6:
-  if (i6) goto l9;
-  i0 = *(short int*)i0;
-  i0 = i0 == 66;
-  if (i0) goto l8;
+  i3 = *(short int*)i1;
+  i3 = i3 == 66;
+  if (i3) goto l7;
   i1 = (int)region + 32;
+  i2 = (int)*(void**)i1;
+  i1 = i4 + 12;
+  i2 += 4;
+  i2 = (int)*(void**)i2;
+  *(void**)i1 = (void*)i2;
+  i3 = (int)*GuardCond__InitRegions_summary;
   i1 = (int)*(void**)i1;
-  i0 = i5 + 12;
-  i1 += 4;
-  i1 = (int)*(void**)i1;
-  *(void**)i0 = (void*)i1;
-  i1 = (int)*(void**)i0;
-  i0 = i3 + 4;
-  i0 = (int)*(void**)i0;
+  i2 = i3 + 4;
+  i2 = (int)*(void**)i2;
   i1 += 16;
   i1 = *(short int*)i1;
-  i2 = *(int*)(i0-12);
-  i2 *= i1;
-  i2 = i0 + i2;
-  i2 = i1 + i2;
-  i1 = *(signed char*)i2;
+  i5 = *(int*)(i2-12);
+  i5 *= i1;
+  i5 = i2 + i5;
+  i5 = i1 + i5;
+  i1 = *(signed char*)i5;
   i1 = i1 == 1;
-  if (i1) goto l7;
-  i2 = i5 + 4;
-  i1 = i2 + 4;
-  i1 = *(unsigned char*)i1;
-  i2 = (int)*(void**)i2;
-  i1 = ! i1;
-  i1 = GuardCond__InitRegions_CreateRegionInfo_Prefix((GuardCond__RegionInfo)i5, (Data__Usable)i2, (unsigned char)i1);
-  if (!(i1)) goto l9;
-l7:
+  if (i1) goto l6;
+  i1 = i4 + 4;
+  i5 = i1 + 4;
+  i5 = *(unsigned char*)i5;
+  i1 = (int)*(void**)i1;
+  i5 = ! i5;
+  i5 = GuardCond__InitRegions_CreateRegionInfo_Prefix((GuardCond__RegionInfo)i4, (Data__Usable)i1, (unsigned char)i5);
+  if (!(i5)) goto l8;
+l6:
   i3 += 8;
-  i4 = *(short int*)i4;
+  i0 = *(short int*)i0;
   i3 = *(short int*)i3;
-  GuardCond__MarkUnreachable((GuardCond__RegionMatrix)i0, (short int)i3, (short int)i4);
-  goto l9;
+  GuardCond__MarkUnreachable((GuardCond__RegionMatrix)i2, (short int)i3, (short int)i0);
+  goto l8;
+l7:
+  i3 = i4 + 12;
+  *(void**)i3 = (void*)0;
 l8:
-  i0 = i5 + 12;
-  *(void**)i0 = (void*)0;
+  i5 = 0;
 l9:
-  if (!(i6)) goto l10;
+  if (!(i5)) goto l10;
 l10:
-  return (void*)i5;
+  return (void*)i4;
 }
 
 void GuardCond__InitRegions(Data__Region region, short int *id, GuardCond__RegionSummary summary) {
@@ -535,22 +530,22 @@ l1:
 }
 
 void GuardCond__TransitiveHull(GuardCond__RegionMatrix m, GuardCond__InfoArray r, short int count) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11;
-  i10 = count - 1;
-  i0 = i10 < 0;
-  if (i0) goto l11;
-  i9 = 0;
+  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10;
+  i9 = count - 1;
+  i0 = i9 < 0;
+  if (i0) goto l8;
+  i8 = 0;
 l0:
   i7 = *(int*)((int)m-12);
-  i11 = i7 * i9;
-  i6 = (int)m + i11;
-  i11 = (int)_ashl(i9, 2, (unsigned int));
-  i5 = (int)r + i11;
-  i11 = 0;
+  i10 = i7 * i8;
+  i6 = (int)m + i10;
+  i10 = (int)_ashl(i8, 2, (unsigned int));
+  i5 = (int)r + i10;
+  i10 = 0;
 l1:
-  i4 = i7 * i11;
+  i4 = i7 * i10;
   i0 = (int)m + i4;
-  i3 = i9 + i0;
+  i3 = i8 + i0;
   i4 = *(signed char*)i3;
   i4 = i4 != 3;
   if (i4) goto l2;
@@ -566,62 +561,48 @@ l1:
   *(signed char*)i3 = 2;
 l2:
   i4 = *(signed char*)i3;
-  i4 = i4 == 2;
-  if (i4) goto l3;
-  i8 = 0;
-  goto l9;
-l3:
+  i4 = i4 != 2;
+  if (i4) goto l7;
   i1 = 0;
-  i8 = 0;
-l4:
+l3:
   i4 = i1 + i6;
   i4 = *(signed char*)i4;
-  if (!(i4<=-1 || i4>=4)) goto l5;
-  i8 = 1;
-  goto l8;
-l5:
-  if (i4==0) goto l8;
-  if (!(i4==1)) goto l6;
+  if (i4==0) goto l6;
+  if (!(i4==1)) goto l4;
   i2 = i7 * i1;
   i2 = (int)m + i2;
   i3 = i1 + i0;
-  i4 = i11 + i2;
+  i4 = i10 + i2;
   *(signed char*)i3 = 1;
   *(signed char*)i4 = 1;
-  goto l8;
-l6:
-  if (!(i4==2)) goto l7;
-  i4 = i1 + i0;
-  i3 = *(signed char*)i4;
-  i3 = i3 == 1;
-  if (i3) goto l8;
-  *(signed char*)i4 = 2;
-  goto l8;
-l7:
-  if (!(i4==3)) goto l8;
+  goto l6;
+l4:
+  if (!(i4==2)) goto l5;
+  i3 = i1 + i0;
+  i4 = *(signed char*)i3;
+  i4 = i4 == 1;
+  if (i4) goto l6;
+  *(signed char*)i3 = 2;
+  goto l6;
+l5:
+  if (!(i4==3)) goto l6;
   i3 = i1 + i0;
   i4 = *(signed char*)i3;
   i4 = i4 != 0;
-  if (i4) goto l8;
+  if (i4) goto l6;
   *(signed char*)i3 = 3;
-l8:
+l6:
   i1++;
-  if (i8) goto l9;
-  i4 = i1 > i10;
-  if (i4) goto l9;
-  i8 = 0;
-  goto l4;
-l9:
-  i11++;
-  if (i8) goto l10;
-  i4 = i11 <= i10;
+  i4 = i1 <= i9;
+  if (i4) goto l3;
+l7:
+  i10++;
+  i4 = i10 <= i9;
   if (i4) goto l1;
-l10:
-  i9++;
-  if (i8) goto l11;
-  i11 = i9 <= i10;
-  if (i11) goto l0;
-l11:
+  i8++;
+  i10 = i8 <= i9;
+  if (i10) goto l0;
+l8:
   ;
 }
 
@@ -711,26 +692,28 @@ l3:
   i2 = *(short int*)i4;
   if (i5) goto l4;
   i3 = (int)*GuardCond__Init_m;
-  i1 = *(int*)(i3-12);
-  i1 *= i;
-  i4 = i3 + i1;
-  i1 = i2 + i4;
-  i5 = *(signed char*)i1;
+  i4 = *(int*)(i3-12);
+  i4 *= i;
+  i1 = i3 + i4;
+  i4 = i2 + i1;
+  i5 = *(signed char*)i4;
   i5 = i5 != 0;
   if (i5) goto l5;
-  *(signed char*)i1 = 3;
+  *(signed char*)i4 = 3;
   goto l5;
 l4:
-  i3 = (int)*GuardCond__Init_m;
-  i4 = *(int*)(i3-12);
-  i1 = i4 * i2;
-  i1 = i3 + i1;
+  i5 = (int)*GuardCond__Init_m;
+  i4 = *(int*)(i5-12);
   i4 *= i;
-  i5 = i3 + i4;
-  i4 = i2 + i5;
-  *(signed char*)i4 = 1;
-  i4 = i + i1;
-  *(signed char*)i4 = 1;
+  i4 = i5 + i4;
+  i3 = i2 + i4;
+  *(signed char*)i3 = 1;
+  i4 = (int)*GuardCond__Init_m;
+  i3 = *(int*)(i4-12);
+  i3 *= i2;
+  i3 = i4 + i3;
+  i5 = i + i3;
+  *(signed char*)i5 = 1;
 l5:
   i1 = i7 + 4;
   i7 = (int)*(void**)i1;
@@ -741,97 +724,97 @@ l6:
 }
 
 void GuardCond__Init_AddImplications(GuardCond__RegionInfo info, short int *GuardCond__Init_count, GuardCond__RegionMatrix *GuardCond__Init_m, Data__Opnd *GuardCond__Init_opnd) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7;
+  register int i0, i1, i2, i3, i4, i5, i6;
   GuardCond__Condition opndCond;
-  i4 = (int)*(void**)(int)info;
-  i0 = i4 + 44;
-  i5 = *(short int*)i0;
-  i0 = i5 == 65;
+  i3 = (int)*(void**)(int)info;
+  i0 = i3 + 44;
+  i4 = *(short int*)i0;
+  i0 = i4 == 65;
   i1 = (int)info + 16;
-  i6 = *(short int*)i1;
+  i5 = *(short int*)i1;
   if (i0) goto l0;
-  i0 = i5 != 64;
+  i0 = i4 != 64;
   if (i0) goto l4;
 l0:
-  i7 = (int)info + 4;
-  i3 = (int)*(void**)i7;
+  i1 = (int)info + 4;
+  i6 = (int)*(void**)i1;
   i2 = (int)SymbolTable__constTrue;
-  i3 = i3 == i2;
-  if (i3) goto l1;
-  i4 += 28;
-  i4 = (int)*(void**)i4;
-  i4 = (int)*(void**)i4;
-  *(void**)(int)&opndCond = (void*)i4;
-  i4 = i5 == 64;
-  i5 = (int)&opndCond + 4;
-  *(unsigned char*)i5 = i4;
-  GuardCond__Init_AddImplications_Implications((short int)i6, (const GuardCond__Condition *)(int)&opndCond, (GuardCond__RegionMatrix *)&*GuardCond__Init_m);
-  GuardCond__Init_AddImplications_Implications((short int)i6, (const GuardCond__Condition *)i7, (GuardCond__RegionMatrix *)&*GuardCond__Init_m);
+  i6 = i6 == i2;
+  if (i6) goto l1;
+  i3 += 28;
+  i3 = (int)*(void**)i3;
+  i3 = (int)*(void**)i3;
+  *(void**)(int)&opndCond = (void*)i3;
+  i3 = i4 == 64;
+  i4 = (int)&opndCond + 4;
+  *(unsigned char*)i4 = i3;
+  GuardCond__Init_AddImplications_Implications((short int)i5, (const GuardCond__Condition *)(int)&opndCond, (GuardCond__RegionMatrix *)&*GuardCond__Init_m);
+  GuardCond__Init_AddImplications_Implications((short int)i5, (const GuardCond__Condition *)i1, (GuardCond__RegionMatrix *)&*GuardCond__Init_m);
   goto l4;
 l1:
-  i7 += 4;
-  i7 = *(unsigned char*)i7;
-  if (i7) goto l4;
-  i4 = *GuardCond__Init_count;
-  i1 = i4 - 1;
-  i4 = i1 < 0;
-  if (i4) goto l4;
-  i4 = (int)*GuardCond__Init_m;
-  i5 = *(int*)(i4-12);
+  i1 += 4;
+  i1 = *(unsigned char*)i1;
+  if (i1) goto l4;
+  i0 = *GuardCond__Init_count;
+  i1 = i0 - 1;
+  i0 = i1 < 0;
+  if (i0) goto l4;
   i2 = 0;
 l2:
-  i7 = i5 * i2;
-  i0 = i4 + i7;
-  i7 = i6 + i0;
-  i3 = *(signed char*)i7;
-  i3 = i3 != 0;
-  if (i3) goto l3;
-  *(signed char*)i7 = 3;
+  i4 = (int)*GuardCond__Init_m;
+  i0 = *(int*)(i4-12);
+  i0 *= i2;
+  i3 = i4 + i0;
+  i6 = i5 + i3;
+  i0 = *(signed char*)i6;
+  i0 = i0 != 0;
+  if (i0) goto l3;
+  *(signed char*)i6 = 3;
 l3:
   i2++;
-  i7 = i2 <= i1;
-  if (i7) goto l2;
+  i0 = i2 <= i1;
+  if (i0) goto l2;
 l4:
   i0 = (int)*(void**)(int)info;
-  i5 = (int)Data__RegionDesc_RegionMerge((Data__Region)i0);
-  i0 = i5 == 0;
+  i4 = (int)Data__RegionDesc_RegionMerge((Data__Region)i0);
+  i0 = i4 == 0;
   if (i0) goto l7;
-  i4 = i5 + 44;
-  i4 = *(short int*)i4;
-  i4 = i4 == 82;
-  if (i4) goto l7;
+  i6 = i4 + 44;
+  i6 = *(short int*)i6;
+  i6 = i6 == 82;
+  if (i6) goto l7;
   i1 = (int)*(void**)(int)info;
-  i1 = Data__InstructionDesc_ArgumentIndex((Data__Instruction)i5, (Data__Usable)i1);
-  i3 = (int)*(void**)i5;
-  i5 = i3 == 0;
+  i1 = Data__InstructionDesc_ArgumentIndex((Data__Instruction)i4, (Data__Usable)i1);
+  i3 = (int)*(void**)i4;
+  i4 = i3 == 0;
   i0 = i1 + 1;
-  if (i5) goto l7;
-  i4 = (int)&opndCond + 4;
+  if (i4) goto l7;
+  i6 = (int)&opndCond + 4;
 l5:
   i1 = i3 + 12;
-  i5 = (int)*(void**)i1;
-  i2 = *(int*)(i5-4);
+  i4 = (int)*(void**)i1;
+  i2 = *(int*)(i4-4);
   i2 = _type_test(i2, &Data__GateDesc_td.td, 5);
   if (!(i2)) goto l6;
-  i5 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)i5, (short int)i0);
-  *GuardCond__Init_opnd = (void*)i5;
+  i4 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)i4, (short int)i0);
+  *GuardCond__Init_opnd = (void*)i4;
   i2 = (int)*GuardCond__Init_opnd;
-  i5 = (int)*(void**)(int)&opndCond;
+  i4 = (int)*(void**)(int)&opndCond;
   i2 = (int)*(void**)i2;
-  i5 = GuardCond__TraceValue((Data__Usable)i2, (Data__Usable *)(int)&opndCond, (unsigned char)1);
-  *(unsigned char*)i4 = i5;
+  i4 = GuardCond__TraceValue((Data__Usable)i2, (Data__Usable *)(int)&opndCond, (unsigned char)1);
+  *(unsigned char*)i6 = i4;
   i2 = (int)*(void**)(int)&opndCond;
-  i5 = (int)SymbolTable__constTrue;
-  i5 = i2 != i5;
-  if (i5) goto l6;
+  i4 = (int)SymbolTable__constTrue;
+  i4 = i2 != i4;
+  if (i4) goto l6;
   i1 = (int)*(void**)i1;
   *(void**)(int)&opndCond = (void*)i1;
-  GuardCond__Init_AddImplications_Implications((short int)i6, (const GuardCond__Condition *)(int)&opndCond, (GuardCond__RegionMatrix *)&*GuardCond__Init_m);
+  GuardCond__Init_AddImplications_Implications((short int)i5, (const GuardCond__Condition *)(int)&opndCond, (GuardCond__RegionMatrix *)&*GuardCond__Init_m);
 l6:
-  i5 = i3 + 4;
-  i3 = (int)*(void**)i5;
-  i5 = i3 != 0;
-  if (i5) goto l5;
+  i4 = i3 + 4;
+  i3 = (int)*(void**)i4;
+  i4 = i3 != 0;
+  if (i4) goto l5;
 l7:
   ;
 }
@@ -897,69 +880,70 @@ l6:
 }
 
 void GuardCond__Init_InstrDepImplications(Data__Region r, Data__Opnd *GuardCond__Init_opnd) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7;
+  register int i0, i1, i2, i3, i4, i5, i6;
   i0 = (int)r + 4;
   i1 = (int)*(void**)i0;
   i0 = i1 + 20;
   i0 = (int)*(void**)i0;
   i2 = (int)r + 56;
-  i4 = (int)*(void**)i2;
+  i3 = (int)*(void**)i2;
   i1 += 16;
-  i5 = *(short int*)i1;
+  i4 = *(short int*)i1;
   i0 += 4;
-  i6 = (int)*(void**)i0;
-  i0 = i4 == 0;
+  i5 = (int)*(void**)i0;
+  i0 = i3 == 0;
   if (i0) goto l5;
 l0:
-  i0 = *(int*)(i4-4);
+  i0 = *(int*)(i3-4);
   i0 = _type_test(i0, &Data__RegionDesc_td.td, 5);
   if (i0) goto l3;
-  i3 = i4 + 44;
-  i3 = *(short int*)i3;
-  i3 = i3 == 19;
-  if (i3) goto l4;
-  i7 = i4 + 28;
-  i7 = (int)*(void**)i7;
-  *GuardCond__Init_opnd = (void*)i7;
-  i7 = (int)*GuardCond__Init_opnd;
-  i7 = i7 == 0;
-  if (i7) goto l4;
-l1:
-  i0 = (int)*GuardCond__Init_opnd;
-  i2 = (int)*(void**)i0;
-  i7 = *(int*)(i2-4);
-  i7 = _type_test(i7, &Data__ResultDesc_td.td, 3);
-  if (!(i7)) goto l2;
-  i2 += 16;
-  i2 = (int)*(void**)i2;
-  i2 += 32;
-  i2 = (int)*(void**)i2;
-  i2 += 4;
-  i1 = (int)*(void**)i2;
-  i2 = *(int*)(i6-12);
-  i2 *= i5;
-  i2 = i6 + i2;
-  i1 += 16;
+  i1 = i3 + 44;
   i1 = *(short int*)i1;
-  i7 = i1 + i2;
-  i3 = *(signed char*)i7;
-  i3 = i3 == 1;
-  if (i3) goto l2;
-  *(signed char*)i7 = 2;
+  i1 = i1 == 19;
+  if (i1) goto l4;
+  i6 = i3 + 28;
+  i6 = (int)*(void**)i6;
+  *GuardCond__Init_opnd = (void*)i6;
+  i6 = (int)*GuardCond__Init_opnd;
+  i6 = i6 == 0;
+  if (i6) goto l4;
+l1:
+  i1 = (int)*GuardCond__Init_opnd;
+  i0 = (int)*(void**)i1;
+  i1 = *(int*)(i0-4);
+  i1 = _type_test(i1, &Data__ResultDesc_td.td, 3);
+  if (!(i1)) goto l2;
+  i0 += 16;
+  i0 = (int)*(void**)i0;
+  i0 += 32;
+  i0 = (int)*(void**)i0;
+  i0 += 4;
+  i6 = (int)*(void**)i0;
+  i0 = *(int*)(i5-12);
+  i0 *= i4;
+  i0 = i5 + i0;
+  i6 += 16;
+  i6 = *(short int*)i6;
+  i2 = i6 + i0;
+  i1 = *(signed char*)i2;
+  i1 = i1 == 1;
+  if (i1) goto l2;
+  *(signed char*)i2 = 2;
 l2:
-  i7 = i0 + 8;
-  i7 = (int)*(void**)i7;
-  *GuardCond__Init_opnd = (void*)i7;
-  i7 = (int)*GuardCond__Init_opnd;
-  i7 = i7 != 0;
-  if (i7) goto l1;
+  i1 = (int)*GuardCond__Init_opnd;
+  i1 += 8;
+  i1 = (int)*(void**)i1;
+  *GuardCond__Init_opnd = (void*)i1;
+  i1 = (int)*GuardCond__Init_opnd;
+  i1 = i1 != 0;
+  if (i1) goto l1;
   goto l4;
 l3:
-  GuardCond__Init_InstrDepImplications((Data__Region)i4, (Data__Opnd *)&*GuardCond__Init_opnd);
+  GuardCond__Init_InstrDepImplications((Data__Region)i3, (Data__Opnd *)&*GuardCond__Init_opnd);
 l4:
-  i0 = i4 + 36;
-  i4 = (int)*(void**)i0;
-  i0 = i4 != 0;
+  i0 = i3 + 36;
+  i3 = (int)*(void**)i0;
+  i0 = i3 != 0;
   if (i0) goto l0;
 l5:
   ;

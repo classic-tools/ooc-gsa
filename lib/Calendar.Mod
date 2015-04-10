@@ -1,4 +1,4 @@
-(*	$Id: Calendar.Mod,v 1.6 1999/09/02 13:17:04 acken Exp $	*)
+(*	$Id: Calendar.Mod,v 1.7 2001/07/15 14:58:36 ooc-devel Exp $	*)
 MODULE Calendar;
 
 (*
@@ -510,7 +510,7 @@ VAR
 BEGIN
   ccnt:=0; rcnt:=0;
   WHILE pattern[ccnt]#0X DO
-    IF (pattern[ccnt]='%') & (pattern[ccnt]#0X) THEN
+    IF (pattern[ccnt]='%') & (pattern[ccnt+1]#0X) THEN
       CASE pattern[ccnt+1] OF
       | 'c': flag:=L.GetStr(L.defBothFormat, temp);
              ASSERT(flag);

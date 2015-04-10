@@ -337,9 +337,9 @@ void SystemFlags__ModuleModifiers_LinkSection_AddOptionClause(External__NameList
   Error__Err((int)i1, (short int)100);
   goto l1;
 l0:
-  i0 = (int)Scanner__str;
-  i2 = *(int*)(i0-8);
-  i0 = Strings__Length((const unsigned char*)i0, i2);
+  i2 = (int)Scanner__str;
+  i0 = *(int*)(i2-8);
+  i0 = Strings__Length((const unsigned char*)i2, i0);
   i0++;
   {
     char *_mem, *_var;
@@ -353,12 +353,13 @@ l0:
     i0 = (int)_var;
   }
   *SystemFlags__ModuleModifiers_LinkSection_str = (void*)i0;
-  i1 = (int)*SystemFlags__ModuleModifiers_LinkSection_str;
-  i0 = (int)Scanner__str;
-  i2 = *(int*)(i1-8);
-  _string_copy(i1, i0, i2);
+  i0 = (int)*SystemFlags__ModuleModifiers_LinkSection_str;
+  i1 = (int)Scanner__str;
+  i2 = *(int*)(i0-8);
+  _string_copy(i0, i1, i2);
   i0 = (int)*prefix;
-  External__AddName((External__NameList *)(int)(int)prefix, (Parameter__String)i1);
+  i2 = (int)*SystemFlags__ModuleModifiers_LinkSection_str;
+  External__AddName((External__NameList *)(int)(int)prefix, (Parameter__String)i2);
 l1:
   Scanner__GetSym();
   i1 = Scanner__sym;
@@ -372,9 +373,9 @@ l1:
   Error__Err((int)i0, (short int)100);
   goto l3;
 l2:
-  i2 = (int)Scanner__str;
-  i1 = *(int*)(i2-8);
-  i2 = Strings__Length((const unsigned char*)i2, i1);
+  i1 = (int)Scanner__str;
+  i2 = *(int*)(i1-8);
+  i2 = Strings__Length((const unsigned char*)i1, i2);
   i2++;
   {
     char *_mem, *_var;
@@ -388,12 +389,13 @@ l2:
     i2 = (int)_var;
   }
   *SystemFlags__ModuleModifiers_LinkSection_str = (void*)i2;
-  i0 = (int)*SystemFlags__ModuleModifiers_LinkSection_str;
-  i2 = (int)Scanner__str;
-  i1 = *(int*)(i0-8);
-  _string_copy(i0, i2, i1);
+  i2 = (int)*SystemFlags__ModuleModifiers_LinkSection_str;
+  i0 = (int)Scanner__str;
+  i1 = *(int*)(i2-8);
+  _string_copy(i2, i0, i1);
   i2 = (int)*suffix;
-  External__AddName((External__NameList *)(int)(int)suffix, (Parameter__String)i0);
+  i1 = (int)*SystemFlags__ModuleModifiers_LinkSection_str;
+  External__AddName((External__NameList *)(int)(int)suffix, (Parameter__String)i1);
 l3:
   Scanner__GetSym();
 l4:
@@ -417,41 +419,43 @@ void SystemFlags__ModuleModifiers_LinkSection(Data__Object *SystemFlags__ModuleM
   goto l5;
 l0:
   Scanner__GetSym();
-  i2 = (int)SystemFlags__HeapString();
-  i1 = (int)*SystemFlags__ModuleModifiers_mod;
-  i3 = *(int*)(i2-8);
-  i3 = (int)External__GetLib((signed char)3, (const unsigned char*)i2, i3, (const unsigned char*)(int)_c0, 1);
-  i1 += 16;
-  i1 = (int)*(void**)i1;
-  *SystemFlags__ModuleModifiers_lib = (void*)i3;
-  i3 = (int)*SystemFlags__ModuleModifiers_lib;
-  i1 += 12;
-  i0 = (int)*(void**)i1;
-  External__Append((External__Ref *)i1, (External__Ref)i3);
-  i1 = Scanner__sym;
-  i1 = i1 != 30;
-  if (i1) goto l2;
+  i3 = (int)SystemFlags__HeapString();
+  i2 = *(int*)(i3-8);
+  i2 = (int)External__GetLib((signed char)3, (const unsigned char*)i3, i2, (const unsigned char*)(int)_c0, 1);
+  *SystemFlags__ModuleModifiers_lib = (void*)i2;
+  i2 = (int)*SystemFlags__ModuleModifiers_mod;
+  i2 += 16;
+  i2 = (int)*(void**)i2;
+  i2 += 12;
+  i1 = (int)*SystemFlags__ModuleModifiers_lib;
+  i0 = (int)*(void**)i2;
+  External__Append((External__Ref *)i2, (External__Ref)i1);
+  i2 = Scanner__sym;
+  i2 = i2 != 30;
+  if (i2) goto l2;
 l1:
   Scanner__GetSym();
-  i2 = (int)SystemFlags__HeapString();
-  External__AppendDep((External__Lib)i3, (Parameter__String)i2);
-  i1 = Scanner__sym;
-  i1 = i1 == 19;
-  if (i1) goto l1;
+  i3 = (int)SystemFlags__HeapString();
+  i2 = (int)*SystemFlags__ModuleModifiers_lib;
+  External__AppendDep((External__Lib)i2, (Parameter__String)i3);
+  i2 = Scanner__sym;
+  i2 = i2 == 19;
+  if (i2) goto l1;
   Scanner__CheckSym((signed char)22);
 l2:
-  i1 = i3 + 40;
-  i3 += 44;
-  i0 = (int)*(void**)i1;
-  i5 = (int)*(void**)i3;
-  str = (void*)i2;
-  str = (void*)i2;
-  SystemFlags__ModuleModifiers_LinkSection_AddOptionClause((External__NameList *)i1, (External__NameList *)i3, (Parameter__String *)&str);
+  i1 = (int)*SystemFlags__ModuleModifiers_lib;
+  i2 = i1 + 40;
+  i1 += 44;
+  i0 = (int)*(void**)i2;
+  i5 = (int)*(void**)i1;
+  str = (void*)i3;
+  str = (void*)i3;
+  SystemFlags__ModuleModifiers_LinkSection_AddOptionClause((External__NameList *)i2, (External__NameList *)i1, (Parameter__String *)&str);
   goto l5;
 l3:
-  i1 = (int)*SystemFlags__ModuleModifiers_mod;
   Scanner__GetSym();
   SystemFlags__File((Parameter__String *)(int)&file, (Parameter__String *)(int)&suffix);
+  i1 = (int)*SystemFlags__ModuleModifiers_mod;
   i1 += 16;
   i1 = (int)*(void**)i1;
   i2 = i1 + 12;
@@ -464,17 +468,17 @@ l3:
 l4:
   Scanner__GetSym();
   SystemFlags__File((Parameter__String *)(int)&file, (Parameter__String *)(int)&suffix);
-  i2 = (int)*SystemFlags__ModuleModifiers_mod;
   i1 = *(int*)((int)file-8);
-  i0 = *(int*)((int)suffix-8);
-  i3 = (int)External__NewFile((signed char)1, (const unsigned char*)(int)file, i1, (const unsigned char*)(int)suffix, i0, (int)i4);
-  i2 += 16;
-  i2 = (int)*(void**)i2;
-  i2 += 12;
-  i1 = i3 + 28;
-  i0 = i3 + 24;
-  i4 = (int)*(void**)i2;
-  External__Append((External__Ref *)i2, (External__Ref)i3);
+  i2 = *(int*)((int)suffix-8);
+  i2 = (int)External__NewFile((signed char)1, (const unsigned char*)(int)file, i1, (const unsigned char*)(int)suffix, i2, (int)i4);
+  i4 = (int)*SystemFlags__ModuleModifiers_mod;
+  i4 += 16;
+  i4 = (int)*(void**)i4;
+  i4 += 12;
+  i1 = i2 + 28;
+  i0 = i2 + 24;
+  i3 = (int)*(void**)i4;
+  External__Append((External__Ref *)i4, (External__Ref)i2);
   i4 = (int)*(void**)i0;
   i2 = (int)*(void**)i1;
   SystemFlags__ModuleModifiers_LinkSection_AddOptionClause((External__NameList *)i0, (External__NameList *)i1, (Parameter__String *)&str);
@@ -485,13 +489,15 @@ l5:
 void SystemFlags__ModuleModifiers_SetFlag(short int id, Data__Object *SystemFlags__ModuleModifiers_mod) {
   register int i0, i1, i2;
   i0 = (int)*SystemFlags__ModuleModifiers_mod;
-  i1 = i0 + 68;
-  i2 = *(unsigned int*)i1;
-  i2 = (i2 & ((unsigned int)1 << id)) != 0;
-  if (!(i2)) goto l0;
-  i2 = Scanner__currSymPos;
-  Error__Err((int)i2, (short int)-600);
+  i0 += 68;
+  i0 = *(unsigned int*)i0;
+  i0 = (i0 & ((unsigned int)1 << id)) != 0;
+  if (!(i0)) goto l0;
+  i0 = Scanner__currSymPos;
+  Error__Err((int)i0, (short int)-600);
 l0:
+  i0 = (int)*SystemFlags__ModuleModifiers_mod;
+  i1 = i0 + 68;
   i2 = *(unsigned int*)i1;
   i2 = i2 | ((unsigned int)1 << id);
   *(unsigned int*)i1 = i2;
@@ -509,46 +515,49 @@ void SystemFlags__ModuleModifiers_ReadLibrary(External__Lib *lib) {
 }
 
 void SystemFlags__ModuleModifiers_NormalModule(Data__Object *SystemFlags__ModuleModifiers_mod, External__Ref *SystemFlags__ModuleModifiers_ref) {
-  register int i0, i1, i2, i3;
-  i2 = (int)*SystemFlags__ModuleModifiers_mod;
-  i0 = i2 + 68;
-  i1 = *(unsigned int*)i0;
-  i1 |= 0x12U;
-  *(unsigned int*)i0 = i1;
+  register int i0, i1, i2;
   SystemFlags__mode = 0;
+  i0 = (int)*SystemFlags__ModuleModifiers_mod;
+  i1 = i0 + 68;
+  i2 = *(unsigned int*)i1;
+  i2 |= 0x12U;
+  *(unsigned int*)i1 = i2;
+  i1 = (int)*SystemFlags__ModuleModifiers_mod;
+  i0 = i1 + 68;
   i0 = *(unsigned int*)i0;
   i0 = (i0 & ((unsigned int)1 << 5)) != 0;
   if (!(i0)) goto l2;
-  i3 = i2 + 16;
-  i3 = (int)*(void**)i3;
-  i3 += 12;
-  i3 = (int)*(void**)i3;
-  *SystemFlags__ModuleModifiers_ref = (void*)i3;
-  i1 = (int)*SystemFlags__ModuleModifiers_ref;
-  i3 = i1 == 0;
-  if (i3) goto l1;
-  i1 += 8;
-  i1 = *(signed char*)i1;
-  i3 = i1 == 2;
-  if (i3) goto l1;
-l0:
-  i1 = (int)*SystemFlags__ModuleModifiers_ref;
+  i1 += 16;
+  i1 = (int)*(void**)i1;
+  i1 += 12;
   i1 = (int)*(void**)i1;
   *SystemFlags__ModuleModifiers_ref = (void*)i1;
-  i1 = (int)*SystemFlags__ModuleModifiers_ref;
-  i0 = i1 == 0;
-  if (i0) goto l1;
-  i1 += 8;
-  i1 = *(signed char*)i1;
-  i1 = i1 != 2;
-  if (i1) goto l0;
+  i0 = (int)*SystemFlags__ModuleModifiers_ref;
+  i1 = i0 == 0;
+  if (i1) goto l1;
+  i0 += 8;
+  i0 = *(signed char*)i0;
+  i1 = i0 == 2;
+  if (i1) goto l1;
+l0:
+  i0 = (int)*SystemFlags__ModuleModifiers_ref;
+  i0 = (int)*(void**)i0;
+  *SystemFlags__ModuleModifiers_ref = (void*)i0;
+  i0 = (int)*SystemFlags__ModuleModifiers_ref;
+  i2 = i0 == 0;
+  if (i2) goto l1;
+  i0 += 8;
+  i0 = *(signed char*)i0;
+  i0 = i0 != 2;
+  if (i0) goto l0;
 l1:
-  i3 = (int)*SystemFlags__ModuleModifiers_ref;
-  i3 = i3 == 0;
-  if (i3) goto l2;
-  i2 += 72;
-  i2 = *(int*)i2;
-  Error__Err((int)i2, (short int)513);
+  i1 = (int)*SystemFlags__ModuleModifiers_ref;
+  i1 = i1 == 0;
+  if (i1) goto l2;
+  i1 = (int)*SystemFlags__ModuleModifiers_mod;
+  i1 += 72;
+  i1 = *(int*)i1;
+  Error__Err((int)i1, (short int)513);
 l2:
   ;
 }
@@ -594,21 +603,21 @@ l1:
   SystemFlags__mode = 2;
   goto l4;
 l2:
+  SystemFlags__mode = 1;
   i0 = *(unsigned int*)i1;
   i0 = i0 | ((unsigned int)1 << 18);
   *(unsigned int*)i1 = i0;
   i0 = (int)mod + 68;
-  SystemFlags__mode = 1;
   i2 = *(unsigned int*)i0;
   i2 |= 0x18U;
   *(unsigned int*)i0 = i2;
   goto l4;
 l3:
+  SystemFlags__mode = 2;
   i0 = *(unsigned int*)i1;
   i0 = i0 | ((unsigned int)1 << 18);
   *(unsigned int*)i1 = i0;
   i1 = (int)mod + 68;
-  SystemFlags__mode = 2;
   i0 = *(unsigned int*)i1;
   i0 = i0 | ((unsigned int)1 << 2);
   *(unsigned int*)i1 = i0;
@@ -1003,12 +1012,12 @@ l20:
   Error__Err((int)i3, (short int)510);
 l21:
   i3 = *(unsigned int*)i7;
-  i2 = (int)Scanner__str;
   i3 = i3 | ((unsigned int)1 << 0);
   *(unsigned int*)i7 = i3;
+  i1 = (int)Scanner__str;
   i3 = (int)*(void**)i8;
-  i1 = *(int*)(i2-8);
-  i1 = Strings__Length((const unsigned char*)i2, i1);
+  i2 = *(int*)(i1-8);
+  i1 = Strings__Length((const unsigned char*)i1, i2);
   i4 = i1 + 1;
   i1 = (int)*(void**)i8;
   i2 = i3 + 8;
@@ -1026,9 +1035,9 @@ l21:
   *(void**)i2 = (void*)i4;
   i3 = i1 + 8;
   i1 = (int)*(void**)i3;
-  i3 = (int)Scanner__str;
-  i2 = *(int*)(i1-8);
-  _string_copy(i1, i3, i2);
+  i2 = (int)Scanner__str;
+  i3 = *(int*)(i1-8);
+  _string_copy(i1, i2, i3);
   Scanner__GetSym();
   goto l28;
 l22:
@@ -1269,11 +1278,11 @@ l11:
   goto l27;
 l12:
   i1 = (int)str + 40;
-  i2 = (int)str + 20;
   SystemFlags__CreateInfo((Data__Addressable)(int)str);
   i5 = *(unsigned int*)i1;
   i5 = i5 | ((unsigned int)1 << 0);
   *(unsigned int*)i1 = i5;
+  i2 = (int)str + 20;
   i5 = SystemFlags__mode;
   i5 = i5 != 2;
   if (i5) goto l17;
@@ -1320,12 +1329,12 @@ l17:
   i3 = Scanner__currSymPos;
   Error__Err((int)i3, (short int)509);
 l18:
-  i4 = (int)str + 16;
+  i0 = (int)str + 16;
 l19:
   Scanner__GetSym();
   i5 = Scanner__sym;
-  i0 = i5 == 38;
-  if (i0) goto l24;
+  i4 = i5 == 38;
+  if (i4) goto l24;
   i5 = i5 != 37;
   if (i5) goto l20;
   i3 = *(signed char*)i2;
@@ -1345,43 +1354,43 @@ l22:
   Scanner__GetSym();
   goto l25;
 l23:
-  i5 = (int)*(void**)i4;
+  i5 = (int)*(void**)i0;
   Scanner__sym = (signed char)37;
   i3 = SystemFlags__CallConv();
-  i0 = i5 + 4;
-  *(short int*)i0 = i3;
+  i4 = i5 + 4;
+  *(short int*)i4 = i3;
   goto l25;
 l24:
   SystemFlags__SetFlag((Data__Addressable)(int)str);
 l25:
-  i0 = Scanner__sym;
-  i0 = i0 == 19;
-  if (i0) goto l19;
+  i4 = Scanner__sym;
+  i4 = i4 == 19;
+  if (i4) goto l19;
   Scanner__CheckSym((signed char)23);
 l26:
   i5 = (int)SymbolTable__mod;
   i5 += 64;
   i5 = *(unsigned int*)i5;
-  i4 = *(signed char*)i2;
   i5 = (i5 & ((unsigned int)1 << 4)) != 0;
-  i4 = i4 != 31;
   Scanner__allowUnderscore = i5;
-  if (i4) goto l27;
+  i5 = *(signed char*)i2;
+  i5 = i5 != 31;
+  if (i5) goto l27;
+  i3 = *(unsigned int*)i1;
+  i3 = (i3 & ((unsigned int)1 << 10)) != 0;
+  if (!(i3)) goto l27;
+  i4 = (int)SymbolTable__NewObject((const unsigned char*)(int)_c16, 6, (signed char)5, (int)-1);
+  i3 = (int)Data__struct + 68;
+  i5 = i4 + 24;
+  i3 = (int)*(void**)i3;
+  *(void**)i5 = (void*)i3;
+  SymbolTable__InsertField((Data__Struct)(int)str, (Data__Object)i4);
   i4 = *(unsigned int*)i1;
-  i4 = (i4 & ((unsigned int)1 << 10)) != 0;
-  if (!(i4)) goto l27;
-  i3 = (int)SymbolTable__NewObject((const unsigned char*)(int)_c16, 6, (signed char)5, (int)-1);
-  i4 = (int)Data__struct + 68;
-  i5 = i3 + 24;
-  i4 = (int)*(void**)i4;
-  *(void**)i5 = (void*)i4;
-  SymbolTable__InsertField((Data__Struct)(int)str, (Data__Object)i3);
-  i3 = *(unsigned int*)i1;
-  i3 = i3 & ~((unsigned int)1 << 2);
-  *(unsigned int*)i1 = i3;
-  i3 = *(unsigned int*)i1;
-  i3 = i3 | ((unsigned int)1 << 11);
-  *(unsigned int*)i1 = i3;
+  i4 = i4 & ~((unsigned int)1 << 2);
+  *(unsigned int*)i1 = i4;
+  i4 = *(unsigned int*)i1;
+  i4 = i4 | ((unsigned int)1 << 11);
+  *(unsigned int*)i1 = i4;
 l27:
   ;
 }

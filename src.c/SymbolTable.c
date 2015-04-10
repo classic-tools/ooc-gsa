@@ -662,24 +662,25 @@ l6:
 
 Data__Object SymbolTable__InsertDecl(Data__Addressable scope, Data__Object obj) {
   register int i0, i1, i2, i3;
+  i0 = (int)obj + 32;
+  *(void**)i0 = (void*)0;
+  i0 = (int)obj + 36;
+  *(void**)i0 = (void*)0;
+  i0 = (int)obj + 40;
+  *(void**)i0 = (void*)(int)scope;
   i0 = (int)SymbolTable__currScope;
-  i1 = (int)obj + 32;
-  *(void**)i1 = (void*)0;
-  i1 = (int)obj + 36;
-  *(void**)i1 = (void*)0;
-  i2 = (int)obj + 40;
-  i1 = i0 + 48;
-  *(void**)i2 = (void*)(int)scope;
-  i2 = *(short int*)i1;
+  i0 += 48;
+  i0 = *(short int*)i0;
   i1 = (int)obj + 48;
-  *(short int*)i1 = i2;
+  *(short int*)i1 = i0;
+  i0 = (int)SymbolTable__currScope;
   i1 = i0 + 50;
   i0 = *(int*)((int)scope-4);
-  i1 = *(short int*)i1;
-  i2 = _type_test(i0, &Data__ObjectDesc_td.td, 4);
-  i3 = (int)obj + 50;
-  *(short int*)i3 = i1;
-  if (i2) goto l3;
+  i3 = *(short int*)i1;
+  i1 = _type_test(i0, &Data__ObjectDesc_td.td, 4);
+  i2 = (int)obj + 50;
+  *(short int*)i2 = i3;
+  if (i1) goto l3;
   i0 = _type_test(i0, &Data__StructDesc_td.td, 4);
   if (i0) goto l0;
   goto l4;
@@ -734,8 +735,8 @@ void SymbolTable__OpenScope(Data__Object scope, short int moduleId, short int le
   *(short int*)i0 = moduleId;
   i0 = (int)scope + 50;
   *(short int*)i0 = level;
-  SymbolTable__currScope = (void*)(int)scope;
   i0 = level != 0;
+  SymbolTable__currScope = (void*)(int)scope;
   if (i0) goto l0;
   SymbolTable__tbProcCounter = 0;
 l0:
@@ -890,218 +891,203 @@ void SymbolTable__CloseScope_SetTBProcFlags(Data__Struct record, signed char mod
   i0 = (int)record + 28;
   i2 = (int)*(void**)i0;
   i0 = i2 == 0;
-  if (i0) goto l9;
+  if (i0) goto l4;
 l0:
   i0 = i2 + 28;
   i0 = *(signed char*)i0;
-  i0 = i0 == 7;
-  if (i0) goto l1;
-  i1 = 0;
-  goto l7;
-l1:
-  if (!(mode<=-1 || mode>=3)) goto l2;
-  i1 = 1;
-  goto l7;
-l2:
-  if (!(mode==0)) goto l3;
+  i0 = i0 != 7;
+  if (i0) goto l3;
+  if (!(mode==0)) goto l1;
   i3 = i2 + 64;
   i1 = *(unsigned int*)i3;
   i1 = i1 | ((unsigned int)1 << 22);
   *(unsigned int*)i3 = i1;
-  i1 = 0;
-  goto l7;
-l3:
-  if (!(mode==1)) goto l5;
-  i0 = i2 + 64;
-  i1 = *(unsigned int*)i0;
-  i3 = (i1 & ((unsigned int)1 << 0)) != 0;
-  if (!(i3)) goto l4;
-  i1 = i1 & ~((unsigned int)1 << 22);
-  *(unsigned int*)i0 = i1;
-l4:
-  i1 = 0;
-  goto l7;
-l5:
-  if (!(mode==2)) goto l7;
+  goto l3;
+l1:
+  if (!(mode==1)) goto l2;
   i1 = i2 + 64;
-  i0 = *(unsigned int*)i1;
-  i3 = (i0 & ((unsigned int)1 << 22)) != 0;
-  if (!(i3)) goto l6;
-  i0 = i0 | ((unsigned int)1 << 10);
-  *(unsigned int*)i1 = i0;
-  i0 = *(unsigned int*)i1;
-  i0 = i0 & ~((unsigned int)1 << 22);
-  *(unsigned int*)i1 = i0;
-l6:
-  i1 = 0;
-l7:
-  if (i1) goto l8;
+  i3 = *(unsigned int*)i1;
+  i0 = (i3 & ((unsigned int)1 << 0)) != 0;
+  if (!(i0)) goto l3;
+  i3 = i3 & ~((unsigned int)1 << 22);
+  *(unsigned int*)i1 = i3;
+  goto l3;
+l2:
+  if (!(mode==2)) goto l3;
+  i1 = i2 + 64;
+  i3 = *(unsigned int*)i1;
+  i0 = (i3 & ((unsigned int)1 << 22)) != 0;
+  if (!(i0)) goto l3;
+  i3 = i3 | ((unsigned int)1 << 10);
+  *(unsigned int*)i1 = i3;
+  i3 = *(unsigned int*)i1;
+  i3 = i3 & ~((unsigned int)1 << 22);
+  *(unsigned int*)i1 = i3;
+l3:
   i0 = i2 + 36;
-  i0 = (int)*(void**)i0;
-  i2 = i0;
-l8:
-  if (i1) goto l9;
+  i2 = (int)*(void**)i0;
   i0 = i2 != 0;
   if (i0) goto l0;
-l9:
+l4:
   ;
 }
 
 void SymbolTable__CloseScope(unsigned char check) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10;
+  register int i0, i1, i2, i3, i4, i5, i6, i7;
   i0 = (int)SymbolTable__currScope;
   i0 += 44;
   i0 = (int)*(void**)i0;
   SymbolTable__CloseScope_UnresolvedForward((Data__Object)i0);
-  i9 = (int)SymbolTable__mod;
-  i0 = (int)SymbolTable__currScope;
-  i0 = i0 != i9;
+  i0 = (int)SymbolTable__mod;
+  i1 = (int)SymbolTable__currScope;
+  i0 = i1 != i0;
   if (i0) goto l18;
   i1 = (int)SymbolTable__typeConstrList;
-  i10 = i1 != 0;
-  if (!(i10)) goto l7;
-  i2 = i1;
+  i6 = i1 == 0;
+  if (i6) goto l7;
 l0:
-  i8 = i2 + 4;
-  i0 = (int)*(void**)i8;
-  i8 = i0 + 20;
-  i8 = *(signed char*)i8;
-  i8 = i8 != 31;
-  if (i8) goto l6;
-  i3 = i0 + 28;
-  i6 = (int)*(void**)i3;
-  i3 = i6 == 0;
-  i4 = i0 + 24;
-  i4 = (int)*(void**)i4;
-  i7 = SymbolTable__NumberOfTBProcs((Data__Struct)i4, (unsigned char)1);
+  i6 = i1 + 4;
+  i2 = (int)*(void**)i6;
+  i6 = i2 + 20;
+  i6 = *(signed char*)i6;
+  i6 = i6 != 31;
+  if (i6) goto l6;
+  i3 = i2 + 24;
+  i4 = i2 + 28;
+  i5 = (int)*(void**)i4;
+  i4 = (int)*(void**)i3;
+  i3 = i5 == 0;
+  i0 = SymbolTable__NumberOfTBProcs((Data__Struct)i4, (unsigned char)1);
   if (i3) goto l5;
 l1:
-  i3 = i6 + 28;
+  i3 = i5 + 28;
   i3 = *(signed char*)i3;
   i3 = i3 != 7;
   if (i3) goto l4;
-  i3 = i6 + 60;
-  i5 = *(int*)i3;
-  i5 = i5 >= 0;
-  if (i5) goto l4;
-  i8 = i6 + 20;
-  i8 = (int)*(void**)i8;
-  i5 = i6 + 52;
-  i4 = *(int*)(i8-8);
-  i5 = (int)*(void**)i5;
-  i4 = (int)SymbolTable__BaseDefinition((Data__Object)i5, (const unsigned char*)i8, i4);
-  i8 = i4 != 0;
-  if (i8) goto l2;
-  *(int*)i3 = i7;
-  i8 = i7 + 1;
+  i3 = i5 + 60;
+  i7 = *(int*)i3;
+  i7 = i7 >= 0;
+  if (i7) goto l4;
+  i6 = i5 + 20;
+  i6 = (int)*(void**)i6;
+  i7 = i5 + 52;
+  i4 = *(int*)(i6-8);
+  i7 = (int)*(void**)i7;
+  i4 = (int)SymbolTable__BaseDefinition((Data__Object)i7, (const unsigned char*)i6, i4);
+  i6 = i4 != 0;
+  if (i6) goto l2;
+  *(int*)i3 = i0;
+  i6 = i0 + 1;
   goto l3;
 l2:
   i4 += 60;
   i4 = *(int*)i4;
   *(int*)i3 = i4;
-  i8 = i7;
+  i6 = i0;
 l3:
-  i7 = i8;
+  i0 = i6;
 l4:
-  i3 = i6 + 36;
-  i6 = (int)*(void**)i3;
-  i3 = i6 != 0;
+  i3 = i5 + 36;
+  i5 = (int)*(void**)i3;
+  i3 = i5 != 0;
   if (i3) goto l1;
 l5:
-  SymbolTable__CloseScope_SetTBProcFlags((Data__Struct)i0, (signed char)0);
+  SymbolTable__CloseScope_SetTBProcFlags((Data__Struct)i2, (signed char)0);
 l6:
-  i2 = (int)*(void**)i2;
-  i8 = i2 != 0;
-  if (i8) goto l0;
-l7:
-  if (!(i10)) goto l15;
-l8:
-  i3 = i1 + 4;
-  i4 = (int)*(void**)i3;
-  i8 = i4 + 20;
-  i8 = *(signed char*)i8;
-  i8 = i8 != 31;
-  if (i8) goto l14;
-  i5 = i4 + 40;
-  i5 = *(unsigned int*)i5;
-  i5 = (i5 & ((unsigned int)1 << 29)) != 0;
-  if (!(i5)) goto l10;
-  i5 = i4 == 0;
-  if (i5) goto l10;
-l9:
-  i5 = i4 + 24;
-  SymbolTable__CloseScope_SetTBProcFlags((Data__Struct)i4, (signed char)1);
-  i4 = (int)*(void**)i5;
-  i5 = i4 != 0;
-  if (i5) goto l9;
-l10:
-  i4 = (int)*(void**)i3;
-  i4 += 28;
-  i7 = (int)*(void**)i4;
-  i4 = i7 == 0;
-  if (i4) goto l14;
-l11:
-  i4 = i7 + 28;
-  i4 = *(signed char*)i4;
-  i4 = i4 != 7;
-  if (i4) goto l13;
-  i3 = i7 + 20;
-  i8 = (int)*(void**)i3;
-  i5 = i7 + 52;
-  i6 = *(int*)(i8-8);
-  i5 = (int)*(void**)i5;
-  i5 = (int)SymbolTable__BaseDefinition((Data__Object)i5, (const unsigned char*)i8, i6);
-  i8 = i5 == 0;
-  if (i8) goto l13;
-  i4 = *(int*)(i5-4);
-  i4 = (int)((_Type)i4)->tbprocs[2];
-  i4 = (int)((_TBP_Data__ObjectDesc_Module)i4)((Data__Object)i5);
-  i6 = (int)SymbolTable__mod;
-  i6 = i4 != i6;
-  if (i6) goto l13;
-l12:
-  i4 = i5 + 64;
-  i8 = *(unsigned int*)i4;
-  i8 = i8 & ~((unsigned int)1 << 22);
-  *(unsigned int*)i4 = i8;
-  i4 = (int)*(void**)i3;
-  i5 += 52;
-  i8 = *(int*)(i4-8);
-  i5 = (int)*(void**)i5;
-  i5 = (int)SymbolTable__BaseDefinition((Data__Object)i5, (const unsigned char*)i4, i8);
-  i4 = i5 == 0;
-  if (i4) goto l13;
-  i4 = *(int*)(i5-4);
-  i4 = (int)((_Type)i4)->tbprocs[2];
-  i4 = (int)((_TBP_Data__ObjectDesc_Module)i4)((Data__Object)i5);
-  i8 = (int)SymbolTable__mod;
-  i4 = i4 == i8;
-  if (i4) goto l12;
-l13:
-  i4 = i7 + 36;
-  i7 = (int)*(void**)i4;
-  i4 = i7 != 0;
-  if (i4) goto l11;
-l14:
   i1 = (int)*(void**)i1;
-  i8 = i1 != 0;
-  if (i8) goto l8;
+  i6 = i1 != 0;
+  if (i6) goto l0;
+l7:
+  i2 = (int)SymbolTable__typeConstrList;
+  i6 = i2 == 0;
+  if (i6) goto l15;
+l8:
+  i1 = i2 + 4;
+  i3 = (int)*(void**)i1;
+  i6 = i3 + 20;
+  i6 = *(signed char*)i6;
+  i6 = i6 != 31;
+  if (i6) goto l14;
+  i4 = i3 + 40;
+  i4 = *(unsigned int*)i4;
+  i4 = (i4 & ((unsigned int)1 << 29)) != 0;
+  if (!(i4)) goto l10;
+  i4 = i3 == 0;
+  if (i4) goto l10;
+l9:
+  SymbolTable__CloseScope_SetTBProcFlags((Data__Struct)i3, (signed char)1);
+  i3 += 24;
+  i3 = (int)*(void**)i3;
+  i4 = i3 != 0;
+  if (i4) goto l9;
+l10:
+  i3 = (int)*(void**)i1;
+  i3 += 28;
+  i5 = (int)*(void**)i3;
+  i3 = i5 == 0;
+  if (i3) goto l14;
+l11:
+  i3 = i5 + 28;
+  i3 = *(signed char*)i3;
+  i3 = i3 != 7;
+  if (i3) goto l13;
+  i1 = i5 + 20;
+  i6 = (int)*(void**)i1;
+  i4 = i5 + 52;
+  i7 = *(int*)(i6-8);
+  i4 = (int)*(void**)i4;
+  i4 = (int)SymbolTable__BaseDefinition((Data__Object)i4, (const unsigned char*)i6, i7);
+  i6 = i4 == 0;
+  if (i6) goto l13;
+  i3 = *(int*)(i4-4);
+  i3 = (int)((_Type)i3)->tbprocs[2];
+  i3 = (int)((_TBP_Data__ObjectDesc_Module)i3)((Data__Object)i4);
+  i7 = (int)SymbolTable__mod;
+  i7 = i3 != i7;
+  if (i7) goto l13;
+l12:
+  i3 = i4 + 64;
+  i6 = *(unsigned int*)i3;
+  i6 = i6 & ~((unsigned int)1 << 22);
+  *(unsigned int*)i3 = i6;
+  i3 = (int)*(void**)i1;
+  i4 += 52;
+  i6 = *(int*)(i3-8);
+  i4 = (int)*(void**)i4;
+  i4 = (int)SymbolTable__BaseDefinition((Data__Object)i4, (const unsigned char*)i3, i6);
+  i3 = i4 == 0;
+  if (i3) goto l13;
+  i3 = *(int*)(i4-4);
+  i3 = (int)((_Type)i3)->tbprocs[2];
+  i3 = (int)((_TBP_Data__ObjectDesc_Module)i3)((Data__Object)i4);
+  i6 = (int)SymbolTable__mod;
+  i3 = i3 == i6;
+  if (i3) goto l12;
+l13:
+  i3 = i5 + 36;
+  i5 = (int)*(void**)i3;
+  i3 = i5 != 0;
+  if (i3) goto l11;
+l14:
+  i2 = (int)*(void**)i2;
+  i6 = i2 != 0;
+  if (i6) goto l8;
 l15:
-  i7 = (int)SymbolTable__typeConstrList;
-  i8 = i7 == 0;
-  if (i8) goto l18;
+  i5 = (int)SymbolTable__typeConstrList;
+  i6 = i5 == 0;
+  if (i6) goto l18;
 l16:
-  i8 = i7 + 4;
-  i6 = (int)*(void**)i8;
-  i8 = i6 + 20;
-  i8 = *(signed char*)i8;
-  i8 = i8 != 31;
-  if (i8) goto l17;
+  i7 = i5 + 4;
+  i6 = (int)*(void**)i7;
+  i7 = i6 + 20;
+  i7 = *(signed char*)i7;
+  i7 = i7 != 31;
+  if (i7) goto l17;
   SymbolTable__CloseScope_SetTBProcFlags((Data__Struct)i6, (signed char)2);
 l17:
-  i7 = (int)*(void**)i7;
-  i8 = i7 != 0;
-  if (i8) goto l16;
+  i5 = (int)*(void**)i5;
+  i7 = i5 != 0;
+  if (i7) goto l16;
 l18:
   if (!(check)) goto l27;
   i6 = (int)SymbolTable__currScope;
@@ -2091,35 +2077,36 @@ l1:
 }
 
 void SymbolTable__InitPredef_PredefStruct(const unsigned char* name__ref, int name_0d, signed char form) {
-  register int i0, i1, i2, i3, i4, i5;
+  register int i0, i1, i2, i3;
   unsigned char* name;
   char* _old_top_vs = _top_vs;
   _push_value(int, name, name__ref, name_0d);
-  i4 = (int)SymbolTable__NewObject((const unsigned char*)(int)name, name_0d, (signed char)2, (int)-1);
-  i0 = i4 + 64;
-  i1 = (int)_ashl(form, 2, (unsigned int));
-  i3 = (int)Data__struct + i1;
+  i2 = (int)SymbolTable__NewObject((const unsigned char*)(int)name, name_0d, (signed char)2, (int)-1);
+  i0 = i2 + 64;
   i1 = *(unsigned int*)i0;
-  i2 = (int)*(void**)i3;
   i1 = i1 | ((unsigned int)1 << 0);
-  i5 = i2 == 0;
   *(unsigned int*)i0 = i1;
-  if (i5) goto l0;
-  i0 = i4 + 24;
-  *(void**)i0 = (void*)i2;
+  i0 = (int)_ashl(form, 2, (unsigned int));
+  i1 = (int)Data__struct + i0;
+  i3 = (int)*(void**)i1;
+  i0 = i3 == 0;
+  if (i0) goto l0;
+  i0 = i2 + 24;
+  *(void**)i0 = (void*)i3;
   goto l1;
 l0:
-  i1 = i4 + 24;
-  i0 = (int)SymbolTable__NewStruct((signed char)form, (int)-1);
-  *(void**)i1 = (void*)i0;
-  i0 = (int)*(void**)i1;
-  *(void**)i3 = (void*)i0;
-  StdTypes__StructAlloc((Data__Struct)i0);
-  i1 = (int)*(void**)i1;
-  i3 = i1 + 36;
-  *(void**)i3 = (void*)i4;
+  i0 = i2 + 24;
+  i3 = (int)SymbolTable__NewStruct((signed char)form, (int)-1);
+  *(void**)i0 = (void*)i3;
+  i3 = (int)*(void**)i0;
+  *(void**)i1 = (void*)i3;
+  i1 = (int)*(void**)i0;
+  StdTypes__StructAlloc((Data__Struct)i1);
+  i0 = (int)*(void**)i0;
+  i1 = i0 + 36;
+  *(void**)i1 = (void*)i2;
 l1:
-  SymbolTable__Insert((Data__Object)i4);
+  SymbolTable__Insert((Data__Object)i2);
   _top_vs = _old_top_vs;
 }
 
@@ -2212,7 +2199,7 @@ l0:
 }
 
 void SymbolTable__InitPredef(void) {
-  register int i0, i1, i2, i3, i4, i5;
+  register int i0, i1, i2, i3;
   i0 = (int)SymbolTable__NewModule((const unsigned char*)(int)_c30, 9, (int)-1);
   SymbolTable__predef = (void*)i0;
   i0 = (int)SymbolTable__predef;
@@ -2235,11 +2222,12 @@ l0:
   SymbolTable__InitPredef_PredefStruct((const unsigned char*)(int)_c40, 4, (signed char)14);
   i0 = (int)SymbolTable__NewStruct((signed char)0, (int)-1);
   *(void**)(int)Data__struct = (void*)i0;
-  i0 = (int)*(void**)(int)Data__struct;
-  i1 = i0 + 24;
-  *(void**)i1 = (void*)i0;
-  i1 = i0 + 48;
-  *(int*)i1 = 1;
+  i1 = (int)*(void**)(int)Data__struct;
+  i0 = i1 + 24;
+  *(void**)i0 = (void*)i1;
+  i1 = (int)*(void**)(int)Data__struct;
+  i0 = i1 + 48;
+  *(int*)i0 = 1;
   i0 = (int)SymbolTable__NewStruct((signed char)18, (int)-1);
   i1 = (int)Data__struct + 72;
   *(void**)i1 = (void*)i0;
@@ -2249,12 +2237,12 @@ l0:
   i0 = (int)SymbolTable__NewStruct((signed char)21, (int)-1);
   i1 = (int)Data__struct + 84;
   *(void**)i1 = (void*)i0;
-  i1 = (int)Data__struct + 80;
-  i0 = (int)SymbolTable__NewStruct((signed char)20, (int)-1);
-  *(void**)i1 = (void*)i0;
-  i0 = (int)*(void**)i1;
-  i1 = (int)Data__constNil;
-  Data__InitConst((Data__Const)i1, (Data__Struct)i0);
+  i0 = (int)Data__struct + 80;
+  i1 = (int)SymbolTable__NewStruct((signed char)20, (int)-1);
+  *(void**)i0 = (void*)i1;
+  i1 = (int)*(void**)i0;
+  i0 = (int)Data__constNil;
+  Data__InitConst((Data__Const)i0, (Data__Struct)i1);
   i0 = (int)Data__constNil;
   i1 = i0 + 48;
   *(unsigned char*)i1 = 1;
@@ -2291,30 +2279,32 @@ l0:
   i2 = (int)*(void**)i0;
   i2 = (int)Data__GetIntConst((int)0, (Data__Struct)i2);
   SymbolTable__constFalse = (void*)i2;
-  i5 = (int)SymbolTable__constFalse;
-  i3 = i1 + 52;
-  i2 = i5 + 48;
-  *(void**)i3 = (void*)i5;
-  i3 = i1 + 24;
-  i4 = (int)*(void**)i0;
+  i3 = (int)SymbolTable__constFalse;
+  i2 = i3 + 48;
   *(unsigned char*)i2 = 1;
-  *(void**)i3 = (void*)i4;
+  i3 = i1 + 52;
+  i2 = (int)SymbolTable__constFalse;
+  *(void**)i3 = (void*)i2;
+  i3 = i1 + 24;
+  i2 = (int)*(void**)i0;
+  *(void**)i3 = (void*)i2;
   SymbolTable__Insert((Data__Object)i1);
   i1 = (int)SymbolTable__NewObject((const unsigned char*)(int)_c64, 5, (signed char)1, (int)-1);
   i2 = (int)*(void**)i0;
   i2 = (int)Data__GetIntConst((int)1, (Data__Struct)i2);
   SymbolTable__constTrue = (void*)i2;
   i2 = (int)SymbolTable__constTrue;
-  i4 = i1 + 52;
   i3 = i2 + 48;
-  *(void**)i4 = (void*)i2;
-  i4 = i1 + 24;
-  i0 = (int)*(void**)i0;
   *(unsigned char*)i3 = 1;
-  *(void**)i4 = (void*)i0;
+  i3 = i1 + 52;
+  i2 = (int)SymbolTable__constTrue;
+  *(void**)i3 = (void*)i2;
+  i2 = i1 + 24;
+  i0 = (int)*(void**)i0;
+  *(void**)i2 = (void*)i0;
   SymbolTable__Insert((Data__Object)i1);
-  i0 = (int)SymbolTable__predef;
   SymbolTable__currScope = (void*)0;
+  i0 = (int)SymbolTable__predef;
   SymbolTable__BalanceTree((Data__Object)i0);
   i0 = (int)SymbolTable__NewModule((const unsigned char*)(int)_c65, 7, (int)-1);
   SymbolTable__system = (void*)i0;
@@ -2347,16 +2337,16 @@ l1:
   SymbolTable__BalanceTree((Data__Object)i0);
   i0 = (int)SymbolTable__NewObject((const unsigned char*)(int)_c81, 5, (signed char)0, (int)-1);
   SymbolTable__mem = (void*)i0;
-  i2 = (int)SymbolTable__mem;
-  i0 = i2 + 24;
-  i1 = (int)*(void**)(int)Data__struct;
-  *(void**)i0 = (void*)i1;
+  i0 = (int)SymbolTable__mem;
+  i1 = i0 + 24;
+  i2 = (int)*(void**)(int)Data__struct;
+  *(void**)i1 = (void*)i2;
   i0 = (int)SymbolTable__NewObject((const unsigned char*)(int)_c82, 7, (signed char)0, (int)-1);
   SymbolTable__store = (void*)i0;
   i0 = (int)SymbolTable__store;
-  i2 = i0 + 24;
-  i1 = (int)*(void**)(int)Data__struct;
-  *(void**)i2 = (void*)i1;
+  i1 = i0 + 24;
+  i2 = (int)*(void**)(int)Data__struct;
+  *(void**)i1 = (void*)i2;
 }
 
 void SymbolTable__AddStructRef(SymbolTable__StructList *list, Data__Struct type) {

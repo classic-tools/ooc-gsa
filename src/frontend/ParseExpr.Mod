@@ -1,7 +1,7 @@
-(* 	$Id: ParseExpr.Mod,v 1.121 2000/12/27 16:32:19 ooc-devel Exp $	 *)
+(* 	$Id: ParseExpr.Mod,v 1.122 2001/04/07 08:04:01 ooc-devel Exp $	 *)
 MODULE ParseExpr;
 (*  Parses Oberon-2 expressions and translates them to GSA.
-    Copyright (C) 1995-2000  Michael van Acken
+    Copyright (C) 1995-2001  Michael van Acken
 
     This file is part of OOC.
 
@@ -1532,12 +1532,20 @@ PROCEDURE Factor (region: D.Region; VAR x: Attr.Item);
       S.CheckSym (S.rBrace)
     END Set;
   
+  PROCEDURE PredefinedProc (obj: D.Object): BOOLEAN;
+    BEGIN
+      RETURN (obj. mode = D.objProc) &
+             (obj. moduleId < Sym.currentModuleId)
+    END PredefinedProc;
+  
   BEGIN
     Attr.InitItem (x, S.currSymPos);
     designator := FALSE;
     IF (S.sym = S.ident) THEN            (* variable or function call *)
       Designator (region, x);
-      IF (S.sym = S.lParen) OR (x. obj # NIL) & (x. obj. mode = D.objTBProc) THEN
+      IF (S.sym = S.lParen) OR
+         (x. obj # NIL) & ((x. obj. mode = D.objTBProc) OR
+                           PredefinedProc (x. obj)) THEN
         ProcedureCall (region, x, x, exitInfo, FALSE);
         (* if the result type is a pointer, set reference to the dynamic type;
            see also procedure Designator *)

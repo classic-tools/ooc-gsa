@@ -23,35 +23,36 @@ int LoopTransformation__AnalyseLoop_Category(Data__Opnd opnd, Data__Region *Loop
 l0:
   i3 += 16;
   i3 = (int)*(void**)i3;
-  i2 = (int)*LoopTransformation__AnalyseLoop_loop;
-  i0 = i3 + 32;
-  i1 = (int)*(void**)i0;
-  i4 = i1 == i2;
+  i2 = i3 + 32;
+  i1 = (int)*(void**)i2;
+  i0 = (int)*LoopTransformation__AnalyseLoop_loop;
+  i4 = i1 == i0;
   if (i4) goto l6;
-  i1 = Data__RegionDesc_Dominates((Data__Region)i2, (Data__Region)i1);
+  i1 = Data__RegionDesc_Dominates((Data__Region)i0, (Data__Region)i1);
   if (i1) goto l1;
   i4 = 0;
   goto l11;
 l1:
-  i0 = (int)*(void**)i0;
-  i4 = i0 != i2;
-  if (i4) goto l2;
-  i4 = 0;
+  i4 = (int)*(void**)i2;
+  i0 = (int)*LoopTransformation__AnalyseLoop_loop;
+  i2 = i4 != i0;
+  if (i2) goto l2;
+  i1 = 0;
   goto l4;
 l2:
-  i1 = i0 + 44;
-  i1 = *(short int*)i1;
-  i4 = i1 == 82;
-  if (i4) goto l3;
-  i1 = i0 + 32;
-  i1 = (int)*(void**)i1;
-  i0 = i1;
+  i2 = i4 + 44;
+  i2 = *(short int*)i2;
+  i1 = i2 == 82;
+  if (i1) goto l3;
+  i2 = i4 + 32;
+  i2 = (int)*(void**)i2;
+  i4 = i2;
 l3:
-  if (i4) goto l4;
-  i1 = i0 != i2;
-  if (i1) goto l2;
+  if (i1) goto l4;
+  i2 = i4 != i0;
+  if (i2) goto l2;
 l4:
-  if (i4) goto l5;
+  if (i1) goto l5;
   i4 = i3 + 8;
   i4 = *(int*)i4;
   goto l11;
@@ -119,32 +120,33 @@ l5:
 
 unsigned char LoopTransformation__AnalyseLoop_MarkedInstr(Data__Instruction instr, Data__Region *LoopTransformation__AnalyseLoop_loop) {
   register int i0, i1, i2, i3;
-  i2 = (int)*LoopTransformation__AnalyseLoop_loop;
-  i1 = (int)instr + 32;
-  i0 = (int)*(void**)i1;
-  i3 = i0 == i2;
+  i2 = (int)instr + 32;
+  i0 = (int)*(void**)i2;
+  i1 = (int)*LoopTransformation__AnalyseLoop_loop;
+  i3 = i0 == i1;
   if (i3) goto l5;
-  i0 = Data__RegionDesc_Dominates((Data__Region)i2, (Data__Region)i0);
-  if (i0) goto l0;
+  i1 = Data__RegionDesc_Dominates((Data__Region)i1, (Data__Region)i0);
+  if (i1) goto l0;
   i3 = 0;
   goto l6;
 l0:
-  i3 = (int)*(void**)i1;
-  i1 = i3 != i2;
-  if (i1) goto l1;
+  i2 = (int)*(void**)i2;
+  i3 = (int)*LoopTransformation__AnalyseLoop_loop;
+  i0 = i2 != i3;
+  if (i0) goto l1;
   i0 = 0;
   goto l3;
 l1:
-  i1 = i3 + 44;
+  i1 = i2 + 44;
   i1 = *(short int*)i1;
   i0 = i1 == 82;
   if (i0) goto l2;
-  i1 = i3 + 32;
+  i1 = i2 + 32;
   i1 = (int)*(void**)i1;
-  i3 = i1;
+  i2 = i1;
 l2:
   if (i0) goto l3;
-  i1 = i3 != i2;
+  i1 = i2 != i3;
   if (i1) goto l1;
 l3:
   if (i0) goto l4;

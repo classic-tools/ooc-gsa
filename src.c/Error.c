@@ -6,29 +6,31 @@
 static _ModId _mid;
 
 void Error__ReadErrorList_SkipWhitespace(BinaryRider__Reader *Error__ReadErrorList_r, unsigned char *Error__ReadErrorList_ch) {
-  register int i0, i1, i2, i3, i4;
-  i3 = (int)*Error__ReadErrorList_r;
-  i0 = (int)*(void**)i3;
+  register int i0, i1, i2, i3;
+  i0 = (int)*Error__ReadErrorList_r;
+  i0 = (int)*(void**)i0;
   i0 = i0 != 0;
   if (i0) goto l1;
-  i4 = *Error__ReadErrorList_ch;
-  i2 = i4 == 10;
+  i1 = *Error__ReadErrorList_ch;
+  i2 = i1 == 10;
   if (i2) goto l1;
-  i1 = i4 > 32;
-  if (i1) goto l1;
-  i0 = *(int*)(i3-4);
-  i4 = (int)((_Type)i0)->tbprocs[7];
+  i2 = i1 > 32;
+  if (i2) goto l1;
 l0:
-  i0 = *Error__ReadErrorList_ch;
-  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i4)((BinaryRider__Reader)i3, (unsigned char *)(int)Error__ReadErrorList_ch);
-  i0 = (int)*(void**)i3;
+  i0 = (int)*Error__ReadErrorList_r;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[7];
+  i3 = *Error__ReadErrorList_ch;
+  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i1)((BinaryRider__Reader)i0, (unsigned char *)(int)Error__ReadErrorList_ch);
+  i0 = (int)*Error__ReadErrorList_r;
+  i0 = (int)*(void**)i0;
   i0 = i0 != 0;
   if (i0) goto l1;
-  i2 = *Error__ReadErrorList_ch;
-  i0 = i2 == 10;
+  i1 = *Error__ReadErrorList_ch;
+  i0 = i1 == 10;
   if (i0) goto l1;
-  i2 = i2 <= 32;
-  if (i2) goto l0;
+  i1 = i1 <= 32;
+  if (i1) goto l0;
 l1:
   ;
 }
@@ -47,7 +49,7 @@ void Error__ReadErrorList_Err(unsigned char* Error__ReadErrorList_fileName, int 
 }
 
 void Error__ReadErrorList(const unsigned char* fileName__ref, int fileName_0d) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11;
+  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12;
   unsigned char ch;
   Parameter__Filename expFileName;
   short int line;
@@ -59,21 +61,21 @@ void Error__ReadErrorList(const unsigned char* fileName__ref, int fileName_0d) {
   _push_value(int, fileName, fileName__ref, fileName_0d);
   Error__errListRead = 1;
   Filenames__ExpandPath((unsigned char*)(int)expFileName, 256, (const unsigned char*)(int)fileName, fileName_0d);
-  i10 = (int)Files__Old((const unsigned char*)(int)expFileName, 256, (unsigned int)0x1U, (Msg__Msg *)(int)&res);
-  i0 = i10 == 0;
+  i11 = (int)Files__Old((const unsigned char*)(int)expFileName, 256, (unsigned int)0x1U, (Msg__Msg *)(int)&res);
+  i0 = i11 == 0;
   if (i0) goto l21;
-  i0 = (int)BinaryRider__ConnectReader((Channel__Channel)i10);
-  i9 = *(int*)(i0-4);
-  i9 = (int)((_Type)i9)->tbprocs[7];
-  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i9)((BinaryRider__Reader)i0, (unsigned char *)(int)&ch);
-  i9 = (int)*(void**)i0;
-  i9 = i9 != 0;
-  if (i9) goto l20;
+  i0 = (int)BinaryRider__ConnectReader((Channel__Channel)i11);
+  i10 = *(int*)(i0-4);
+  i10 = (int)((_Type)i10)->tbprocs[7];
+  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i10)((BinaryRider__Reader)i0, (unsigned char *)(int)&ch);
+  i10 = (int)*(void**)i0;
+  i10 = i10 != 0;
+  if (i10) goto l20;
   i1 = (int)ch;
   i2 = 1;
 l0:
-  i9 = i1 == 42;
-  if (i9) goto l1;
+  i10 = i1 == 42;
+  if (i10) goto l1;
   i3 = i2;
   goto l16;
 l1:
@@ -85,110 +87,111 @@ l1:
   r = (void*)i0;
   r = (void*)i0;
   Error__ReadErrorList_SkipWhitespace((BinaryRider__Reader *)&r, &ch);
+  i12 = (int)ch;
   i3 = (int)*(void**)(int)r;
   i3 = i3 != 0;
   if (i3) goto l4;
-  i5 = (int)ch < 48;
+  i7 = i12 < 48;
+  if (i7) goto l4;
+  i5 = i12 > 57;
   if (i5) goto l4;
-  i3 = (int)ch > 57;
-  if (i3) goto l4;
-  i5 = *(int*)((int)r-4);
-  i5 = (int)((_Type)i5)->tbprocs[7];
-  i11 = (int)ch;
-  i9 = 0;
+  i7 = *(int*)((int)r-4);
+  i7 = (int)((_Type)i7)->tbprocs[7];
+  i6 = i12;
+  i3 = 0;
 l2:
-  ch = (unsigned char)i11;
-  ch = (unsigned char)i11;
-  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i5)((BinaryRider__Reader)(int)r, (unsigned char *)(int)&ch);
-  i9 *= 10;
-  i11 += i9;
-  i9 = i11 - 48;
-  i11 = (int)*(void**)(int)r;
-  i11 = i11 != 0;
-  if (i11) goto l3;
-  i11 = (int)ch < 48;
-  if (i11) goto l3;
-  i11 = (int)ch > 57;
-  if (i11) goto l3;
-  i11 = (int)ch;
+  ch = (unsigned char)i6;
+  ch = (unsigned char)i6;
+  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i7)((BinaryRider__Reader)(int)r, (unsigned char *)(int)&ch);
+  i3 *= 10;
+  i6 += i3;
+  i3 = i6 - 48;
+  i6 = (int)*(void**)(int)r;
+  i6 = i6 != 0;
+  if (i6) goto l3;
+  i6 = (int)ch < 48;
+  if (i6) goto l3;
+  i6 = (int)ch > 57;
+  if (i6) goto l3;
+  i6 = (int)ch;
   goto l2;
 l3:
-  i3 = (int)ch;
+  i12 = (int)ch;
   goto l5;
 l4:
-  i9 = 0;
-  i3 = (int)ch;
+  i3 = 0;
 l5:
-  ch = (unsigned char)i3;
-  ch = (unsigned char)i3;
+  ch = (unsigned char)i12;
+  ch = (unsigned char)i12;
   Error__ReadErrorList_SkipWhitespace((BinaryRider__Reader *)&r, &ch);
   i4 = (int)r;
-  i3 = i9 == 0;
-  if (i3) goto l14;
-  i3 = (int)ch != 58;
-  if (i3) goto l14;
-  i11 = *(int*)(i4-4);
-  i11 = (int)((_Type)i11)->tbprocs[7];
+  i1 = (int)ch;
+  i5 = i3 == 0;
+  if (i5) goto l14;
+  i5 = i1 != 58;
+  if (i5) goto l14;
+  i6 = *(int*)(i4-4);
+  i6 = (int)((_Type)i6)->tbprocs[7];
   ch = (unsigned char)58;
   ch = (unsigned char)58;
-  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i11)((BinaryRider__Reader)i4, (unsigned char *)(int)&ch);
+  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i6)((BinaryRider__Reader)i4, (unsigned char *)(int)&ch);
   r = (void*)i4;
   r = (void*)i4;
   Error__ReadErrorList_SkipWhitespace((BinaryRider__Reader *)&r, &ch);
-  i11 = (int)*(void**)(int)r;
-  i11 = i11 != 0;
-  if (i11) goto l9;
-  i1 = (int)ch < 32;
-  if (i1) goto l9;
-  i11 = *(int*)((int)r-4);
-  i5 = (int)((_Type)i11)->tbprocs[7];
-  i6 = (int)ch;
-  i7 = 0;
+  i10 = (int)ch;
+  i6 = (int)*(void**)(int)r;
+  i6 = i6 != 0;
+  if (i6) goto l9;
+  i6 = i10 < 32;
+  if (i6) goto l9;
+  i9 = *(int*)((int)r-4);
+  i7 = (int)((_Type)i9)->tbprocs[7];
+  i12 = i10;
+  i8 = 0;
 l6:
-  i11 = i7 < 255;
-  if (!(i11)) goto l7;
-  i11 = (int)str + i7;
-  *(unsigned char*)i11 = i6;
-  i11 = i7 + 1;
-  i7 = i11;
+  i9 = i8 < 255;
+  if (!(i9)) goto l7;
+  i9 = (int)str + i8;
+  *(unsigned char*)i9 = i12;
+  i9 = i8 + 1;
+  i8 = i9;
 l7:
-  ch = (unsigned char)i6;
-  ch = (unsigned char)i6;
-  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i5)((BinaryRider__Reader)(int)r, (unsigned char *)(int)&ch);
-  i11 = (int)*(void**)(int)r;
-  i11 = i11 != 0;
-  if (i11) goto l8;
-  i11 = (int)ch < 32;
-  if (i11) goto l8;
-  i6 = (int)ch;
+  ch = (unsigned char)i12;
+  ch = (unsigned char)i12;
+  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i7)((BinaryRider__Reader)(int)r, (unsigned char *)(int)&ch);
+  i9 = (int)*(void**)(int)r;
+  i9 = i9 != 0;
+  if (i9) goto l8;
+  i9 = (int)ch < 32;
+  if (i9) goto l8;
+  i12 = (int)ch;
   goto l6;
 l8:
-  i1 = (int)ch;
+  i10 = (int)ch;
   goto l10;
 l9:
-  i7 = 0;
-  i1 = (int)ch;
+  i8 = 0;
 l10:
-  i11 = i7 > 0;
-  if (!(i11)) goto l12;
-  i6 = i7 - 1;
-  i5 = (int)str + i6;
-  i6 = *(unsigned char*)i5;
-  i11 = i6 > 32;
-  if (i11) goto l12;
-  i8 = i7;
+  i6 = i8 > 0;
+  if (!(i6)) goto l12;
+  i12 = i8 - 1;
+  i7 = (int)str + i12;
+  i12 = *(unsigned char*)i7;
+  i6 = i12 > 32;
+  if (i6) goto l12;
+  i9 = i8;
 l11:
-  i8--;
-  i6 = i8 <= 0;
-  if (i6) goto l13;
-  i5 = i8 - 1;
-  i6 = (int)str + i5;
-  i6 = *(unsigned char*)i6;
-  i6 = i6 <= 32;
-  if (i6) goto l11;
+  i9--;
+  i12 = i9 <= 0;
+  if (i12) goto l13;
+  i7 = i9 - 1;
+  i12 = (int)str + i7;
+  i12 = *(unsigned char*)i12;
+  i12 = i12 <= 32;
+  if (i12) goto l11;
   goto l13;
 l12:
-  i8 = i7;
+  i9 = i8;
 l13:
   {
     char *_mem, *_var;
@@ -196,81 +199,81 @@ l13:
     if (!_mem) _new_failed(_P(5467));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Error__ErrMsgDesc_td.td;
-    i11 = (int)_var;
+    i6 = (int)_var;
   }
-  i5 = (int)Error__errDescrList;
-  *(void**)i11 = (void*)i5;
-  i5 = i11 + 4;
-  i7 = i11 + 20;
-  i6 = i11 + 12;
-  *(short int*)i5 = i9;
-  i9 = i8 + 1;
-  *(int*)i6 = 0;
+  i7 = (int)Error__errDescrList;
+  *(void**)i6 = (void*)i7;
+  i8 = i6 + 4;
+  i7 = i6 + 20;
+  i12 = i6 + 12;
+  *(short int*)i8 = i3;
+  i3 = i9 + 1;
+  *(int*)i12 = 0;
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i9 < 0) _invalid_length(i9, _P(5601));
-    _mem = GC_malloc_atomic(_not_zero(i9*1)+8);
+    if(i3 < 0) _invalid_length(i3, _P(5601));
+    _mem = GC_malloc_atomic(_not_zero(i3*1)+8);
     if (!_mem) _new_failed(_P(5585));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
-    *(--_dim_ptr) = i9;
-    i9 = (int)_var;
+    *(--_dim_ptr) = i3;
+    i3 = (int)_var;
   }
-  *(void**)i7 = (void*)i9;
-  i5 = (int)*(void**)i7;
-  i9 = (int)str + i8;
-  *(unsigned char*)i9 = 0;
-  i9 = *(int*)(i5-8);
-  _string_copy(i5, (int)str, i9);
-  Error__errDescrList = (void*)i11;
+  *(void**)i7 = (void*)i3;
+  i7 = (int)*(void**)i7;
+  i3 = (int)str + i9;
+  *(unsigned char*)i3 = 0;
+  i3 = *(int*)(i7-8);
+  _string_copy(i7, (int)str, i3);
+  Error__errDescrList = (void*)i6;
   i4 = (int)r;
+  i1 = i10;
   i3 = i2;
   goto l15;
 l14:
   line = (short int)i2;
   line = (short int)i2;
   Error__ReadErrorList_Err(fileName, fileName_0d, &line);
-  i1 = (int)ch;
   i3 = line;
 l15:
   i0 = i4;
 l16:
-  i9 = *(int*)(i0-4);
-  i8 = (int)((_Type)i9)->tbprocs[7];
-  i9 = (int)*(void**)i0;
-  i9 = i9 != 0;
-  if (i9) goto l19;
-  i9 = i1 == 10;
-  if (i9) goto l19;
-  i7 = i1;
+  i10 = *(int*)(i0-4);
+  i9 = (int)((_Type)i10)->tbprocs[7];
+  i10 = (int)*(void**)i0;
+  i10 = i10 != 0;
+  if (i10) goto l19;
+  i10 = i1 == 10;
+  if (i10) goto l19;
+  i8 = i1;
 l17:
-  ch = (unsigned char)i7;
-  ch = (unsigned char)i7;
-  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i8)((BinaryRider__Reader)i0, (unsigned char *)(int)&ch);
-  i7 = (int)*(void**)i0;
-  i7 = i7 != 0;
-  if (i7) goto l18;
-  i7 = (int)ch == 10;
-  if (i7) goto l18;
-  i7 = (int)ch;
+  ch = (unsigned char)i8;
+  ch = (unsigned char)i8;
+  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i9)((BinaryRider__Reader)i0, (unsigned char *)(int)&ch);
+  i8 = (int)*(void**)i0;
+  i8 = i8 != 0;
+  if (i8) goto l18;
+  i8 = (int)ch == 10;
+  if (i8) goto l18;
+  i8 = (int)ch;
   goto l17;
 l18:
   i1 = (int)ch;
 l19:
   ch = (unsigned char)i1;
   ch = (unsigned char)i1;
-  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i8)((BinaryRider__Reader)i0, (unsigned char *)(int)&ch);
-  i9 = (int)*(void**)i0;
-  i9 = i9 != 0;
+  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i9)((BinaryRider__Reader)i0, (unsigned char *)(int)&ch);
+  i10 = (int)*(void**)i0;
+  i10 = i10 != 0;
   i2 = i3 + 1;
-  if (i9) goto l20;
+  if (i10) goto l20;
   i1 = (int)ch;
   goto l0;
 l20:
-  i9 = *(int*)(i10-4);
-  i9 = (int)((_Type)i9)->tbprocs[5];
-  ((_TBP_Files__FileDesc_Close)i9)((Files__File)i10);
+  i10 = *(int*)(i11-4);
+  i10 = (int)((_Type)i10)->tbprocs[5];
+  ((_TBP_Files__FileDesc_Close)i10)((Files__File)i11);
   goto l22;
 l21:
   (void)memcpy((void*) (int)str, (const void*) (int)_c2, 40);
@@ -408,7 +411,7 @@ l12:
 }
 
 Error__ErrMsg Error__StoreError_NewErrMsg(Error__ErrMsg next, short int *Error__StoreError_num, Parameter__String *Error__StoreError_source, int *Error__StoreError_pos, unsigned char* Error__StoreError_msg, int Error__StoreError_msg_0d) {
-  register int i0, i1, i2, i3;
+  register int i0, i1, i2;
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(24)+8);
@@ -417,17 +420,18 @@ Error__ErrMsg Error__StoreError_NewErrMsg(Error__ErrMsg next, short int *Error__
     ((_Type*)_var)[-1] = &Error__ErrMsgDesc_td.td;
     i0 = (int)_var;
   }
-  i3 = i0 + 4;
   *(void**)i0 = (void*)(int)next;
-  i1 = i0 + 8;
-  i2 = *Error__StoreError_num;
-  *(short int*)i3 = i2;
-  i3 = i0 + 12;
-  i2 = (int)*Error__StoreError_source;
-  *(void**)i1 = (void*)i2;
+  i2 = i0 + 4;
+  i1 = *Error__StoreError_num;
+  *(short int*)i2 = i1;
+  i2 = i0 + 8;
+  i1 = (int)*Error__StoreError_source;
+  *(void**)i2 = (void*)i1;
+  i2 = i0 + 12;
   i1 = *Error__StoreError_pos;
-  *(int*)i3 = i1;
+  *(int*)i2 = i1;
   i2 = i0 + 16;
+  i1 = *Error__StoreError_pos;
   *(int*)i2 = i1;
   i2 = Strings__Length((const unsigned char*)(int)Error__StoreError_msg, Error__StoreError_msg_0d);
   i1 = i0 + 20;
@@ -641,25 +645,25 @@ l0:
   i1 = strcmp((const char*) (int)ins1, (const char*) (int)_c7) == 0;
   i0 = _abs(num);
   Error__GetErrMsg((short int)i0, (unsigned char*)(int)str, 256);
+  i0 = Error__noerr;
   if (i1) goto l1;
   Error__Replace((unsigned char*)(int)str, 256, (unsigned char*)(int)ins1, ins1_0d);
 l1:
-  i1 = Error__noerr;
-  i0 = strcmp((const char*) (int)ins2, (const char*) (int)_c7) == 0;
-  if (!(i1)) goto l2;
-  i1 = num < 0;
-  if (i1) goto l3;
+  i1 = strcmp((const char*) (int)ins2, (const char*) (int)_c7) == 0;
+  if (!(i0)) goto l2;
+  i0 = num < 0;
+  if (i0) goto l3;
 l2:
-  i1 = 0;
+  i0 = 0;
   goto l4;
 l3:
-  i1 = 1;
+  i0 = 1;
 l4:
-  if (i0) goto l5;
+  if (i1) goto l5;
   Error__Replace((unsigned char*)(int)str, 256, (unsigned char*)(int)ins2, ins2_0d);
 l5:
+  Error__noerr = i0;
   i0 = (int)Error__sourceFile;
-  Error__noerr = i1;
   Error__StoreError((Parameter__String)i0, (int)pos, (short int)num, (const unsigned char*)(int)str, 256);
 l6:
   _top_vs = _old_top_vs;

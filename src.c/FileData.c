@@ -319,7 +319,7 @@ l0:
 }
 
 void FileData__RemoveFiles_AddFile(unsigned char* file, int file_0d, short int *FileData__RemoveFiles_cmdLen, unsigned char FileData__RemoveFiles_cmd[2048]) {
-  register int i0, i1, i2, i3;
+  register int i0, i1, i2;
   i0 = Strings__Length((const unsigned char*)(int)file, file_0d);
   i1 = *FileData__RemoveFiles_cmdLen;
   i2 = i0 + i1;
@@ -335,20 +335,22 @@ l0:
   i1 = Strings__Length((const unsigned char*)(int)FileData__RemoveFiles_cmd, 2048);
   *FileData__RemoveFiles_cmdLen = i1;
 l1:
+  i2 = *FileData__RemoveFiles_cmdLen;
+  i1 = (int)FileData__RemoveFiles_cmd + i2;
+  *(unsigned char*)i1 = 32;
   i1 = *FileData__RemoveFiles_cmdLen;
   i2 = i1 + 1;
-  i3 = (int)FileData__RemoveFiles_cmd + i1;
-  *(unsigned char*)i3 = 32;
-  i3 = (int)FileData__RemoveFiles_cmd + i2;
-  *(unsigned char*)i3 = 0;
+  i1 = (int)FileData__RemoveFiles_cmd + i2;
+  *(unsigned char*)i1 = 0;
   i0++;
-  i0 = i1 + i0;
   Strings__Append((const unsigned char*)(int)file, file_0d, (unsigned char*)(int)FileData__RemoveFiles_cmd, 2048);
+  i1 = *FileData__RemoveFiles_cmdLen;
+  i0 = i1 + i0;
   *FileData__RemoveFiles_cmdLen = i0;
 }
 
 void FileData__RemoveFiles(void) {
-  register int i0, i1, i2, i3;
+  register int i0, i1, i2;
   unsigned char cmd[2048];
   short int cmdLen;
   i0 = (int)FileData__removalList;
@@ -359,15 +361,15 @@ void FileData__RemoveFiles(void) {
 l0:
   i0 = 0;
 l1:
-  i3 = (int)FileData__removalList;
-  i1 = i3 + 4;
-  i1 = (int)*(void**)i1;
-  i2 = (int)*(void**)i3;
-  i3 = *(int*)(i1-8);
+  i1 = (int)FileData__removalList;
+  i2 = (int)*(void**)i1;
   FileData__removalList = (void*)i2;
+  i1 += 4;
+  i2 = (int)*(void**)i1;
+  i1 = *(int*)(i2-8);
   cmdLen = (short int)i0;
   cmdLen = (short int)i0;
-  FileData__RemoveFiles_AddFile((unsigned char*)i1, i3, &cmdLen, cmd);
+  FileData__RemoveFiles_AddFile((unsigned char*)i2, i1, &cmdLen, cmd);
   i0 = (int)FileData__removalList;
   i0 = i0 == 0;
   if (i0) goto l2;

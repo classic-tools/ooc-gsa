@@ -276,32 +276,29 @@ signed char Classify__RegClass(Data__Struct type) {
   register int i0;
   i0 = (int)type + 20;
   i0 = *(signed char*)i0;
-  if (!(i0<=-1 || (i0>=10 && i0<=11) || (i0>=22 && i0<=26) || i0>=32)) goto l0;
-  goto l6;
+  if (!((i0>=1 && i0<=6) || (i0>=12 && i0<=14) || i0==16)) goto l0;
+  i0 = 12;
+  goto l5;
 l0:
-  if (!((i0>=1 && i0<=6) || (i0>=12 && i0<=14) || i0==16)) goto l1;
+  if (!(i0==17 || i0==20 || (i0>=27 && i0<=28))) goto l1;
   i0 = 12;
-  goto l6;
+  goto l5;
 l1:
-  if (!(i0==17 || i0==20 || (i0>=27 && i0<=28))) goto l2;
-  i0 = 12;
-  goto l6;
-l2:
-  if (!(i0==7 || i0==15)) goto l3;
+  if (!(i0==7 || i0==15)) goto l2;
   i0 = 13;
-  goto l6;
-l3:
-  if (!(i0==8)) goto l4;
+  goto l5;
+l2:
+  if (!(i0==8)) goto l3;
   i0 = 14;
-  goto l6;
-l4:
-  if (!(i0==9)) goto l5;
+  goto l5;
+l3:
+  if (!(i0==9)) goto l4;
   i0 = 15;
-  goto l6;
-l5:
-  if (!(i0==0 || (i0>=18 && i0<=19) || i0==21 || (i0>=29 && i0<=31))) goto l6;
+  goto l5;
+l4:
+  if (!(i0==0 || (i0>=18 && i0<=19) || i0==21 || (i0>=29 && i0<=31))) goto l5;
   i0 = 11;
-l6:
+l5:
   return (signed char)i0;
 }
 

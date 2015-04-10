@@ -6,15 +6,15 @@
 static _ModId _mid;
 
 void Scanner__EndOfLine(void) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8;
-  i6 = Scanner__eolCounter;
-  i7 = (int)Scanner__eolArray;
-  i0 = *(int*)(i7-8);
-  i0 = i0 != i6;
+  register int i0, i1, i2, i3, i4, i5, i6;
+  i5 = Scanner__eolCounter;
+  i0 = (int)Scanner__eolArray;
+  i0 = *(int*)(i0-8);
+  i0 = i0 != i5;
   if (i0) goto l2;
-  i2 = i6 - 1;
-  i8 = i2 < 0;
-  i5 = i6 + 4;
+  i6 = i5 - 1;
+  i4 = i6 < 0;
+  i5 += 4;
   i5 = (int)_ashl(i5, 1, (unsigned int));
   i5 -= 4;
   {
@@ -28,30 +28,33 @@ void Scanner__EndOfLine(void) {
     *(--_dim_ptr) = i5;
     i1 = (int)_var;
   }
-  if (i8) goto l1;
-  i8 = 0;
+  if (i4) goto l1;
+  i4 = 0;
 l0:
-  i5 = (int)_ashl(i8, 2, (unsigned int));
-  i5 = i7 + i5;
-  i0 = (int)_ashl(i8, 2, (unsigned int));
+  i0 = (int)Scanner__eolArray;
+  i5 = (int)_ashl(i4, 2, (unsigned int));
+  i3 = i0 + i5;
+  i0 = (int)_ashl(i4, 2, (unsigned int));
   i0 = i1 + i0;
-  i4 = i8 + 1;
-  i3 = *(int*)i5;
-  i5 = i4 > i2;
-  *(int*)i0 = i3;
-  if (i5) goto l1;
-  i8 = i4;
+  i5 = i4 + 1;
+  i2 = *(int*)i3;
+  i3 = i5 > i6;
+  *(int*)i0 = i2;
+  if (i3) goto l1;
+  i4 = i5;
   goto l0;
 l1:
   Scanner__eolArray = (void*)i1;
 l2:
   i0 = (int)Scanner__eolArray;
-  i1 = (int)_ashl(i6, 2, (unsigned int));
-  i1 = i0 + i1;
+  i1 = Scanner__eolCounter;
+  i2 = (int)_ashl(i1, 2, (unsigned int));
+  i3 = i0 + i2;
   i2 = Scanner__pos;
-  *(int*)i1 = i2;
-  i1 = i6 + 1;
-  Scanner__eolCounter = i1;
+  *(int*)i3 = i2;
+  i0 = Scanner__eolCounter;
+  i0++;
+  Scanner__eolCounter = i0;
 }
 
 int Scanner__FindLine(int pos) {
@@ -481,215 +484,179 @@ void Scanner__ParsePragma_Expression(unsigned char eval, Scanner__ParsePragma_Va
   Scanner__ParsePragma_Expression_SimpleExpr((unsigned char)eval, (Scanner__ParsePragma_Value *)(int)value, value__tag);
   i4 = Scanner__sym;
   i0 = i4 < 9;
-  if (i0) goto l22;
+  if (i0) goto l17;
   i3 = i4 > 14;
-  if (i3) goto l22;
+  if (i3) goto l17;
   i3 = Scanner__currSymPos;
   Scanner__GetSym();
   Scanner__ParsePragma_Expression_SimpleExpr((unsigned char)eval, (Scanner__ParsePragma_Value *)(int)&right, &Scanner__ParsePragma_Value_td.td);
-  if (!(eval)) goto l20;
-  i1 = *(signed char*)(int)value;
-  i2 = i1 == 0;
-  if (i2) goto l20;
-  i0 = *(signed char*)(int)&right;
+  if (!(eval)) goto l16;
+  i0 = *(signed char*)(int)value;
   i2 = i0 == 0;
-  if (i2) goto l20;
-  i0 = i1 != i0;
-  if (i0) goto l19;
-  i0 = i1 != 1;
-  if (i0) goto l0;
-  i5 = Scanner__sym;
-  i0 = i5 < 11;
-  if (i0) goto l0;
-  i5 = i5 <= 14;
-  if (i5) goto l18;
+  if (i2) goto l16;
+  i5 = *(signed char*)(int)&right;
+  i2 = i5 == 0;
+  if (i2) goto l16;
+  i5 = i0 != i5;
+  if (i5) goto l15;
+  i5 = i0 != 1;
+  if (i5) goto l0;
+  i1 = Scanner__sym;
+  i5 = i1 < 11;
+  if (i5) goto l0;
+  i1 = i1 <= 14;
+  if (i1) goto l14;
 l0:
-  if (!(i1<=0 || i1>=4)) goto l1;
-  i5 = 1;
-  goto l21;
-l1:
-  if (!(i1==1)) goto l4;
-  if (!(i4<=8 || i4>=11)) goto l2;
-  i5 = 1;
-  goto l21;
-l2:
-  if (!(i4==9)) goto l3;
+  if (!(i0==1)) goto l2;
+  if (!(i4==9)) goto l1;
   i0 = (int)value + 1;
   i1 = (int)&right + 1;
   i5 = *(unsigned char*)i0;
   i1 = *(unsigned char*)i1;
   i5 = i5 == i1;
   *(unsigned char*)i0 = i5;
-  i5 = 0;
-  goto l21;
-l3:
-  if (!(i4==10)) goto l21;
+  goto l16;
+l1:
+  if (!(i4==10)) goto l16;
   i0 = (int)value + 1;
-  i5 = (int)&right + 1;
-  i1 = *(unsigned char*)i0;
-  i5 = *(unsigned char*)i5;
-  i1 = i1 != i5;
-  *(unsigned char*)i0 = i1;
-  i5 = 0;
-  goto l21;
+  i1 = (int)&right + 1;
+  i5 = *(unsigned char*)i0;
+  i1 = *(unsigned char*)i1;
+  i5 = i5 != i1;
+  *(unsigned char*)i0 = i5;
+  goto l16;
+l2:
+  if (!(i0==2)) goto l8;
+  if (!(i4==9)) goto l3;
+  i0 = (int)&right + 4;
+  i1 = (int)value + 4;
+  i0 = *(int*)i0;
+  i1 = *(int*)i1;
+  i0 = i1 == i0;
+  i1 = (int)value + 1;
+  *(unsigned char*)i1 = i0;
+  goto l16;
+l3:
+  if (!(i4==10)) goto l4;
+  i0 = (int)&right + 4;
+  i1 = (int)value + 4;
+  i0 = *(int*)i0;
+  i1 = *(int*)i1;
+  i0 = i1 != i0;
+  i1 = (int)value + 1;
+  *(unsigned char*)i1 = i0;
+  goto l16;
 l4:
-  if (!(i1==2)) goto l11;
-  if (!(i4<=8 || i4>=15)) goto l5;
-  i5 = 1;
-  goto l21;
+  if (!(i4==11)) goto l5;
+  i0 = (int)&right + 4;
+  i1 = (int)value + 4;
+  i0 = *(int*)i0;
+  i1 = *(int*)i1;
+  i0 = i1 < i0;
+  i1 = (int)value + 1;
+  *(unsigned char*)i1 = i0;
+  goto l16;
 l5:
-  if (!(i4==9)) goto l6;
-  i5 = (int)&right + 4;
+  if (!(i4==12)) goto l6;
+  i0 = (int)&right + 4;
   i1 = (int)value + 4;
-  i5 = *(int*)i5;
+  i0 = *(int*)i0;
   i1 = *(int*)i1;
-  i5 = i1 == i5;
+  i0 = i1 <= i0;
   i1 = (int)value + 1;
-  *(unsigned char*)i1 = i5;
-  i5 = 0;
-  goto l21;
+  *(unsigned char*)i1 = i0;
+  goto l16;
 l6:
-  if (!(i4==10)) goto l7;
-  i5 = (int)&right + 4;
+  if (!(i4==13)) goto l7;
+  i0 = (int)&right + 4;
   i1 = (int)value + 4;
-  i5 = *(int*)i5;
+  i0 = *(int*)i0;
   i1 = *(int*)i1;
-  i5 = i1 != i5;
+  i0 = i1 > i0;
   i1 = (int)value + 1;
-  *(unsigned char*)i1 = i5;
-  i5 = 0;
-  goto l21;
+  *(unsigned char*)i1 = i0;
+  goto l16;
 l7:
-  if (!(i4==11)) goto l8;
-  i5 = (int)&right + 4;
+  if (!(i4==14)) goto l16;
+  i0 = (int)&right + 4;
   i1 = (int)value + 4;
-  i5 = *(int*)i5;
+  i0 = *(int*)i0;
   i1 = *(int*)i1;
-  i5 = i1 < i5;
+  i0 = i1 >= i0;
   i1 = (int)value + 1;
-  *(unsigned char*)i1 = i5;
-  i5 = 0;
-  goto l21;
+  *(unsigned char*)i1 = i0;
+  goto l16;
 l8:
-  if (!(i4==12)) goto l9;
-  i5 = (int)&right + 4;
-  i1 = (int)value + 4;
-  i5 = *(int*)i5;
-  i1 = *(int*)i1;
-  i5 = i1 <= i5;
-  i1 = (int)value + 1;
-  *(unsigned char*)i1 = i5;
-  i5 = 0;
-  goto l21;
+  if (!(i0==3)) goto l16;
+  if (!(i4==9)) goto l9;
+  i4 = (int)&right + 8;
+  i0 = (int)*(void**)i4;
+  i4 = (int)value + 8;
+  i4 = (int)*(void**)i4;
+  i0 = strcmp((const char*) i4, (const char*) i0) == 0;
+  i4 = (int)value + 1;
+  *(unsigned char*)i4 = i0;
+  goto l16;
 l9:
-  if (!(i4==13)) goto l10;
-  i5 = (int)&right + 4;
-  i1 = (int)value + 4;
-  i5 = *(int*)i5;
-  i1 = *(int*)i1;
-  i5 = i1 > i5;
-  i1 = (int)value + 1;
-  *(unsigned char*)i1 = i5;
-  i5 = 0;
-  goto l21;
+  if (!(i4==10)) goto l10;
+  i4 = (int)&right + 8;
+  i0 = (int)*(void**)i4;
+  i4 = (int)value + 8;
+  i4 = (int)*(void**)i4;
+  i0 = strcmp((const char*) i4, (const char*) i0) != 0;
+  i4 = (int)value + 1;
+  *(unsigned char*)i4 = i0;
+  goto l16;
 l10:
-  if (!(i4==14)) goto l21;
-  i5 = (int)&right + 4;
-  i1 = (int)value + 4;
-  i5 = *(int*)i5;
-  i1 = *(int*)i1;
-  i5 = i1 >= i5;
-  i1 = (int)value + 1;
-  *(unsigned char*)i1 = i5;
-  i5 = 0;
-  goto l21;
+  if (!(i4==11)) goto l11;
+  i4 = (int)&right + 8;
+  i0 = (int)*(void**)i4;
+  i4 = (int)value + 8;
+  i4 = (int)*(void**)i4;
+  i0 = strcmp((const char*) i4, (const char*) i0) < 0;
+  i4 = (int)value + 1;
+  *(unsigned char*)i4 = i0;
+  goto l16;
 l11:
-  if (!(i1==3)) goto l21;
-  if (!(i4<=8 || i4>=15)) goto l12;
-  i5 = 1;
-  goto l21;
+  if (!(i4==12)) goto l12;
+  i4 = (int)&right + 8;
+  i0 = (int)*(void**)i4;
+  i4 = (int)value + 8;
+  i4 = (int)*(void**)i4;
+  i0 = strcmp((const char*) i4, (const char*) i0) <= 0;
+  i4 = (int)value + 1;
+  *(unsigned char*)i4 = i0;
+  goto l16;
 l12:
-  if (!(i4==9)) goto l13;
-  i5 = (int)&right + 8;
-  i4 = (int)*(void**)i5;
-  i5 = (int)value + 8;
-  i5 = (int)*(void**)i5;
-  i4 = strcmp((const char*) i5, (const char*) i4) == 0;
-  i5 = (int)value + 1;
-  *(unsigned char*)i5 = i4;
-  i5 = 0;
-  goto l21;
+  if (!(i4==13)) goto l13;
+  i4 = (int)&right + 8;
+  i0 = (int)*(void**)i4;
+  i4 = (int)value + 8;
+  i4 = (int)*(void**)i4;
+  i0 = strcmp((const char*) i4, (const char*) i0) > 0;
+  i4 = (int)value + 1;
+  *(unsigned char*)i4 = i0;
+  goto l16;
 l13:
-  if (!(i4==10)) goto l14;
-  i5 = (int)&right + 8;
-  i4 = (int)*(void**)i5;
-  i5 = (int)value + 8;
-  i5 = (int)*(void**)i5;
-  i4 = strcmp((const char*) i5, (const char*) i4) != 0;
-  i5 = (int)value + 1;
-  *(unsigned char*)i5 = i4;
-  i5 = 0;
-  goto l21;
+  if (!(i4==14)) goto l16;
+  i4 = (int)&right + 8;
+  i0 = (int)*(void**)i4;
+  i4 = (int)value + 8;
+  i4 = (int)*(void**)i4;
+  i0 = strcmp((const char*) i4, (const char*) i0) >= 0;
+  i4 = (int)value + 1;
+  *(unsigned char*)i4 = i0;
+  goto l16;
 l14:
-  if (!(i4==11)) goto l15;
-  i5 = (int)&right + 8;
-  i4 = (int)*(void**)i5;
-  i5 = (int)value + 8;
-  i5 = (int)*(void**)i5;
-  i4 = strcmp((const char*) i5, (const char*) i4) < 0;
-  i5 = (int)value + 1;
-  *(unsigned char*)i5 = i4;
-  i5 = 0;
-  goto l21;
-l15:
-  if (!(i4==12)) goto l16;
-  i5 = (int)&right + 8;
-  i4 = (int)*(void**)i5;
-  i5 = (int)value + 8;
-  i5 = (int)*(void**)i5;
-  i4 = strcmp((const char*) i5, (const char*) i4) <= 0;
-  i5 = (int)value + 1;
-  *(unsigned char*)i5 = i4;
-  i5 = 0;
-  goto l21;
-l16:
-  if (!(i4==13)) goto l17;
-  i5 = (int)&right + 8;
-  i4 = (int)*(void**)i5;
-  i5 = (int)value + 8;
-  i5 = (int)*(void**)i5;
-  i4 = strcmp((const char*) i5, (const char*) i4) > 0;
-  i5 = (int)value + 1;
-  *(unsigned char*)i5 = i4;
-  i5 = 0;
-  goto l21;
-l17:
-  if (!(i4==14)) goto l21;
-  i5 = (int)&right + 8;
-  i4 = (int)*(void**)i5;
-  i5 = (int)value + 8;
-  i5 = (int)*(void**)i5;
-  i4 = strcmp((const char*) i5, (const char*) i4) >= 0;
-  i5 = (int)value + 1;
-  *(unsigned char*)i5 = i4;
-  i5 = 0;
-  goto l21;
-l18:
   Error__ErrIns((int)i3, (short int)231, (const unsigned char*)(int)_c5, 8);
-  i5 = 0;
-  goto l21;
-l19:
+  goto l16;
+l15:
   Error__ErrIns((int)i3, (short int)233, (const unsigned char*)(int)_c6, 1);
-  i5 = 0;
-  goto l21;
-l20:
-  i5 = 0;
-l21:
-  if (i5) goto l22;
+l16:
   i0 = (int)value + 12;
   *(int*)i0 = i3;
   *(signed char*)(int)value = 1;
-l22:
+l17:
   ;
 }
 
@@ -704,7 +671,7 @@ unsigned char Scanner__ParsePragma_BoolExpression(unsigned char eval) {
 }
 
 void Scanner__ParsePragma_PushCond(unsigned char *Scanner__ParsePragma_evalText) {
-  register int i0, i1, i2, i3;
+  register int i0, i1, i2;
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(12)+8);
@@ -713,15 +680,15 @@ void Scanner__ParsePragma_PushCond(unsigned char *Scanner__ParsePragma_evalText)
     ((_Type*)_var)[-1] = &Scanner__ConditionStackDesc_td.td;
     i0 = (int)_var;
   }
-  i1 = i0 + 4;
-  i2 = (int)Scanner__condStack;
-  *(void**)i0 = (void*)i2;
-  i2 = i0 + 8;
-  i3 = Scanner__currSymPos;
-  *(int*)i1 = i3;
-  i1 = *Scanner__ParsePragma_evalText;
-  i1 = ! i1;
-  *(unsigned char*)i2 = i1;
+  i1 = (int)Scanner__condStack;
+  *(void**)i0 = (void*)i1;
+  i2 = i0 + 4;
+  i1 = Scanner__currSymPos;
+  *(int*)i2 = i1;
+  i1 = i0 + 8;
+  i2 = *Scanner__ParsePragma_evalText;
+  i2 = ! i2;
+  *(unsigned char*)i1 = i2;
   i1 = i0 + 9;
   i2 = i0 + 10;
   *(unsigned char*)i1 = 0;
@@ -751,7 +718,7 @@ l1:
 }
 
 void Scanner__ParsePragma_Assignment(unsigned char define, unsigned char eval, unsigned char *Scanner__ParsePragma_err, unsigned char Scanner__ParsePragma_ins[16]) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8;
+  register int i0, i1, i2, i3, i4, i5, i6, i7;
   Parameter__LargeString name;
   Scanner__ParsePragma_Value value;
   i0 = Scanner__sym;
@@ -759,31 +726,31 @@ void Scanner__ParsePragma_Assignment(unsigned char define, unsigned char eval, u
   if (i0) goto l0;
   i0 = Scanner__currSymPos;
   Error__Err((int)i0, (short int)100);
-  goto l17;
+  goto l15;
 l0:
   if (eval) goto l1;
   Scanner__GetSym();
   Scanner__CheckSym((signed char)34);
   Scanner__ParsePragma_Expression((unsigned char)0, (Scanner__ParsePragma_Value *)(int)&value, &Scanner__ParsePragma_Value_td.td);
-  goto l17;
+  goto l15;
 l1:
   i0 = (int)ParamPragmas__pragmas;
   i1 = (int)Scanner__str;
   i2 = *(int*)(i0-4);
-  i8 = *(int*)(i1-8);
+  i7 = *(int*)(i1-8);
   i2 = (int)((_Type)i2)->tbprocs[3];
-  i4 = (int)((_TBP_ParamOptions__OptionsSectionDesc_Find)i2)((ParamOptions__OptionsSection)i0, (const unsigned char*)i1, i8);
+  i3 = (int)((_TBP_ParamOptions__OptionsSectionDesc_Find)i2)((ParamOptions__OptionsSection)i0, (const unsigned char*)i1, i7);
   i1 = (int)Scanner__str;
-  i3 = i4 == 0;
-  i6 = Scanner__currSymPos;
+  i2 = i3 == 0;
+  i5 = Scanner__currSymPos;
   i0 = *(int*)(i1-8);
   Scanner__ParsePragma_CheckName((unsigned char*)i1, i0);
   i0 = (int)Scanner__str;
   _string_copy((int)name, i0, 2048);
-  if (!(i3)) goto l2;
+  if (!(i2)) goto l2;
   if (!(define)) goto l3;
 l2:
-  i0 = i4 != 0;
+  i0 = i3 != 0;
   if (!(i0)) goto l4;
   if (!(define)) goto l4;
   i0 = Scanner__currSymPos;
@@ -796,92 +763,79 @@ l4:
   Scanner__GetSym();
   Scanner__CheckSym((signed char)34);
   Scanner__ParsePragma_Expression((unsigned char)1, (Scanner__ParsePragma_Value *)(int)&value, &Scanner__ParsePragma_Value_td.td);
-  i5 = *(signed char*)(int)&value;
-  i0 = i5 == 0;
-  if (i0) goto l17;
-  if (i3) goto l5;
-  i3 = 0;
-  goto l10;
-l5:
-  if (!(i5<=0 || i5>=4)) goto l6;
-  i3 = 1;
-  i4 = 0;
-  goto l9;
-l6:
-  if (!(i5==1)) goto l7;
-  i4 = (int)ParamOptions__CreateBoolean((const unsigned char*)(int)name, 2048, (unsigned char)0);
-  i3 = 0;
-  goto l9;
-l7:
-  if (!(i5==2)) goto l8;
-  i4 = (int)ParamOptions__CreateInteger((const unsigned char*)(int)name, 2048, (int)0, (int)(-2147483647-1), (int)2147483647);
-  i3 = 0;
-  goto l9;
-l8:
-  if (!(i5==3)) goto l9;
-  i4 = (int)ParamOptions__CreateString((const unsigned char*)(int)name, 2048, (const unsigned char*)(int)_c6, 1);
-  i3 = 0;
-l9:
-  if (i3) goto l10;
-  i2 = (int)ParamPragmas__pragmas;
-  i8 = *(int*)(i2-4);
-  i8 = (int)((_Type)i8)->tbprocs[4];
-  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i8)((ParamOptions__OptionsSection)i2, (ParamOptions__Option)i4);
-l10:
-  if (i3) goto l17;
+  i4 = *(signed char*)(int)&value;
   i0 = i4 == 0;
-  if (i0) goto l17;
-  if (define) goto l11;
-  ParamPragmas__PrepareForModify((ParamOptions__Option)i4);
-l11:
-  i0 = *(int*)(i4-4);
-  i2 = _type_test(i0, &ParamOptions__BooleanOptionDesc_td.td, 1);
-  if (i2) goto l14;
-  i7 = _type_test(i0, &ParamOptions__IntegerOptionDesc_td.td, 1);
-  if (i7) goto l13;
-  i1 = _type_test(i0, &ParamOptions__StringOptionDesc_td.td, 1);
-  if (!(i1)) goto l12;
-  i8 = (int)&value + 8;
-  i8 = (int)*(void**)i8;
-  i7 = i5 != 3;
-  i2 = (int)((_Type)i0)->tbprocs[4];
-  i3 = *(int*)(i8-8);
+  if (i0) goto l15;
+  if (!(i2)) goto l8;
+  if (!(i4==1)) goto l5;
+  i3 = (int)ParamOptions__CreateBoolean((const unsigned char*)(int)name, 2048, (unsigned char)0);
+  goto l7;
+l5:
+  if (!(i4==2)) goto l6;
+  i3 = (int)ParamOptions__CreateInteger((const unsigned char*)(int)name, 2048, (int)0, (int)(-2147483647-1), (int)2147483647);
+  goto l7;
+l6:
+  if (!(i4==3)) goto l7;
+  i3 = (int)ParamOptions__CreateString((const unsigned char*)(int)name, 2048, (const unsigned char*)(int)_c6, 1);
+l7:
+  i7 = (int)ParamPragmas__pragmas;
+  i2 = *(int*)(i7-4);
+  i2 = (int)((_Type)i2)->tbprocs[4];
+  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i2)((ParamOptions__OptionsSection)i7, (ParamOptions__Option)i3);
+l8:
+  i2 = i3 != 0;
+  if (!(i2)) goto l15;
+  if (define) goto l9;
+  ParamPragmas__PrepareForModify((ParamOptions__Option)i3);
+l9:
+  i1 = *(int*)(i3-4);
+  i0 = _type_test(i1, &ParamOptions__BooleanOptionDesc_td.td, 1);
+  if (i0) goto l12;
+  i6 = _type_test(i1, &ParamOptions__IntegerOptionDesc_td.td, 1);
+  if (i6) goto l11;
+  i2 = _type_test(i1, &ParamOptions__StringOptionDesc_td.td, 1);
+  if (!(i2)) goto l10;
+  i7 = i4 != 3;
+  i0 = (int)&value + 8;
+  i0 = (int)*(void**)i0;
   *Scanner__ParsePragma_err = i7;
+  i6 = (int)((_Type)i1)->tbprocs[4];
+  i7 = *(int*)(i0-8);
   (void)memcpy((void*) (int)Scanner__ParsePragma_ins, (const void*) (int)_c7, 7);
-  ((_TBP_ParamOptions__StringOptionDesc_Set)i2)((ParamOptions__StringOption)i4, (const unsigned char*)i8, i3);
-l12:
-  i3 = ! i1;
-  goto l15;
-l13:
-  i1 = i5 != 2;
-  i7 = (int)&value + 4;
-  i8 = (int)((_Type)i0)->tbprocs[4];
-  *Scanner__ParsePragma_err = i1;
-  i1 = *(int*)i7;
+  ((_TBP_ParamOptions__StringOptionDesc_Set)i6)((ParamOptions__StringOption)i3, (const unsigned char*)i0, i7);
+l10:
+  i7 = ! i2;
+  goto l13;
+l11:
+  i2 = i4 != 2;
+  *Scanner__ParsePragma_err = i2;
+  i6 = (int)&value + 4;
+  i2 = (int)((_Type)i1)->tbprocs[4];
+  i6 = *(int*)i6;
   (void)memcpy((void*) (int)Scanner__ParsePragma_ins, (const void*) (int)_c8, 8);
-  ((_TBP_ParamOptions__IntegerOptionDesc_Set)i8)((ParamOptions__IntegerOption)i4, (int)i1);
-  i3 = 0;
+  ((_TBP_ParamOptions__IntegerOptionDesc_Set)i2)((ParamOptions__IntegerOption)i3, (int)i6);
+  i7 = 0;
+  goto l13;
+l12:
+  i4 = i4 != 1;
+  *Scanner__ParsePragma_err = i4;
+  i4 = (int)&value + 1;
+  i1 = (int)((_Type)i1)->tbprocs[4];
+  i4 = *(unsigned char*)i4;
+  (void)memcpy((void*) (int)Scanner__ParsePragma_ins, (const void*) (int)_c5, 8);
+  ((_TBP_ParamOptions__BooleanOptionDesc_Set)i1)((ParamOptions__BooleanOption)i3, (unsigned char)i4);
+  i7 = 0;
+l13:
+  if (i7) goto l15;
+  i0 = *Scanner__ParsePragma_err;
+  if (i0) goto l14;
+  StdTypes__NotifyPragmaAssign((ParamOptions__Option)i3, (int)i5);
   goto l15;
 l14:
-  i5 = i5 != 1;
-  i2 = (int)&value + 1;
-  i0 = (int)((_Type)i0)->tbprocs[4];
-  *Scanner__ParsePragma_err = i5;
-  i5 = *(unsigned char*)i2;
-  (void)memcpy((void*) (int)Scanner__ParsePragma_ins, (const void*) (int)_c5, 8);
-  ((_TBP_ParamOptions__BooleanOptionDesc_Set)i0)((ParamOptions__BooleanOption)i4, (unsigned char)i5);
-  i3 = 0;
+  i0 = (int)&value + 12;
+  i0 = *(int*)i0;
+  Error__ErrIns((int)i0, (short int)19, (const unsigned char*)(int)Scanner__ParsePragma_ins, 16);
 l15:
-  if (i3) goto l17;
-  i2 = *Scanner__ParsePragma_err;
-  if (i2) goto l16;
-  StdTypes__NotifyPragmaAssign((ParamOptions__Option)i4, (int)i6);
-  goto l17;
-l16:
-  i2 = (int)&value + 12;
-  i2 = *(int*)i2;
-  Error__ErrIns((int)i2, (short int)19, (const unsigned char*)(int)Scanner__ParsePragma_ins, 16);
-l17:
   ;
 }
 
@@ -898,8 +852,8 @@ l0:
   Scanner__scanStatus = 1;
 l1:
   i0 = Scanner__sym;
-  i4 = i0 == 45;
-  if (i4) goto l18;
+  i2 = i0 == 45;
+  if (i2) goto l18;
   i1 = i0 == 43;
   if (i1) goto l18;
   i5 = i0 == 42;
@@ -908,101 +862,101 @@ l1:
   if (i5) goto l13;
   i5 = i0 == 38;
   if (!(i5)) goto l2;
-  i3 = (int)Scanner__str;
-  i3 = strcmp((const char*) i3, (const char*) (int)_c4) == 0;
-  if (i3) goto l11;
+  i4 = (int)Scanner__str;
+  i4 = strcmp((const char*) i4, (const char*) (int)_c4) == 0;
+  if (i4) goto l11;
 l2:
   if (!(i5)) goto l3;
-  i3 = (int)Scanner__str;
-  i3 = strcmp((const char*) i3, (const char*) (int)_c2) == 0;
-  if (i3) goto l9;
+  i4 = (int)Scanner__str;
+  i4 = strcmp((const char*) i4, (const char*) (int)_c2) == 0;
+  if (i4) goto l9;
 l3:
   if (!(i5)) goto l4;
-  i3 = (int)Scanner__str;
-  i3 = strcmp((const char*) i3, (const char*) (int)_c3) == 0;
-  if (i3) goto l6;
+  i4 = (int)Scanner__str;
+  i4 = strcmp((const char*) i4, (const char*) (int)_c3) == 0;
+  if (i4) goto l6;
 l4:
   if (i5) goto l5;
-  i3 = i6;
+  i4 = i6;
   goto l12;
 l5:
   Scanner__sym = (signed char)38;
   err = (unsigned char)i6;
   err = (unsigned char)i6;
   Scanner__ParsePragma_Assignment((unsigned char)0, (unsigned char)i7, &err, ins);
-  i3 = err;
+  i4 = err;
   goto l12;
 l6:
   if (!(i7)) goto l8;
-  i3 = (int)ParamPragmas__pragmas;
-  i3 += 24;
-  i3 = *(short int*)i3;
-  i3 = i3 == 0;
-  if (i3) goto l7;
+  i4 = (int)ParamPragmas__pragmas;
+  i4 += 24;
+  i4 = *(short int*)i4;
+  i4 = i4 == 0;
+  if (i4) goto l7;
   ParamPragmas__Pop();
   goto l8;
 l7:
-  i3 = Scanner__currSymPos;
-  Error__Err((int)i3, (short int)16);
+  i4 = Scanner__currSymPos;
+  Error__Err((int)i4, (short int)16);
 l8:
   Scanner__GetSym();
-  i3 = i6;
+  i4 = i6;
   goto l12;
 l9:
   if (!(i7)) goto l10;
   ParamPragmas__Push();
 l10:
   Scanner__GetSym();
-  i3 = i6;
+  i4 = i6;
   goto l12;
 l11:
   Scanner__GetSym();
   err = (unsigned char)i6;
   err = (unsigned char)i6;
   Scanner__ParsePragma_Assignment((unsigned char)1, (unsigned char)i7, &err, ins);
-  i3 = err;
+  i4 = err;
 l12:
-  i2 = i7;
+  i3 = i7;
   goto l17;
 l13:
   evalText = (unsigned char)i7;
   evalText = (unsigned char)i7;
   Scanner__ParsePragma_CheckForIf((unsigned char)0, &evalText);
-  i2 = (int)Scanner__condStack;
-  i5 = i2 + 8;
+  i3 = (int)Scanner__condStack;
+  i5 = i3 + 8;
   i5 = *(unsigned char*)i5;
   Scanner__PopCond();
-  i2 = ! i5;
+  i3 = ! i5;
   Scanner__GetSym();
-  i3 = i6;
+  i4 = i6;
   goto l17;
 l14:
   evalText = (unsigned char)i7;
   evalText = (unsigned char)i7;
   Scanner__ParsePragma_CheckForIf((unsigned char)1, &evalText);
   i5 = (int)Scanner__condStack;
-  i2 = i5 + 10;
-  *(unsigned char*)i2 = 1;
+  i3 = i5 + 10;
+  *(unsigned char*)i3 = 1;
   Scanner__GetSym();
   i5 = (int)Scanner__condStack;
-  i2 = i5 + 8;
-  i2 = *(unsigned char*)i2;
-  if (i2) goto l15;
+  i3 = i5 + 8;
+  i3 = *(unsigned char*)i3;
+  if (i3) goto l15;
   i5 += 9;
   i5 = *(unsigned char*)i5;
   if (i5) goto l15;
-  i2 = 1;
+  i3 = 1;
   goto l16;
 l15:
-  i2 = 0;
+  i3 = 0;
 l16:
-  i3 = i6;
+  i4 = i6;
 l17:
-  i6 = i3;
-  i7 = i2;
+  i6 = i4;
+  i7 = i3;
   goto l23;
 l18:
-  if (i4) goto l19;
+  if (i2) goto l19;
   evalText = (unsigned char)i7;
   evalText = (unsigned char)i7;
   Scanner__ParsePragma_CheckForIf((unsigned char)1, &evalText);
@@ -1019,20 +973,20 @@ l20:
   i7 = i1 + 9;
   i3 = *(unsigned char*)i7;
   if (i3) goto l21;
-  i5 = Scanner__ParsePragma_BoolExpression((unsigned char)1);
-  i2 = (int)Scanner__condStack;
-  *(unsigned char*)i7 = i5;
-  i5 = i2 + 9;
-  i5 = *(unsigned char*)i5;
+  i4 = Scanner__ParsePragma_BoolExpression((unsigned char)1);
+  *(unsigned char*)i7 = i4;
+  i7 = (int)Scanner__condStack;
+  i7 += 9;
+  i4 = *(unsigned char*)i7;
   goto l22;
 l21:
   i7 = Scanner__ParsePragma_BoolExpression((unsigned char)0);
-  i5 = 0;
+  i4 = 0;
 l22:
   Scanner__CheckSym((signed char)26);
-  i7 = i5;
+  i7 = i4;
 l23:
-  if (i4) goto l24;
+  if (i2) goto l24;
   i1 = i0 == 43;
   if (i1) goto l24;
   i0 = i0 == 42;
@@ -1110,17 +1064,17 @@ void Scanner__Close(void) {
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
   ((_TBP_Files__FileDesc_Close)i1)((Files__File)i0);
-  i0 = Scanner__incrementalRead;
   Scanner__inFile = (void*)0;
   Scanner__finished = 1;
+  i0 = Scanner__incrementalRead;
   if (i0) goto l0;
   i1 = Scanner__sourceTotal;
   i0 = Scanner__pos;
-  i1 += i0;
-  i0 = Scanner__eolCounter;
-  Scanner__sourceTotal = i1;
-  i1 = i0 + 1;
+  i0 = i1 + i0;
+  Scanner__sourceTotal = i0;
+  i1 = Scanner__eolCounter;
   i0 = Scanner__sourceLines;
+  i1++;
   i0 += i1;
   Scanner__sourceLines = i0;
 l0:
@@ -1175,83 +1129,85 @@ l3:
 }
 
 void Scanner__Comment(void) {
-  register int i0, i1, i2, i3, i4;
+  register int i0, i1, i2, i3;
   i1 = Scanner__pos;
   i0 = i1 + 1;
-  i3 = i1 - 1;
+  i2 = i1 - 1;
   Scanner__pos = i0;
 l0:
-  i2 = Scanner__incrementalRead;
-  if (!(i2)) goto l1;
-  i1 = Scanner__currLen;
-  i2 = Scanner__fileLen;
-  i0 = i1 == i2;
+  i1 = Scanner__incrementalRead;
+  if (!(i1)) goto l1;
+  i3 = Scanner__currLen;
+  i1 = Scanner__fileLen;
+  i0 = i3 == i1;
   if (i0) goto l1;
   i0 = Scanner__pos;
-  i0 = i1 - i0;
+  i0 = i3 - i0;
   i0 = i0 >= 1024;
   if (i0) goto l1;
   Scanner__incrementalRead = (unsigned char)1;
   Scanner__ReadBlock();
 l1:
-  i1 = Scanner__pos;
-  i0 = (int)Scanner__buf;
-  i2 = i1 + i0;
-  i2 = *(unsigned char*)i2;
-  if (!((i2>=1 && i2<=9) || (i2>=11 && i2<=39) || i2==41 || i2>=43)) goto l2;
-  i2 = i1 + 1;
-  Scanner__pos = i2;
-  i4 = 0;
+  i3 = Scanner__pos;
+  i1 = (int)Scanner__buf;
+  i1 = i3 + i1;
+  i1 = *(unsigned char*)i1;
+  if (!((i1>=1 && i1<=9) || (i1>=11 && i1<=39) || i1==41 || i1>=43)) goto l2;
+  i1 = i3 + 1;
+  Scanner__pos = i1;
+  i0 = 0;
   goto l8;
 l2:
-  if (!(i2==0)) goto l4;
-  i4 = Scanner__fileLen;
-  i4 = i1 == i4;
-  if (i4) goto l3;
-  i2 = i1 + 1;
-  Scanner__pos = i2;
+  if (!(i1==0)) goto l4;
+  i0 = Scanner__fileLen;
+  i0 = i3 == i0;
+  if (i0) goto l3;
+  i1 = i3 + 1;
+  Scanner__pos = i1;
   goto l8;
 l3:
-  Error__Err((int)i3, (short int)1);
+  Error__Err((int)i2, (short int)1);
   goto l8;
 l4:
-  if (!(i2==10)) goto l5;
+  if (!(i1==10)) goto l5;
   Scanner__EndOfLine();
-  i2 = Scanner__pos;
-  i2++;
-  Scanner__pos = i2;
-  i4 = 0;
-  goto l8;
-l5:
-  if (!(i2==42)) goto l6;
-  i2 = i1 + 1;
-  Scanner__pos = i2;
-  i2 = Scanner__pos;
-  i4 = i2 + i0;
-  i4 = *(unsigned char*)i4;
-  i4 = i4 == 41;
-  if (!(i4)) goto l8;
-  i2++;
-  Scanner__pos = i2;
-  goto l8;
-l6:
-  if (!(i2==40)) goto l8;
+  i1 = Scanner__pos;
   i1++;
   Scanner__pos = i1;
+  i0 = 0;
+  goto l8;
+l5:
+  if (!(i1==42)) goto l6;
+  i1 = i3 + 1;
+  Scanner__pos = i1;
   i1 = Scanner__pos;
-  i2 = i1 + i0;
-  i2 = *(unsigned char*)i2;
-  i2 = i2 != 42;
-  if (i2) goto l7;
+  i0 = (int)Scanner__buf;
+  i0 = i1 + i0;
+  i0 = *(unsigned char*)i0;
+  i0 = i0 == 41;
+  if (!(i0)) goto l8;
+  i1++;
+  Scanner__pos = i1;
+  goto l8;
+l6:
+  if (!(i1==40)) goto l8;
+  i3++;
+  Scanner__pos = i3;
+  i3 = Scanner__pos;
+  i0 = (int)Scanner__buf;
+  i1 = i3 + i0;
+  i1 = *(unsigned char*)i1;
+  i1 = i1 != 42;
+  if (i1) goto l7;
   Scanner__Comment();
 l7:
-  i4 = 0;
+  i0 = 0;
 l8:
-  if (!(i4)) goto l0;
+  if (!(i0)) goto l0;
 }
 
 void Scanner__StoreString(int from, int to) {
-  register int i0, i1, i2, i3, i4, i5, i6;
+  register int i0, i1, i2, i3, i4, i5;
   i1 = to - from;
   i0 = (int)Scanner__str;
   i0 = *(int*)(i0-8);
@@ -1276,35 +1232,35 @@ l0:
 l1:
   i0 = from != to;
   if (i0) goto l2;
-  i6 = 0;
+  i5 = 0;
   goto l4;
 l2:
-  i0 = (int)Scanner__buf;
-  i6 = 0;
-  i1 = from;
+  i5 = 0;
+  i0 = from;
 l3:
-  i2 = (int)Scanner__str;
-  i3 = i1 + i0;
-  i4 = i1 + 1;
-  i5 = i6 + i2;
-  i1 = *(unsigned char*)i3;
-  *(unsigned char*)i5 = i1;
-  i6++;
-  i1 = to == i4;
-  if (i1) goto l4;
-  i1 = i4;
+  i1 = (int)Scanner__str;
+  i2 = (int)Scanner__buf;
+  i2 = i0 + i2;
+  i3 = i0 + 1;
+  i4 = i5 + i1;
+  i0 = *(unsigned char*)i2;
+  *(unsigned char*)i4 = i0;
+  i5++;
+  i0 = to == i3;
+  if (i0) goto l4;
+  i0 = i3;
   goto l3;
 l4:
   i0 = (int)Scanner__str;
-  i1 = i6 + i0;
+  i1 = i5 + i0;
   *(unsigned char*)i1 = 0;
 }
 
 void Scanner__GetString(unsigned char end) {
   register int i0, i1, i2, i3, i4;
   unsigned char ins[16];
-  i3 = Scanner__pos;
   Scanner__sym = 37;
+  i3 = Scanner__pos;
 l0:
   i2 = Scanner__pos;
   i2++;
@@ -1347,29 +1303,30 @@ l4:
   i0 = 1;
 l5:
   if (!(i0)) goto l0;
-  i1 = Scanner__pos;
   i0 = i3 + 1;
-  i2 = i1 - 1;
-  Scanner__StoreString((int)i0, (int)i2);
-  i0 = (int)Scanner__stringLength;
-  i2 = (int)Scanner__str;
-  i0 += 8;
-  i2 = *(unsigned char*)i2;
-  i0 = *(int*)i0;
-  Scanner__intVal = i2;
-  i2 = i0 == (-2147483647-1);
-  if (i2) goto l7;
-  i1 -= i3;
-  i0 = _abs(i0);
-  i1 -= 2;
-  i1 = i1 <= i0;
-  if (i1) goto l7;
-  IntStr__IntToStr((int)i0, (unsigned char*)(int)ins, 16);
+  i1 = Scanner__pos;
+  i1--;
+  Scanner__StoreString((int)i0, (int)i1);
+  i0 = (int)Scanner__str;
+  i0 = *(unsigned char*)i0;
+  Scanner__intVal = i0;
   i0 = (int)Scanner__stringLength;
   i0 += 8;
-  i0 = *(int*)i0;
-  i0 = i0 < 0;
-  if (i0) goto l6;
+  i1 = *(int*)i0;
+  i0 = i1 == (-2147483647-1);
+  if (i0) goto l7;
+  i0 = Scanner__pos;
+  i0 -= i3;
+  i1 = _abs(i1);
+  i0 -= 2;
+  i0 = i0 <= i1;
+  if (i0) goto l7;
+  IntStr__IntToStr((int)i1, (unsigned char*)(int)ins, 16);
+  i1 = (int)Scanner__stringLength;
+  i1 += 8;
+  i1 = *(int*)i1;
+  i1 = i1 < 0;
+  if (i1) goto l6;
   Error__ErrIns((int)i3, (short int)30, (const unsigned char*)(int)ins, 16);
   goto l7;
 l6:
@@ -1453,72 +1410,74 @@ l3:
 }
 
 void Scanner__Ident_SkipWord(int *Scanner__Ident_sum) {
-  register int i0, i1, i2, i3;
-  i3 = (int)Scanner__buf;
+  register int i0, i1;
 l0:
-  i2 = Scanner__pos;
-  i1 = i2 + i3;
-  i1 = *(unsigned char*)i1;
-  i0 = *Scanner__Ident_sum;
-  i1 = i0 + i1;
+  i0 = (int)Scanner__buf;
+  i1 = Scanner__pos;
+  i0 = i1 + i0;
+  i0 = *(unsigned char*)i0;
+  i1 = *Scanner__Ident_sum;
+  i1 += i0;
   *Scanner__Ident_sum = i1;
-  i2++;
-  Scanner__pos = i2;
-  i2 = Scanner__Ident_IsChar((unsigned char)1);
-  if (i2) goto l0;
+  i1 = Scanner__pos;
+  i1++;
+  Scanner__pos = i1;
+  i1 = Scanner__Ident_IsChar((unsigned char)1);
+  if (i1) goto l0;
 }
 
 void Scanner__Ident(void) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7;
+  register int i0, i1, i2, i3, i4, i5, i6;
   unsigned char ins[16];
   int start;
   int sum;
-  i0 = Scanner__pos;
   Scanner__sym = 38;
+  i0 = Scanner__pos;
   i1 = Scanner__moduleIdent;
   if (i1) goto l3;
-  i1 = (int)Scanner__buf;
-  i7 = 0;
+  i6 = 0;
 l0:
   i2 = Scanner__pos;
-  i3 = i2 + 1;
-  Scanner__pos = i3;
-  i3 = Scanner__pos;
-  i4 = i3 + i1;
-  i6 = *(unsigned char*)i4;
-  i4 = _cap(i6);
-  i3 = i4 < 65;
-  i5 = i2 + i1;
-  i2 = *(unsigned char*)i5;
-  i7 += i2;
-  if (i3) goto l1;
+  i1 = (int)Scanner__buf;
+  i1 = i2 + i1;
+  i1 = *(unsigned char*)i1;
+  i2++;
+  Scanner__pos = i2;
+  i2 = Scanner__pos;
+  i3 = (int)Scanner__buf;
+  i3 = i2 + i3;
+  i3 = *(unsigned char*)i3;
+  i4 = _cap(i3);
+  i2 = i4 < 65;
+  i6 += i1;
+  if (i2) goto l1;
   i4 = i4 <= 90;
   if (i4) goto l0;
 l1:
-  i2 = i6 >= 48;
-  if (!(i2)) goto l2;
-  i2 = i6 <= 57;
-  if (i2) goto l0;
+  i1 = i3 >= 48;
+  if (!(i1)) goto l2;
+  i1 = i3 <= 57;
+  if (i1) goto l0;
 l2:
-  i6 = i6 == 95;
-  if (i6) goto l0;
+  i3 = i3 == 95;
+  if (i3) goto l0;
   goto l8;
 l3:
   sum = (int)0;
   Scanner__Ident_SkipWord(&sum);
   i1 = sum;
-  i5 = Scanner__pos;
+  i3 = Scanner__pos;
   i2 = (int)Scanner__buf;
-  i4 = i5 + i2;
-  i4 = *(unsigned char*)i4;
-  i4 = i4 != 58;
-  if (i4) goto l7;
-  i5++;
-  i2 = i5 + i2;
+  i5 = i3 + i2;
+  i5 = *(unsigned char*)i5;
+  i5 = i5 != 58;
+  if (i5) goto l7;
+  i3++;
+  i2 = i3 + i2;
   i2 = *(unsigned char*)i2;
-  i3 = i2 == 61;
-  if (i3) goto l7;
-  i7 = i1;
+  i4 = i2 == 61;
+  if (i4) goto l7;
+  i6 = i1;
 l4:
   i2 = Scanner__pos;
   i2++;
@@ -1528,47 +1487,48 @@ l4:
   Error__Err((int)i0, (short int)35);
   goto l6;
 l5:
-  sum = (int)i7;
+  sum = (int)i6;
   Scanner__Ident_SkipWord(&sum);
-  i7 = sum;
+  i6 = sum;
 l6:
-  i5 = (int)Scanner__buf;
+  i3 = (int)Scanner__buf;
   i2 = Scanner__pos;
-  i4 = i2 + i5;
-  i4 = *(unsigned char*)i4;
-  i4 = i4 != 58;
-  if (i4) goto l8;
+  i5 = i2 + i3;
+  i5 = *(unsigned char*)i5;
+  i5 = i5 != 58;
+  if (i5) goto l8;
   i2++;
-  i5 = i2 + i5;
-  i2 = *(unsigned char*)i5;
+  i3 = i2 + i3;
+  i2 = *(unsigned char*)i3;
   i2 = i2 != 61;
   if (i2) goto l4;
   goto l8;
 l7:
-  i7 = i1;
+  i6 = i1;
 l8:
-  i2 = Scanner__pos;
-  Scanner__StoreString((int)i0, (int)i2);
+  i1 = Scanner__pos;
+  Scanner__StoreString((int)i0, (int)i1);
   i1 = Scanner__allowUnderscore;
   if (i1) goto l11;
-  i2 = i0 == i2;
-  if (i2) goto l11;
-  i3 = i0;
+  i3 = Scanner__pos;
+  i3 = i0 == i3;
+  if (i3) goto l11;
+  i2 = i0;
 l9:
   i1 = (int)Scanner__buf;
-  i2 = Scanner__pos;
-  i1 = i2 + i1;
-  i2 = *(unsigned char*)i1;
-  i2 = i2 != 95;
-  if (i2) goto l10;
-  Error__Err((int)i3, (short int)10);
+  i3 = Scanner__pos;
+  i1 = i3 + i1;
+  i3 = *(unsigned char*)i1;
+  i3 = i3 != 95;
+  if (i3) goto l10;
+  Error__Err((int)i2, (short int)10);
 l10:
-  i3++;
-  i2 = Scanner__pos;
-  i2 = i2 != i3;
-  if (i2) goto l9;
+  i2++;
+  i3 = Scanner__pos;
+  i3 = i3 != i2;
+  if (i3) goto l9;
 l11:
-  i1 = i7 & 0x7FU;
+  i1 = i6 & 0x7FU;
   i2 = (int)_ashl(i1, 1, (unsigned int));
   i2 = (int)Scanner__kwSym + i2;
   i3 = *(signed char*)i2;
@@ -1708,74 +1668,79 @@ void Scanner__Number(void) {
   signed char format;
   float real;
   int start;
-  i5 = (int)Scanner__buf;
-  i6 = Scanner__pos;
   Scanner__sym = 35;
+  i6 = Scanner__pos;
 l0:
   i0 = Scanner__pos;
   i0++;
   Scanner__pos = i0;
   i0 = Scanner__pos;
-  i1 = i0 + i5;
-  i1 = *(unsigned char*)i1;
-  i0 = i1 < 48;
-  if (i0) goto l1;
-  i0 = i1 <= 57;
-  if (i0) goto l0;
-l1:
-  i0 = i1 >= 65;
-  if (!(i0)) goto l2;
-  i1 = i1 <= 70;
+  i1 = (int)Scanner__buf;
+  i1 = i0 + i1;
+  i0 = *(unsigned char*)i1;
+  i1 = i0 < 48;
+  if (i1) goto l1;
+  i1 = i0 <= 57;
   if (i1) goto l0;
+l1:
+  i1 = i0 >= 65;
+  if (!(i1)) goto l2;
+  i0 = i0 <= 70;
+  if (i0) goto l0;
 l2:
-  i4 = Scanner__pos;
-  i0 = i4 + i5;
-  i3 = *(unsigned char*)i0;
-  i0 = i3 != 46;
+  i2 = (int)Scanner__buf;
+  i1 = Scanner__pos;
+  i0 = i1 + i2;
+  i0 = *(unsigned char*)i0;
+  i0 = i0 != 46;
   if (i0) goto l3;
-  i1 = i4 + 1;
-  i7 = i1 + i5;
-  i7 = *(unsigned char*)i7;
-  i7 = i7 != 46;
-  if (i7) goto l13;
+  i3 = i1 + 1;
+  i2 = i3 + i2;
+  i2 = *(unsigned char*)i2;
+  i2 = i2 != 46;
+  if (i2) goto l13;
 l3:
   Scanner__intVal = 0;
+  i2 = Scanner__pos;
+  i1 = (int)Scanner__buf;
+  i7 = i2 + i1;
+  i3 = *(unsigned char*)i7;
   i7 = i3 == 72;
   if (i7) goto l8;
   i0 = i3 == 88;
   if (i0) goto l8;
-  i2 = i6 == i4;
-  if (i2) goto l5;
-  i7 = i6 + i5;
-  i1 = *(unsigned char*)i7;
-  i7 = i1 < 48;
+  i5 = i6 == i2;
+  if (i5) goto l5;
+  i7 = i6 + i1;
+  i4 = *(unsigned char*)i7;
+  i7 = i4 < 48;
   if (i7) goto l5;
-  i2 = i1 > 57;
-  if (i2) goto l5;
+  i5 = i4 > 57;
+  if (i5) goto l5;
   i3 = i6;
 l4:
   i3++;
-  i7 = i4 == i3;
+  i7 = i2 == i3;
   if (i7) goto l6;
-  i1 = i3 + i5;
-  i1 = *(unsigned char*)i1;
-  i7 = i1 < 48;
+  i4 = i3 + i1;
+  i4 = *(unsigned char*)i4;
+  i7 = i4 < 48;
   if (i7) goto l6;
-  i1 = i1 <= 57;
-  if (i1) goto l4;
+  i4 = i4 <= 57;
+  if (i4) goto l4;
   goto l6;
 l5:
   i3 = i6;
 l6:
-  i2 = i3 != i4;
-  if (i2) goto l7;
-  Scanner__StoreString((int)i6, (int)i4);
+  i5 = i3 != i2;
+  if (i5) goto l7;
+  Scanner__StoreString((int)i6, (int)i2);
   i7 = (int)Scanner__str;
-  i2 = Scanner__intVal;
-  i1 = *(int*)(i7-8);
-  IntStr__StrToInt((const unsigned char*)i7, i1, (int *)(int)&Scanner__intVal, (signed char *)(int)&format);
-  i1 = format != 1;
-  if (i1) goto l9;
+  i5 = *(int*)(i7-8);
+  i4 = Scanner__intVal;
+  IntStr__StrToInt((const unsigned char*)i7, i5, (int *)(int)&Scanner__intVal, (signed char *)(int)&format);
+  i4 = format != 1;
+  if (i4) goto l9;
   Scanner__intVal = 1;
   Error__Err((int)i6, (short int)6);
   goto l9;
@@ -1784,140 +1749,152 @@ l7:
   Error__Err((int)i3, (short int)5);
   goto l9;
 l8:
-  i4--;
+  i2--;
   start = (int)i6;
   start = (int)i6;
-  i5 = Scanner__Number_ConvertHex((int)i6, (int)i4, &start);
-  Scanner__intVal = i5;
+  i1 = Scanner__Number_ConvertHex((int)i6, (int)i2, &start);
+  Scanner__intVal = i1;
   i6 = start;
 l9:
-  i2 = Scanner__pos;
+  i5 = Scanner__pos;
   i7 = (int)Scanner__buf;
-  i7 = i2 + i7;
-  i1 = *(unsigned char*)i7;
-  i7 = i1 == 88;
-  if (i7) goto l11;
-  i1 = i1 != 72;
-  if (i1) goto l10;
-  i1 = i2 + 1;
-  Scanner__pos = i1;
+  i7 = i5 + i7;
+  i7 = *(unsigned char*)i7;
+  i4 = i7 == 88;
+  if (i4) goto l11;
+  i7 = i7 != 72;
+  if (i7) goto l10;
+  i5++;
+  Scanner__pos = i5;
 l10:
   Scanner__numType = 1;
   goto l26;
 l11:
-  i2++;
   Scanner__sym = 37;
-  Scanner__pos = i2;
-  i2 = Scanner__intVal;
-  i2 = StdTypes__ValidChar((int)i2);
-  if (i2) goto l12;
+  i7 = Scanner__pos;
+  i7++;
+  Scanner__pos = i7;
+  i7 = Scanner__intVal;
+  i7 = StdTypes__ValidChar((int)i7);
+  if (i7) goto l12;
   Error__Err((int)i6, (short int)7);
   goto l26;
 l12:
   i6 = (int)Scanner__str;
-  i2 = i6 + 1;
   *(unsigned char*)i6 = 97;
-  *(unsigned char*)i2 = 0;
+  i6 = (int)Scanner__str;
+  i7 = i6 + 1;
+  *(unsigned char*)i7 = 0;
   goto l26;
 l13:
-  Scanner__pos = i1;
-  i1 = Scanner__pos;
-  i0 = i1 + i5;
+  Scanner__pos = i3;
+  i3 = Scanner__pos;
+  i0 = (int)Scanner__buf;
+  i0 = i3 + i0;
   i0 = *(unsigned char*)i0;
-  i1 = i0 < 48;
-  if (i1) goto l15;
-  i1 = i0 > 57;
-  if (i1) goto l15;
+  i3 = i0 < 48;
+  if (i3) goto l15;
+  i3 = i0 > 57;
+  if (i3) goto l15;
 l14:
-  i2 = Scanner__pos;
-  i2++;
-  Scanner__pos = i2;
-  i0 = Scanner__pos;
-  i2 = i0 + i5;
-  i2 = *(unsigned char*)i2;
-  i0 = i2 < 48;
-  if (i0) goto l15;
-  i2 = i2 <= 57;
-  if (i2) goto l14;
-l15:
   i1 = Scanner__pos;
-  i0 = i1 + i5;
-  i2 = *(unsigned char*)i0;
-  i2 = i2 == 68;
-  if (i2) goto l16;
+  i1++;
+  Scanner__pos = i1;
+  i0 = Scanner__pos;
+  i1 = (int)Scanner__buf;
+  i1 = i0 + i1;
+  i1 = *(unsigned char*)i1;
+  i0 = i1 < 48;
+  if (i0) goto l15;
+  i1 = i1 <= 57;
+  if (i1) goto l14;
+l15:
+  i3 = (int)Scanner__buf;
+  i0 = Scanner__pos;
+  i3 = i0 + i3;
+  i3 = *(unsigned char*)i3;
+  i3 = i3 == 68;
+  if (i3) goto l16;
   Scanner__numType = 2;
   goto l17;
 l16:
-  *(unsigned char*)i0 = 69;
   Scanner__numType = 3;
+  i0 = (int)Scanner__buf;
+  i1 = Scanner__pos;
+  i3 = i1 + i0;
+  *(unsigned char*)i3 = 69;
 l17:
   i2 = Scanner__pos;
-  i1 = i2 + i5;
-  i1 = *(unsigned char*)i1;
-  i1 = i1 != 69;
-  if (i1) goto l22;
+  i3 = (int)Scanner__buf;
+  i3 = i2 + i3;
+  i3 = *(unsigned char*)i3;
+  i3 = i3 != 69;
+  if (i3) goto l22;
   i2++;
   Scanner__pos = i2;
-  i0 = Scanner__pos;
-  i2 = i0 + i5;
+  i1 = Scanner__pos;
+  i2 = (int)Scanner__buf;
+  i2 = i1 + i2;
   i2 = *(unsigned char*)i2;
-  i1 = i2 == 45;
-  if (i1) goto l18;
+  i0 = i2 == 45;
+  if (i0) goto l18;
   i2 = i2 != 43;
   if (i2) goto l19;
 l18:
-  i0++;
-  Scanner__pos = i0;
+  i1++;
+  Scanner__pos = i1;
 l19:
-  i0 = Scanner__pos;
-  i2 = i0 + i5;
-  i1 = *(unsigned char*)i2;
-  i2 = i1 < 48;
+  i1 = Scanner__pos;
+  i2 = (int)Scanner__buf;
+  i2 = i1 + i2;
+  i0 = *(unsigned char*)i2;
+  i2 = i0 < 48;
   if (i2) goto l21;
-  i2 = i1 > 57;
+  i2 = i0 > 57;
   if (i2) goto l21;
 l20:
-  i7 = Scanner__pos;
-  i7++;
-  Scanner__pos = i7;
-  i1 = Scanner__pos;
-  i7 = i1 + i5;
-  i7 = *(unsigned char*)i7;
-  i1 = i7 < 48;
-  if (i1) goto l22;
-  i7 = i7 <= 57;
-  if (i7) goto l20;
+  i3 = Scanner__pos;
+  i3++;
+  Scanner__pos = i3;
+  i0 = Scanner__pos;
+  i3 = (int)Scanner__buf;
+  i3 = i0 + i3;
+  i3 = *(unsigned char*)i3;
+  i0 = i3 < 48;
+  if (i0) goto l22;
+  i3 = i3 <= 57;
+  if (i3) goto l20;
   goto l22;
 l21:
-  Error__Err((int)i0, (short int)9);
+  Error__Err((int)i1, (short int)9);
 l22:
-  i1 = Scanner__pos;
-  Scanner__StoreString((int)i6, (int)i1);
-  i1 = Scanner__numType;
-  i1 = i1 == 2;
-  if (i1) goto l23;
-  i1 = (int)Scanner__str;
-  i0 = *(int*)(i1-8);
+  i3 = Scanner__pos;
+  Scanner__StoreString((int)i6, (int)i3);
+  i3 = Scanner__numType;
+  i3 = i3 == 2;
+  if (i3) goto l23;
+  i0 = (int)Scanner__str;
+  i3 = *(int*)(i0-8);
   d0 = Scanner__realVal;
-  LRealStr__StrToReal((const unsigned char*)i1, i0, (double *)(int)&Scanner__realVal, (signed char *)(int)&format);
-  i1 = format;
+  LRealStr__StrToReal((const unsigned char*)i0, i3, (double *)(int)&Scanner__realVal, (signed char *)(int)&format);
+  i3 = format;
   goto l24;
 l23:
-  i0 = (int)Scanner__str;
-  i1 = *(int*)(i0-8);
-  RealStr__StrToReal((const unsigned char*)i0, i1, (float *)(int)&real, (signed char *)(int)&format);
+  i3 = (int)Scanner__str;
+  i0 = *(int*)(i3-8);
+  RealStr__StrToReal((const unsigned char*)i3, i0, (float *)(int)&real, (signed char *)(int)&format);
   d0 = real;
   Scanner__realVal = d0;
-  i1 = format;
+  i3 = format;
 l24:
-  i1 = i1 == 1;
-  if (i1) goto l25;
-  i1 = Scanner__numType;
-  i1 = i1 != 2;
-  if (i1) goto l26;
+  i3 = i3 == 1;
+  if (i3) goto l25;
+  i3 = Scanner__numType;
+  i3 = i3 != 2;
+  if (i3) goto l26;
   d0 = Scanner__realVal;
-  i1 = StdTypes__ValidReal((double)d0);
-  if (i1) goto l26;
+  i3 = StdTypes__ValidReal((double)d0);
+  if (i3) goto l26;
 l25:
   Error__Err((int)i6, (short int)6);
 l26:
@@ -1925,7 +1902,7 @@ l26:
 }
 
 void Scanner__GetSym(void) {
-  register int i0, i1, i2, i3, i4;
+  register int i0, i1, i2, i3;
   i0 = Scanner__incrementalRead;
   if (!(i0)) goto l0;
   i1 = Scanner__currLen;
@@ -1939,30 +1916,32 @@ void Scanner__GetSym(void) {
   Scanner__incrementalRead = (unsigned char)1;
   Scanner__ReadBlock();
 l0:
-  i0 = (int)Scanner__buf;
-  i2 = Scanner__pos;
-  i1 = i2 + i0;
-  Scanner__lastSymEnd = i2;
-  i1 = *(unsigned char*)i1;
-  i1 = i1 <= 32;
-  if (i1) goto l1;
-  i3 = 0;
+  i0 = Scanner__pos;
+  Scanner__lastSymEnd = i0;
+  i0 = Scanner__pos;
+  i1 = (int)Scanner__buf;
+  i1 = i0 + i1;
+  i0 = *(unsigned char*)i1;
+  i0 = i0 <= 32;
+  if (i0) goto l1;
+  i2 = 0;
   goto l8;
 l1:
 l2:
   i2 = Scanner__pos;
-  i1 = i2 + i0;
-  i1 = *(unsigned char*)i1;
-  i3 = i1 != 0;
-  if (i3) goto l3;
-  i3 = Scanner__fileLen;
-  i3 = i2 == i3;
-  if (i3) goto l6;
+  i0 = (int)Scanner__buf;
+  i0 = i2 + i0;
+  i0 = *(unsigned char*)i0;
+  i1 = i0 != 0;
+  if (i1) goto l3;
+  i1 = Scanner__fileLen;
+  i1 = i2 == i1;
+  if (i1) goto l6;
 l3:
-  i1 = i1 == 10;
-  if (i1) goto l4;
-  i1 = i2 + 1;
-  Scanner__pos = i1;
+  i0 = i0 == 10;
+  if (i0) goto l4;
+  i0 = i2 + 1;
+  Scanner__pos = i0;
   goto l5;
 l4:
   Scanner__EndOfLine();
@@ -1970,133 +1949,147 @@ l4:
   i2++;
   Scanner__pos = i2;
 l5:
-  i3 = 0;
+  i2 = 0;
   goto l7;
 l6:
   Scanner__sym = 64;
-  i3 = 1;
+  i2 = 1;
 l7:
-  if (i3) goto l8;
-  i1 = Scanner__pos;
-  i2 = i1 + i0;
-  i2 = *(unsigned char*)i2;
-  i2 = i2 <= 32;
-  if (i2) goto l2;
+  if (i2) goto l8;
+  i1 = (int)Scanner__buf;
+  i0 = Scanner__pos;
+  i1 = i0 + i1;
+  i0 = *(unsigned char*)i1;
+  i0 = i0 <= 32;
+  if (i0) goto l2;
 l8:
-  if (i3) goto l44;
+  if (i2) goto l44;
+  i2 = Scanner__pos;
+  Scanner__currSymPos = i2;
   i1 = Scanner__pos;
-  Scanner__currSymPos = i1;
-  i3 = i1 + i0;
-  i3 = *(unsigned char*)i3;
-  if (!(i3<=33 || (i3>=36 && i3<=37) || (i3>=63 && i3<=64) || i3==92 || i3==96 || i3>=127)) goto l9;
-  i3 = Scanner__currSymPos;
-  Error__Err((int)i3, (short int)8);
-  i3 = Scanner__pos;
-  i3++;
-  Scanner__pos = i3;
+  i3 = (int)Scanner__buf;
+  i2 = i1 + i3;
+  i2 = *(unsigned char*)i2;
+  if (!(i2<=33 || (i2>=36 && i2<=37) || (i2>=63 && i2<=64) || i2==92 || i2==96 || i2>=127)) goto l9;
+  i2 = Scanner__currSymPos;
+  Error__Err((int)i2, (short int)8);
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
   Scanner__GetSym();
   goto l44;
 l9:
-  if (!((i3>=65 && i3<=90) || i3==95 || (i3>=97 && i3<=122))) goto l10;
+  if (!((i2>=65 && i2<=90) || i2==95 || (i2>=97 && i2<=122))) goto l10;
   Scanner__Ident();
   goto l44;
 l10:
-  if (!((i3>=48 && i3<=57))) goto l11;
+  if (!((i2>=48 && i2<=57))) goto l11;
   Scanner__Number();
   goto l44;
 l11:
-  if (!(i3==34 || i3==39)) goto l12;
-  Scanner__GetString((unsigned char)i3);
+  if (!(i2==34 || i2==39)) goto l12;
+  Scanner__GetString((unsigned char)i2);
   goto l44;
 l12:
-  if (!(i3==126)) goto l13;
+  if (!(i2==126)) goto l13;
   Scanner__sym = 33;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
   goto l44;
 l13:
-  if (!(i3==123)) goto l14;
+  if (!(i2==123)) goto l14;
   Scanner__sym = 32;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
   goto l44;
 l14:
-  if (!(i3==46)) goto l16;
+  if (!(i2==46)) goto l16;
   i3 = i1 + 1;
   Scanner__pos = i3;
   i3 = Scanner__pos;
-  i2 = i3 + i0;
-  i2 = *(unsigned char*)i2;
-  i2 = i2 == 46;
-  if (i2) goto l15;
+  i2 = (int)Scanner__buf;
+  i2 = i3 + i2;
+  i3 = *(unsigned char*)i2;
+  i3 = i3 == 46;
+  if (i3) goto l15;
   Scanner__sym = 18;
   goto l44;
 l15:
   Scanner__sym = 21;
+  i3 = Scanner__pos;
   i3++;
   Scanner__pos = i3;
   goto l44;
 l16:
-  if (!(i3==94)) goto l17;
+  if (!(i2==94)) goto l17;
   Scanner__sym = 17;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
   goto l44;
 l17:
-  if (!(i3==91)) goto l18;
+  if (!(i2==91)) goto l18;
   Scanner__sym = 31;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
   goto l44;
 l18:
-  if (!(i3==58)) goto l20;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
-  i3 = Scanner__pos;
-  i2 = i3 + i0;
-  i2 = *(unsigned char*)i2;
+  if (!(i2==58)) goto l20;
+  i2 = i1 + 1;
+  Scanner__pos = i2;
+  i2 = Scanner__pos;
+  i3 = (int)Scanner__buf;
+  i3 = i2 + i3;
+  i2 = *(unsigned char*)i3;
   i2 = i2 == 61;
   if (i2) goto l19;
   Scanner__sym = 20;
   goto l44;
 l19:
   Scanner__sym = 34;
-  i3++;
-  Scanner__pos = i3;
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
   goto l44;
 l20:
-  if (!(i3==40)) goto l22;
-  i2 = i1 + 1;
-  Scanner__pos = i2;
-  i2 = Scanner__pos;
-  i3 = i2 + i0;
-  i3 = *(unsigned char*)i3;
-  i3 = i3 == 42;
-  if (i3) goto l21;
+  if (!(i2==40)) goto l22;
+  i3 = i1 + 1;
+  Scanner__pos = i3;
+  i3 = Scanner__pos;
+  i0 = (int)Scanner__buf;
+  i2 = i3 + i0;
+  i2 = *(unsigned char*)i2;
+  i2 = i2 == 42;
+  if (i2) goto l21;
   Scanner__sym = 30;
   goto l44;
 l21:
-  i3 = Scanner__lastSymEnd;
+  i2 = Scanner__lastSymEnd;
   Scanner__Comment();
   Scanner__GetSym();
-  Scanner__lastSymEnd = i3;
+  Scanner__lastSymEnd = i2;
   goto l44;
 l22:
-  if (!(i3==42)) goto l25;
+  if (!(i2==42)) goto l25;
   Scanner__sym = 1;
-  i2 = i1 + 1;
-  Scanner__pos = i2;
-  i2 = Scanner__pos;
-  i4 = i2 + i0;
-  i3 = *(unsigned char*)i4;
-  i4 = i3 == 41;
-  if (i4) goto l24;
-  i3 = i3 != 62;
-  if (i3) goto l44;
-  i3 = Scanner__scanStatus;
-  i3 = i3 == 1;
-  if (i3) goto l23;
-  i3 = i2 - 1;
+  i1 = Scanner__pos;
+  i1++;
+  Scanner__pos = i1;
+  i3 = Scanner__pos;
+  i1 = (int)Scanner__buf;
+  i1 = i3 + i1;
+  i2 = *(unsigned char*)i1;
+  i1 = i2 == 41;
+  if (i1) goto l24;
+  i2 = i2 != 62;
+  if (i2) goto l44;
+  i2 = Scanner__scanStatus;
+  i2 = i2 == 1;
+  if (i2) goto l23;
+  i3--;
   Error__Err((int)i3, (short int)11);
   i3 = Scanner__pos;
   i3++;
@@ -2104,141 +2097,159 @@ l22:
   goto l44;
 l23:
   Scanner__sym = 66;
-  i2++;
-  Scanner__pos = i2;
+  i3 = Scanner__pos;
+  i3++;
+  Scanner__pos = i3;
   goto l44;
 l24:
-  i2 = Scanner__currSymPos;
-  Error__Err((int)i2, (short int)4);
+  i1 = Scanner__currSymPos;
+  Error__Err((int)i1, (short int)4);
+  i1 = Scanner__pos;
+  i1++;
+  Scanner__pos = i1;
+  goto l44;
+l25:
+  if (!(i2==47)) goto l26;
+  Scanner__sym = 2;
   i2 = Scanner__pos;
   i2++;
   Scanner__pos = i2;
   goto l44;
-l25:
-  if (!(i3==47)) goto l26;
-  Scanner__sym = 2;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
-  goto l44;
 l26:
-  if (!(i3==38)) goto l27;
+  if (!(i2==38)) goto l27;
   Scanner__sym = 5;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
   goto l44;
 l27:
-  if (!(i3==43)) goto l28;
+  if (!(i2==43)) goto l28;
   Scanner__sym = 6;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
   goto l44;
 l28:
-  if (!(i3==45)) goto l29;
+  if (!(i2==45)) goto l29;
   Scanner__sym = 7;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
   goto l44;
 l29:
-  if (!(i3==61)) goto l30;
+  if (!(i2==61)) goto l30;
   Scanner__sym = 9;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
   goto l44;
 l30:
-  if (!(i3==35)) goto l31;
+  if (!(i2==35)) goto l31;
   Scanner__sym = 10;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
   goto l44;
 l31:
-  if (!(i3==60)) goto l36;
-  i2 = i1 + 1;
-  Scanner__pos = i2;
-  i4 = Scanner__pos;
-  i2 = i4 + i0;
-  i2 = *(unsigned char*)i2;
-  i3 = i2 == 61;
-  if (i3) goto l35;
-  i2 = i2 == 42;
-  if (i2) goto l32;
+  if (!(i2==60)) goto l36;
+  i0 = i1 + 1;
+  Scanner__pos = i0;
+  i0 = Scanner__pos;
+  i3 = (int)Scanner__buf;
+  i3 = i0 + i3;
+  i3 = *(unsigned char*)i3;
+  i2 = i3 == 61;
+  if (i2) goto l35;
+  i3 = i3 == 42;
+  if (i3) goto l32;
   Scanner__sym = 11;
   goto l44;
 l32:
   i3 = Scanner__scanStatus;
   i2 = i3 == 1;
   if (i2) goto l34;
-  i2 = i3 == 2;
-  if (i2) goto l33;
-  i2 = i4 + 1;
-  Scanner__pos = i2;
+  i3 = i3 == 2;
+  if (i3) goto l33;
+  i3 = i0 + 1;
+  Scanner__pos = i3;
   Scanner__ParsePragma();
   goto l44;
 l33:
   Scanner__sym = 65;
-  i3 = i4 + 1;
+  i3 = Scanner__pos;
+  i3++;
   Scanner__pos = i3;
   goto l44;
 l34:
-  i3 = i4 - 1;
-  Error__Err((int)i3, (short int)12);
+  i0--;
+  Error__Err((int)i0, (short int)12);
   Scanner__GetSym();
   goto l44;
 l35:
   Scanner__sym = 12;
-  i4++;
-  Scanner__pos = i4;
+  i0 = Scanner__pos;
+  i0++;
+  Scanner__pos = i0;
   goto l44;
 l36:
-  if (!(i3==62)) goto l38;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
-  i3 = Scanner__pos;
-  i0 = i3 + i0;
-  i0 = *(unsigned char*)i0;
-  i0 = i0 == 61;
-  if (i0) goto l37;
+  if (!(i2==62)) goto l38;
+  i1++;
+  Scanner__pos = i1;
+  i1 = Scanner__pos;
+  i2 = (int)Scanner__buf;
+  i2 = i1 + i2;
+  i1 = *(unsigned char*)i2;
+  i1 = i1 == 61;
+  if (i1) goto l37;
   Scanner__sym = 13;
   goto l44;
 l37:
   Scanner__sym = 14;
-  i3++;
-  Scanner__pos = i3;
-  goto l44;
-l38:
-  if (!(i3==125)) goto l39;
-  Scanner__sym = 24;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
-  goto l44;
-l39:
-  if (!(i3==41)) goto l40;
-  Scanner__sym = 22;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
-  goto l44;
-l40:
-  if (!(i3==93)) goto l41;
-  Scanner__sym = 23;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
-  goto l44;
-l41:
-  if (!(i3==124)) goto l42;
-  Scanner__sym = 40;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
-  goto l44;
-l42:
-  if (!(i3==59)) goto l43;
-  Scanner__sym = 39;
-  i3 = i1 + 1;
-  Scanner__pos = i3;
-  goto l44;
-l43:
-  if (!(i3==44)) goto l44;
-  Scanner__sym = 19;
+  i1 = Scanner__pos;
   i1++;
   Scanner__pos = i1;
+  goto l44;
+l38:
+  if (!(i2==125)) goto l39;
+  Scanner__sym = 24;
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
+  goto l44;
+l39:
+  if (!(i2==41)) goto l40;
+  Scanner__sym = 22;
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
+  goto l44;
+l40:
+  if (!(i2==93)) goto l41;
+  Scanner__sym = 23;
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
+  goto l44;
+l41:
+  if (!(i2==124)) goto l42;
+  Scanner__sym = 40;
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
+  goto l44;
+l42:
+  if (!(i2==59)) goto l43;
+  Scanner__sym = 39;
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
+  goto l44;
+l43:
+  if (!(i2==44)) goto l44;
+  Scanner__sym = 19;
+  i2 = Scanner__pos;
+  i2++;
+  Scanner__pos = i2;
 l44:
   ;
 }
@@ -2341,17 +2352,17 @@ l2:
 }
 
 void Scanner__Init(const unsigned char* fileName__ref, int fileName_0d, unsigned char incrRead) {
-  register int i0, i1, i2, i3, i4;
+  register int i0, i1, i2, i3;
   unsigned char msg[1024];
   Msg__Msg res;
   unsigned char* fileName;
   char* _old_top_vs = _top_vs;
   _push_value(int, fileName, fileName__ref, fileName_0d);
+  Scanner__incrementalRead = incrRead;
+  Scanner__finished = 1;
   i0 = (int)ParamPaths__paths;
   i0 += 16;
   i0 = *(unsigned char*)i0;
-  Scanner__incrementalRead = incrRead;
-  Scanner__finished = 1;
   if (!(i0)) goto l1;
   i0 = RCS__MasterFile((const unsigned char*)(int)fileName, fileName_0d);
   if (!(i0)) goto l1;
@@ -2379,41 +2390,42 @@ l1:
   }
   Error__sourceFile = (void*)i0;
   i1 = (int)Error__sourceFile;
-  i3 = (int)Scanner__inFile;
   i0 = *(int*)(i1-8);
   _string_copy(i1, (int)fileName, i0);
+  i3 = (int)Scanner__inFile;
   i0 = i3 == 0;
   if (i0) goto l9;
-  i4 = *(int*)(i3-4);
-  i4 = (int)((_Type)i4)->tbprocs[0];
-  i3 = ((_TBP_PosixFileDescr__ChannelDesc_Length)i4)((PosixFileDescr__Channel)i3);
+  i2 = *(int*)(i3-4);
+  i2 = (int)((_Type)i2)->tbprocs[0];
+  i3 = ((_TBP_PosixFileDescr__ChannelDesc_Length)i2)((PosixFileDescr__Channel)i3);
   Scanner__fileLen = i3;
-  i1 = Scanner__fileLen;
-  i4 = (int)Scanner__buf;
-  i2 = i4 == 0;
-  if (i2) goto l2;
-  i0 = *(int*)(i4-8);
-  i3 = i1 + 1;
-  i0 = i0 >= i3;
-  if (i0) goto l8;
+  i2 = (int)Scanner__buf;
+  i1 = i2 == 0;
+  if (i1) goto l2;
+  i0 = Scanner__fileLen;
+  i3 = *(int*)(i2-8);
+  i0++;
+  i3 = i3 >= i0;
+  if (i3) goto l8;
 l2:
-  if (i2) goto l3;
-  i0 = *(int*)(i4-8);
+  if (i1) goto l3;
+  i0 = *(int*)(i2-8);
   goto l4;
 l3:
   i0 = 32752;
 l4:
-  i2 = i1 + 1;
-  i4 = i0 <= i2;
-  if (i4) goto l5;
+  i2 = Scanner__fileLen;
+  i1 = i2 + 1;
+  i2 = i0 <= i1;
+  if (i2) goto l5;
   i3 = i0;
   goto l7;
 l5:
   i3 = i0;
 l6:
   i3 += 16384;
-  i4 = i3 <= i2;
-  if (i4) goto l6;
+  i2 = i3 <= i1;
+  if (i2) goto l6;
 l7:
   {
     char *_mem, *_var;
@@ -2424,25 +2436,26 @@ l7:
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i3;
-    i4 = (int)_var;
+    i2 = (int)_var;
   }
-  Scanner__buf = (void*)i4;
+  Scanner__buf = (void*)i2;
 l8:
   i3 = (int)Scanner__buf;
-  i4 = i1 + i3;
-  *(unsigned char*)i4 = 0;
+  i2 = Scanner__fileLen;
+  i1 = i2 + i3;
+  *(unsigned char*)i1 = 0;
   Scanner__currLen = 0;
   Scanner__pos = 0;
   Scanner__eolCounter = 0;
   Scanner__condStack = (void*)0;
   Scanner__scanStatus = 0;
-  i3 = (int)Scanner__inFile;
   Scanner__finished = 0;
-  i4 = *(int*)(i3-4);
   Scanner__allowUnderscore = 0;
-  i4 = (int)((_Type)i4)->tbprocs[2];
   Scanner__moduleIdent = 0;
-  i3 = (int)((_TBP_Files__FileDesc_NewReader)i4)((Files__File)i3);
+  i3 = (int)Scanner__inFile;
+  i2 = *(int*)(i3-4);
+  i2 = (int)((_Type)i2)->tbprocs[2];
+  i3 = (int)((_TBP_Files__FileDesc_NewReader)i2)((Files__File)i3);
   Scanner__inReader = (void*)i3;
   Scanner__ReadBlock();
   Scanner__GetSym();
@@ -2492,46 +2505,46 @@ l1:
   i0 = i1;
   goto l1;
 l2:
-  i2 = i4 & 0x7FU;
-  i0 = (int)_ashl(i2, 1, (unsigned int));
-  i3 = (int)Scanner__kwSym + i0;
-  i0 = *(signed char*)i3;
+  i3 = i4 & 0x7FU;
+  i0 = (int)_ashl(i3, 1, (unsigned int));
+  i2 = (int)Scanner__kwSym + i0;
+  i0 = *(signed char*)i2;
   i0 = i0 < 0;
   if (i0) goto l3;
-  i1 = i2 * 20;
+  i1 = i3 * 20;
   i1 = (int)Scanner__kwStr + i1;
   i4 = i1 + 10;
-  i0 = i3 + 1;
-  _string_copy(i4, (int)ident, 10);
+  i0 = i2 + 1;
   *(signed char*)i0 = sym;
+  _string_copy(i4, (int)ident, 10);
   goto l4;
 l3:
-  i0 = i2 * 20;
+  i0 = i3 * 20;
   i0 = (int)Scanner__kwStr + i0;
+  *(signed char*)i2 = sym;
   _string_copy(i0, (int)ident, 10);
-  *(signed char*)i3 = sym;
 l4:
   _top_vs = _old_top_vs;
 }
 
 void Scanner__InitKeywords(void) {
-  register int i0, i1, i2, i3, i4, i5;
-  i5 = 0;
+  register int i0, i1, i2, i3, i4;
+  i4 = 0;
 l0:
-  i4 = (int)_ashl(i5, 1, (unsigned int));
-  i0 = (int)Scanner__kwSym + i4;
-  i4 = i5 * 20;
-  i4 = (int)Scanner__kwStr + i4;
-  i3 = i4 + 10;
-  i2 = i0 + 1;
+  i3 = (int)_ashl(i4, 1, (unsigned int));
+  i0 = (int)Scanner__kwSym + i3;
+  i3 = i0 + 1;
   *(signed char*)i0 = -1;
-  i1 = i5 + 1;
-  *(unsigned char*)i4 = 0;
-  *(signed char*)i2 = -1;
-  i2 = i1 > 127;
-  *(unsigned char*)i3 = 0;
-  if (i2) goto l1;
-  i5 = i1;
+  i2 = i4 * 20;
+  i2 = (int)Scanner__kwStr + i2;
+  i1 = i2 + 10;
+  *(signed char*)i3 = -1;
+  i0 = i4 + 1;
+  *(unsigned char*)i2 = 0;
+  i3 = i0 > 127;
+  *(unsigned char*)i1 = 0;
+  if (i3) goto l1;
+  i4 = i0;
   goto l0;
 l1:
   Scanner__InitKeywords_KW((const unsigned char*)(int)_c12, 6, (signed char)54);

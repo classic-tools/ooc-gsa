@@ -241,72 +241,73 @@ signed char GenStatm__WriteDyOp_OpStyle(unsigned char* GenStatm__WriteDyOp_op, i
   Data__Usable arg;
   unsigned char found;
   short int pos;
-  i4 = (int)*GenStatm__WriteDyOp_instr;
   Strings__FindNext((const unsigned char*)(int)GenStatm__WriteDyOp_op, GenStatm__WriteDyOp_op_0d, (const unsigned char*)(int)GenStatm__opList, 9, (short int)0, (unsigned char *)(int)&found, (short int *)(int)&pos);
   i0 = *GenStatm__WriteDyOp_opnd0;
-  i3 = (int)Data__InstructionDesc_NthArgument((Data__Instruction)i4, (short int)i0);
+  i1 = (int)*GenStatm__WriteDyOp_instr;
+  i4 = (int)Data__InstructionDesc_NthArgument((Data__Instruction)i1, (short int)i0);
   if (!(found)) goto l0;
-  i2 = *(int*)(i3-4);
-  i2 = _type_test(i2, &Data__ResultDesc_td.td, 3);
-  if (i2) goto l1;
+  i3 = *(int*)(i4-4);
+  i3 = _type_test(i3, &Data__ResultDesc_td.td, 3);
+  if (i3) goto l1;
 l0:
   i5 = 0;
   goto l11;
 l1:
-  i0 = (int)GenStatm__GetLocation((Data__Node)i4);
-  i3 = (int)GenStatm__GetLocation((Data__Node)i3);
-  i0 = (int)*(void**)i0;
-  i3 = (int)*(void**)i3;
-  i5 = strcmp((const char*) i0, (const char*) i3) == 0;
+  i3 = (int)*GenStatm__WriteDyOp_instr;
+  i1 = (int)GenStatm__GetLocation((Data__Node)i3);
+  i4 = (int)GenStatm__GetLocation((Data__Node)i4);
+  i1 = (int)*(void**)i1;
+  i4 = (int)*(void**)i4;
+  i5 = strcmp((const char*) i1, (const char*) i4) == 0;
   if (i5) goto l2;
   goto l11;
 l2:
-  i2 = *GenStatm__WriteDyOp_opnd1;
-  i0 = (int)Data__InstructionDesc_NthArgument((Data__Instruction)i4, (short int)i2);
-  i4 = *(int*)(i0-4);
-  i4 = _type_test(i4, &Data__ConstDesc_td.td, 3);
-  if (!(i4)) goto l9;
-  i1 = i0 + 16;
-  i1 = (int)*(void**)i1;
-  i2 = SymbolTable__TypeInGroup((Data__Struct)i1, (signed char)32);
-  if (!(i2)) goto l9;
-  i4 = *(unsigned char*)(int)GenStatm__WriteDyOp_op;
-  i1 = i4 == 43;
-  if (!(i1)) goto l3;
-  arg = (void*)i0;
+  i0 = *GenStatm__WriteDyOp_opnd1;
+  i1 = (int)Data__InstructionDesc_NthArgument((Data__Instruction)i3, (short int)i0);
+  i3 = *(int*)(i1-4);
+  i3 = _type_test(i3, &Data__ConstDesc_td.td, 3);
+  if (!(i3)) goto l9;
+  i2 = i1 + 16;
+  i2 = (int)*(void**)i2;
+  i0 = SymbolTable__TypeInGroup((Data__Struct)i2, (signed char)32);
+  if (!(i0)) goto l9;
+  i3 = *(unsigned char*)(int)GenStatm__WriteDyOp_op;
+  i2 = i3 == 43;
+  if (!(i2)) goto l3;
+  arg = (void*)i1;
   i6 = GenStatm__WriteDyOp_OpStyle_Const((signed char)1, (Data__Usable *)&arg);
   if (i6) goto l8;
 l3:
-  i4 = i4 == 45;
-  if (!(i4)) goto l4;
-  arg = (void*)i0;
-  i3 = GenStatm__WriteDyOp_OpStyle_Const((signed char)-1, (Data__Usable *)&arg);
-  if (i3) goto l8;
+  i3 = i3 == 45;
+  if (!(i3)) goto l4;
+  arg = (void*)i1;
+  i4 = GenStatm__WriteDyOp_OpStyle_Const((signed char)-1, (Data__Usable *)&arg);
+  if (i4) goto l8;
 l4:
-  if (!(i4)) goto l5;
-  arg = (void*)i0;
-  i4 = GenStatm__WriteDyOp_OpStyle_Const((signed char)1, (Data__Usable *)&arg);
-  if (i4) goto l7;
+  if (!(i3)) goto l5;
+  arg = (void*)i1;
+  i3 = GenStatm__WriteDyOp_OpStyle_Const((signed char)1, (Data__Usable *)&arg);
+  if (i3) goto l7;
 l5:
-  if (!(i1)) goto l6;
-  arg = (void*)i0;
-  i0 = GenStatm__WriteDyOp_OpStyle_Const((signed char)-1, (Data__Usable *)&arg);
-  if (i0) goto l7;
+  if (!(i2)) goto l6;
+  arg = (void*)i1;
+  i1 = GenStatm__WriteDyOp_OpStyle_Const((signed char)-1, (Data__Usable *)&arg);
+  if (i1) goto l7;
 l6:
-  i3 = 0;
+  i4 = 0;
   goto l10;
 l7:
   i6 = 3;
-  i3 = 1;
+  i4 = 1;
   goto l10;
 l8:
   i6 = 2;
-  i3 = 1;
+  i4 = 1;
   goto l10;
 l9:
-  i3 = 0;
+  i4 = 0;
 l10:
-  if (i3) goto l11;
+  if (i4) goto l11;
   i6 = 1;
 l11:
   if (i5) goto l12;
@@ -323,11 +324,7 @@ void GenStatm__WriteDyOp(Data__Instruction instr, const unsigned char* op__ref, 
   GenStatm__NewLine();
   GenStatm__WriteLocation((Data__Node)(int)instr);
   i0 = GenStatm__WriteDyOp_OpStyle(op, op_0d, (Data__Instruction *)&instr, &opnd0, &opnd1);
-  if (!(i0<=-1 || i0>=4)) goto l0;
-  i0 = 1;
-  goto l4;
-l0:
-  if (!(i0==0)) goto l1;
+  if (!(i0==0)) goto l0;
   i1 = (int)GenStatm__w;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
@@ -346,10 +343,9 @@ l0:
   i0 = (int)((_Type)i0)->tbprocs[7];
   ((_TBP_TextRider__WriterDesc_WriteChar)i0)((TextRider__Writer)i1, (unsigned char)32);
   GenStatm__WriteNthArg((short int)opnd1, (Data__Instruction)(int)instr);
-  i0 = 0;
-  goto l4;
-l1:
-  if (!(i0==1)) goto l2;
+  goto l3;
+l0:
+  if (!(i0==1)) goto l1;
   i1 = (int)GenStatm__w;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[7];
@@ -363,30 +359,25 @@ l1:
   i0 = (int)((_Type)i0)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c9, 3);
   GenStatm__WriteNthArg((short int)opnd1, (Data__Instruction)(int)instr);
-  i0 = 0;
-  goto l4;
-l2:
-  if (!(i0==2)) goto l3;
+  goto l3;
+l1:
+  if (!(i0==2)) goto l2;
   i1 = (int)GenStatm__w;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c10, 3);
-  i0 = 0;
-  goto l4;
-l3:
-  if (!(i0==3)) goto l4;
+  goto l3;
+l2:
+  if (!(i0==3)) goto l3;
   i1 = (int)GenStatm__w;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c11, 3);
-  i0 = 0;
-l4:
-  if (i0) goto l5;
+l3:
   i1 = (int)GenStatm__w;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[7];
   ((_TBP_TextRider__WriterDesc_WriteChar)i0)((TextRider__Writer)i1, (unsigned char)59);
-l5:
   _top_vs = _old_top_vs;
 }
 
@@ -819,97 +810,76 @@ void GenStatm__SpecialCallInstr(Data__Instruction instr) {
 }
 
 void GenStatm__CheckNil(Data__Instruction instr, short int adr) {
-  register int i0, i1, i2, i3, i4, i5, i6;
-  short int m;
+  register int i0, i1, i2, i3;
   i0 = (int)instr + 48;
   i0 = *(unsigned int*)i0;
   i0 = (i0 & ((unsigned int)1 << 3)) != 0;
-  if (!(i0)) goto l13;
-  i5 = (int)Data__InstructionDesc_NthArgument((Data__Instruction)(int)instr, (short int)adr);
-  i6 = (int)*(void**)i5;
-  i5 = i6 != 0;
-  if (i5) goto l0;
-  i1 = 1;
-  i0 = 0;
-  goto l12;
+  if (!(i0)) goto l9;
+  i2 = (int)Data__InstructionDesc_NthArgument((Data__Instruction)(int)instr, (short int)adr);
+  i1 = (int)*(void**)i2;
+  i2 = i1 != 0;
+  if (i2) goto l0;
+  i0 = 1;
+  goto l8;
 l0:
 l1:
-  i5 = i6 + 12;
-  i2 = (int)*(void**)i5;
-  i4 = (int)instr == i2;
-  if (i4) goto l2;
+  i3 = i1 + 12;
+  i2 = (int)*(void**)i3;
+  i0 = (int)instr == i2;
+  if (i0) goto l2;
   i0 = i2 + 48;
   i0 = *(unsigned int*)i0;
   i0 = (i0 & ((unsigned int)1 << 3)) != 0;
   if (i0) goto l3;
 l2:
-  i1 = 1;
-  i0 = 0;
-  goto l10;
-l3:
-  i2 = Data__OpndDesc_OperandIndex((Data__Opnd)i6);
-  i5 = (int)*(void**)i5;
-  i0 = i5 + 44;
-  i0 = *(short int*)i0;
-  if (!(i0<=2 || (i0>=4 && i0<=8) || (i0>=11 && i0<=33) || (i0>=35 && i0<=49) || i0>=51)) goto l4;
   i0 = 1;
-  i4 = i3;
-  goto l6;
+  goto l7;
+l3:
+  i0 = Data__OpndDesc_OperandIndex((Data__Opnd)i1);
+  i3 = (int)*(void**)i3;
+  i2 = i3 + 44;
+  i2 = *(short int*)i2;
+  if (!(i2==34 || i2==50)) goto l4;
+  i2 = 1;
+  goto l5;
 l4:
-  if (!(i0==34 || i0==50)) goto l5;
-  i0 = 0;
-  i4 = 1;
-  goto l6;
+  if (!(i2==3 || (i2>=9 && i2<=10))) goto l5;
+  i2 = 0;
 l5:
-  if (!(i0==3 || (i0>=9 && i0<=10))) goto l6;
+  i0 = i0 == i2;
+  if (!(i0)) goto l6;
+  i3 = Schedule__ExecutedBefore((Data__Instruction)i3, (Data__Instruction)(int)instr);
+  if (!(i3)) goto l6;
   i0 = 0;
-  i4 = 0;
+  goto l7;
 l6:
-  if (i0) goto l8;
-  i2 = i2 != i4;
-  if (i2) goto l7;
-  i5 = Schedule__ExecutedBefore((Data__Instruction)i5, (Data__Instruction)(int)instr);
-  if (!(i5)) goto l7;
-  i1 = 0;
-  goto l9;
+  i0 = 1;
 l7:
-  i1 = 1;
-  goto l9;
+  i2 = i1 + 4;
+  i1 = (int)*(void**)i2;
+  if (!(i0)) goto l8;
+  i2 = i1 != 0;
+  if (i2) goto l1;
 l8:
-  i1 = 1;
-l9:
-  i3 = i4;
-l10:
-  if (i0) goto l11;
-  i5 = i6 + 4;
-  i5 = (int)*(void**)i5;
-  i6 = i5;
-l11:
-  if (i0) goto l12;
-  if (!(i1)) goto l12;
-  i5 = i6 != 0;
-  if (i5) goto l1;
-l12:
-  if (i0) goto l13;
-  if (!(i1)) goto l13;
+  if (!(i0)) goto l9;
   GenStatm__NewLine();
-  i1 = (int)GenStatm__w;
-  i5 = *(int*)(i1-4);
-  i5 = (int)((_Type)i5)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i5)((TextRider__Writer)i1, (const unsigned char*)(int)_c21, 6);
+  i2 = (int)GenStatm__w;
+  i3 = *(int*)(i2-4);
+  i3 = (int)((_Type)i3)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i2, (const unsigned char*)(int)_c21, 6);
   GenStatm__WriteNthArg((short int)adr, (Data__Instruction)(int)instr);
-  i1 = (int)GenStatm__w;
-  i5 = *(int*)(i1-4);
-  i5 = (int)((_Type)i5)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i5)((TextRider__Writer)i1, (const unsigned char*)(int)_c22, 17);
-  i1 = (int)instr + 52;
-  i1 = *(int*)i1;
-  GenStatm__WritePos((int)i1);
-  i5 = (int)GenStatm__w;
-  i1 = *(int*)(i5-4);
-  i1 = (int)((_Type)i1)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i5, (const unsigned char*)(int)_c13, 3);
-l13:
+  i2 = (int)GenStatm__w;
+  i3 = *(int*)(i2-4);
+  i3 = (int)((_Type)i3)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i2, (const unsigned char*)(int)_c22, 17);
+  i2 = (int)instr + 52;
+  i2 = *(int*)i2;
+  GenStatm__WritePos((int)i2);
+  i3 = (int)GenStatm__w;
+  i2 = *(int*)(i3-4);
+  i2 = (int)((_Type)i2)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i3, (const unsigned char*)(int)_c13, 3);
+l9:
   ;
 }
 
@@ -1076,8 +1046,8 @@ l1:
   i1 = (int)*(void**)i1;
   *opnd = (void*)i1;
 l2:
-  i1 = (int)*opnd;
   *GenStatm__CallInstr_i = 0;
+  i1 = (int)*opnd;
   i0 = i1 == 0;
   if (i0) goto l4;
   i1 += 16;
@@ -1099,12 +1069,12 @@ l3:
   i2 += 4;
   i2 = *(short int*)i2;
   GenStatm__CallInstr_Param((Data__Opnd)i0, (Data__Object)(int)fpar, (short int)i2, &*GenStatm__CallInstr_first);
-  i2 = (int)*opnd;
   i0 = *GenStatm__CallInstr_i;
-  i2 += 8;
   i0++;
   *GenStatm__CallInstr_i = i0;
-  i0 = (int)*(void**)i2;
+  i0 = (int)*opnd;
+  i0 += 8;
+  i0 = (int)*(void**)i0;
   *opnd = (void*)i0;
   i0 = (int)*opnd;
   i2 = i0 == 0;
@@ -1424,23 +1394,22 @@ l30:
 
 void GenStatm__ArrayLength(Data__Instruction instr) {
   register int i0, i1, i2, i3;
-  i0 = (int)Data__struct + 24;
-  i1 = (int)instr + 28;
-  i1 = (int)*(void**)i1;
-  i1 += 8;
-  i1 = (int)*(void**)i1;
-  i1 = (int)*(void**)i1;
-  i1 += 24;
-  i1 = *(int*)i1;
-  i1++;
+  i0 = (int)instr + 28;
+  i0 = (int)*(void**)i0;
+  i0 += 8;
+  i0 = (int)*(void**)i0;
+  i0 = (int)*(void**)i0;
+  i0 += 24;
+  i0 = *(int*)i0;
   GenStatm__CheckNil((Data__Instruction)(int)instr, (short int)0);
   GenStatm__NewLine();
   GenStatm__WriteLocation((Data__Node)(int)instr);
-  i3 = (int)GenStatm__w;
-  i2 = *(int*)(i3-4);
+  i1 = (int)GenStatm__w;
+  i2 = *(int*)(i1-4);
   i2 = (int)((_Type)i2)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i3, (const unsigned char*)(int)_c24, 5);
-  i3 = (int)*(void**)i0;
+  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i1, (const unsigned char*)(int)_c24, 5);
+  i1 = (int)Data__struct + 24;
+  i3 = (int)*(void**)i1;
   i2 = (int)GenStatm__w;
   GenDecl__WriteScalarCast((TextRider__Writer)i2, (Data__Struct)i3, (unsigned char)0, (unsigned char)1, (unsigned char)0);
   i2 = (int)GenStatm__w;
@@ -1452,15 +1421,16 @@ void GenStatm__ArrayLength(Data__Instruction instr) {
   i3 = *(int*)(i2-4);
   i3 = (int)((_Type)i3)->tbprocs[7];
   ((_TBP_TextRider__WriterDesc_WriteChar)i3)((TextRider__Writer)i2, (unsigned char)45);
-  i0 = (int)*(void**)i0;
-  i0 += 48;
+  i1 = (int)*(void**)i1;
+  i2 = i0 + 1;
+  i0 = i1 + 48;
   i0 = *(int*)i0;
-  i2 = (int)GenStatm__w;
-  i3 = i0 * i1;
-  i1 = *(int*)(i2-4);
+  i1 = (int)GenStatm__w;
+  i3 = i0 * i2;
+  i2 = *(int*)(i1-4);
   i0 += i3;
-  i1 = (int)((_Type)i1)->tbprocs[8];
-  ((_TBP_TextRider__WriterDesc_WriteLInt)i1)((TextRider__Writer)i2, (int)i0, (int)0);
+  i2 = (int)((_Type)i2)->tbprocs[8];
+  ((_TBP_TextRider__WriterDesc_WriteLInt)i2)((TextRider__Writer)i1, (int)i0, (int)0);
   i0 = (int)GenStatm__w;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
@@ -1810,11 +1780,11 @@ void GenStatm__TypeCastInstr(Data__Instruction instr) {
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[7];
   ((_TBP_TextRider__WriterDesc_WriteChar)i1)((TextRider__Writer)i0, (unsigned char)123);
-  i2 = (int)instr + 28;
   i0 = GenStatm__off;
-  i1 = i0 + 1;
+  i0++;
+  GenStatm__off = i0;
+  i2 = (int)instr + 28;
   i0 = (int)*(void**)i2;
-  GenStatm__off = i1;
   i0 = (int)Data__OpndDesc_OpndType((Data__Opnd)i0);
   i1 = SymbolTable__TypeInGroup((Data__Struct)i0, (signed char)47);
   if (i1) goto l2;
@@ -1865,23 +1835,23 @@ l2:
   GenStatm__NewLine();
   GenStatm__WriteLocation((Data__Node)(int)instr);
   i1 = (int)GenStatm__w;
-  i3 = *(int*)(i1-4);
-  i3 = (int)((_Type)i3)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i1, (const unsigned char*)(int)_c24, 5);
+  i0 = *(int*)(i1-4);
+  i0 = (int)((_Type)i0)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c24, 5);
   i1 = (int)instr + 24;
-  i0 = (int)*(void**)i1;
+  i3 = (int)*(void**)i1;
   i1 = *(int*)((int)instr-4);
-  i3 = (int)GenStatm__w;
-  GenDecl__WriteScalarCast((TextRider__Writer)i3, (Data__Struct)i0, (unsigned char)0, (unsigned char)1, (unsigned char)0);
+  i0 = (int)GenStatm__w;
+  GenDecl__WriteScalarCast((TextRider__Writer)i0, (Data__Struct)i3, (unsigned char)0, (unsigned char)1, (unsigned char)0);
   i1 = (int)((_Type)i1)->tbprocs[0];
   i1 = (int)((_TBP_Data__NodeDesc_Greg)i1)((Data__Node)(int)instr);
-  i3 = (int)*(void**)i2;
-  i3 = (int)*(void**)i3;
-  GenStatm__TypeCastInstr_WriteAddress((Data__GlobalRegion)i1, (Data__Usable)i3);
-  i3 = (int)GenStatm__w;
-  i1 = *(int*)(i3-4);
+  i0 = (int)*(void**)i2;
+  i0 = (int)*(void**)i0;
+  GenStatm__TypeCastInstr_WriteAddress((Data__GlobalRegion)i1, (Data__Usable)i0);
+  i0 = (int)GenStatm__w;
+  i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[7];
-  ((_TBP_TextRider__WriterDesc_WriteChar)i1)((TextRider__Writer)i3, (unsigned char)59);
+  ((_TBP_TextRider__WriterDesc_WriteChar)i1)((TextRider__Writer)i0, (unsigned char)59);
 l3:
   i0 = GenStatm__off;
   i0--;
@@ -1924,31 +1894,33 @@ l2:
 }
 
 void GenStatm__StructCopy_MemCopy(unsigned char useSrc, Data__Instruction *GenStatm__StructCopy_instr) {
-  register int i0, i1, i2;
+  register int i0, i1;
   GenStatm__NewLine();
-  i1 = (int)GenStatm__w;
-  i2 = *(int*)(i1-4);
+  i0 = (int)GenStatm__w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c42, 22);
   i0 = (int)*GenStatm__StructCopy_instr;
-  i2 = (int)((_Type)i2)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i1, (const unsigned char*)(int)_c42, 22);
   GenStatm__WriteNthArg((short int)1, (Data__Instruction)i0);
-  i1 = (int)GenStatm__w;
-  i2 = *(int*)(i1-4);
-  i2 = (int)((_Type)i2)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i1, (const unsigned char*)(int)_c43, 17);
+  i0 = (int)GenStatm__w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c43, 17);
   if (useSrc) goto l0;
+  i0 = (int)*GenStatm__StructCopy_instr;
   GenStatm__WriteNthArg((short int)4, (Data__Instruction)i0);
   goto l1;
 l0:
-  i1 = (int)GenStatm__w;
-  i2 = *(int*)(i1-4);
-  i2 = (int)((_Type)i2)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i1, (const unsigned char*)(int)_c44, 6);
+  i0 = (int)GenStatm__w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c44, 6);
 l1:
-  i1 = (int)GenStatm__w;
-  i2 = *(int*)(i1-4);
-  i2 = (int)((_Type)i2)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i1, (const unsigned char*)(int)_c12, 3);
+  i0 = (int)GenStatm__w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c12, 3);
+  i0 = (int)*GenStatm__StructCopy_instr;
   GenStatm__WriteNthArg((short int)2, (Data__Instruction)i0);
   i0 = (int)GenStatm__w;
   i1 = *(int*)(i0-4);
@@ -2075,7 +2047,7 @@ l5:
 }
 
 void GenStatm__NewInstr_AllocateBlock_WriteSize(Data__Instruction instr, Data__Struct type, int offset, Data__Struct *GenStatm__NewInstr_AllocateBlock_t, short int *GenStatm__NewInstr_AllocateBlock_dim) {
-  register int i0, i1, i2, i3, i4;
+  register int i0, i1, i2;
   i1 = (int)GenStatm__w;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
@@ -2083,38 +2055,40 @@ void GenStatm__NewInstr_AllocateBlock_WriteSize(Data__Instruction instr, Data__S
   i0 = (int)type == 0;
   if (i0) goto l2;
   *GenStatm__NewInstr_AllocateBlock_t = (void*)(int)type;
-  i3 = (int)*GenStatm__NewInstr_AllocateBlock_t;
-  i3 += 20;
   *GenStatm__NewInstr_AllocateBlock_dim = 0;
-  i3 = *(signed char*)i3;
-  i3 = i3 != 30;
-  if (i3) goto l1;
+  i1 = (int)*GenStatm__NewInstr_AllocateBlock_t;
+  i1 += 20;
+  i1 = *(signed char*)i1;
+  i1 = i1 != 30;
+  if (i1) goto l1;
 l0:
-  i3 = *GenStatm__NewInstr_AllocateBlock_dim;
-  i3++;
-  GenStatm__WriteNthArg((short int)i3, (Data__Instruction)(int)instr);
-  i2 = (int)GenStatm__w;
-  i0 = *(int*)(i2-4);
-  i4 = (int)*GenStatm__NewInstr_AllocateBlock_t;
-  i0 = (int)((_Type)i0)->tbprocs[7];
-  i1 = i4 + 24;
-  ((_TBP_TextRider__WriterDesc_WriteChar)i0)((TextRider__Writer)i2, (unsigned char)42);
-  i2 = (int)*(void**)i1;
-  *GenStatm__NewInstr_AllocateBlock_t = (void*)i2;
-  i2 = (int)*GenStatm__NewInstr_AllocateBlock_t;
-  *GenStatm__NewInstr_AllocateBlock_dim = i3;
-  i3 = i2 + 20;
-  i3 = *(signed char*)i3;
-  i3 = i3 == 30;
-  if (i3) goto l0;
+  i1 = *GenStatm__NewInstr_AllocateBlock_dim;
+  i1++;
+  GenStatm__WriteNthArg((short int)i1, (Data__Instruction)(int)instr);
+  i1 = (int)GenStatm__w;
+  i2 = *(int*)(i1-4);
+  i2 = (int)((_Type)i2)->tbprocs[7];
+  ((_TBP_TextRider__WriterDesc_WriteChar)i2)((TextRider__Writer)i1, (unsigned char)42);
+  i1 = (int)*GenStatm__NewInstr_AllocateBlock_t;
+  i1 += 24;
+  i1 = (int)*(void**)i1;
+  *GenStatm__NewInstr_AllocateBlock_t = (void*)i1;
+  i1 = *GenStatm__NewInstr_AllocateBlock_dim;
+  i1++;
+  *GenStatm__NewInstr_AllocateBlock_dim = i1;
+  i1 = (int)*GenStatm__NewInstr_AllocateBlock_t;
+  i1 += 20;
+  i1 = *(signed char*)i1;
+  i1 = i1 == 30;
+  if (i1) goto l0;
 l1:
-  i3 = (int)GenStatm__w;
+  i1 = (int)GenStatm__w;
   i2 = (int)*GenStatm__NewInstr_AllocateBlock_t;
-  i4 = *(int*)(i3-4);
+  i0 = *(int*)(i1-4);
   i2 += 48;
-  i4 = (int)((_Type)i4)->tbprocs[8];
+  i0 = (int)((_Type)i0)->tbprocs[8];
   i2 = *(int*)i2;
-  ((_TBP_TextRider__WriterDesc_WriteLInt)i4)((TextRider__Writer)i3, (int)i2, (int)0);
+  ((_TBP_TextRider__WriterDesc_WriteLInt)i0)((TextRider__Writer)i1, (int)i2, (int)0);
   goto l3;
 l2:
   GenStatm__WriteNthArg((short int)0, (Data__Instruction)(int)instr);
@@ -2123,10 +2097,10 @@ l3:
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c7, 2);
-  i1 = (int)GenStatm__w;
-  i0 = *(int*)(i1-4);
-  i0 = (int)((_Type)i0)->tbprocs[7];
-  ((_TBP_TextRider__WriterDesc_WriteChar)i0)((TextRider__Writer)i1, (unsigned char)43);
+  i0 = (int)GenStatm__w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[7];
+  ((_TBP_TextRider__WriterDesc_WriteChar)i1)((TextRider__Writer)i0, (unsigned char)43);
   i0 = (int)GenStatm__w;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[8];
@@ -2134,55 +2108,55 @@ l3:
 }
 
 void GenStatm__NewInstr_AllocateBlock(Data__Struct *GenStatm__NewInstr_type, Data__Instruction *GenStatm__NewInstr_instr, short int *GenStatm__NewInstr_opc, int *GenStatm__NewInstr_offset) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8;
+  register int i0, i1, i2, i3, i4, i5, i6;
   short int dim;
   Data__Struct t;
-  i6 = (int)*GenStatm__NewInstr_type;
-  i0 = i6 == 0;
-  i5 = (int)*GenStatm__NewInstr_instr;
+  i4 = (int)*GenStatm__NewInstr_type;
+  i0 = i4 == 0;
   if (i0) goto l2;
-  i4 = i6 + 20;
-  i4 = *(signed char*)i4;
-  i1 = i4 != 30;
+  i3 = i4 + 20;
+  i3 = *(signed char*)i3;
+  i1 = i3 != 30;
   if (i1) goto l2;
-  i8 = 0;
-  i7 = i6;
+  i6 = 0;
+  i5 = i4;
 l0:
-  i8++;
-  i3 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)i5, (short int)i8);
-  i4 = (int)*(void**)i3;
-  i0 = *(int*)(i4-4);
-  i4 = _type_test(i0, &Data__ConstDesc_td.td, 3);
-  if (i4) goto l1;
-  i0 = i3 + 20;
-  GenStatm__NewLine();
-  i4 = (int)GenStatm__w;
-  i2 = *(int*)(i4-4);
-  i2 = (int)((_Type)i2)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i4, (const unsigned char*)(int)_c46, 4);
-  GenStatm__WriteArg((Data__Opnd)i3);
-  i2 = (int)GenStatm__w;
-  i4 = *(int*)(i2-4);
-  i4 = (int)((_Type)i4)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i2, (const unsigned char*)(int)_c47, 23);
-  GenStatm__WriteArg((Data__Opnd)i3);
-  i2 = (int)GenStatm__w;
-  i4 = *(int*)(i2-4);
-  i4 = (int)((_Type)i4)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i2, (const unsigned char*)(int)_c12, 3);
-  i0 = *(int*)i0;
-  GenStatm__WritePos((int)i0);
-  i0 = (int)GenStatm__w;
+  i6++;
+  i0 = (int)*GenStatm__NewInstr_instr;
+  i4 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)i0, (short int)i6);
+  i0 = (int)*(void**)i4;
   i2 = *(int*)(i0-4);
-  i2 = (int)((_Type)i2)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i0, (const unsigned char*)(int)_c13, 3);
+  i0 = _type_test(i2, &Data__ConstDesc_td.td, 3);
+  if (i0) goto l1;
+  i2 = i4 + 20;
+  GenStatm__NewLine();
+  i0 = (int)GenStatm__w;
+  i3 = *(int*)(i0-4);
+  i3 = (int)((_Type)i3)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i0, (const unsigned char*)(int)_c46, 4);
+  GenStatm__WriteArg((Data__Opnd)i4);
+  i3 = (int)GenStatm__w;
+  i0 = *(int*)(i3-4);
+  i0 = (int)((_Type)i0)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i3, (const unsigned char*)(int)_c47, 23);
+  GenStatm__WriteArg((Data__Opnd)i4);
+  i3 = (int)GenStatm__w;
+  i0 = *(int*)(i3-4);
+  i0 = (int)((_Type)i0)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i3, (const unsigned char*)(int)_c12, 3);
+  i2 = *(int*)i2;
+  GenStatm__WritePos((int)i2);
+  i2 = (int)GenStatm__w;
+  i3 = *(int*)(i2-4);
+  i3 = (int)((_Type)i3)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i2, (const unsigned char*)(int)_c13, 3);
 l1:
-  i4 = i7 + 24;
-  i7 = (int)*(void**)i4;
-  i4 = i7 + 20;
-  i4 = *(signed char*)i4;
-  i4 = i4 == 30;
-  if (i4) goto l0;
+  i0 = i5 + 24;
+  i5 = (int)*(void**)i0;
+  i0 = i5 + 20;
+  i0 = *(signed char*)i0;
+  i0 = i0 == 30;
+  if (i0) goto l0;
   goto l3;
 l2:
 l3:
@@ -2196,98 +2170,104 @@ l3:
   i0 = (int)*(void**)i0;
   i0 = strcmp((const char*) i0, (const char*) (int)_c14) != 0;
   if (i0) goto l4;
-  i1 = (int)GenStatm__w;
-  i0 = *(int*)(i1-4);
-  i0 = (int)((_Type)i0)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c49, 7);
+  i0 = (int)GenStatm__w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c49, 7);
   goto l6;
 l4:
   i1 = *GenStatm__NewInstr_opc;
   i1 = i1 == 25;
   if (i1) goto l5;
-  i1 = GenStatm__NewInstr_AllocateBlock_HasPtr((Data__Struct)i6);
+  i0 = (int)*GenStatm__NewInstr_type;
+  i1 = GenStatm__NewInstr_AllocateBlock_HasPtr((Data__Struct)i0);
   if (i1) goto l5;
-  i2 = (int)GenStatm__w;
-  i0 = *(int*)(i2-4);
-  i0 = (int)((_Type)i0)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i2, (const unsigned char*)(int)_c50, 17);
+  i0 = (int)GenStatm__w;
+  i2 = *(int*)(i0-4);
+  i2 = (int)((_Type)i2)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i0, (const unsigned char*)(int)_c50, 17);
   goto l6;
 l5:
-  i0 = (int)GenStatm__w;
-  i1 = *(int*)(i0-4);
-  i1 = (int)((_Type)i1)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c51, 10);
+  i1 = (int)GenStatm__w;
+  i0 = *(int*)(i1-4);
+  i0 = (int)((_Type)i0)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c51, 10);
 l6:
-  i0 = (int)GenStatm__w;
-  i1 = *(int*)(i0-4);
-  i1 = (int)((_Type)i1)->tbprocs[7];
-  ((_TBP_TextRider__WriterDesc_WriteChar)i1)((TextRider__Writer)i0, (unsigned char)40);
+  i1 = (int)GenStatm__w;
+  i0 = *(int*)(i1-4);
+  i0 = (int)((_Type)i0)->tbprocs[7];
+  ((_TBP_TextRider__WriterDesc_WriteChar)i0)((TextRider__Writer)i1, (unsigned char)40);
   i0 = *GenStatm__NewInstr_offset;
-  t = (void*)i7;
-  dim = (short int)i8;
-  dim = (short int)i8;
-  t = (void*)i7;
-  GenStatm__NewInstr_AllocateBlock_WriteSize((Data__Instruction)i5, (Data__Struct)i6, (int)i0, (Data__Struct *)&t, &dim);
+  i1 = (int)*GenStatm__NewInstr_type;
+  i2 = (int)*GenStatm__NewInstr_instr;
+  t = (void*)i5;
+  dim = (short int)i6;
+  dim = (short int)i6;
+  t = (void*)i5;
+  GenStatm__NewInstr_AllocateBlock_WriteSize((Data__Instruction)i2, (Data__Struct)i1, (int)i0, (Data__Struct *)&t, &dim);
   i0 = (int)GenStatm__w;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c13, 3);
-  i2 = (int)*GenStatm__NewInstr_instr;
   GenStatm__NewLine();
   i0 = (int)GenStatm__w;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c52, 24);
-  i0 = i2 + 52;
+  i0 = (int)*GenStatm__NewInstr_instr;
+  i0 += 52;
   i0 = *(int*)i0;
   GenStatm__WritePos((int)i0);
   i0 = (int)GenStatm__w;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c13, 3);
-  i0 = i2 + 48;
+  i0 = (int)*GenStatm__NewInstr_instr;
+  i0 += 48;
   i1 = *(unsigned int*)i0;
   i0 = (i1 & ((unsigned int)1 << 9)) != 0;
   if (i0) goto l7;
   i1 = (i1 & ((unsigned int)1 << 5)) != 0;
   if (!(i1)) goto l8;
   GenStatm__NewLine();
-  i1 = (int)GenStatm__w;
-  i0 = *(int*)(i1-4);
+  i2 = (int)GenStatm__w;
+  i0 = *(int*)(i2-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c53, 30);
-  i1 = (int)*GenStatm__NewInstr_type;
-  i0 = *GenStatm__NewInstr_offset;
-  GenStatm__NewInstr_AllocateBlock_WriteSize((Data__Instruction)i2, (Data__Struct)i1, (int)i0, (Data__Struct *)&t, &dim);
-  i0 = (int)GenStatm__w;
-  i1 = *(int*)(i0-4);
-  i1 = (int)((_Type)i1)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c13, 3);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i2, (const unsigned char*)(int)_c53, 30);
+  i2 = *GenStatm__NewInstr_offset;
+  i0 = (int)*GenStatm__NewInstr_type;
+  i1 = (int)*GenStatm__NewInstr_instr;
+  GenStatm__NewInstr_AllocateBlock_WriteSize((Data__Instruction)i1, (Data__Struct)i0, (int)i2, (Data__Struct *)&t, &dim);
+  i2 = (int)GenStatm__w;
+  i0 = *(int*)(i2-4);
+  i0 = (int)((_Type)i0)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i2, (const unsigned char*)(int)_c13, 3);
   goto l8;
 l7:
   GenStatm__NewLine();
-  i3 = (int)GenStatm__w;
-  i1 = *(int*)(i3-4);
+  i2 = (int)GenStatm__w;
+  i1 = *(int*)(i2-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i3, (const unsigned char*)(int)_c54, 27);
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i2, (const unsigned char*)(int)_c54, 27);
   i1 = (int)StdPragmas__poisonHeap;
-  i3 = (int)GenStatm__w;
-  i1 += 8;
-  i0 = *(int*)(i3-4);
-  i1 = *(int*)i1;
-  i0 = (int)((_Type)i0)->tbprocs[8];
-  ((_TBP_TextRider__WriterDesc_WriteLInt)i0)((TextRider__Writer)i3, (int)i1, (int)0);
-  i1 = (int)GenStatm__w;
-  i3 = *(int*)(i1-4);
-  i3 = (int)((_Type)i3)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i1, (const unsigned char*)(int)_c12, 3);
-  i3 = (int)*GenStatm__NewInstr_type;
-  i1 = *GenStatm__NewInstr_offset;
-  GenStatm__NewInstr_AllocateBlock_WriteSize((Data__Instruction)i2, (Data__Struct)i3, (int)i1, (Data__Struct *)&t, &dim);
-  i3 = (int)GenStatm__w;
-  i1 = *(int*)(i3-4);
+  i2 = (int)GenStatm__w;
+  i0 = i1 + 8;
+  i1 = *(int*)(i2-4);
+  i0 = *(int*)i0;
+  i1 = (int)((_Type)i1)->tbprocs[8];
+  ((_TBP_TextRider__WriterDesc_WriteLInt)i1)((TextRider__Writer)i2, (int)i0, (int)0);
+  i2 = (int)GenStatm__w;
+  i1 = *(int*)(i2-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i3, (const unsigned char*)(int)_c13, 3);
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i2, (const unsigned char*)(int)_c12, 3);
+  i2 = *GenStatm__NewInstr_offset;
+  i1 = (int)*GenStatm__NewInstr_type;
+  i0 = (int)*GenStatm__NewInstr_instr;
+  GenStatm__NewInstr_AllocateBlock_WriteSize((Data__Instruction)i0, (Data__Struct)i1, (int)i2, (Data__Struct *)&t, &dim);
+  i2 = (int)GenStatm__w;
+  i1 = *(int*)(i2-4);
+  i1 = (int)((_Type)i1)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i2, (const unsigned char*)(int)_c13, 3);
 l8:
   ;
 }
@@ -2522,82 +2502,74 @@ void GenStatm__AccessInstr(Data__Instruction instr, short int subclass) {
   register int i0, i1, i2, i3;
   GenStatm__NewLine();
   GenStatm__WriteLocation((Data__Node)(int)instr);
-  i1 = (int)GenStatm__w;
-  i0 = *(int*)(i1-4);
-  i0 = (int)((_Type)i0)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c8, 4);
-  if (!(subclass<=-1 || subclass==2 || subclass>=6)) goto l0;
-  i0 = 1;
-  goto l9;
-l0:
-  if (!((subclass>=0 && subclass<=1) || subclass==5)) goto l4;
+  i0 = (int)GenStatm__w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c8, 4);
+  if (!((subclass>=0 && subclass<=1) || subclass==5)) goto l2;
   i1 = (int)instr + 24;
-  i2 = (int)*(void**)i1;
-  i2 = Allocate__PtrValue((Data__Struct)i2);
-  if (!(i2)) goto l1;
-  i0 = (int)Data__struct + 24;
-  i0 = (int)*(void**)i0;
-  i2 = (int)GenStatm__w;
-  GenDecl__WriteScalarCast((TextRider__Writer)i2, (Data__Struct)i0, (unsigned char)0, (unsigned char)0, (unsigned char)0);
-l1:
-  i2 = (int)GenStatm__w;
-  i0 = *(int*)(i2-4);
-  i0 = (int)((_Type)i0)->tbprocs[7];
-  ((_TBP_TextRider__WriterDesc_WriteChar)i0)((TextRider__Writer)i2, (unsigned char)42);
-  i1 = (int)*(void**)i1;
-  i0 = subclass == 5;
-  i2 = (int)GenStatm__w;
-  GenDecl__WriteScalarCast((TextRider__Writer)i2, (Data__Struct)i1, (unsigned char)0, (unsigned char)1, (unsigned char)0);
-  if (i0) goto l2;
-  GenStatm__WriteNthArg((short int)1, (Data__Instruction)(int)instr);
-  goto l3;
-l2:
-  GenStatm__WriteNthArg((short int)0, (Data__Instruction)(int)instr);
-l3:
-  i0 = 0;
-  goto l9;
-l4:
-  if (!(subclass==4)) goto l8;
-  i2 = (int)instr + 28;
+  i0 = (int)*(void**)i1;
+  i0 = Allocate__PtrValue((Data__Struct)i0);
+  if (!(i0)) goto l0;
+  i2 = (int)Data__struct + 24;
   i2 = (int)*(void**)i2;
-  i3 = (int)*(void**)i2;
-  i2 = *(int*)((int)instr-4);
-  i2 = (int)((_Type)i2)->tbprocs[0];
-  i1 = (int)((_TBP_Data__NodeDesc_Greg)i2)((Data__Node)(int)instr);
-  i0 = i3 + 40;
-  i2 = i1 + 80;
-  i0 = (int)*(void**)i0;
-  i2 = (int)*(void**)i2;
-  i2 = i2 != i0;
-  if (i2) goto l6;
-  i3 = (int)instr + 24;
-  i3 = (int)*(void**)i3;
-  i3 = Allocate__PtrValue((Data__Struct)i3);
-  if (!(i3)) goto l5;
-  i3 = (int)Data__struct + 24;
-  i3 = (int)*(void**)i3;
-  i2 = (int)GenStatm__w;
-  GenDecl__WriteScalarCast((TextRider__Writer)i2, (Data__Struct)i3, (unsigned char)0, (unsigned char)0, (unsigned char)0);
-l5:
-  i3 = (int)GenStatm__w;
-  i2 = *(int*)(i3-4);
+  i0 = (int)GenStatm__w;
+  GenDecl__WriteScalarCast((TextRider__Writer)i0, (Data__Struct)i2, (unsigned char)0, (unsigned char)0, (unsigned char)0);
+l0:
+  i0 = (int)GenStatm__w;
+  i2 = *(int*)(i0-4);
   i2 = (int)((_Type)i2)->tbprocs[7];
-  ((_TBP_TextRider__WriterDesc_WriteChar)i2)((TextRider__Writer)i3, (unsigned char)42);
+  ((_TBP_TextRider__WriterDesc_WriteChar)i2)((TextRider__Writer)i0, (unsigned char)42);
+  i1 = (int)*(void**)i1;
+  i2 = subclass == 5;
+  i0 = (int)GenStatm__w;
+  GenDecl__WriteScalarCast((TextRider__Writer)i0, (Data__Struct)i1, (unsigned char)0, (unsigned char)1, (unsigned char)0);
+  if (i2) goto l1;
+  GenStatm__WriteNthArg((short int)1, (Data__Instruction)(int)instr);
+  goto l6;
+l1:
   GenStatm__WriteNthArg((short int)0, (Data__Instruction)(int)instr);
-  goto l7;
-l6:
-  i1 = (int)Allocate__AccessNonlocal((Data__GlobalRegion)i1, (Data__Object)i3, (const unsigned char*)(int)_c14, 1);
-  i3 = (int)*(void**)i1;
+  goto l6;
+l2:
+  if (!(subclass==4)) goto l5;
+  i3 = (int)instr + 28;
+  i3 = (int)*(void**)i3;
+  i2 = (int)*(void**)i3;
+  i3 = *(int*)((int)instr-4);
+  i3 = (int)((_Type)i3)->tbprocs[0];
+  i1 = (int)((_TBP_Data__NodeDesc_Greg)i3)((Data__Node)(int)instr);
+  i0 = i2 + 40;
+  i3 = i1 + 80;
+  i0 = (int)*(void**)i0;
+  i3 = (int)*(void**)i3;
+  i3 = i3 != i0;
+  if (i3) goto l4;
+  i2 = (int)instr + 24;
+  i2 = (int)*(void**)i2;
+  i2 = Allocate__PtrValue((Data__Struct)i2);
+  if (!(i2)) goto l3;
+  i2 = (int)Data__struct + 24;
+  i2 = (int)*(void**)i2;
+  i3 = (int)GenStatm__w;
+  GenDecl__WriteScalarCast((TextRider__Writer)i3, (Data__Struct)i2, (unsigned char)0, (unsigned char)0, (unsigned char)0);
+l3:
   i2 = (int)GenStatm__w;
-  i0 = *(int*)(i2-4);
-  i1 = *(int*)(i3-8);
+  i3 = *(int*)(i2-4);
+  i3 = (int)((_Type)i3)->tbprocs[7];
+  ((_TBP_TextRider__WriterDesc_WriteChar)i3)((TextRider__Writer)i2, (unsigned char)42);
+  GenStatm__WriteNthArg((short int)0, (Data__Instruction)(int)instr);
+  goto l6;
+l4:
+  i1 = (int)Allocate__AccessNonlocal((Data__GlobalRegion)i1, (Data__Object)i2, (const unsigned char*)(int)_c14, 1);
+  i2 = (int)*(void**)i1;
+  i3 = (int)GenStatm__w;
+  i0 = *(int*)(i3-4);
+  i1 = *(int*)(i2-8);
   i0 = (int)((_Type)i0)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i2, (const unsigned char*)i3, i1);
-l7:
-  i0 = 0;
-  goto l9;
-l8:
-  if (!(subclass==3)) goto l9;
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i3, (const unsigned char*)i2, i1);
+  goto l6;
+l5:
+  if (!(subclass==3)) goto l6;
   i2 = *(int*)((int)instr-4);
   i2 = (int)((_Type)i2)->tbprocs[0];
   i2 = (int)((_TBP_Data__NodeDesc_Greg)i2)((Data__Node)(int)instr);
@@ -2611,64 +2583,46 @@ l8:
   i3 = *(int*)(i2-8);
   i0 = (int)((_Type)i0)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)i2, i3);
-  i0 = 0;
-l9:
-  if (i0) goto l10;
-  i1 = (int)GenStatm__w;
-  i0 = *(int*)(i1-4);
-  i0 = (int)((_Type)i0)->tbprocs[7];
-  ((_TBP_TextRider__WriterDesc_WriteChar)i0)((TextRider__Writer)i1, (unsigned char)59);
-l10:
-  ;
+l6:
+  i0 = (int)GenStatm__w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[7];
+  ((_TBP_TextRider__WriterDesc_WriteChar)i1)((TextRider__Writer)i0, (unsigned char)59);
 }
 
 Data__Struct GenStatm__UpdateInstr_UpdateType(Data__Instruction instr) {
-  register int i0, i1, i2, i3;
+  register int i0, i1, i2;
   short int opn;
   i0 = (int)instr + 44;
   i0 = *(short int*)i0;
-  if (!(i0<=47 || i0==50 || i0>=54)) goto l0;
-  i0 = 1;
-  i3 = 0;
-  goto l4;
+  if (!(i0==48)) goto l0;
+  i1 = 0;
+  i0 = 2;
+  goto l3;
 l0:
-  if (!(i0==48)) goto l1;
-  i0 = 0;
-  i3 = 0;
-  i1 = 2;
-  goto l4;
+  if (!(i0==53)) goto l1;
+  i1 = 0;
+  i0 = 1;
+  goto l3;
 l1:
-  if (!(i0==53)) goto l2;
-  i0 = 0;
-  i3 = 0;
-  i1 = 1;
-  goto l4;
-l2:
-  if (!(i0==49)) goto l3;
+  if (!(i0==49)) goto l2;
   i2 = (int)instr + 28;
   i2 = (int)*(void**)i2;
   i2 = (int)Data__OpndDesc_OpndType((Data__Opnd)i2);
   i2 += 24;
   i2 = (int)*(void**)i2;
-  i0 = 0;
-  i3 = 1;
-  goto l4;
-l3:
-  if (!((i0>=51 && i0<=52))) goto l4;
-  i0 = 0;
-  i3 = 0;
+  i1 = 1;
+  goto l3;
+l2:
+  if (!((i0>=51 && i0<=52))) goto l3;
   i1 = 0;
+  i0 = 0;
+l3:
+  if (i1) goto l4;
+  i0 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)(int)instr, (short int)i0);
+  i2 = (int)Data__OpndDesc_OpndType((Data__Opnd)i0);
 l4:
-  if (i3) goto l5;
-  if (!(i0)) goto l6;
-l5:
-  i3 = i2;
-  goto l7;
-l6:
-  i1 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)(int)instr, (short int)i1);
-  i3 = (int)Data__OpndDesc_OpndType((Data__Opnd)i1);
-l7:
-  return (void*)i3;
+  return (void*)i2;
 }
 
 void GenStatm__UpdateInstr(Data__Instruction instr, short int subclass) {
@@ -2677,116 +2631,104 @@ void GenStatm__UpdateInstr(Data__Instruction instr, short int subclass) {
   i0 = *(short int*)i0;
   i0 = i0 == 53;
   if (i0) goto l0;
-  i4 = (int)Data__InstructionDesc_LastOperand((Data__Instruction)(int)instr);
+  i3 = (int)Data__InstructionDesc_LastOperand((Data__Instruction)(int)instr);
   goto l1;
 l0:
-  i4 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)(int)instr, (short int)1);
+  i3 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)(int)instr, (short int)1);
 l1:
-  i3 = (int)GenStatm__UpdateInstr_UpdateType((Data__Instruction)(int)instr);
+  i4 = (int)GenStatm__UpdateInstr_UpdateType((Data__Instruction)(int)instr);
   GenStatm__NewLine();
-  if (!(subclass<=-1 || subclass==2 || subclass>=6)) goto l2;
-  i0 = 1;
-  goto l10;
-l2:
-  if (!((subclass>=0 && subclass<=1) || subclass==5)) goto l5;
+  if (!((subclass>=0 && subclass<=1) || subclass==5)) goto l3;
   i0 = (int)GenStatm__w;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c67, 2);
   i0 = subclass == 5;
   i1 = (int)GenStatm__w;
-  GenDecl__WriteScalarCast((TextRider__Writer)i1, (Data__Struct)i3, (unsigned char)0, (unsigned char)1, (unsigned char)0);
-  if (i0) goto l3;
+  GenDecl__WriteScalarCast((TextRider__Writer)i1, (Data__Struct)i4, (unsigned char)0, (unsigned char)1, (unsigned char)0);
+  if (i0) goto l2;
   GenStatm__WriteNthArg((short int)1, (Data__Instruction)(int)instr);
-  goto l4;
-l3:
+  goto l7;
+l2:
   GenStatm__WriteNthArg((short int)0, (Data__Instruction)(int)instr);
-l4:
-  i0 = 0;
-  goto l10;
-l5:
-  if (!(subclass==3)) goto l7;
-  i2 = (int)instr + 28;
-  i2 = (int)*(void**)i2;
-  i1 = (int)*(void**)i2;
-  i5 = i1 + 40;
+  goto l7;
+l3:
+  if (!(subclass==3)) goto l5;
+  i5 = (int)instr + 28;
+  i5 = (int)*(void**)i5;
   i2 = (int)*(void**)i5;
-  i2 += 28;
-  i2 = *(signed char*)i2;
-  i2 = i2 == 8;
-  if (i2) goto l6;
-  i0 = (int)GenStatm__w;
-  i2 = *(int*)(i0-4);
-  i2 = (int)((_Type)i2)->tbprocs[7];
-  ((_TBP_TextRider__WriterDesc_WriteChar)i2)((TextRider__Writer)i0, (unsigned char)42);
-  i0 = (int)*(void**)i5;
-  GenStatm__WriteName((Data__Object)i0);
+  i1 = i2 + 40;
+  i5 = (int)*(void**)i1;
+  i5 += 28;
+  i5 = *(signed char*)i5;
+  i5 = i5 == 8;
+  if (i5) goto l4;
   i0 = (int)GenStatm__w;
   i5 = *(int*)(i0-4);
-  i5 = (int)((_Type)i5)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i5)((TextRider__Writer)i0, (const unsigned char*)(int)_c68, 2);
-l6:
-  GenStatm__WriteName((Data__Object)i1);
-  i0 = 0;
-  goto l10;
-l7:
-  if (!(subclass==4)) goto l10;
+  i5 = (int)((_Type)i5)->tbprocs[7];
+  ((_TBP_TextRider__WriterDesc_WriteChar)i5)((TextRider__Writer)i0, (unsigned char)42);
+  i0 = (int)*(void**)i1;
+  GenStatm__WriteName((Data__Object)i0);
+  i0 = (int)GenStatm__w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c68, 2);
+l4:
+  GenStatm__WriteName((Data__Object)i2);
+  goto l7;
+l5:
+  if (!(subclass==4)) goto l7;
   i2 = (int)instr + 28;
   i2 = (int)*(void**)i2;
   i1 = (int)*(void**)i2;
   i2 = *(int*)((int)instr-4);
   i2 = (int)((_Type)i2)->tbprocs[0];
-  i5 = (int)((_TBP_Data__NodeDesc_Greg)i2)((Data__Node)(int)instr);
-  i0 = i1 + 40;
-  i2 = i5 + 80;
-  i0 = (int)*(void**)i0;
+  i0 = (int)((_TBP_Data__NodeDesc_Greg)i2)((Data__Node)(int)instr);
+  i5 = i1 + 40;
+  i2 = i0 + 80;
+  i5 = (int)*(void**)i5;
   i2 = (int)*(void**)i2;
-  i2 = i2 != i0;
-  if (i2) goto l8;
+  i2 = i2 != i5;
+  if (i2) goto l6;
   i1 = (int)GenStatm__w;
   i2 = *(int*)(i1-4);
   i2 = (int)((_Type)i2)->tbprocs[7];
   ((_TBP_TextRider__WriterDesc_WriteChar)i2)((TextRider__Writer)i1, (unsigned char)42);
   GenStatm__WriteNthArg((short int)0, (Data__Instruction)(int)instr);
-  goto l9;
-l8:
-  i5 = (int)Allocate__AccessNonlocal((Data__GlobalRegion)i5, (Data__Object)i1, (const unsigned char*)(int)_c3, 2);
-  i1 = (int)*(void**)i5;
+  goto l7;
+l6:
+  i0 = (int)Allocate__AccessNonlocal((Data__GlobalRegion)i0, (Data__Object)i1, (const unsigned char*)(int)_c3, 2);
+  i1 = (int)*(void**)i0;
   i2 = (int)GenStatm__w;
-  i0 = *(int*)(i2-4);
-  i5 = *(int*)(i1-8);
-  i0 = (int)((_Type)i0)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i2, (const unsigned char*)i1, i5);
-l9:
-  i0 = 0;
-l10:
-  if (i0) goto l13;
-  i0 = (int)GenStatm__w;
-  i1 = *(int*)(i0-4);
-  i1 = (int)((_Type)i1)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c8, 4);
-  i0 = i3 + 20;
-  i0 = *(signed char*)i0;
-  i0 = i0 == 28;
-  if (i0) goto l11;
-  i1 = Allocate__PtrValue((Data__Struct)i3);
-  if (!(i1)) goto l12;
+  i5 = *(int*)(i2-4);
+  i0 = *(int*)(i1-8);
+  i5 = (int)((_Type)i5)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i5)((TextRider__Writer)i2, (const unsigned char*)i1, i0);
+l7:
   i1 = (int)GenStatm__w;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c69, 8);
-  goto l12;
-l11:
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c8, 4);
+  i0 = i4 + 20;
+  i0 = *(signed char*)i0;
+  i0 = i0 == 28;
+  if (i0) goto l8;
+  i0 = Allocate__PtrValue((Data__Struct)i4);
+  if (!(i0)) goto l9;
   i0 = (int)GenStatm__w;
-  GenDecl__WriteScalarCast((TextRider__Writer)i0, (Data__Struct)i3, (unsigned char)0, (unsigned char)0, (unsigned char)0);
-l12:
-  GenStatm__WriteArg((Data__Opnd)i4);
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c69, 8);
+  goto l9;
+l8:
   i0 = (int)GenStatm__w;
-  i3 = *(int*)(i0-4);
-  i3 = (int)((_Type)i3)->tbprocs[7];
-  ((_TBP_TextRider__WriterDesc_WriteChar)i3)((TextRider__Writer)i0, (unsigned char)59);
-l13:
-  ;
+  GenDecl__WriteScalarCast((TextRider__Writer)i0, (Data__Struct)i4, (unsigned char)0, (unsigned char)0, (unsigned char)0);
+l9:
+  GenStatm__WriteArg((Data__Opnd)i3);
+  i0 = (int)GenStatm__w;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[7];
+  ((_TBP_TextRider__WriterDesc_WriteChar)i1)((TextRider__Writer)i0, (unsigned char)59);
 }
 
 void GenStatm__TrapInstr(Data__Instruction instr) {
@@ -2794,11 +2736,7 @@ void GenStatm__TrapInstr(Data__Instruction instr) {
   i0 = (int)instr + 44;
   GenStatm__NewLine();
   i0 = *(short int*)i0;
-  if (!(i0<=95 || i0>=101)) goto l0;
-  i0 = 1;
-  goto l5;
-l0:
-  if (!(i0==96)) goto l1;
+  if (!(i0==96)) goto l0;
   i1 = (int)GenStatm__w;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
@@ -2806,10 +2744,9 @@ l0:
   i1 = (int)instr + 52;
   i1 = *(int*)i1;
   GenStatm__WritePos((int)i1);
-  i0 = 0;
-  goto l5;
-l1:
-  if (!(i0==97)) goto l2;
+  goto l4;
+l0:
+  if (!(i0==97)) goto l1;
   i0 = (int)GenStatm__w;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
@@ -2822,21 +2759,19 @@ l1:
   i0 = (int)instr + 52;
   i0 = *(int*)i0;
   GenStatm__WritePos((int)i0);
-  i0 = 0;
-  goto l5;
+  goto l4;
+l1:
+  if (!(i0==100)) goto l2;
+  i1 = (int)GenStatm__w;
+  i0 = *(int*)(i1-4);
+  i0 = (int)((_Type)i0)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c72, 14);
+  i1 = (int)instr + 52;
+  i1 = *(int*)i1;
+  GenStatm__WritePos((int)i1);
+  goto l4;
 l2:
-  if (!(i0==100)) goto l3;
-  i0 = (int)GenStatm__w;
-  i1 = *(int*)(i0-4);
-  i1 = (int)((_Type)i1)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c72, 14);
-  i0 = (int)instr + 52;
-  i0 = *(int*)i0;
-  GenStatm__WritePos((int)i0);
-  i0 = 0;
-  goto l5;
-l3:
-  if (!(i0==98)) goto l4;
+  if (!(i0==98)) goto l3;
   i0 = (int)GenStatm__w;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
@@ -2849,24 +2784,19 @@ l3:
   i0 = (int)instr + 52;
   i0 = *(int*)i0;
   GenStatm__WritePos((int)i0);
-  i0 = 0;
-  goto l5;
-l4:
-  if (!(i0==99)) goto l5;
+  goto l4;
+l3:
+  if (!(i0==99)) goto l4;
   i0 = (int)GenStatm__w;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c74, 7);
   GenStatm__WriteNthArg((short int)0, (Data__Instruction)(int)instr);
-  i0 = 0;
-l5:
-  if (i0) goto l6;
+l4:
   i0 = (int)GenStatm__w;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c13, 3);
-l6:
-  ;
 }
 
 void GenStatm__ConvInstr(Data__Instruction instr) {
@@ -3017,55 +2947,46 @@ l2:
 }
 
 void GenStatm__ArithInstr(Data__Instruction instr, short int class_) {
-  register int i0, i1, i2;
+  register int i0, i1;
   unsigned char op[8];
   i0 = class_ == 14;
   GenStatm__CheckZeroDiv((Data__Instruction)(int)instr, (short int)1);
-  if (i0) goto l8;
+  if (i0) goto l7;
   i0 = class_ == 12;
-  if (i0) goto l5;
-  i2 = class_ == 13;
-  if (i2) goto l5;
-  if (!(class_<=7 || class_>=12)) goto l0;
-  i1 = 1;
-  goto l4;
-l0:
-  if (!(class_==8)) goto l1;
+  if (i0) goto l4;
+  i1 = class_ == 13;
+  if (i1) goto l4;
+  if (!(class_==8)) goto l0;
   (void)memcpy((void*) (int)op, (const void*) (int)_c82, 2);
-  i1 = 0;
-  goto l4;
-l1:
-  if (!(class_==9)) goto l2;
+  goto l3;
+l0:
+  if (!(class_==9)) goto l1;
   (void)memcpy((void*) (int)op, (const void*) (int)_c83, 2);
-  i1 = 0;
-  goto l4;
-l2:
-  if (!(class_==10)) goto l3;
+  goto l3;
+l1:
+  if (!(class_==10)) goto l2;
   (void)memcpy((void*) (int)op, (const void*) (int)_c67, 2);
-  i1 = 0;
-  goto l4;
-l3:
-  if (!(class_==11)) goto l4;
+  goto l3;
+l2:
+  if (!(class_==11)) goto l3;
   (void)memcpy((void*) (int)op, (const void*) (int)_c84, 2);
-  i1 = 0;
-l4:
-  if (i1) goto l9;
+l3:
   GenStatm__WriteDyOp((Data__Instruction)(int)instr, (const unsigned char*)(int)op, 8, (short int)0, (short int)1);
-  goto l9;
-l5:
+  goto l8;
+l4:
   GenStatm__NewLine();
-  if (i0) goto l6;
+  if (i0) goto l5;
   i1 = (int)GenStatm__w;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c85, 5);
-  goto l7;
-l6:
+  goto l6;
+l5:
   i1 = (int)GenStatm__w;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c86, 5);
-l7:
+l6:
   i1 = (int)GenStatm__w;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[7];
@@ -3093,15 +3014,15 @@ l7:
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c13, 3);
-  goto l9;
-l8:
+  goto l8;
+l7:
   GenStatm__WriteMonOp((Data__Instruction)(int)instr, (const unsigned char*)(int)_c83, 2, (short int)0);
-l9:
+l8:
   ;
 }
 
 void GenStatm__PredefFunction_ShiftName(Data__Usable arg, const unsigned char* name__ref, int name_0d, const unsigned char* posSuffix__ref, int posSuffix_0d, const unsigned char* negSuffix__ref, int negSuffix_0d, Data__Instruction *GenStatm__PredefFunction_instr) {
-  register int i0, i1, i2;
+  register int i0, i1;
   unsigned char* name;
   unsigned char* posSuffix;
   unsigned char* negSuffix;
@@ -3109,17 +3030,18 @@ void GenStatm__PredefFunction_ShiftName(Data__Usable arg, const unsigned char* n
   _push_value(int, name, name__ref, name_0d);
   _push_value(int, posSuffix, posSuffix__ref, posSuffix_0d);
   _push_value(int, negSuffix, negSuffix__ref, negSuffix_0d);
-  i0 = (int)*GenStatm__PredefFunction_instr;
   GenStatm__NewLine();
+  i0 = (int)*GenStatm__PredefFunction_instr;
   GenStatm__WriteLocation((Data__Node)i0);
   i1 = (int)GenStatm__w;
-  i2 = *(int*)(i1-4);
-  i2 = (int)((_Type)i2)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i1, (const unsigned char*)(int)_c8, 4);
+  i0 = *(int*)(i1-4);
+  i0 = (int)((_Type)i0)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c8, 4);
+  i0 = (int)*GenStatm__PredefFunction_instr;
   i0 += 24;
-  i0 = (int)*(void**)i0;
-  i1 = (int)GenStatm__w;
-  GenDecl__WriteScalarCast((TextRider__Writer)i1, (Data__Struct)i0, (unsigned char)0, (unsigned char)0, (unsigned char)0);
+  i1 = (int)*(void**)i0;
+  i0 = (int)GenStatm__w;
+  GenDecl__WriteScalarCast((TextRider__Writer)i0, (Data__Struct)i1, (unsigned char)0, (unsigned char)0, (unsigned char)0);
   i0 = (int)GenStatm__w;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
@@ -3198,7 +3120,6 @@ l1:
 
 void GenStatm__PredefFunction(Data__Instruction instr, short int class_) {
   register int i0, i1, i2;
-  if (class_<=14 || class_>=21) goto l6;
   if (!(class_==15)) goto l0;
   GenStatm__WriteMonCall((Data__Instruction)(int)instr, (const unsigned char*)(int)_c87, 5, (short int)0);
   goto l6;
@@ -3302,62 +3223,54 @@ void GenStatm__SetInstr(Data__Instruction instr, short int class_) {
   register int i0, i1, i2;
   unsigned char op[4];
   i0 = class_ == 25;
-  if (i0) goto l10;
+  if (i0) goto l9;
   i1 = class_ == 27;
-  if (i1) goto l6;
+  if (i1) goto l5;
   i2 = class_ == 26;
-  if (i2) goto l6;
-  i1 = class_ == 24;
-  if (i1) goto l6;
-  i2 = class_ == 29;
   if (i2) goto l5;
-  i2 = class_ == 28;
+  i1 = class_ == 24;
+  if (i1) goto l5;
+  i2 = class_ == 29;
   if (i2) goto l4;
-  if (!(class_<=20 || class_>=24)) goto l0;
-  i2 = 1;
-  goto l3;
-l0:
-  if (!(class_==21)) goto l1;
+  i2 = class_ == 28;
+  if (i2) goto l3;
+  if (!(class_==21)) goto l0;
   (void)memcpy((void*) (int)op, (const void*) (int)_c97, 2);
-  i2 = 0;
-  goto l3;
-l1:
-  if (!(class_==22)) goto l2;
+  goto l2;
+l0:
+  if (!(class_==22)) goto l1;
   (void)memcpy((void*) (int)op, (const void*) (int)_c98, 2);
-  i2 = 0;
-  goto l3;
-l2:
-  if (!(class_==23)) goto l3;
+  goto l2;
+l1:
+  if (!(class_==23)) goto l2;
   (void)memcpy((void*) (int)op, (const void*) (int)_c99, 2);
-  i2 = 0;
-l3:
-  if (i2) goto l11;
+l2:
   GenStatm__WriteDyOp((Data__Instruction)(int)instr, (const unsigned char*)(int)op, 4, (short int)0, (short int)1);
-  goto l11;
-l4:
+  goto l10;
+l3:
   GenStatm__NewLine();
   GenStatm__WriteLocation((Data__Node)(int)instr);
-  i0 = (int)GenStatm__w;
-  i2 = *(int*)(i0-4);
-  i2 = (int)((_Type)i2)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i0, (const unsigned char*)(int)_c100, 15);
+  i2 = (int)GenStatm__w;
+  i0 = *(int*)(i2-4);
+  i0 = (int)((_Type)i0)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i2, (const unsigned char*)(int)_c100, 15);
   GenStatm__WriteResultCast((Data__Instruction)(int)instr, (unsigned char)1);
-  i0 = (int)GenStatm__w;
-  i2 = *(int*)(i0-4);
-  i2 = (int)((_Type)i2)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i0, (const unsigned char*)(int)_c12, 3);
+  i2 = (int)GenStatm__w;
+  i0 = *(int*)(i2-4);
+  i0 = (int)((_Type)i0)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i2, (const unsigned char*)(int)_c12, 3);
   GenStatm__WriteNthArg((short int)0, (Data__Instruction)(int)instr);
-  i0 = (int)GenStatm__w;
-  i2 = *(int*)(i0-4);
-  i2 = (int)((_Type)i2)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i0, (const unsigned char*)(int)_c12, 3);
+  i2 = (int)GenStatm__w;
+  i0 = *(int*)(i2-4);
+  i0 = (int)((_Type)i0)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i2, (const unsigned char*)(int)_c12, 3);
   GenStatm__WriteNthArg((short int)1, (Data__Instruction)(int)instr);
-  i0 = (int)GenStatm__w;
-  i2 = *(int*)(i0-4);
-  i2 = (int)((_Type)i2)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i0, (const unsigned char*)(int)_c13, 3);
-  goto l11;
-l5:
+  i2 = (int)GenStatm__w;
+  i0 = *(int*)(i2-4);
+  i0 = (int)((_Type)i0)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i2, (const unsigned char*)(int)_c13, 3);
+  goto l10;
+l4:
   GenStatm__NewLine();
   GenStatm__WriteLocation((Data__Node)(int)instr);
   i2 = (int)GenStatm__w;
@@ -3379,8 +3292,8 @@ l5:
   i0 = *(int*)(i2-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i2, (const unsigned char*)(int)_c104, 9);
-  goto l11;
-l6:
+  goto l10;
+l5:
   GenStatm__NewLine();
   GenStatm__WriteLocation((Data__Node)(int)instr);
   i0 = (int)GenStatm__w;
@@ -3389,81 +3302,68 @@ l6:
   ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c8, 4);
   i0 = class_ == 26;
   GenStatm__WriteNthArg((short int)0, (Data__Instruction)(int)instr);
-  if (i0) goto l7;
+  if (i0) goto l6;
   i1 = (int)GenStatm__w;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c105, 6);
-  goto l8;
-l7:
+  goto l7;
+l6:
   i1 = (int)GenStatm__w;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c106, 5);
-l8:
+l7:
   i0 = class_ == 24;
   GenStatm__WriteResultCast((Data__Instruction)(int)instr, (unsigned char)1);
-  if (i0) goto l9;
+  if (i0) goto l8;
   i1 = (int)GenStatm__w;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)_c103, 6);
-l9:
+l8:
   GenStatm__WriteNthArg((short int)1, (Data__Instruction)(int)instr);
   i0 = (int)GenStatm__w;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c13, 3);
-  goto l11;
-l10:
+  goto l10;
+l9:
   GenStatm__WriteMonOp((Data__Instruction)(int)instr, (const unsigned char*)(int)_c107, 2, (short int)0);
-l11:
+l10:
   ;
 }
 
 void GenStatm__CompareInstr_WriteRelation(short int class_) {
   register int i0, i1;
   unsigned char op[3];
-  if (!(class_<=30 || class_>=37)) goto l0;
-  i0 = 1;
-  goto l6;
-l0:
-  if (!(class_==31)) goto l1;
+  if (!(class_==31)) goto l0;
   (void)memcpy((void*) (int)op, (const void*) (int)_c108, 3);
-  i0 = 0;
-  goto l6;
-l1:
-  if (!(class_==32)) goto l2;
+  goto l5;
+l0:
+  if (!(class_==32)) goto l1;
   (void)memcpy((void*) (int)op, (const void*) (int)_c109, 3);
-  i0 = 0;
-  goto l6;
-l2:
-  if (!(class_==33)) goto l3;
+  goto l5;
+l1:
+  if (!(class_==33)) goto l2;
   (void)memcpy((void*) (int)op, (const void*) (int)_c110, 2);
-  i0 = 0;
-  goto l6;
-l3:
-  if (!(class_==34)) goto l4;
+  goto l5;
+l2:
+  if (!(class_==34)) goto l3;
   (void)memcpy((void*) (int)op, (const void*) (int)_c111, 3);
-  i0 = 0;
-  goto l6;
-l4:
-  if (!(class_==35)) goto l5;
+  goto l5;
+l3:
+  if (!(class_==35)) goto l4;
   (void)memcpy((void*) (int)op, (const void*) (int)_c112, 2);
-  i0 = 0;
-  goto l6;
-l5:
-  if (!(class_==36)) goto l6;
+  goto l5;
+l4:
+  if (!(class_==36)) goto l5;
   (void)memcpy((void*) (int)op, (const void*) (int)_c113, 3);
-  i0 = 0;
-l6:
-  if (i0) goto l7;
+l5:
   i0 = (int)GenStatm__w;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)op, 3);
-l7:
-  ;
 }
 
 void GenStatm__CompareInstr(Data__Instruction instr, short int class_, short int subclass) {
@@ -3548,54 +3448,69 @@ l3:
 }
 
 void GenStatm__AssignToGates_AddAssignment(Data__Opnd src, Allocate__Location srcLoc, Allocate__Location destLoc, signed char cat, short int *GenStatm__AssignToGates_counter) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7;
-  i5 = *GenStatm__AssignToGates_counter;
-  i6 = (int)GenStatm__assignArray;
-  i0 = *(int*)(i6-8);
-  i0 = i0 != i5;
+  register int i0, i1, i2, i3, i4, i5;
+  i4 = *GenStatm__AssignToGates_counter;
+  i0 = (int)GenStatm__assignArray;
+  i0 = *(int*)(i0-8);
+  i0 = i0 != i4;
   if (i0) goto l2;
-  i1 = i5 - 1;
-  i4 = i1 < 0;
-  i3 = i5 + 16;
+  i5 = i4 - 1;
+  i3 = i5 < 0;
+  i4 += 16;
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i3 < 0) _invalid_length(i3, _P(52773));
-    _mem = GC_malloc(_not_zero(i3*16)+8);
+    if(i4 < 0) _invalid_length(i4, _P(52773));
+    _mem = GC_malloc(_not_zero(i4*16)+8);
     if (!_mem) _new_failed(_P(52756));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
-    *(--_dim_ptr) = i3;
-    i7 = (int)_var;
+    *(--_dim_ptr) = i4;
+    i1 = (int)_var;
   }
-  if (i4) goto l1;
-  i4 = 0;
+  if (i3) goto l1;
+  i3 = 0;
 l0:
-  i3 = (int)_ashl(i4, 4, (unsigned int));
-  i3 = i6 + i3;
-  i0 = (int)_ashl(i4, 4, (unsigned int));
-  i2 = i7 + i0;
-  i0 = i4 + 1;
-  (void)memcpy((void*) i2, (const void*) i3, 16);
-  i4 = i1 < i0;
-  if (i4) goto l1;
-  i4 = i0;
+  i4 = (int)GenStatm__assignArray;
+  i0 = (int)_ashl(i3, 4, (unsigned int));
+  i4 += i0;
+  i0 = (int)_ashl(i3, 4, (unsigned int));
+  i0 = i1 + i0;
+  i2 = i3 + 1;
+  (void)memcpy((void*) i0, (const void*) i4, 16);
+  i3 = i5 < i2;
+  if (i3) goto l1;
+  i3 = i2;
   goto l0;
 l1:
-  GenStatm__assignArray = (void*)i7;
+  GenStatm__assignArray = (void*)i1;
 l2:
+  i0 = *GenStatm__AssignToGates_counter;
+  i1 = (int)GenStatm__assignArray;
+  i2 = (int)_ashl(i0, 4, (unsigned int));
+  i2 = i1 + i2;
+  *(void**)i2 = (void*)(int)src;
+  i3 = *GenStatm__AssignToGates_counter;
   i0 = (int)GenStatm__assignArray;
-  i1 = (int)_ashl(i5, 4, (unsigned int));
+  i1 = (int)_ashl(i3, 4, (unsigned int));
   i1 = i0 + i1;
   i2 = i1 + 4;
-  *(void**)i1 = (void*)(int)src;
-  i3 = i1 + 8;
   *(void**)i2 = (void*)(int)srcLoc;
-  i2 = i1 + 12;
+  i0 = *GenStatm__AssignToGates_counter;
+  i1 = (int)GenStatm__assignArray;
+  i2 = (int)_ashl(i0, 4, (unsigned int));
+  i2 = i1 + i2;
+  i3 = i2 + 8;
   *(void**)i3 = (void*)(int)destLoc;
-  i3 = i5 + 1;
+  i3 = *GenStatm__AssignToGates_counter;
+  i0 = (int)GenStatm__assignArray;
+  i1 = (int)_ashl(i3, 4, (unsigned int));
+  i1 = i0 + i1;
+  i2 = i1 + 12;
   *(signed char*)i2 = cat;
-  *GenStatm__AssignToGates_counter = i3;
+  i0 = *GenStatm__AssignToGates_counter;
+  i0++;
+  *GenStatm__AssignToGates_counter = i0;
 }
 
 unsigned char GenStatm__AssignToGates_Arrange_Schedulable(short int i, short int *GenStatm__AssignToGates_Arrange_schedEnd, short int *GenStatm__AssignToGates_counter) {
@@ -3647,124 +3562,130 @@ l7:
 }
 
 short int GenStatm__AssignToGates_Arrange(short int schedEnd, short int *GenStatm__AssignToGates_counter) {
-  register int i0, i1, i2, i3, i4, i5, i6;
+  register int i0, i1, i2, i3, i4, i5;
   GenStatm__Assignment h;
-  i5 = *GenStatm__AssignToGates_counter;
   i0 = schedEnd;
 l0:
-  i4 = i0 < i5;
+  i4 = *GenStatm__AssignToGates_counter;
+  i4 = i0 < i4;
   if (i4) goto l1;
-  i6 = i0;
+  i5 = i0;
   goto l4;
 l1:
-  i4 = (int)GenStatm__assignArray;
   i1 = i0;
-  i6 = i0;
+  i5 = i0;
 l2:
-  schedEnd = (short int)i6;
-  i3 = GenStatm__AssignToGates_Arrange_Schedulable((short int)i1, &schedEnd, &*GenStatm__AssignToGates_counter);
-  if (!(i3)) goto l3;
+  i3 = (int)GenStatm__assignArray;
+  schedEnd = (short int)i5;
+  i4 = GenStatm__AssignToGates_Arrange_Schedulable((short int)i1, &schedEnd, &*GenStatm__AssignToGates_counter);
+  if (!(i4)) goto l3;
   i2 = (int)_ashl(i1, 4, (unsigned int));
-  i2 = i4 + i2;
+  i2 = i3 + i2;
   (void)memcpy((void*) (int)&h, (const void*) i2, 16);
-  i3 = (int)_ashl(i6, 4, (unsigned int));
-  i3 = i4 + i3;
-  (void)memcpy((void*) i2, (const void*) i3, 16);
+  i4 = (int)_ashl(i5, 4, (unsigned int));
+  i4 = i3 + i4;
+  (void)memcpy((void*) i2, (const void*) i4, 16);
+  i2 = (int)GenStatm__assignArray;
+  i3 = (int)_ashl(i5, 4, (unsigned int));
+  i3 = i2 + i3;
   (void)memcpy((void*) i3, (const void*) (int)&h, 16);
-  i2 = i6 + 1;
-  i6 = i2;
+  i2 = i5 + 1;
+  i5 = i2;
 l3:
   i1++;
-  i3 = i5 > i1;
-  if (i3) goto l2;
+  i4 = *GenStatm__AssignToGates_counter;
+  i4 = i4 > i1;
+  if (i4) goto l2;
 l4:
-  i4 = i0 == i6;
+  i4 = i0 == i5;
   if (i4) goto l5;
-  i0 = i6;
+  i0 = i5;
   goto l0;
 l5:
-  return (short int)i6;
+  return (short int)i5;
 }
 
 void GenStatm__AssignToGates_IntroduceAuxVar(short int i, short int *GenStatm__AssignToGates_auxCounter, Allocate__Location *GenStatm__AssignToGates_loc, short int *GenStatm__AssignToGates_counter) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9;
+  register int i0, i1, i2, i3, i4, i5, i6, i7;
   unsigned char str[64];
   i0 = *GenStatm__AssignToGates_auxCounter;
-  i1 = i0 != 0;
-  if (i1) goto l0;
+  i0 = i0 != 0;
+  if (i0) goto l0;
   GenStatm__NewLine();
   i1 = (int)GenStatm__w;
-  i2 = *(int*)(i1-4);
-  i2 = (int)((_Type)i2)->tbprocs[7];
-  ((_TBP_TextRider__WriterDesc_WriteChar)i2)((TextRider__Writer)i1, (unsigned char)123);
+  i0 = *(int*)(i1-4);
+  i0 = (int)((_Type)i0)->tbprocs[7];
+  ((_TBP_TextRider__WriterDesc_WriteChar)i0)((TextRider__Writer)i1, (unsigned char)123);
   i1 = GenStatm__off;
   i1++;
   GenStatm__off = i1;
 l0:
   GenStatm__NewLine();
-  i2 = (int)GenStatm__assignArray;
-  i1 = (int)_ashl(i, 4, (unsigned int));
-  i1 = i2 + i1;
-  i1 += 12;
-  i2 = *(signed char*)i1;
+  i1 = (int)GenStatm__assignArray;
+  i0 = (int)_ashl(i, 4, (unsigned int));
+  i0 = i1 + i0;
+  i0 += 12;
+  i0 = *(signed char*)i0;
   i1 = (int)GenStatm__w;
-  Allocate__WriteRegType((TextRider__Writer)i1, (signed char)i2);
+  Allocate__WriteRegType((TextRider__Writer)i1, (signed char)i0);
+  i0 = *GenStatm__AssignToGates_auxCounter;
   IntStr__IntToStr((int)i0, (unsigned char*)(int)str, 64);
   Strings__Insert((const unsigned char*)(int)_c121, 2, (short int)0, (unsigned char*)(int)str, 64);
-  i2 = (int)GenStatm__w;
-  i1 = *(int*)(i2-4);
+  i1 = (int)GenStatm__w;
+  i0 = *(int*)(i1-4);
+  i0 = (int)((_Type)i0)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)i1, (const unsigned char*)(int)str, 64);
+  i0 = (int)GenStatm__w;
+  i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i2, (const unsigned char*)(int)str, 64);
-  i2 = (int)GenStatm__w;
-  i1 = *(int*)(i2-4);
-  i1 = (int)((_Type)i1)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i2, (const unsigned char*)(int)_c8, 4);
-  i1 = (int)GenStatm__assignArray;
-  i2 = (int)_ashl(i, 4, (unsigned int));
-  i1 += i2;
-  i1 += 8;
-  i1 = (int)*(void**)i1;
-  i1 = (int)*(void**)i1;
-  i2 = (int)GenStatm__w;
-  i4 = *(int*)(i2-4);
-  i3 = *(int*)(i1-8);
-  i4 = (int)((_Type)i4)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i2, (const unsigned char*)i1, i3);
-  i2 = (int)GenStatm__w;
-  i1 = *(int*)(i2-4);
-  i1 = (int)((_Type)i1)->tbprocs[7];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i0, (const unsigned char*)(int)_c8, 4);
+  i0 = (int)GenStatm__assignArray;
+  i1 = (int)_ashl(i, 4, (unsigned int));
+  i0 += i1;
+  i0 += 8;
+  i0 = (int)*(void**)i0;
+  i0 = (int)*(void**)i0;
+  i1 = (int)GenStatm__w;
+  i3 = *(int*)(i1-4);
+  i2 = *(int*)(i0-8);
+  i3 = (int)((_Type)i3)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i1, (const unsigned char*)i0, i2);
+  i1 = (int)GenStatm__w;
+  i0 = *(int*)(i1-4);
+  i0 = (int)((_Type)i0)->tbprocs[7];
+  ((_TBP_TextRider__WriterDesc_WriteChar)i0)((TextRider__Writer)i1, (unsigned char)59);
+  i0 = *GenStatm__AssignToGates_auxCounter;
   i0++;
-  ((_TBP_TextRider__WriterDesc_WriteChar)i1)((TextRider__Writer)i2, (unsigned char)59);
   *GenStatm__AssignToGates_auxCounter = i0;
   i0 = (int)Allocate__NewLoc((const unsigned char*)(int)str, 64);
   *GenStatm__AssignToGates_loc = (void*)i0;
   i0 = *GenStatm__AssignToGates_counter;
-  i8 = i0 - 1;
-  i7 = (int)*GenStatm__AssignToGates_loc;
-  i0 = i > i8;
+  i6 = i0 - 1;
+  i0 = i > i6;
   if (i0) goto l3;
-  i1 = (int)GenStatm__assignArray;
-  i6 = (int)_ashl(i, 4, (unsigned int));
-  i2 = i1 + i6;
-  i9 = i2 + 8;
-  i6 = i;
+  i0 = (int)_ashl(i, 4, (unsigned int));
+  i5 = i;
 l1:
-  i3 = (int)_ashl(i6, 4, (unsigned int));
-  i3 = i1 + i3;
-  i5 = i3 + 4;
-  i4 = (int)*(void**)i5;
-  i0 = i4 == 0;
-  if (i0) goto l2;
-  i0 = (int)*(void**)i9;
-  i4 = (int)*(void**)i4;
-  i0 = (int)*(void**)i0;
-  i0 = strcmp((const char*) i4, (const char*) i0) != 0;
-  if (i0) goto l2;
-  *(void**)i5 = (void*)i7;
+  i4 = (int)GenStatm__assignArray;
+  i1 = (int)_ashl(i5, 4, (unsigned int));
+  i7 = i4 + i1;
+  i3 = i7 + 4;
+  i2 = (int)*(void**)i3;
+  i1 = i2 == 0;
+  if (i1) goto l2;
+  i1 = i4 + i0;
+  i1 += 8;
+  i1 = (int)*(void**)i1;
+  i2 = (int)*(void**)i2;
+  i1 = (int)*(void**)i1;
+  i1 = strcmp((const char*) i2, (const char*) i1) != 0;
+  if (i1) goto l2;
+  i1 = (int)*GenStatm__AssignToGates_loc;
+  *(void**)i3 = (void*)i1;
 l2:
-  i6++;
-  i3 = i6 <= i8;
-  if (i3) goto l1;
+  i5++;
+  i1 = i5 <= i6;
+  if (i1) goto l1;
 l3:
   ;
 }
@@ -4105,7 +4026,7 @@ void GenStatm__Region(Data__Region r) {
   i0 = (int)r + 56;
   i7 = (int)*(void**)i0;
   i0 = i7 == 0;
-  if (i0) goto l55;
+  if (i0) goto l49;
   i8 = (int)r + 44;
   i1 = (int)Data__struct + 24;
   i0 = (int)r + 28;
@@ -4121,7 +4042,7 @@ l1:
   GenStatm__currId = i2;
   i2 = *(int*)(i7-4);
   i2 = _type_test(i2, &Data__RegionDesc_td.td, 5);
-  if (i2) goto l51;
+  if (i2) goto l46;
   i3 = (int)GenStatm__writeSyncStatm;
   i3 += 8;
   i2 = *(unsigned char*)i3;
@@ -4157,216 +4078,207 @@ l3:
 l4:
   i3 = i2 == 8;
   if (!(i3)) goto l5;
-  i3 = i7 + 28;
-  i3 = (int)*(void**)i3;
-  i6 = (int)*(void**)i3;
-  i3 = *(int*)(i6-4);
-  i3 = _type_test(i3, &Data__ObjectDesc_td.td, 4);
-  if (i3) goto l50;
+  i6 = i7 + 28;
+  i6 = (int)*(void**)i6;
+  i3 = (int)*(void**)i6;
+  i6 = *(int*)(i3-4);
+  i6 = _type_test(i6, &Data__ObjectDesc_td.td, 4);
+  if (i6) goto l45;
 l5:
   i3 = *(unsigned int*)i4;
   i4 = (i3 & ((unsigned int)1 << 10)) != 0;
-  if (i4) goto l49;
+  if (i4) goto l48;
   i4 = (short int)_ashr(i2, 4, (unsigned short int));
   i6 = i2 & 0xFU;
-  if (!(i4<=-1 || (i4>=4 && i4<=5) || i4>=37)) goto l19;
-  if (!(i2<=591 || i2==593 || i2>=598)) goto l6;
-  i6 = 1;
-  goto l53;
-l6:
-  if (!(i2==592)) goto l7;
-  i3 = i7 + 28;
-  i3 = (int)*(void**)i3;
-  i3 = (int)*(void**)i3;
-  GenStatm__Goto((Data__Instruction)i3, (unsigned char)1);
-  i6 = 0;
-  goto l53;
-l7:
-  if (!((i2>=594 && i2<=595))) goto l16;
-  GenStatm__NewLine();
-  i3 = (int)GenStatm__w;
-  i6 = *(int*)(i3-4);
-  i4 = i2 != 594;
-  i6 = (int)((_Type)i6)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i6)((TextRider__Writer)i3, (const unsigned char*)(int)_c34, 5);
-  if (i4) goto l8;
-  i6 = *(short int*)i8;
-  i4 = i6 == 67;
-  if (i4) goto l10;
-  i6 = i6 == 65;
-  if (i6) goto l10;
-l8:
-  i4 = i2 == 595;
-  if (!(i4)) goto l9;
-  i4 = *(short int*)i8;
-  i4 = i4 == 64;
-  if (i4) goto l10;
-l9:
-  i6 = 0;
-  goto l11;
-l10:
-  i6 = 1;
-l11:
-  if (!(i6)) goto l12;
-  i3 = (int)GenStatm__w;
-  i4 = *(int*)(i3-4);
-  i4 = (int)((_Type)i4)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i3, (const unsigned char*)(int)_c126, 3);
-l12:
-  i4 = *(short int*)i8;
-  i4 = i4 == 67;
-  if (i4) goto l13;
-  GenStatm__WriteNthArg((short int)0, (Data__Instruction)(int)r);
-  goto l14;
-l13:
-  i3 = (int)*(void**)i0;
-  i4 = i3 + 8;
-  i4 = (int)*(void**)i4;
-  GenStatm__Region_CaseGuard((Data__Opnd)i3, (Data__Opnd)i4);
-l14:
-  if (!(i6)) goto l15;
-  i6 = (int)GenStatm__w;
-  i4 = *(int*)(i6-4);
-  i4 = (int)((_Type)i4)->tbprocs[7];
-  ((_TBP_TextRider__WriterDesc_WriteChar)i4)((TextRider__Writer)i6, (unsigned char)41);
-l15:
-  i4 = (int)GenStatm__w;
-  i6 = *(int*)(i4-4);
-  i6 = (int)((_Type)i6)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i6)((TextRider__Writer)i4, (const unsigned char*)(int)_c36, 3);
+  if (!(i4<=-1 || (i4>=4 && i4<=5) || i4>=37)) goto l17;
+  if (!(i2==592)) goto l6;
   i4 = i7 + 28;
   i4 = (int)*(void**)i4;
   i4 = (int)*(void**)i4;
-  GenStatm__Goto((Data__Instruction)i4, (unsigned char)0);
-  i6 = 0;
-  goto l53;
-l16:
-  if (!(i2==596)) goto l17;
-  i3 = i7 + 28;
-  i3 = (int)*(void**)i3;
-  i3 = (int)*(void**)i3;
-  GenStatm__AssignToGates((Data__Merge)i3, (Data__Region)(int)r);
-  i6 = 0;
-  goto l53;
-l17:
-  if (!(i2==597)) goto l53;
-  i3 = (i3 & ((unsigned int)1 << 17)) != 0;
-  if (!(i3)) goto l18;
+  GenStatm__Goto((Data__Instruction)i4, (unsigned char)1);
+  goto l48;
+l6:
+  if (!((i2>=594 && i2<=595))) goto l15;
   GenStatm__NewLine();
+  i4 = (int)GenStatm__w;
+  i3 = *(int*)(i4-4);
+  i6 = i2 != 594;
+  i3 = (int)((_Type)i3)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i4, (const unsigned char*)(int)_c34, 5);
+  if (i6) goto l7;
+  i3 = *(short int*)i8;
+  i6 = i3 == 67;
+  if (i6) goto l9;
+  i3 = i3 == 65;
+  if (i3) goto l9;
+l7:
+  i6 = i2 == 595;
+  if (!(i6)) goto l8;
+  i6 = *(short int*)i8;
+  i6 = i6 == 64;
+  if (i6) goto l9;
+l8:
+  i3 = 0;
+  goto l10;
+l9:
+  i3 = 1;
+l10:
+  if (!(i3)) goto l11;
+  i4 = (int)GenStatm__w;
+  i6 = *(int*)(i4-4);
+  i6 = (int)((_Type)i6)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i6)((TextRider__Writer)i4, (const unsigned char*)(int)_c126, 3);
+l11:
+  i6 = *(short int*)i8;
+  i6 = i6 == 67;
+  if (i6) goto l12;
+  GenStatm__WriteNthArg((short int)0, (Data__Instruction)(int)r);
+  goto l13;
+l12:
+  i4 = (int)*(void**)i0;
+  i6 = i4 + 8;
+  i6 = (int)*(void**)i6;
+  GenStatm__Region_CaseGuard((Data__Opnd)i4, (Data__Opnd)i6);
+l13:
+  if (!(i3)) goto l14;
+  i3 = (int)GenStatm__w;
+  i6 = *(int*)(i3-4);
+  i6 = (int)((_Type)i6)->tbprocs[7];
+  ((_TBP_TextRider__WriterDesc_WriteChar)i6)((TextRider__Writer)i3, (unsigned char)41);
+l14:
   i6 = (int)GenStatm__w;
   i3 = *(int*)(i6-4);
+  i3 = (int)((_Type)i3)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i6, (const unsigned char*)(int)_c36, 3);
+  i6 = i7 + 28;
+  i6 = (int)*(void**)i6;
+  i6 = (int)*(void**)i6;
+  GenStatm__Goto((Data__Instruction)i6, (unsigned char)0);
+  goto l48;
+l15:
+  if (!(i2==596)) goto l16;
+  i4 = i7 + 28;
+  i4 = (int)*(void**)i4;
+  i4 = (int)*(void**)i4;
+  GenStatm__AssignToGates((Data__Merge)i4, (Data__Region)(int)r);
+  goto l48;
+l16:
+  if (!(i2==597)) goto l48;
+  i3 = (i3 & ((unsigned int)1 << 17)) != 0;
+  if (!(i3)) goto l48;
+  GenStatm__NewLine();
+  i4 = (int)GenStatm__w;
+  i3 = *(int*)(i4-4);
   i3 = (int)((_Type)i3)->tbprocs[7];
-  ((_TBP_TextRider__WriterDesc_WriteChar)i3)((TextRider__Writer)i6, (unsigned char)59);
-l18:
-  i6 = 0;
-  goto l53;
-l19:
-  if (!((i4>=0 && i4<=1))) goto l39;
-  if (i2<=0 || (i2>=4 && i2<=8) || i2==19 || i2>=27) goto l38;
-  if (i2==1) goto l38;
-  if (!(i2==2)) goto l20;
+  ((_TBP_TextRider__WriterDesc_WriteChar)i3)((TextRider__Writer)i4, (unsigned char)59);
+  goto l48;
+l17:
+  if (!((i4>=0 && i4<=1))) goto l36;
+  if (i2<=0 || (i2>=4 && i2<=8) || i2==19 || i2>=27) goto l48;
+  if (i2==1) goto l48;
+  if (!(i2==2)) goto l18;
   GenStatm__ExitInstr((Data__Instruction)i7);
-  goto l38;
-l20:
-  if (!(i2==3)) goto l21;
+  goto l48;
+l18:
+  if (!(i2==3)) goto l19;
   GenStatm__CallInstr((Data__Instruction)i7);
-  goto l38;
-l21:
-  if (!(i2==9)) goto l22;
+  goto l48;
+l19:
+  if (!(i2==9)) goto l20;
   GenStatm__ArrayLength((Data__Instruction)i7);
-  goto l38;
-l22:
-  if (!(i2==10)) goto l23;
+  goto l48;
+l20:
+  if (!(i2==10)) goto l21;
   GenStatm__CheckNil((Data__Instruction)i7, (short int)0);
   GenStatm__NewLine();
   GenStatm__WriteLocation((Data__Node)i7);
   i3 = (int)GenStatm__w;
-  i4 = *(int*)(i3-4);
-  i4 = (int)((_Type)i4)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i3, (const unsigned char*)(int)_c24, 5);
+  i6 = *(int*)(i3-4);
+  i6 = (int)((_Type)i6)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i6)((TextRider__Writer)i3, (const unsigned char*)(int)_c24, 5);
   i3 = (int)*(void**)i1;
-  i4 = (int)GenStatm__w;
-  GenDecl__WriteScalarCast((TextRider__Writer)i4, (Data__Struct)i3, (unsigned char)0, (unsigned char)1, (unsigned char)0);
-  i4 = (int)GenStatm__w;
-  i3 = *(int*)(i4-4);
+  i6 = (int)GenStatm__w;
+  GenDecl__WriteScalarCast((TextRider__Writer)i6, (Data__Struct)i3, (unsigned char)0, (unsigned char)1, (unsigned char)0);
+  i6 = (int)GenStatm__w;
+  i3 = *(int*)(i6-4);
   i3 = (int)((_Type)i3)->tbprocs[7];
-  ((_TBP_TextRider__WriterDesc_WriteChar)i3)((TextRider__Writer)i4, (unsigned char)40);
+  ((_TBP_TextRider__WriterDesc_WriteChar)i3)((TextRider__Writer)i6, (unsigned char)40);
   GenStatm__WriteNthArg((short int)0, (Data__Instruction)i7);
-  i4 = (int)GenStatm__w;
-  i3 = *(int*)(i4-4);
+  i6 = (int)GenStatm__w;
+  i3 = *(int*)(i6-4);
   i3 = (int)((_Type)i3)->tbprocs[7];
-  ((_TBP_TextRider__WriterDesc_WriteChar)i3)((TextRider__Writer)i4, (unsigned char)45);
-  i4 = (int)*(void**)i1;
+  ((_TBP_TextRider__WriterDesc_WriteChar)i3)((TextRider__Writer)i6, (unsigned char)45);
+  i6 = (int)*(void**)i1;
   i3 = (int)GenStatm__w;
-  i2 = i4 + 48;
-  i4 = *(int*)(i3-4);
+  i2 = i6 + 48;
+  i6 = *(int*)(i3-4);
   i2 = *(int*)i2;
-  i4 = (int)((_Type)i4)->tbprocs[8];
-  ((_TBP_TextRider__WriterDesc_WriteLInt)i4)((TextRider__Writer)i3, (int)i2, (int)0);
+  i6 = (int)((_Type)i6)->tbprocs[8];
+  ((_TBP_TextRider__WriterDesc_WriteLInt)i6)((TextRider__Writer)i3, (int)i2, (int)0);
   i3 = (int)GenStatm__w;
-  i4 = *(int*)(i3-4);
-  i4 = (int)((_Type)i4)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i3, (const unsigned char*)(int)_c13, 3);
-  goto l38;
-l23:
-  if (!(i2==11)) goto l24;
+  i6 = *(int*)(i3-4);
+  i6 = (int)((_Type)i6)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i6)((TextRider__Writer)i3, (const unsigned char*)(int)_c13, 3);
+  goto l48;
+l21:
+  if (!(i2==11)) goto l22;
   GenStatm__TBProcAddress((Data__Instruction)i7);
-  goto l38;
-l24:
-  if (!((i2>=12 && i2<=13))) goto l25;
+  goto l48;
+l22:
+  if (!((i2>=12 && i2<=13))) goto l23;
   GenStatm__BoundInstr((Data__Instruction)i7);
-  goto l38;
-l25:
-  if (!(i2==14)) goto l26;
+  goto l48;
+l23:
+  if (!(i2==14)) goto l24;
   GenStatm__TypeTest((Data__Instruction)i7);
-  goto l38;
-l26:
-  if (!(i2==15)) goto l27;
+  goto l48;
+l24:
+  if (!(i2==15)) goto l25;
   GenStatm__TypeGuard((Data__Instruction)i7);
-  goto l38;
-l27:
-  if (!(i2==16)) goto l28;
+  goto l48;
+l25:
+  if (!(i2==16)) goto l26;
   GenStatm__TypeAssertion((Data__Instruction)i7);
-  goto l38;
-l28:
-  if (!(i2==17)) goto l29;
+  goto l48;
+l26:
+  if (!(i2==17)) goto l27;
   GenStatm__NewLine();
   i3 = (int)GenStatm__w;
-  i4 = *(int*)(i3-4);
-  i4 = (int)((_Type)i4)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i3, (const unsigned char*)(int)_c127, 22);
+  i6 = *(int*)(i3-4);
+  i6 = (int)((_Type)i6)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i6)((TextRider__Writer)i3, (const unsigned char*)(int)_c127, 22);
   GenStatm__WriteNthArg((short int)1, (Data__Instruction)i7);
-  i4 = (int)GenStatm__w;
-  i3 = *(int*)(i4-4);
+  i6 = (int)GenStatm__w;
+  i3 = *(int*)(i6-4);
   i3 = (int)((_Type)i3)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i4, (const unsigned char*)(int)_c128, 6);
-  i4 = i7 + 24;
-  i3 = (int)*(void**)i4;
-  i4 = (int)GenStatm__w;
+  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i6, (const unsigned char*)(int)_c128, 6);
+  i6 = i7 + 24;
+  i3 = (int)*(void**)i6;
+  i6 = (int)GenStatm__w;
   i2 = i3 + 48;
-  i3 = *(int*)(i4-4);
+  i3 = *(int*)(i6-4);
   i2 = *(int*)i2;
   i3 = (int)((_Type)i3)->tbprocs[8];
-  ((_TBP_TextRider__WriterDesc_WriteLInt)i3)((TextRider__Writer)i4, (int)i2, (int)0);
-  i4 = (int)GenStatm__w;
-  i3 = *(int*)(i4-4);
+  ((_TBP_TextRider__WriterDesc_WriteLInt)i3)((TextRider__Writer)i6, (int)i2, (int)0);
+  i6 = (int)GenStatm__w;
+  i3 = *(int*)(i6-4);
   i3 = (int)((_Type)i3)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i4, (const unsigned char*)(int)_c13, 3);
-  goto l38;
-l29:
-  if (!(i2==18)) goto l30;
+  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i6, (const unsigned char*)(int)_c13, 3);
+  goto l48;
+l27:
+  if (!(i2==18)) goto l28;
   GenStatm__WriteMonOp((Data__Instruction)i7, (const unsigned char*)(int)_c14, 1, (short int)0);
-  goto l38;
-l30:
-  if (!(i2==20)) goto l31;
+  goto l48;
+l28:
+  if (!(i2==20)) goto l29;
   GenStatm__WriteDyCall((Data__Instruction)i7, (const unsigned char*)(int)_c129, 5, (short int)0, (short int)1);
-  goto l38;
-l31:
-  if (!(i2==21)) goto l32;
+  goto l48;
+l29:
+  if (!(i2==21)) goto l30;
   GenStatm__TypeCastInstr((Data__Instruction)i7);
-  goto l38;
-l32:
-  if (!(i2==22)) goto l35;
+  goto l48;
+l30:
+  if (!(i2==22)) goto l33;
   GenStatm__NewLine();
   i3 = (int)GenStatm__w;
   i2 = *(int*)(i3-4);
@@ -4376,21 +4288,21 @@ l32:
   i3 = (int)*(void**)i3;
   i3 = (int)Data__OpndDesc_OpndType((Data__Opnd)i3);
   i3 = SymbolTable__TypeInGroup((Data__Struct)i3, (signed char)39);
-  if (!(i3)) goto l34;
+  if (!(i3)) goto l32;
   i3 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)i7, (short int)3);
   i3 = (int)Data__OpndDesc_OpndType((Data__Opnd)i3);
   i3 = SymbolTable__TypeInGroup((Data__Struct)i3, (signed char)38);
-  if (!(i3)) goto l33;
+  if (!(i3)) goto l31;
   i3 = (int)GenStatm__w;
   i2 = *(int*)(i3-4);
   i2 = (int)((_Type)i2)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i3, (const unsigned char*)(int)_c131, 2);
-l33:
+l31:
   i2 = (int)GenStatm__w;
   i3 = *(int*)(i2-4);
   i3 = (int)((_Type)i3)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i2, (const unsigned char*)(int)_c89, 2);
-l34:
+l32:
   i3 = (int)GenStatm__w;
   i2 = *(int*)(i3-4);
   i2 = (int)((_Type)i2)->tbprocs[5];
@@ -4410,17 +4322,17 @@ l34:
   i2 = *(int*)(i3-4);
   i2 = (int)((_Type)i2)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i3, (const unsigned char*)(int)_c13, 3);
-  goto l38;
-l35:
-  if (!(i2==23)) goto l36;
+  goto l48;
+l33:
+  if (!(i2==23)) goto l34;
   GenStatm__StructCopy((Data__Instruction)i7);
-  goto l38;
-l36:
-  if (!((i2>=24 && i2<=25))) goto l37;
+  goto l48;
+l34:
+  if (!((i2>=24 && i2<=25))) goto l35;
   GenStatm__NewInstr((Data__Instruction)i7, (short int)i2);
-  goto l38;
-l37:
-  if (!(i2==26)) goto l38;
+  goto l48;
+l35:
+  if (!(i2==26)) goto l48;
   GenStatm__NewLine();
   i2 = (int)GenStatm__w;
   i3 = *(int*)(i2-4);
@@ -4441,74 +4353,58 @@ l37:
   i2 = *(int*)(i3-4);
   i2 = (int)((_Type)i2)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i2)((TextRider__Writer)i3, (const unsigned char*)(int)_c13, 3);
-l38:
-  i6 = 0;
-  goto l53;
-l39:
-  if (!(i4==2)) goto l40;
+  goto l48;
+l36:
+  if (!(i4==2)) goto l37;
   GenStatm__AccessInstr((Data__Instruction)i7, (short int)i6);
-  i6 = 0;
-  goto l53;
-l40:
-  if (!(i4==3)) goto l41;
+  goto l48;
+l37:
+  if (!(i4==3)) goto l38;
   GenStatm__UpdateInstr((Data__Instruction)i7, (short int)i6);
-  i6 = 0;
-  goto l53;
-l41:
-  if (!(i4==6)) goto l42;
+  goto l48;
+l38:
+  if (!(i4==6)) goto l39;
   GenStatm__TrapInstr((Data__Instruction)i7);
-  i6 = 0;
-  goto l53;
-l42:
-  if (!((i4>=8 && i4<=14))) goto l43;
+  goto l48;
+l39:
+  if (!((i4>=8 && i4<=14))) goto l40;
   GenStatm__ArithInstr((Data__Instruction)i7, (short int)i4);
-  i6 = 0;
-  goto l53;
-l43:
-  if (!((i4>=15 && i4<=20))) goto l44;
+  goto l48;
+l40:
+  if (!((i4>=15 && i4<=20))) goto l41;
   GenStatm__PredefFunction((Data__Instruction)i7, (short int)i4);
-  i6 = 0;
-  goto l53;
-l44:
-  if (!((i4>=21 && i4<=29))) goto l45;
+  goto l48;
+l41:
+  if (!((i4>=21 && i4<=29))) goto l42;
   GenStatm__SetInstr((Data__Instruction)i7, (short int)i4);
-  i6 = 0;
-  goto l53;
-l45:
-  if (!(i4==30)) goto l46;
+  goto l48;
+l42:
+  if (!(i4==30)) goto l43;
   GenStatm__WriteMonOp((Data__Instruction)i7, (const unsigned char*)(int)_c133, 2, (short int)0);
-  i6 = 0;
-  goto l53;
-l46:
-  if (!((i4>=31 && i4<=36))) goto l47;
+  goto l48;
+l43:
+  if (!((i4>=31 && i4<=36))) goto l44;
   GenStatm__CompareInstr((Data__Instruction)i7, (short int)i4, (short int)i6);
-  i6 = 0;
-  goto l53;
-l47:
-  if (!(i4==7)) goto l53;
-  i4 = (int)*(void**)i7;
-  i4 = i4 == 0;
-  if (i4) goto l48;
+  goto l48;
+l44:
+  if (!(i4==7)) goto l48;
+  i6 = (int)*(void**)i7;
+  i6 = i6 == 0;
+  if (i6) goto l48;
   GenStatm__ConvInstr((Data__Instruction)i7);
-l48:
-  i6 = 0;
-  goto l53;
-l49:
-  i6 = 0;
-  goto l53;
-l50:
+  goto l48;
+l45:
   GenStatm__Region_MarkForwardReference((Data__Instruction)i7);
-  i6 = 0;
-  goto l53;
-l51:
+  goto l48;
+l46:
   i2 = (int)GenStatm__writeSyncStatm;
   i2 += 8;
   i2 = *(unsigned char*)i2;
-  if (!(i2)) goto l52;
+  if (!(i2)) goto l47;
   i2 = (int)WriteGSAvC__writeGSA;
   i2 += 8;
   i2 = *(unsigned char*)i2;
-  if (!(i2)) goto l52;
+  if (!(i2)) goto l47;
   Out__String((const unsigned char*)(int)_c125, 9);
   i5 = *(int*)i5;
   Out__LongInt((int)i5, (int)0);
@@ -4517,19 +4413,14 @@ l51:
   i5 = *(short int*)i5;
   WriteGSAvC__Opcode((short int)i5, (unsigned char*)(int)str, 128);
   Out__Ln();
-l52:
+l47:
   GenStatm__Region((Data__Region)i7);
-  i6 = 0;
-l53:
-  if (i6) goto l54;
+l48:
   i2 = i7 + 36;
-  i2 = (int)*(void**)i2;
-  i7 = i2;
-l54:
-  if (i6) goto l55;
+  i7 = (int)*(void**)i2;
   i2 = i7 != 0;
   if (i2) goto l0;
-l55:
+l49:
   ;
 }
 
@@ -4618,28 +4509,28 @@ l8:
   ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i1, (const unsigned char*)(int)_c138, 16);
   goto l10;
 l9:
-  i3 = (int)GenStatm__w;
-  i1 = *(int*)(i3-4);
-  i1 = (int)((_Type)i1)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i3, (const unsigned char*)(int)_c137, 20);
+  i1 = (int)GenStatm__w;
+  i3 = *(int*)(i1-4);
+  i3 = (int)((_Type)i3)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i1, (const unsigned char*)(int)_c137, 20);
 l10:
   i1 = (int)*(void**)i0;
   i3 = (int)GenStatm__w;
   GenDecl__WriteScalarType((TextRider__Writer)i3, (Data__Struct)i1, (unsigned char)0, (unsigned char)0);
-  i3 = (int)GenStatm__w;
-  i1 = *(int*)(i3-4);
-  i1 = (int)((_Type)i1)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i3, (const unsigned char*)(int)_c12, 3);
+  i1 = (int)GenStatm__w;
+  i3 = *(int*)(i1-4);
+  i3 = (int)((_Type)i3)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i1, (const unsigned char*)(int)_c12, 3);
   GenStatm__WriteName((Data__Object)i8);
   i1 = (int)GenStatm__w;
   i3 = *(int*)(i1-4);
   i3 = (int)((_Type)i3)->tbprocs[5];
   ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i1, (const unsigned char*)(int)_c12, 3);
   GenStatm__WriteName((Data__Object)i8);
-  i3 = (int)GenStatm__w;
-  i1 = *(int*)(i3-4);
-  i1 = (int)((_Type)i1)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i3, (const unsigned char*)(int)_c135, 8);
+  i1 = (int)GenStatm__w;
+  i3 = *(int*)(i1-4);
+  i3 = (int)((_Type)i3)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i1, (const unsigned char*)(int)_c135, 8);
   i5 = (int)*(void**)i2;
   i3 = i5 + 20;
   i3 = *(signed char*)i3;
@@ -4701,21 +4592,21 @@ l16:
   i3 = *(int*)i3;
   i3 = i3 < 0;
   if (i3) goto l17;
-  i1 = (int)*GenStatm__GlobalRegion_enter;
-  i1 += 48;
-  i1 = *(unsigned int*)i1;
-  i1 = (i1 & ((unsigned int)1 << 6)) != 0;
-  if (!(i1)) goto l17;
-  i4 = (int)GenStatm__w;
-  i3 = *(int*)(i4-4);
-  i1 = (int)*GenStatm__GlobalRegion_greg;
-  i3 = (int)((_Type)i3)->tbprocs[5];
-  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i4, (const unsigned char*)(int)_c12, 3);
-  i4 = i1 + 80;
-  i4 = (int)*(void**)i4;
-  i4 += 72;
-  i4 = *(int*)i4;
-  GenStatm__WritePos((int)i4);
+  i3 = (int)*GenStatm__GlobalRegion_enter;
+  i3 += 48;
+  i3 = *(unsigned int*)i3;
+  i3 = (i3 & ((unsigned int)1 << 6)) != 0;
+  if (!(i3)) goto l17;
+  i3 = (int)GenStatm__w;
+  i1 = *(int*)(i3-4);
+  i1 = (int)((_Type)i1)->tbprocs[5];
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i3, (const unsigned char*)(int)_c12, 3);
+  i3 = (int)*GenStatm__GlobalRegion_greg;
+  i3 += 80;
+  i3 = (int)*(void**)i3;
+  i3 += 72;
+  i3 = *(int*)i3;
+  GenStatm__WritePos((int)i3);
 l17:
   i1 = (int)GenStatm__w;
   i3 = *(int*)(i1-4);
@@ -4762,15 +4653,15 @@ void GenStatm__GlobalRegion(Data__GlobalRegion greg) {
   register int i0, i1, i2, i3, i4, i5, i6;
   Data__Instruction enter;
   i1 = (int)Data__RegionDesc_EnterInstr((Data__Region)(int)greg);
+  GenStatm__off = 1;
   i0 = (int)greg + 80;
   i0 = (int)*(void**)i0;
   i2 = i0 + 28;
-  GenStatm__off = 1;
   i2 = *(signed char*)i2;
   i2 = i2 != 8;
   if (i2) goto l0;
   GenStatm__localOpenArray = 0;
-  i1 = (int)greg;
+  i2 = (int)greg;
   goto l1;
 l0:
   i0 += 24;
@@ -4779,38 +4670,45 @@ l0:
   enter = (void*)i1;
   i1 = GenStatm__GlobalRegion_CopyValueParams((Data__Struct)i0, (Data__Instruction *)&enter, (Data__GlobalRegion *)&greg);
   GenStatm__localOpenArray = i1;
-  i1 = (int)greg;
+  i2 = (int)greg;
 l1:
-  i0 = i1 + 80;
-  i2 = (int)*(void**)i0;
-  i0 = i2 + 28;
+  i0 = i2 + 80;
+  i3 = (int)*(void**)i0;
+  i0 = i3 + 28;
   i0 = *(signed char*)i0;
   i0 = i0 != 7;
   if (i0) goto l2;
-  i3 = i2 + 68;
-  i0 = *(unsigned int*)i3;
+  i1 = i3 + 68;
+  i0 = *(unsigned int*)i1;
   i0 = i0 | ((unsigned int)1 << 28);
-  *(unsigned int*)i3 = i0;
+  *(unsigned int*)i1 = i0;
 l2:
-  GenStatm__Region((Data__Region)i1);
-  i6 = (int)GenStatm__assignArray;
-  i0 = *(int*)(i6-8);
+  GenStatm__Region((Data__Region)i2);
+  i0 = (int)GenStatm__assignArray;
+  i0 = *(int*)(i0-8);
   i5 = i0 - 1;
   i0 = i5 < 0;
   if (i0) goto l4;
-  i0 = 0;
+  i6 = 0;
 l3:
-  i1 = (int)_ashl(i0, 4, (unsigned int));
-  i1 = i6 + i1;
-  i4 = i1 + 8;
+  i0 = (int)GenStatm__assignArray;
+  i1 = (int)_ashl(i6, 4, (unsigned int));
+  i1 = i0 + i1;
   *(void**)i1 = (void*)0;
-  i2 = i0 + 1;
+  i0 = (int)GenStatm__assignArray;
+  i1 = (int)_ashl(i6, 4, (unsigned int));
+  i1 = i0 + i1;
+  i2 = i1 + 8;
+  *(void**)i2 = (void*)0;
+  i0 = (int)GenStatm__assignArray;
+  i1 = (int)_ashl(i6, 4, (unsigned int));
+  i1 = i0 + i1;
+  i2 = i6 + 1;
   i3 = i1 + 4;
-  *(void**)i4 = (void*)0;
   i4 = i2 > i5;
   *(void**)i3 = (void*)0;
   if (i4) goto l4;
-  i0 = i2;
+  i6 = i2;
   goto l3;
 l4:
   ;
@@ -4877,7 +4775,7 @@ void GenStatm_init(void) {
     char *_mem, *_var;
     int* _dim_ptr;
     _mem = GC_malloc(_not_zero(32*16)+8);
-    if (!_mem) _new_failed(_P(72824));
+    if (!_mem) _new_failed(_P(72838));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 32;
@@ -4887,30 +4785,30 @@ void GenStatm_init(void) {
   GenStatm__currId = -1;
   (void)memcpy((void*) (int)GenStatm__opList, (const void*) (int)_c141, 9);
   i0 = (int)ParamOptions__CreateBoolean((const unsigned char*)(int)_c142, 15, (unsigned char)0);
-  i1 = (int)ParamOptions__options;
   GenStatm__writeSyncStatm = (void*)i0;
-  i0 = *(int*)(i1-4);
-  i0 = (int)((_Type)i0)->tbprocs[2];
-  ((_TBP_Parameter__SectionDesc_CmdLineOption)i0)((Parameter__Section)i1, (const unsigned char*)(int)_c143, 18, (const unsigned char*)(int)_c144, 21);
   i0 = (int)ParamOptions__options;
-  i2 = (int)GenStatm__writeSyncStatm;
   i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[2];
+  ((_TBP_Parameter__SectionDesc_CmdLineOption)i1)((Parameter__Section)i0, (const unsigned char*)(int)_c143, 18, (const unsigned char*)(int)_c144, 21);
+  i2 = (int)ParamOptions__options;
+  i1 = *(int*)(i2-4);
+  i0 = (int)GenStatm__writeSyncStatm;
   i1 = (int)((_Type)i1)->tbprocs[4];
-  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i1)((ParamOptions__OptionsSection)i0, (ParamOptions__Option)i2);
+  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i1)((ParamOptions__OptionsSection)i2, (ParamOptions__Option)i0);
   i0 = (int)ParamOptions__CreateInteger((const unsigned char*)(int)_c145, 11, (int)65504, (int)-1, (int)2147483647);
   GenStatm__valueStack = (void*)i0;
   i0 = (int)ParamOptions__options;
-  i1 = (int)GenStatm__valueStack;
-  i2 = *(int*)(i0-4);
-  i2 = (int)((_Type)i2)->tbprocs[4];
-  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i2)((ParamOptions__OptionsSection)i0, (ParamOptions__Option)i1);
-  i0 = (int)ParamOptions__CreateString((const unsigned char*)(int)_c146, 8, (const unsigned char*)(int)_c14, 1);
-  GenStatm__gcflags = (void*)i0;
-  i0 = (int)ParamOptions__options;
-  i2 = (int)GenStatm__gcflags;
+  i2 = (int)GenStatm__valueStack;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[4];
   ((_TBP_ParamOptions__OptionsSectionDesc_Add)i1)((ParamOptions__OptionsSection)i0, (ParamOptions__Option)i2);
+  i0 = (int)ParamOptions__CreateString((const unsigned char*)(int)_c146, 8, (const unsigned char*)(int)_c14, 1);
+  GenStatm__gcflags = (void*)i0;
+  i2 = (int)ParamOptions__options;
+  i0 = (int)GenStatm__gcflags;
+  i1 = *(int*)(i2-4);
+  i1 = (int)((_Type)i1)->tbprocs[4];
+  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i1)((ParamOptions__OptionsSection)i2, (ParamOptions__Option)i0);
   i0 = (int)ParamOptions__options;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[2];

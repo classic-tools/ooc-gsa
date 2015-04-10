@@ -1,4 +1,4 @@
-/*	$Id: Files.c,v 1.20 2000/09/23 19:40:08 ooc-devel Exp $	*/
+/*	$Id: Files.c,v 1.21 2001/05/25 12:01:28 ooc-devel Exp $	*/
 /*  Access to files and file attributes.
     Copyright (C) 1997-2000  Michael van Acken
 
@@ -507,7 +507,33 @@ void Files__FileDesc_Register(Files__File f) {
 		PERMISSIONS_REGISTER & ~active_umask);
     
     if (res != -1) {	/* rename file atomically */
-      res = rename((const char*)f->tmpName, (const char*)f->name);
+#if defined(__MINGW32__) || defined(__CYGWIN32__)
+    /* Windows file semantics do not allow open files to be renamed or files
+       to be renamed over existing files. Hence the following ... [sg] */
+    /* Note: This code should also be used under Cygwin for Win9X platforms.
+       Cygwin emulation of unix semantics only seems to work under WinNT. [sg]*/
+
+      res = close(f->fd);
+      if (res != -1) {
+        f->fd = -1;
+        /* Remove the file if it already exists */
+	if (access(f->name, 0)==0) {
+          res = unlink(f->name);
+        }
+        /* Rename and then reopen the file */
+        if (res != -1) {
+          res = rename(f->tmpName, f->name);
+          if (res != -1) {
+            /* Hmmm. We should have stored the old mode & permissions to use
+               again here. [sg] */
+            res = open_file(f->name, O_RDWR, S_IREAD | S_IWRITE);
+            f->fd = res;
+          }
+        }
+      }
+#else
+       res = rename((const char*)f->tmpName, (const char*)f->name);
+#endif
     }
     
     if (res == -1) {

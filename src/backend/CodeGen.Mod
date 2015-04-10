@@ -1,7 +1,7 @@
-(* 	$Id: CodeGen.Mod,v 1.50 1999/11/06 15:35:38 ooc-devel Exp $	 *)
+(* 	$Id: CodeGen.Mod,v 1.51 2001/04/07 12:16:25 ooc-devel Exp $	 *)
 MODULE CodeGen;
 (*  Code generation part of oo2c.
-    Copyright (C) 1995-1999  Michael van Acken
+    Copyright (C) 1995-1999, 2001  Michael van Acken
 
     This file is part of OOC.
 
@@ -788,7 +788,7 @@ PROCEDURE EmitDeclarations (w: TextRider.Writer; objList: GenDecl.ObjectList;
       IF (obj. mode # D.objModule) & 
          ((obj. mode # D.objConst) OR header) &
          ((obj. mode # D.objProc) OR header) &
-         ((header = (D.objIsExported IN obj. flags)) OR
+         ((header = (D.objInSymbolFile IN obj. flags)) OR
           ~header & ~(StdTypes.objEmitted IN obj. beFlags)) THEN
         (* no module or constant declarations are emitted (except string 
            constants); no procedure declarations are put into the .d file;

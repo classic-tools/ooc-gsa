@@ -1,7 +1,7 @@
-(* 	$Id: ParseStatm.Mod,v 1.138 2000/12/27 16:32:32 ooc-devel Exp $	 *)
+(* 	$Id: ParseStatm.Mod,v 1.141 2001/08/23 18:02:34 ooc-devel Exp $	 *)
 MODULE ParseStatm;
 (*  Parses Oberon-2 statements and translates them to GSA.
-    Copyright (C) 1995-2000  Michael van Acken
+    Copyright (C) 1995-2001  Michael van Acken
 
     This file is part of OOC.
 
@@ -624,7 +624,11 @@ PROCEDURE CollectToMem (instr: D.Instruction);
     (* add values of local variables to collecting instruction, set location 
        attributes properly *)
     greg := instr. Greg();
-    AddOperand (greg. bodyOf. localDecl)
+    IF (greg. bodyOf. level # Sym.globalLevel) THEN
+      (* by definition, all global variables of a module are treated as
+         nonlocal within the module body *)
+      AddOperand (greg. bodyOf. localDecl)
+    END
   END CollectToMem;
 
 PROCEDURE ReclaimFromMem (instr: D.Instruction);
@@ -668,7 +672,11 @@ PROCEDURE ReclaimFromMem (instr: D.Instruction);
     AssignToVar (instr. region, Sym.store, y);
     (* add values of local variables as results to reclaim instruction *)
     greg := instr. Greg();
-    AddResult (greg. bodyOf. localDecl)
+    IF (greg. bodyOf. level # Sym.globalLevel) THEN
+      (* by definition, all global variables of a module are treated as
+         nonlocal within the module body *)
+      AddResult (greg. bodyOf. localDecl)
+    END
   END ReclaimFromMem;
 
 PROCEDURE InitVariables* (region: D.Region; obj: D.Object; pos: LONGINT);
@@ -940,13 +948,15 @@ PROCEDURE ProcedureCall (region: D.Region; proc: Attr.Item;
       
       IF (id = Sym.predCOPY) THEN
         (* make sure we are not copying from LONGCHAR to CHAR string *)
-        IF Sym.TypeInGroup (params[0]. type, D.grpString16) &
+        IF (paramCount >= 2) & 
+           Sym.TypeInGroup (params[0]. type, D.grpString16) &
            Sym.TypeInGroup (params[1]. type, D.grpArray) &
            (params[1]. type. base. form = D.strChar8) THEN
           Sym.ErrT1 (params[0]. pos, 268, params[1]. type)
           (* cannot copy value to array of smaller character type *)
         END
-      ELSIF (id = Sym.predNEW) THEN  (* test parameters of NEW *)
+      ELSIF (id = Sym.predNEW) & (paramCount >= 1) THEN
+        (* test parameters of NEW *)
         IF (D.structDisableNew IN params[0]. type. flags) THEN
           E.Err (params[0]. pos, 282)    (* can't use NEW for this type *)
         END;
@@ -977,7 +987,7 @@ PROCEDURE ProcedureCall (region: D.Region; proc: Attr.Item;
       END;
       
       (* check required constant parameters *) 
-      IF (id = Sym.predLEN) THEN
+      IF (id = Sym.predLEN) & (paramCount >= 1) THEN
         IF (params[0]. type. base # NIL) THEN
           CheckConst (1, 0, params[0]. type. base. Dimensions())
         END
@@ -2330,6 +2340,7 @@ PROCEDURE StatementSeq* (region: D.Region; VAR exitInfo: Attr.ExitInfo);
         guard, else: D.Guard;
         expectedType: SHORTINT;
         nestedInfo: Attr.ExitInfo;
+        gate: D.Instruction;
         
       PROCEDURE CaseLabels (guard, else: D.Guard; expectedType: SHORTINT);
         VAR
@@ -2489,9 +2500,18 @@ PROCEDURE StatementSeq* (region: D.Region; VAR exitInfo: Attr.ExitInfo);
           S.GetSym;
           StatementSeq (else, nestedInfo);
           Attr.ExitInfoOr (exitInfo, nestedInfo)
+        ELSIF StdPragmas.caseSelectCheck. true THEN
+          Trap (else, Opc.trapCase, x. currValue, TRUE, x. pos, exitInfo)
         ELSE
-          Trap (else, Opc.trapCase, x. currValue, StdPragmas.caseSelectCheck. true, 
-                x. pos, exitInfo)
+          (* no ELSE, and no check if ELSE path would be used: elimiate ELSE
+             branch completely; `else' is the first entry in `merge' *)
+          gate := merge. instrList;
+          WHILE (gate # NIL) DO
+            gate. opndList. nextOpnd. DeleteOperand;
+            gate := gate. nextInstr
+          END;
+          merge. opndList. DeleteOperand;
+          else. Delete
         END;
         S.CheckSym (S.end);
         CommitIfMerge (merge)

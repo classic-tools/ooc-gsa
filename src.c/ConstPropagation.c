@@ -487,798 +487,705 @@ l18:
 }
 
 Data__Const ConstPropagation__ConstantFolding(Data__Instruction instr, Data__Const opnd1, Data__Const opnd2, unsigned char adaptType) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12;
+  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11;
   register float f0;
   register double d0, d1;
   short int err;
   signed char intRange;
-  double lreal;
-  i11 = (int)instr;
-  i0 = ConstPropagation__Foldable((Data__Instruction)i11);
+  i10 = (int)instr;
+  i0 = ConstPropagation__Foldable((Data__Instruction)i10);
   if (i0) goto l0;
-  i12 = 0;
-  goto l90;
-l0:
-  i10 = i11 + 44;
-  i4 = *(short int*)i10;
-  i3 = (short int)_ashr(i4, 4, (unsigned short int));
-  i10 = i4 == 12;
-  i2 = i4 & 0xFU;
-  if (i10) goto l82;
-  i7 = i4 == 13;
-  if (i7) goto l82;
-  i4 = i4 == 21;
-  if (i4) goto l80;
-  i5 = i3 == 7;
-  if (i5) goto l67;
-  i4 = i2 == 12;
-  if (i4) goto l59;
-  i4 = i2 == 14;
-  if (i4) goto l59;
-  i6 = i2 == 8;
-  if (i6) goto l36;
-  i0 = i2 == 10;
-  if (i0) goto l36;
-  i5 = i11 + 24;
-  i9 = (int)*(void**)i5;
-  i9 = SymbolTable__TypeInGroup((Data__Struct)i9, (signed char)37);
-  if (i9) goto l24;
-  i12 = i2 <= 5;
-  if (i12) goto l1;
-  i8 = -1;
-  i1 = i11;
-  i12 = 0;
-  i9 = 0;
+  i11 = 0;
   goto l81;
+l0:
+  i9 = i10 + 44;
+  i5 = *(short int*)i9;
+  i4 = (short int)_ashr(i5, 4, (unsigned short int));
+  i9 = i5 == 12;
+  i3 = i5 & 0xFU;
+  if (i9) goto l74;
+  i8 = i5 == 13;
+  if (i8) goto l74;
+  i5 = i5 == 21;
+  if (i5) goto l72;
+  i6 = i4 == 7;
+  if (i6) goto l59;
+  i5 = i3 == 12;
+  if (i5) goto l52;
+  i5 = i3 == 14;
+  if (i5) goto l52;
+  i7 = i3 == 8;
+  if (i7) goto l34;
+  i0 = i3 == 10;
+  if (i0) goto l34;
+  i6 = i10 + 24;
+  i11 = (int)*(void**)i6;
+  i11 = SymbolTable__TypeInGroup((Data__Struct)i11, (signed char)37);
+  if (i11) goto l23;
+  i11 = i3 <= 5;
+  if (i11) goto l1;
+  i1 = -1;
+  i2 = i10;
+  i11 = 0;
+  goto l73;
 l1:
   if (!(adaptType)) goto l2;
-  i8 = (int)*(void**)i5;
-  i8 = SymbolTable__TypeInGroup((Data__Struct)i8, (signed char)32);
-  if (!(i8)) goto l2;
-  i8 = 4;
+  i1 = (int)*(void**)i6;
+  i1 = SymbolTable__TypeInGroup((Data__Struct)i1, (signed char)32);
+  if (!(i1)) goto l2;
+  i1 = 4;
   goto l3;
 l2:
-  i8 = i2;
+  i1 = i3;
 l3:
-  if (!((i3>=-128 && i3<=7) || i3==11 || (i3>=21 && i3<=28) || (i3>=37 && i3<=127))) goto l4;
-  i9 = 1;
-  i12 = 0;
-  i1 = i11;
-  i8 = -1;
-  goto l81;
+  if (!(i4==8)) goto l4;
+  intRange = (signed char)i1;
+  err = (short int)-1;
+  instr = (void*)i10;
+  err = (short int)-1;
+  instr = (void*)i10;
+  intRange = (signed char)i1;
+  i11 = (int)ConstPropagation__ConstantFolding_EvalDyadicIntOp((IntArith__DyadicOperator)(int)&IntArith__Add, (Data__Const)(int)opnd1, (Data__Const)(int)opnd2, &intRange, &err, (Data__Instruction *)&instr, &adaptType);
+  i2 = (int)instr;
+  i1 = err;
+  goto l73;
 l4:
-  if (!(i3==8)) goto l5;
-  intRange = (signed char)i8;
+  if (!(i4==9)) goto l5;
+  intRange = (signed char)i1;
   err = (short int)-1;
-  instr = (void*)i11;
+  instr = (void*)i10;
   err = (short int)-1;
-  instr = (void*)i11;
-  intRange = (signed char)i8;
-  i12 = (int)ConstPropagation__ConstantFolding_EvalDyadicIntOp((IntArith__DyadicOperator)(int)&IntArith__Add, (Data__Const)(int)opnd1, (Data__Const)(int)opnd2, &intRange, &err, (Data__Instruction *)&instr, &adaptType);
-  i9 = 0;
-  i1 = (int)instr;
-  i8 = err;
-  goto l81;
+  instr = (void*)i10;
+  intRange = (signed char)i1;
+  i11 = (int)ConstPropagation__ConstantFolding_EvalDyadicIntOp((IntArith__DyadicOperator)(int)&IntArith__Sub, (Data__Const)(int)opnd1, (Data__Const)(int)opnd2, &intRange, &err, (Data__Instruction *)&instr, &adaptType);
+  i2 = (int)instr;
+  i1 = err;
+  goto l73;
 l5:
-  if (!(i3==9)) goto l6;
-  intRange = (signed char)i8;
+  if (!(i4==10)) goto l6;
+  intRange = (signed char)i1;
   err = (short int)-1;
-  instr = (void*)i11;
+  instr = (void*)i10;
   err = (short int)-1;
-  instr = (void*)i11;
-  intRange = (signed char)i8;
-  i12 = (int)ConstPropagation__ConstantFolding_EvalDyadicIntOp((IntArith__DyadicOperator)(int)&IntArith__Sub, (Data__Const)(int)opnd1, (Data__Const)(int)opnd2, &intRange, &err, (Data__Instruction *)&instr, &adaptType);
-  i9 = 0;
-  i1 = (int)instr;
-  i8 = err;
-  goto l81;
+  instr = (void*)i10;
+  intRange = (signed char)i1;
+  i11 = (int)ConstPropagation__ConstantFolding_EvalDyadicIntOp((IntArith__DyadicOperator)(int)&IntArith__Mult, (Data__Const)(int)opnd1, (Data__Const)(int)opnd2, &intRange, &err, (Data__Instruction *)&instr, &adaptType);
+  i2 = (int)instr;
+  i1 = err;
+  goto l73;
 l6:
-  if (!(i3==10)) goto l7;
-  intRange = (signed char)i8;
+  if (!(i4==12)) goto l7;
+  intRange = (signed char)i1;
   err = (short int)-1;
-  instr = (void*)i11;
+  instr = (void*)i10;
   err = (short int)-1;
-  instr = (void*)i11;
-  intRange = (signed char)i8;
-  i12 = (int)ConstPropagation__ConstantFolding_EvalDyadicIntOp((IntArith__DyadicOperator)(int)&IntArith__Mult, (Data__Const)(int)opnd1, (Data__Const)(int)opnd2, &intRange, &err, (Data__Instruction *)&instr, &adaptType);
-  i9 = 0;
-  i1 = (int)instr;
-  i8 = err;
-  goto l81;
+  instr = (void*)i10;
+  intRange = (signed char)i1;
+  i11 = (int)ConstPropagation__ConstantFolding_EvalDyadicIntOp((IntArith__DyadicOperator)(int)&IntArith__Div, (Data__Const)(int)opnd1, (Data__Const)(int)opnd2, &intRange, &err, (Data__Instruction *)&instr, &adaptType);
+  i2 = (int)instr;
+  i1 = err;
+  goto l73;
 l7:
-  if (!(i3==12)) goto l8;
-  intRange = (signed char)i8;
+  if (!(i4==13)) goto l8;
+  intRange = (signed char)i1;
   err = (short int)-1;
-  instr = (void*)i11;
+  instr = (void*)i10;
   err = (short int)-1;
-  instr = (void*)i11;
-  intRange = (signed char)i8;
-  i12 = (int)ConstPropagation__ConstantFolding_EvalDyadicIntOp((IntArith__DyadicOperator)(int)&IntArith__Div, (Data__Const)(int)opnd1, (Data__Const)(int)opnd2, &intRange, &err, (Data__Instruction *)&instr, &adaptType);
-  i9 = 0;
-  i1 = (int)instr;
-  i8 = err;
-  goto l81;
+  instr = (void*)i10;
+  intRange = (signed char)i1;
+  i11 = (int)ConstPropagation__ConstantFolding_EvalDyadicIntOp((IntArith__DyadicOperator)(int)&IntArith__Mod, (Data__Const)(int)opnd1, (Data__Const)(int)opnd2, &intRange, &err, (Data__Instruction *)&instr, &adaptType);
+  i2 = (int)instr;
+  i1 = err;
+  goto l73;
 l8:
-  if (!(i3==13)) goto l9;
-  intRange = (signed char)i8;
+  if (!(i4==14)) goto l9;
+  intRange = (signed char)i1;
   err = (short int)-1;
-  instr = (void*)i11;
+  instr = (void*)i10;
   err = (short int)-1;
-  instr = (void*)i11;
-  intRange = (signed char)i8;
-  i12 = (int)ConstPropagation__ConstantFolding_EvalDyadicIntOp((IntArith__DyadicOperator)(int)&IntArith__Mod, (Data__Const)(int)opnd1, (Data__Const)(int)opnd2, &intRange, &err, (Data__Instruction *)&instr, &adaptType);
-  i9 = 0;
-  i1 = (int)instr;
-  i8 = err;
-  goto l81;
+  instr = (void*)i10;
+  intRange = (signed char)i1;
+  i11 = (int)ConstPropagation__ConstantFolding_EvalMonadicIntOp((IntArith__MonadicOperator)(int)&IntArith__Neg, (Data__Const)(int)opnd1, &intRange, &err, (Data__Instruction *)&instr, &adaptType);
+  i2 = (int)instr;
+  i1 = err;
+  goto l73;
 l9:
-  if (!(i3==14)) goto l10;
-  intRange = (signed char)i8;
+  if (!(i4==15)) goto l10;
+  intRange = (signed char)i1;
   err = (short int)-1;
-  instr = (void*)i11;
+  instr = (void*)i10;
   err = (short int)-1;
-  instr = (void*)i11;
-  intRange = (signed char)i8;
-  i12 = (int)ConstPropagation__ConstantFolding_EvalMonadicIntOp((IntArith__MonadicOperator)(int)&IntArith__Neg, (Data__Const)(int)opnd1, &intRange, &err, (Data__Instruction *)&instr, &adaptType);
-  i9 = 0;
-  i1 = (int)instr;
-  i8 = err;
-  goto l81;
+  instr = (void*)i10;
+  intRange = (signed char)i1;
+  i11 = (int)ConstPropagation__ConstantFolding_EvalMonadicIntOp((IntArith__MonadicOperator)(int)&IntArith__Abs, (Data__Const)(int)opnd1, &intRange, &err, (Data__Instruction *)&instr, &adaptType);
+  i2 = (int)instr;
+  i1 = err;
+  goto l73;
 l10:
-  if (!(i3==15)) goto l11;
-  intRange = (signed char)i8;
+  if (!(i4==16)) goto l11;
+  intRange = (signed char)i1;
   err = (short int)-1;
-  instr = (void*)i11;
+  instr = (void*)i10;
   err = (short int)-1;
-  instr = (void*)i11;
-  intRange = (signed char)i8;
-  i12 = (int)ConstPropagation__ConstantFolding_EvalMonadicIntOp((IntArith__MonadicOperator)(int)&IntArith__Abs, (Data__Const)(int)opnd1, &intRange, &err, (Data__Instruction *)&instr, &adaptType);
-  i9 = 0;
-  i1 = (int)instr;
-  i8 = err;
-  goto l81;
+  instr = (void*)i10;
+  intRange = (signed char)i1;
+  i11 = (int)ConstPropagation__ConstantFolding_EvalDyadicIntOp((IntArith__DyadicOperator)(int)&IntArith__Ash, (Data__Const)(int)opnd1, (Data__Const)(int)opnd2, &intRange, &err, (Data__Instruction *)&instr, &adaptType);
+  i2 = (int)instr;
+  i1 = err;
+  goto l73;
 l11:
-  if (!(i3==16)) goto l12;
-  intRange = (signed char)i8;
-  err = (short int)-1;
-  instr = (void*)i11;
-  err = (short int)-1;
-  instr = (void*)i11;
-  intRange = (signed char)i8;
-  i12 = (int)ConstPropagation__ConstantFolding_EvalDyadicIntOp((IntArith__DyadicOperator)(int)&IntArith__Ash, (Data__Const)(int)opnd1, (Data__Const)(int)opnd2, &intRange, &err, (Data__Instruction *)&instr, &adaptType);
-  i9 = 0;
-  i1 = (int)instr;
-  i8 = err;
-  goto l81;
+  if (!(i4==17)) goto l12;
+  i11 = (int)opnd1 + 24;
+  i11 = *(int*)i11;
+  i11 = i11;
+  i11 = _cap(i11);
+  i1 = (int)*(void**)i6;
+  i11 = (int)Data__GetIntConst((int)i11, (Data__Struct)i1);
+  i2 = i10;
+  i1 = -1;
+  goto l73;
 l12:
-  if (!(i3==17)) goto l13;
-  i12 = (int)opnd1 + 24;
-  i12 = *(int*)i12;
-  i12 = i12;
-  i12 = _cap(i12);
-  i8 = (int)*(void**)i5;
-  i12 = (int)Data__GetIntConst((int)i12, (Data__Struct)i8);
-  i9 = 0;
-  i1 = i11;
-  i8 = -1;
-  goto l81;
+  if (!(i4==18)) goto l13;
+  i11 = (int)opnd1 + 24;
+  i11 = *(int*)i11;
+  i11 = _odd(i11);
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i2 = i10;
+  i1 = -1;
+  goto l73;
 l13:
-  if (!(i3==18)) goto l14;
-  i12 = (int)opnd1 + 24;
-  i12 = *(int*)i12;
-  i12 = _odd(i12);
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-  i1 = i11;
-  i8 = -1;
-  goto l81;
+  if (!(i4==19)) goto l14;
+  i11 = (int)*(void**)i6;
+  i11 = (int)ConstPropagation__ConstantFolding_SystemLSH((Data__Const)(int)opnd1, (Data__Const)(int)opnd2, (Data__Struct)i11, &adaptType);
+  i2 = i10;
+  i1 = -1;
+  goto l73;
 l14:
-  if (!(i3==19)) goto l15;
-  i12 = (int)*(void**)i5;
-  i12 = (int)ConstPropagation__ConstantFolding_SystemLSH((Data__Const)(int)opnd1, (Data__Const)(int)opnd2, (Data__Struct)i12, &adaptType);
-  i9 = 0;
-  i1 = i11;
-  i8 = -1;
-  goto l81;
+  if (!(i4==20)) goto l15;
+  i11 = (int)*(void**)i6;
+  i11 = (int)ConstPropagation__ConstantFolding_SystemROT((Data__Const)(int)opnd1, (Data__Const)(int)opnd2, (Data__Struct)i11, &adaptType);
+  i2 = i10;
+  i1 = -1;
+  goto l73;
 l15:
-  if (!(i3==20)) goto l16;
-  i12 = (int)*(void**)i5;
-  i12 = (int)ConstPropagation__ConstantFolding_SystemROT((Data__Const)(int)opnd1, (Data__Const)(int)opnd2, (Data__Struct)i12, &adaptType);
-  i9 = 0;
-  i1 = i11;
-  i8 = -1;
-  goto l81;
+  if (!(i4==30)) goto l16;
+  i11 = (int)opnd1 + 24;
+  i11 = *(int*)i11;
+  i11 = i11 == 0;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i2 = i10;
+  i1 = -1;
+  goto l73;
 l16:
-  if (!(i3==30)) goto l17;
-  i12 = (int)opnd1 + 24;
-  i12 = *(int*)i12;
-  i12 = i12 == 0;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-  i1 = i11;
-  i8 = -1;
-  goto l81;
-l17:
-  if (!(i3==31)) goto l18;
-  i12 = (int)opnd1 + 24;
-  i8 = (int)opnd2 + 24;
-  i12 = *(int*)i12;
-  i8 = *(int*)i8;
-  i12 = i12 == i8;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-  i1 = i11;
-  i8 = -1;
-  goto l81;
-l18:
-  if (!(i3==32)) goto l19;
-  i12 = (int)opnd1 + 24;
-  i8 = (int)opnd2 + 24;
-  i12 = *(int*)i12;
-  i8 = *(int*)i8;
-  i12 = i12 != i8;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-  i1 = i11;
-  i8 = -1;
-  goto l81;
-l19:
-  if (!(i3==33)) goto l20;
-  i12 = (int)opnd1 + 24;
-  i8 = (int)opnd2 + 24;
-  i12 = *(int*)i12;
-  i8 = *(int*)i8;
-  i12 = i12 < i8;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-  i1 = i11;
-  i8 = -1;
-  goto l81;
-l20:
-  if (!(i3==34)) goto l21;
-  i12 = (int)opnd1 + 24;
-  i8 = (int)opnd2 + 24;
-  i12 = *(int*)i12;
-  i8 = *(int*)i8;
-  i12 = i12 <= i8;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-  i1 = i11;
-  i8 = -1;
-  goto l81;
-l21:
-  if (!(i3==35)) goto l22;
-  i12 = (int)opnd1 + 24;
-  i8 = (int)opnd2 + 24;
-  i12 = *(int*)i12;
-  i8 = *(int*)i8;
-  i12 = i12 > i8;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-  i1 = i11;
-  i8 = -1;
-  goto l81;
-l22:
-  if (!(i3==36)) goto l23;
-  i12 = (int)opnd1 + 24;
-  i8 = (int)opnd2 + 24;
-  i12 = *(int*)i12;
-  i8 = *(int*)i8;
-  i12 = i12 >= i8;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-  i1 = i11;
-  i8 = -1;
-  goto l81;
-l23:
-  if (!(i3==29)) goto l81;
-  i12 = (int)opnd2 + 24;
-  i8 = (int)opnd1 + 32;
-  i12 = *(int*)i12;
-  i8 = *(unsigned int*)i8;
-  i12 = (i8 & ((unsigned int)1 << i12)) != 0;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-  i1 = i11;
-  i8 = -1;
-  goto l81;
-l24:
-  if (!((i3>=-128 && i3<=20) || (i3>=29 && i3<=30) || (i3>=33 && i3<=127))) goto l25;
-  i9 = 1;
-  i12 = 0;
-  i1 = i11;
-  goto l35;
-l25:
-  if (!(i3==21)) goto l26;
-  i1 = (int)opnd1 + 32;
-  i12 = (int)opnd2 + 32;
-  i1 = *(unsigned int*)i1;
-  i12 = *(unsigned int*)i12;
-  i12 = i1 & i12;
-  instr = (void*)i11;
-  instr = (void*)i11;
-  i12 = (int)ConstPropagation__ConstantFolding_GetSetConst((unsigned int)i12, (Data__Instruction *)&instr);
-  i9 = 0;
-  i1 = (int)instr;
-  goto l35;
-l26:
-  if (!(i3==22)) goto l27;
-  i1 = (int)opnd1 + 32;
-  i12 = (int)opnd2 + 32;
-  i1 = *(unsigned int*)i1;
-  i12 = *(unsigned int*)i12;
-  i12 = i1 ^ i12;
-  instr = (void*)i11;
-  instr = (void*)i11;
-  i12 = (int)ConstPropagation__ConstantFolding_GetSetConst((unsigned int)i12, (Data__Instruction *)&instr);
-  i9 = 0;
-  i1 = (int)instr;
-  goto l35;
-l27:
-  if (!(i3==23)) goto l28;
-  i1 = (int)opnd1 + 32;
-  i12 = (int)opnd2 + 32;
-  i1 = *(unsigned int*)i1;
-  i12 = *(unsigned int*)i12;
-  i12 = i1 | i12;
-  instr = (void*)i11;
-  instr = (void*)i11;
-  i12 = (int)ConstPropagation__ConstantFolding_GetSetConst((unsigned int)i12, (Data__Instruction *)&instr);
-  i9 = 0;
-  i1 = (int)instr;
-  goto l35;
-l28:
-  if (!(i3==24)) goto l29;
-  i1 = (int)opnd1 + 32;
-  i12 = (int)opnd2 + 32;
-  i1 = *(unsigned int*)i1;
-  i12 = *(unsigned int*)i12;
-  i12 = i1 & ~((unsigned int)i12);
-  instr = (void*)i11;
-  instr = (void*)i11;
-  i12 = (int)ConstPropagation__ConstantFolding_GetSetConst((unsigned int)i12, (Data__Instruction *)&instr);
-  i9 = 0;
-  i1 = (int)instr;
-  goto l35;
-l29:
-  if (!(i3==25)) goto l30;
-  i12 = (int)opnd1 + 32;
-  i12 = *(unsigned int*)i12;
-  i12 = ~ i12;
-  instr = (void*)i11;
-  instr = (void*)i11;
-  i12 = (int)ConstPropagation__ConstantFolding_GetSetConst((unsigned int)i12, (Data__Instruction *)&instr);
-  i9 = 0;
-  i1 = (int)instr;
-  goto l35;
-l30:
-  if (!(i3==31)) goto l31;
-  i12 = (int)opnd1 + 32;
-  i1 = (int)opnd2 + 32;
-  i12 = *(unsigned int*)i12;
-  i1 = *(unsigned int*)i1;
-  i12 = i12 == i1;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-  i1 = i11;
-  goto l35;
-l31:
-  if (!(i3==32)) goto l32;
-  i12 = (int)opnd1 + 32;
-  i1 = (int)opnd2 + 32;
-  i12 = *(unsigned int*)i12;
-  i1 = *(unsigned int*)i1;
-  i12 = i12 != i1;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-  i1 = i11;
-  goto l35;
-l32:
-  if (!(i3==26)) goto l33;
-  i12 = (int)opnd2 + 24;
-  i12 = *(int*)i12;
-  i12 = _bit_range((unsigned int), i12, i12);
-  i1 = (int)opnd1 + 32;
-  i1 = *(unsigned int*)i1;
-  i12 = i1 | i12;
-  instr = (void*)i11;
-  instr = (void*)i11;
-  i12 = (int)ConstPropagation__ConstantFolding_GetSetConst((unsigned int)i12, (Data__Instruction *)&instr);
-  i9 = 0;
-  i1 = (int)instr;
-  goto l35;
-l33:
-  if (!(i3==27)) goto l34;
-  i12 = (int)opnd2 + 24;
-  i12 = *(int*)i12;
-  i12 = _bit_range((unsigned int), i12, i12);
-  i1 = (int)opnd1 + 32;
-  i1 = *(unsigned int*)i1;
-  i12 = i1 & ~((unsigned int)i12);
-  instr = (void*)i11;
-  instr = (void*)i11;
-  i12 = (int)ConstPropagation__ConstantFolding_GetSetConst((unsigned int)i12, (Data__Instruction *)&instr);
-  i9 = 0;
-  i1 = (int)instr;
-  goto l35;
-l34:
-  if (!(i3==28)) goto l35;
-  i1 = (int)opnd1 + 24;
-  i12 = (int)opnd2 + 24;
+  if (!(i4==31)) goto l17;
+  i11 = (int)opnd1 + 24;
+  i1 = (int)opnd2 + 24;
+  i11 = *(int*)i11;
   i1 = *(int*)i1;
-  i12 = *(int*)i12;
-  i12 = _bit_range((unsigned int), i1, i12);
-  instr = (void*)i11;
-  instr = (void*)i11;
-  i12 = (int)ConstPropagation__ConstantFolding_GetSetConst((unsigned int)i12, (Data__Instruction *)&instr);
-  i9 = 0;
-  i1 = (int)instr;
-l35:
-  i8 = -1;
-  goto l81;
-l36:
-  if (!((i3>=-128 && i3<=7) || (i3>=12 && i3<=13) || (i3>=15 && i3<=30) || (i3>=37 && i3<=127))) goto l37;
-  i12 = 0;
-  i8 = -1;
-  i9 = 1;
-  goto l58;
-l37:
-  if (!((i3>=8 && i3<=11) || i3==14)) goto l52;
-  if (!((i3>=-128 && i3<=7) || (i3>=12 && i3<=13) || (i3>=15 && i3<=127))) goto l38;
-  i9 = 1;
-  i0 = -1;
-  goto l45;
-l38:
-  if (!(i3==8)) goto l39;
-  i0 = (int)opnd1 + 40;
-  d1 = *(double*)i0;
-  i0 = (int)opnd2 + 40;
-  d0 = *(double*)i0;
+  i11 = i11 == i1;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i2 = i10;
+  i1 = -1;
+  goto l73;
+l17:
+  if (!(i4==32)) goto l18;
+  i11 = (int)opnd1 + 24;
+  i1 = (int)opnd2 + 24;
+  i11 = *(int*)i11;
+  i1 = *(int*)i1;
+  i11 = i11 != i1;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i2 = i10;
+  i1 = -1;
+  goto l73;
+l18:
+  if (!(i4==33)) goto l19;
+  i11 = (int)opnd1 + 24;
+  i1 = (int)opnd2 + 24;
+  i11 = *(int*)i11;
+  i1 = *(int*)i1;
+  i11 = i11 < i1;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i2 = i10;
+  i1 = -1;
+  goto l73;
+l19:
+  if (!(i4==34)) goto l20;
+  i11 = (int)opnd1 + 24;
+  i1 = (int)opnd2 + 24;
+  i11 = *(int*)i11;
+  i1 = *(int*)i1;
+  i11 = i11 <= i1;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i2 = i10;
+  i1 = -1;
+  goto l73;
+l20:
+  if (!(i4==35)) goto l21;
+  i11 = (int)opnd1 + 24;
+  i1 = (int)opnd2 + 24;
+  i11 = *(int*)i11;
+  i1 = *(int*)i1;
+  i11 = i11 > i1;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i2 = i10;
+  i1 = -1;
+  goto l73;
+l21:
+  if (!(i4==36)) goto l22;
+  i11 = (int)opnd1 + 24;
+  i1 = (int)opnd2 + 24;
+  i11 = *(int*)i11;
+  i1 = *(int*)i1;
+  i11 = i11 >= i1;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i2 = i10;
+  i1 = -1;
+  goto l73;
+l22:
+  if (!(i4==29)) goto l73;
+  i11 = (int)opnd2 + 24;
+  i1 = (int)opnd1 + 32;
+  i11 = *(int*)i11;
+  i1 = *(unsigned int*)i1;
+  i11 = (i1 & ((unsigned int)1 << i11)) != 0;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i2 = i10;
+  i1 = -1;
+  goto l73;
+l23:
+  if (!(i4==21)) goto l24;
+  i2 = (int)opnd1 + 32;
+  i11 = (int)opnd2 + 32;
+  i2 = *(unsigned int*)i2;
+  i11 = *(unsigned int*)i11;
+  i11 = i2 & i11;
+  instr = (void*)i10;
+  instr = (void*)i10;
+  i11 = (int)ConstPropagation__ConstantFolding_GetSetConst((unsigned int)i11, (Data__Instruction *)&instr);
+  i2 = (int)instr;
+  goto l33;
+l24:
+  if (!(i4==22)) goto l25;
+  i2 = (int)opnd1 + 32;
+  i11 = (int)opnd2 + 32;
+  i2 = *(unsigned int*)i2;
+  i11 = *(unsigned int*)i11;
+  i11 = i2 ^ i11;
+  instr = (void*)i10;
+  instr = (void*)i10;
+  i11 = (int)ConstPropagation__ConstantFolding_GetSetConst((unsigned int)i11, (Data__Instruction *)&instr);
+  i2 = (int)instr;
+  goto l33;
+l25:
+  if (!(i4==23)) goto l26;
+  i2 = (int)opnd1 + 32;
+  i11 = (int)opnd2 + 32;
+  i2 = *(unsigned int*)i2;
+  i11 = *(unsigned int*)i11;
+  i11 = i2 | i11;
+  instr = (void*)i10;
+  instr = (void*)i10;
+  i11 = (int)ConstPropagation__ConstantFolding_GetSetConst((unsigned int)i11, (Data__Instruction *)&instr);
+  i2 = (int)instr;
+  goto l33;
+l26:
+  if (!(i4==24)) goto l27;
+  i2 = (int)opnd1 + 32;
+  i11 = (int)opnd2 + 32;
+  i2 = *(unsigned int*)i2;
+  i11 = *(unsigned int*)i11;
+  i11 = i2 & ~((unsigned int)i11);
+  instr = (void*)i10;
+  instr = (void*)i10;
+  i11 = (int)ConstPropagation__ConstantFolding_GetSetConst((unsigned int)i11, (Data__Instruction *)&instr);
+  i2 = (int)instr;
+  goto l33;
+l27:
+  if (!(i4==25)) goto l28;
+  i11 = (int)opnd1 + 32;
+  i11 = *(unsigned int*)i11;
+  i11 = ~ i11;
+  instr = (void*)i10;
+  instr = (void*)i10;
+  i11 = (int)ConstPropagation__ConstantFolding_GetSetConst((unsigned int)i11, (Data__Instruction *)&instr);
+  i2 = (int)instr;
+  goto l33;
+l28:
+  if (!(i4==31)) goto l29;
+  i11 = (int)opnd1 + 32;
+  i2 = (int)opnd2 + 32;
+  i11 = *(unsigned int*)i11;
+  i2 = *(unsigned int*)i2;
+  i11 = i11 == i2;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i2 = i10;
+  goto l33;
+l29:
+  if (!(i4==32)) goto l30;
+  i11 = (int)opnd1 + 32;
+  i2 = (int)opnd2 + 32;
+  i11 = *(unsigned int*)i11;
+  i2 = *(unsigned int*)i2;
+  i11 = i11 != i2;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i2 = i10;
+  goto l33;
+l30:
+  if (!(i4==26)) goto l31;
+  i11 = (int)opnd2 + 24;
+  i11 = *(int*)i11;
+  i11 = _bit_range((unsigned int), i11, i11);
+  i2 = (int)opnd1 + 32;
+  i2 = *(unsigned int*)i2;
+  i11 = i2 | i11;
+  instr = (void*)i10;
+  instr = (void*)i10;
+  i11 = (int)ConstPropagation__ConstantFolding_GetSetConst((unsigned int)i11, (Data__Instruction *)&instr);
+  i2 = (int)instr;
+  goto l33;
+l31:
+  if (!(i4==27)) goto l32;
+  i11 = (int)opnd2 + 24;
+  i11 = *(int*)i11;
+  i11 = _bit_range((unsigned int), i11, i11);
+  i2 = (int)opnd1 + 32;
+  i2 = *(unsigned int*)i2;
+  i11 = i2 & ~((unsigned int)i11);
+  instr = (void*)i10;
+  instr = (void*)i10;
+  i11 = (int)ConstPropagation__ConstantFolding_GetSetConst((unsigned int)i11, (Data__Instruction *)&instr);
+  i2 = (int)instr;
+  goto l33;
+l32:
+  if (!(i4==28)) goto l33;
+  i2 = (int)opnd1 + 24;
+  i11 = (int)opnd2 + 24;
+  i2 = *(int*)i2;
+  i11 = *(int*)i11;
+  i11 = _bit_range((unsigned int), i2, i11);
+  instr = (void*)i10;
+  instr = (void*)i10;
+  i11 = (int)ConstPropagation__ConstantFolding_GetSetConst((unsigned int)i11, (Data__Instruction *)&instr);
+  i2 = (int)instr;
+l33:
+  i1 = -1;
+  goto l73;
+l34:
+  if (!((i4>=8 && i4<=11) || i4==14)) goto l45;
+  if (!(i4==8)) goto l35;
+  i1 = (int)opnd1 + 40;
+  d1 = *(double*)i1;
+  i1 = (int)opnd2 + 40;
+  d0 = *(double*)i1;
   d0 = d1 + d0;
-  i9 = 0;
-  i0 = -1;
-  goto l45;
-l39:
-  if (!(i3==9)) goto l40;
-  i0 = (int)opnd1 + 40;
-  d1 = *(double*)i0;
-  i0 = (int)opnd2 + 40;
-  d0 = *(double*)i0;
+  i1 = -1;
+  goto l40;
+l35:
+  if (!(i4==9)) goto l36;
+  i1 = (int)opnd1 + 40;
+  d1 = *(double*)i1;
+  i1 = (int)opnd2 + 40;
+  d0 = *(double*)i1;
   d0 = d1 - d0;
-  i9 = 0;
-  i0 = -1;
-  goto l45;
-l40:
-  if (!(i3==10)) goto l41;
-  i0 = (int)opnd1 + 40;
-  d1 = *(double*)i0;
-  i0 = (int)opnd2 + 40;
-  d0 = *(double*)i0;
+  i1 = -1;
+  goto l40;
+l36:
+  if (!(i4==10)) goto l37;
+  i1 = (int)opnd1 + 40;
+  d1 = *(double*)i1;
+  i1 = (int)opnd2 + 40;
+  d0 = *(double*)i1;
   d0 = d1 * d0;
-  i9 = 0;
-  i0 = -1;
-  goto l45;
-l41:
-  if (!(i3==11)) goto l44;
-  i0 = (int)opnd2 + 40;
-  d1 = *(double*)i0;
-  i0 = d1 == 0.0000000000000000;
-  if (i0) goto l42;
-  i0 = (int)opnd1 + 40;
-  d0 = *(double*)i0;
+  i1 = -1;
+  goto l40;
+l37:
+  if (!(i4==11)) goto l39;
+  i1 = (int)opnd2 + 40;
+  d1 = *(double*)i1;
+  i1 = d1 == 0.0000000000000000;
+  if (i1) goto l38;
+  i1 = (int)opnd1 + 40;
+  d0 = *(double*)i1;
   d0 /= d1;
-  i0 = -1;
-  goto l43;
-l42:
-  i0 = 351;
+  i1 = -1;
+  goto l40;
+l38:
+  i1 = 351;
   d0 = 1.0000000000000000;
-l43:
-  i9 = 0;
-  goto l45;
-l44:
-  if (!(i3==14)) goto l45;
-  i0 = (int)opnd1 + 40;
-  d0 = *(double*)i0;
+  goto l40;
+l39:
+  if (!(i4==14)) goto l40;
+  i1 = (int)opnd1 + 40;
+  d0 = *(double*)i1;
   d0 = - d0;
-  i9 = 0;
-  i0 = -1;
-l45:
-  if (i9) goto l51;
-  i8 = i0 >= 0;
-  if (i8) goto l46;
-  i8 = LowLReal__IsInfinity((double)d0);
-  if (i8) goto l47;
-  i8 = LowLReal__IsNaN((double)d0);
-  if (i8) goto l47;
-  if (!(i6)) goto l46;
-  i8 = StdTypes__ValidReal((double)d0);
-  if (!(i8)) goto l47;
-l46:
-  i8 = i0;
-  goto l48;
-l47:
-  i8 = 350;
-l48:
-  i0 = i8 < 0;
-  if (i0) goto l49;
-  i12 = 0;
-  goto l58;
-l49:
-  if (i6) goto l50;
-  i12 = i11 + 24;
-  i12 = (int)*(void**)i12;
-  i12 = (int)Data__GetRealConst((double)d0, (Data__Struct)i12);
-  goto l58;
-l50:
+  i1 = -1;
+l40:
+  i11 = i1 < 0;
+  if (!(i11)) goto l42;
+  i11 = LowLReal__IsInfinity((double)d0);
+  if (i11) goto l41;
+  i11 = LowLReal__IsNaN((double)d0);
+  if (i11) goto l41;
+  if (!(i7)) goto l42;
+  i11 = StdTypes__ValidReal((double)d0);
+  if (i11) goto l42;
+l41:
+  i1 = 350;
+l42:
+  i11 = i1 < 0;
+  if (i11) goto l43;
+  i11 = 0;
+  goto l51;
+l43:
+  if (i7) goto l44;
+  i11 = i10 + 24;
+  i11 = (int)*(void**)i11;
+  i11 = (int)Data__GetRealConst((double)d0, (Data__Struct)i11);
+  goto l51;
+l44:
   f0 = d0;
   d0 = f0;
-  i12 = i11 + 24;
-  i12 = (int)*(void**)i12;
-  i12 = (int)Data__GetRealConst((double)d0, (Data__Struct)i12);
-  goto l58;
+  i11 = i10 + 24;
+  i11 = (int)*(void**)i11;
+  i11 = (int)Data__GetRealConst((double)d0, (Data__Struct)i11);
+  goto l51;
+l45:
+  if (!(i4==31)) goto l46;
+  i11 = (int)opnd1 + 40;
+  i7 = (int)opnd2 + 40;
+  d1 = *(double*)i11;
+  d0 = *(double*)i7;
+  i11 = d1 == d0;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i1 = -1;
+  goto l51;
+l46:
+  if (!(i4==32)) goto l47;
+  i11 = (int)opnd1 + 40;
+  i7 = (int)opnd2 + 40;
+  d1 = *(double*)i11;
+  d0 = *(double*)i7;
+  i11 = d1 != d0;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i1 = -1;
+  goto l51;
+l47:
+  if (!(i4==33)) goto l48;
+  i11 = (int)opnd1 + 40;
+  i7 = (int)opnd2 + 40;
+  d1 = *(double*)i11;
+  d0 = *(double*)i7;
+  i11 = d1 < d0;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i1 = -1;
+  goto l51;
+l48:
+  if (!(i4==34)) goto l49;
+  i11 = (int)opnd1 + 40;
+  i7 = (int)opnd2 + 40;
+  d1 = *(double*)i11;
+  d0 = *(double*)i7;
+  i11 = d1 <= d0;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i1 = -1;
+  goto l51;
+l49:
+  if (!(i4==35)) goto l50;
+  i11 = (int)opnd1 + 40;
+  i7 = (int)opnd2 + 40;
+  d1 = *(double*)i11;
+  d0 = *(double*)i7;
+  i11 = d1 > d0;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i1 = -1;
+  goto l51;
+l50:
+  if (!(i4==36)) goto l51;
+  i11 = (int)opnd1 + 40;
+  i7 = (int)opnd2 + 40;
+  d1 = *(double*)i11;
+  d0 = *(double*)i7;
+  i11 = d1 >= d0;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
+  i1 = -1;
 l51:
-  i12 = 0;
-  i8 = -1;
-  goto l58;
+  i2 = i10;
+  goto l73;
 l52:
-  if (!(i3==31)) goto l53;
-  i12 = (int)opnd1 + 40;
-  i0 = (int)opnd2 + 40;
-  d1 = *(double*)i12;
-  d0 = *(double*)i0;
-  i12 = d1 == d0;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i8 = -1;
-  i9 = 0;
+  if (!(i4==31)) goto l53;
+  i11 = Data__CompareStrings((Data__Const)(int)opnd1, (Data__Const)(int)opnd2);
+  i11 = i11 == 0;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
   goto l58;
 l53:
-  if (!(i3==32)) goto l54;
-  i12 = (int)opnd1 + 40;
-  i0 = (int)opnd2 + 40;
-  d1 = *(double*)i12;
-  d0 = *(double*)i0;
-  i12 = d1 != d0;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i8 = -1;
-  i9 = 0;
+  if (!(i4==32)) goto l54;
+  i11 = Data__CompareStrings((Data__Const)(int)opnd1, (Data__Const)(int)opnd2);
+  i11 = i11 != 0;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
   goto l58;
 l54:
-  if (!(i3==33)) goto l55;
-  i12 = (int)opnd1 + 40;
-  i0 = (int)opnd2 + 40;
-  d1 = *(double*)i12;
-  d0 = *(double*)i0;
-  i12 = d1 < d0;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i8 = -1;
-  i9 = 0;
+  if (!(i4==33)) goto l55;
+  i11 = Data__CompareStrings((Data__Const)(int)opnd1, (Data__Const)(int)opnd2);
+  i11 = i11 < 0;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
   goto l58;
 l55:
-  if (!(i3==34)) goto l56;
-  i12 = (int)opnd1 + 40;
-  i0 = (int)opnd2 + 40;
-  d1 = *(double*)i12;
-  d0 = *(double*)i0;
-  i12 = d1 <= d0;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i8 = -1;
-  i9 = 0;
+  if (!(i4==34)) goto l56;
+  i11 = Data__CompareStrings((Data__Const)(int)opnd1, (Data__Const)(int)opnd2);
+  i11 = i11 <= 0;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
   goto l58;
 l56:
-  if (!(i3==35)) goto l57;
-  i12 = (int)opnd1 + 40;
-  i0 = (int)opnd2 + 40;
-  d1 = *(double*)i12;
-  d0 = *(double*)i0;
-  i12 = d1 > d0;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i8 = -1;
-  i9 = 0;
+  if (!(i4==35)) goto l57;
+  i11 = Data__CompareStrings((Data__Const)(int)opnd1, (Data__Const)(int)opnd2);
+  i11 = i11 > 0;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
   goto l58;
 l57:
-  if (!(i3==36)) goto l58;
-  i12 = (int)opnd1 + 40;
-  i0 = (int)opnd2 + 40;
-  d1 = *(double*)i12;
-  d0 = *(double*)i0;
-  i12 = d1 >= d0;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i8 = -1;
-  i9 = 0;
+  if (!(i4==36)) goto l58;
+  i11 = Data__CompareStrings((Data__Const)(int)opnd1, (Data__Const)(int)opnd2);
+  i11 = i11 >= 0;
+  i11 = (int)SymbolTable__GetBoolConst((unsigned char)i11);
 l58:
-  i1 = i11;
-  goto l81;
+  i1 = -1;
+  i2 = i10;
+  goto l73;
 l59:
-  if (!((i3>=-128 && i3<=30) || (i3>=37 && i3<=127))) goto l60;
-  i9 = 1;
-  i12 = 0;
-  goto l66;
+  i6 = (int)opnd1 + 24;
+  i1 = *(int*)i6;
+  i11 = i1 < 8;
+  i6 = i10 + 24;
+  i6 = (int)*(void**)i6;
+  if (i11) goto l66;
+  i11 = i1 == 8;
+  if (i11) goto l60;
+  i1 = i1 == 10;
+  if (i1) goto l60;
+  i11 = 0;
+  goto l65;
 l60:
-  if (!(i3==31)) goto l61;
-  i12 = Data__CompareStrings((Data__Const)(int)opnd1, (Data__Const)(int)opnd2);
-  i12 = i12 == 0;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-  goto l66;
+  i1 = i3 < 8;
+  if (i1) goto l63;
+  i1 = i3 == 8;
+  if (i1) goto l61;
+  i11 = (int)opnd2 + 40;
+  d0 = *(double*)i11;
+  i11 = (int)Data__GetRealConst((double)d0, (Data__Struct)i6);
+  goto l65;
 l61:
-  if (!(i3==32)) goto l62;
-  i12 = Data__CompareStrings((Data__Const)(int)opnd1, (Data__Const)(int)opnd2);
-  i12 = i12 != 0;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-  goto l66;
+  i1 = (int)opnd2 + 40;
+  d0 = *(double*)i1;
+  i11 = StdTypes__ValidReal((double)d0);
+  if (i11) goto l62;
+  i11 = i10 + 52;
+  i11 = *(int*)i11;
+  SymbolTable__ErrT1((int)i11, (short int)352, (Data__Struct)i6);
+  i11 = (int)Data__GetRealConst((double)1.0000000000000000, (Data__Struct)i6);
+  goto l65;
 l62:
-  if (!(i3==33)) goto l63;
-  i12 = Data__CompareStrings((Data__Const)(int)opnd1, (Data__Const)(int)opnd2);
-  i12 = i12 < 0;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-  goto l66;
-l63:
-  if (!(i3==34)) goto l64;
-  i12 = Data__CompareStrings((Data__Const)(int)opnd1, (Data__Const)(int)opnd2);
-  i12 = i12 <= 0;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-  goto l66;
-l64:
-  if (!(i3==35)) goto l65;
-  i12 = Data__CompareStrings((Data__Const)(int)opnd1, (Data__Const)(int)opnd2);
-  i12 = i12 > 0;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-  goto l66;
-l65:
-  if (!(i3==36)) goto l66;
-  i12 = Data__CompareStrings((Data__Const)(int)opnd1, (Data__Const)(int)opnd2);
-  i12 = i12 >= 0;
-  i12 = (int)SymbolTable__GetBoolConst((unsigned char)i12);
-  i9 = 0;
-l66:
-  i8 = -1;
-  i1 = i11;
-  goto l81;
-l67:
-  i5 = (int)opnd1 + 24;
-  i8 = *(int*)i5;
-  i12 = i8 < 8;
-  i5 = i11 + 24;
-  i5 = (int)*(void**)i5;
-  if (i12) goto l74;
-  i12 = i8 == 8;
-  if (i12) goto l68;
-  i8 = i8 == 10;
-  if (i8) goto l68;
-  i12 = 0;
-  goto l73;
-l68:
-  i8 = i2 < 8;
-  if (i8) goto l71;
-  i8 = i2 == 8;
-  if (i8) goto l69;
-  i12 = (int)opnd2 + 40;
-  d0 = *(double*)i12;
-  i12 = (int)Data__GetRealConst((double)d0, (Data__Struct)i5);
-  goto l73;
-l69:
-  i8 = (int)opnd2 + 40;
-  d0 = *(double*)i8;
-  i12 = StdTypes__ValidReal((double)d0);
-  if (i12) goto l70;
-  i12 = i11 + 52;
-  i12 = *(int*)i12;
-  SymbolTable__ErrT1((int)i12, (short int)352, (Data__Struct)i5);
-  i12 = (int)Data__GetRealConst((double)1.0000000000000000, (Data__Struct)i5);
-  goto l73;
-l70:
-  d0 = *(double*)i8;
+  d0 = *(double*)i1;
   f0 = d0;
   d0 = f0;
-  i12 = (int)Data__GetRealConst((double)d0, (Data__Struct)i5);
-  goto l73;
+  i11 = (int)Data__GetRealConst((double)d0, (Data__Struct)i6);
+  goto l65;
+l63:
+  i1 = (int)opnd2 + 40;
+  d0 = *(double*)i1;
+  i11 = StdTypes__ValidInt((double)d0);
+  if (i11) goto l64;
+  i11 = i10 + 52;
+  i11 = *(int*)i11;
+  SymbolTable__ErrT1((int)i11, (short int)352, (Data__Struct)i6);
+  i11 = (int)Data__GetIntConst((int)1, (Data__Struct)i6);
+  goto l65;
+l64:
+  d0 = *(double*)i1;
+  _entier(i1, d0);
+  i11 = (int)Data__GetIntConst((int)i1, (Data__Struct)i6);
+l65:
+  i1 = -1;
+  goto l71;
+l66:
+  i1 = i3 < 8;
+  if (i1) goto l69;
+  i1 = (int)opnd2 + 24;
+  i11 = i3 == 8;
+  i1 = *(int*)i1;
+  d0 = i1;
+  if (i11) goto l67;
+  i11 = (int)Data__GetRealConst((double)d0, (Data__Struct)i6);
+  goto l68;
+l67:
+  f0 = d0;
+  d0 = f0;
+  i11 = (int)Data__GetRealConst((double)d0, (Data__Struct)i6);
+l68:
+  i1 = -1;
+  goto l71;
+l69:
+  i1 = (int)opnd2 + 24;
+  i1 = *(int*)i1;
+  i11 = (int)Data__GetIntConst((int)i1, (Data__Struct)i6);
+  i1 = i11 + 24;
+  i1 = *(int*)i1;
+  err = (short int)-1;
+  err = (short int)-1;
+  i1 = IntArith__OutOfRange((int)i1, (signed char)i3, (short int *)(int)&err);
+  if (!(i1)) goto l70;
+  i11 = i10 + 52;
+  i11 = *(int*)i11;
+  SymbolTable__ErrT1((int)i11, (short int)352, (Data__Struct)i6);
+  i11 = (int)Data__GetIntConst((int)1, (Data__Struct)i6);
+l70:
+  i1 = err;
 l71:
-  i8 = (int)opnd2 + 40;
-  d0 = *(double*)i8;
-  i12 = StdTypes__ValidInt((double)d0);
-  if (i12) goto l72;
-  i12 = i11 + 52;
-  i12 = *(int*)i12;
-  SymbolTable__ErrT1((int)i12, (short int)352, (Data__Struct)i5);
-  i12 = (int)Data__GetIntConst((int)1, (Data__Struct)i5);
+  i2 = i10;
   goto l73;
 l72:
-  d0 = *(double*)i8;
-  _entier(i8, d0);
-  i12 = (int)Data__GetIntConst((int)i8, (Data__Struct)i5);
+  i11 = i10 + 28;
+  i11 = (int)*(void**)i11;
+  i11 = (int)*(void**)i11;
+  i5 = i10 + 24;
+  i5 = (int)*(void**)i5;
+  i11 = (int)ConstPropagation__ConstantFolding_TypeCast((Data__Const)i11, (Data__Struct)i5);
+  i1 = -1;
+  i2 = i10;
 l73:
-  i8 = -1;
-  goto l79;
+  i10 = i2;
+  goto l80;
 l74:
-  i8 = i2 < 8;
-  if (i8) goto l77;
+  i11 = (int)opnd1 + 24;
+  i11 = *(int*)i11;
+  i8 = i11 < 0;
+  if (i8) goto l75;
   i8 = (int)opnd2 + 24;
-  i12 = i2 == 8;
   i8 = *(int*)i8;
-  d0 = i8;
-  if (i12) goto l75;
-  i12 = (int)Data__GetRealConst((double)d0, (Data__Struct)i5);
-  goto l76;
+  i11 = i11 < i8;
+  if (i11) goto l78;
 l75:
-  f0 = d0;
-  d0 = f0;
-  i12 = (int)Data__GetRealConst((double)d0, (Data__Struct)i5);
-l76:
-  i8 = -1;
-  goto l79;
-l77:
-  i8 = (int)opnd2 + 24;
-  i8 = *(int*)i8;
-  i12 = (int)Data__GetIntConst((int)i8, (Data__Struct)i5);
-  i8 = i12 + 24;
-  i8 = *(int*)i8;
-  err = (short int)-1;
-  err = (short int)-1;
-  i8 = IntArith__OutOfRange((int)i8, (signed char)i2, (short int *)(int)&err);
-  if (!(i8)) goto l78;
-  i12 = i11 + 52;
-  i12 = *(int*)i12;
-  SymbolTable__ErrT1((int)i12, (short int)352, (Data__Struct)i5);
-  i12 = (int)Data__GetIntConst((int)1, (Data__Struct)i5);
-l78:
-  i8 = err;
-l79:
-  i9 = 0;
-  i1 = i11;
-  goto l81;
-l80:
-  i12 = i11 + 28;
-  i12 = (int)*(void**)i12;
-  i12 = (int)*(void**)i12;
-  i4 = i11 + 24;
-  i4 = (int)*(void**)i4;
-  i12 = (int)ConstPropagation__ConstantFolding_TypeCast((Data__Const)i12, (Data__Struct)i4);
-  i8 = -1;
-  i1 = i11;
-  i9 = 0;
-l81:
-  i11 = i1;
-  goto l88;
-l82:
-  i12 = (int)opnd1 + 24;
-  i12 = *(int*)i12;
-  i9 = i12 < 0;
-  if (i9) goto l83;
+  if (i9) goto l76;
   i9 = (int)opnd2 + 24;
   i9 = *(int*)i9;
-  i12 = i12 < i9;
-  if (i12) goto l86;
-l83:
-  if (i10) goto l84;
-  i10 = (int)opnd2 + 24;
-  i10 = *(int*)i10;
-  ErrorInstr__ErrOoR((Data__Node)i11, (short int)353, (int)0, (int)i10);
-  goto l85;
-l84:
-  i10 = (int)opnd2 + 24;
-  i10 = *(int*)i10;
-  ErrorInstr__ErrOoR((Data__Node)i11, (short int)354, (int)0, (int)i10);
-l85:
-  i12 = 0;
-  goto l87;
-l86:
-  i12 = (int)opnd1;
-l87:
-  i9 = 0;
-  i8 = -1;
-l88:
-  if (i9) goto l89;
-  i10 = i8 == -1;
-  if (i10) goto l90;
-  ErrorInstr__Err((Data__Usable)i11, (short int)i8);
-  goto l90;
-l89:
-l90:
-  return (void*)i12;
+  ErrorInstr__ErrOoR((Data__Node)i10, (short int)353, (int)0, (int)i9);
+  goto l77;
+l76:
+  i9 = (int)opnd2 + 24;
+  i9 = *(int*)i9;
+  ErrorInstr__ErrOoR((Data__Node)i10, (short int)354, (int)0, (int)i9);
+l77:
+  i11 = 0;
+  goto l79;
+l78:
+  i11 = (int)opnd1;
+l79:
+  i1 = -1;
+l80:
+  i9 = i1 != -1;
+  if (!(i9)) goto l81;
+  ErrorInstr__Err((Data__Usable)i10, (short int)i1);
+l81:
+  return (void*)i11;
 }
 
 Data__Const ConstPropagation__TryConstantFolding(Data__Instruction instr, unsigned char adaptType) {
@@ -1405,15 +1312,15 @@ l2:
   if (i0) goto l4;
   i3 = (int)usable == 0;
   if (i3) goto l5;
-  i1 = (int)ConstPropagation__nonConstLattice;
   i2 = (int)usable;
 l3:
+  i1 = (int)ConstPropagation__nonConstLattice;
   i3 = i2 + 4;
   *(void**)i3 = (void*)i1;
-  i3 = i2 + 12;
-  i2 = (int)*(void**)i3;
-  i3 = i2 != 0;
-  if (i3) goto l3;
+  i1 = i2 + 12;
+  i2 = (int)*(void**)i1;
+  i1 = i2 != 0;
+  if (i1) goto l3;
   goto l5;
 l4:
   i3 = (int)usable + 4;
@@ -2249,18 +2156,19 @@ l4:
 
 void ConstPropagation__ConstPropagation_ReplaceRegions_ReplaceSingleRegion(Data__Merge merge, unsigned char *ConstPropagation__ConstPropagation_ReplaceRegions_changed) {
   register int i0, i1, i2, i3;
-  i0 = (int)merge + 4;
-  i2 = (int)*(void**)i0;
-  i0 = i2 + 12;
+  i2 = (int)merge + 4;
+  i0 = (int)*(void**)i2;
+  i0 += 12;
   i0 = *(int*)i0;
   i0 = i0 != 2;
   if (i0) goto l3;
+  *ConstPropagation__ConstPropagation_ReplaceRegions_changed = 1;
+  i2 = (int)*(void**)i2;
   i2 += 16;
   i2 = (int)*(void**)i2;
   i2 += 24;
   i2 = *(int*)i2;
   i2--;
-  *ConstPropagation__ConstPropagation_ReplaceRegions_changed = 1;
   i2 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)(int)merge, (short int)i2);
   i1 = (int)*(void**)i2;
   i2 = *(int*)((int)merge-4);
@@ -2288,13 +2196,13 @@ l2:
   i2 = (int)ConstPropagation__trueLattice;
   i2 = i3 != i2;
   if (i2) goto l3;
-  i2 = i1 + 32;
-  i3 = (int)*(void**)i2;
-  Data__RegionDesc_MoveInstructions((Data__Region)i3, (Data__Region)i1);
-  i3 = *(int*)(i1-4);
-  i2 = (int)*(void**)i2;
-  i3 = (int)((_Type)i3)->tbprocs[1];
-  ((_TBP_Data__UsableDesc_ReplaceUses)i3)((Data__Usable)i1, (Data__Usable)i2);
+  i3 = i1 + 32;
+  i2 = (int)*(void**)i3;
+  Data__RegionDesc_MoveInstructions((Data__Region)i2, (Data__Region)i1);
+  i2 = *(int*)(i1-4);
+  i3 = (int)*(void**)i3;
+  i2 = (int)((_Type)i2)->tbprocs[1];
+  ((_TBP_Data__UsableDesc_ReplaceUses)i2)((Data__Usable)i1, (Data__Usable)i3);
   Data__InstructionDesc_Delete((Data__Instruction)i1);
 l3:
   ;
@@ -2423,15 +2331,15 @@ void ConstPropagation__ConstPropagation_MarkUnreachable(Data__Region region, Wor
 l0:
   i0 = i3 != 0;
   if (!(i0)) goto l2;
-  i0 = (int)ConstPropagation__unreachableLattice;
   i2 = i3;
 l1:
+  i0 = (int)ConstPropagation__unreachableLattice;
   i1 = i2 + 4;
   *(void**)i1 = (void*)i0;
-  i1 = i2 + 12;
-  i2 = (int)*(void**)i1;
-  i1 = i2 != 0;
-  if (i1) goto l1;
+  i0 = i2 + 12;
+  i2 = (int)*(void**)i0;
+  i0 = i2 != 0;
+  if (i0) goto l1;
 l2:
   i0 = *(int*)(i3-4);
   i0 = _type_test(i0, &Data__RegionDesc_td.td, 5);
@@ -2609,7 +2517,7 @@ void ConstPropagation__TerminationProc(void) {
 }
 
 void ConstPropagation_init(void) {
-  register int i0, i1, i2, i3, i4;
+  register int i0, i1;
   _mid = _register_module(&ConstPropagation_md.md, &ConstPropagation__LatticeDesc_td.td);
   ConstPropagation__counter = 0;
   Termination__RegisterProc((Termination__Proc)(int)&ConstPropagation__TerminationProc);
@@ -2622,31 +2530,31 @@ void ConstPropagation_init(void) {
     i0 = (int)_var;
   }
   ConstPropagation__unclassifiedLattice = (void*)i0;
-  i0 = (int)ConstPropagation__unclassifiedLattice;
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(20)+8);
     if (!_mem) _new_failed(_P(45784));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConstPropagation__LatticeDesc_td.td;
-    i1 = (int)_var;
+    i0 = (int)_var;
   }
-  ConstPropagation__nonConstLattice = (void*)i1;
-  i1 = (int)ConstPropagation__nonConstLattice;
+  ConstPropagation__nonConstLattice = (void*)i0;
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(20)+8);
     if (!_mem) _new_failed(_P(45809));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConstPropagation__LatticeDesc_td.td;
-    i2 = (int)_var;
+    i0 = (int)_var;
   }
-  ConstPropagation__unreachableLattice = (void*)i2;
-  i2 = (int)ConstPropagation__unreachableLattice;
-  i4 = i0 + 12;
-  i3 = i1 + 12;
-  *(int*)i4 = 4;
-  i4 = i2 + 12;
-  *(int*)i3 = 1;
-  *(int*)i4 = 0;
+  ConstPropagation__unreachableLattice = (void*)i0;
+  i0 = (int)ConstPropagation__unclassifiedLattice;
+  i1 = i0 + 12;
+  *(int*)i1 = 4;
+  i0 = (int)ConstPropagation__nonConstLattice;
+  i1 = i0 + 12;
+  *(int*)i1 = 1;
+  i0 = (int)ConstPropagation__unreachableLattice;
+  i1 = i0 + 12;
+  *(int*)i1 = 0;
 }

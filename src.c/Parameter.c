@@ -86,8 +86,9 @@ l1:
 void Parameter__StreamDesc_Install(Parameter__Stream s) {
   register int i0, i1;
   i0 = (int)Parameter__in;
-  i1 = i0 != 0;
   *(void**)(int)s = (void*)i0;
+  i0 = (int)Parameter__in;
+  i1 = i0 != 0;
   if (i1) goto l0;
   i0 = (int)s + 4;
   *(signed char*)i0 = 0;
@@ -564,42 +565,42 @@ void Parameter__AddSection(const unsigned char* name__ref, int name_0d, Paramete
   _push_value(int, name, name__ref, name_0d);
   *(void**)(int)s = (void*)0;
   i0 = Strings__Length((const unsigned char*)(int)name, name_0d);
-  i1 = i0 + 1;
-  i0 = (int)s + 4;
+  i0++;
+  i1 = (int)s + 4;
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i1 < 0) _invalid_length(i1, _P(17216));
-    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
+    if(i0 < 0) _invalid_length(i0, _P(17216));
+    _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
     if (!_mem) _new_failed(_P(17181));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
-    *(--_dim_ptr) = i1;
-    i1 = (int)_var;
+    *(--_dim_ptr) = i0;
+    i0 = (int)_var;
   }
-  *(void**)i0 = (void*)i1;
-  i0 = (int)*(void**)i0;
-  i1 = (int)Parameter__sections;
-  i2 = *(int*)(i0-8);
-  _string_copy(i0, (int)name, i2);
-  i2 = (int)s + 8;
-  i0 = i1 == 0;
-  *(unsigned char*)i2 = 0;
-  i2 = (int)s + 9;
-  *(unsigned char*)i2 = 0;
+  *(void**)i1 = (void*)i0;
+  i0 = (int)*(void**)i1;
+  i1 = *(int*)(i0-8);
+  _string_copy(i0, (int)name, i1);
+  i0 = (int)s + 8;
+  *(unsigned char*)i0 = 0;
+  i0 = (int)s + 9;
+  *(unsigned char*)i0 = 0;
+  i2 = (int)Parameter__sections;
+  i0 = i2 == 0;
   if (i0) goto l3;
-  i2 = (int)*(void**)i1;
-  i2 = i2 != 0;
-  if (i2) goto l0;
-  i0 = i1;
+  i1 = (int)*(void**)i2;
+  i1 = i1 != 0;
+  if (i1) goto l0;
+  i0 = i2;
   goto l2;
 l0:
-  i0 = i1;
+  i0 = i2;
 l1:
   i0 = (int)*(void**)i0;
-  i2 = (int)*(void**)i0;
-  i2 = i2 != 0;
-  if (i2) goto l1;
+  i1 = (int)*(void**)i0;
+  i1 = i1 != 0;
+  if (i1) goto l1;
 l2:
   *(void**)i0 = (void*)(int)s;
   goto l4;
@@ -1543,40 +1544,45 @@ l5:
   i1 += i4;
   *optIndex = i1;
 l6:
-  i2 = (int)*Parameter__ParseCmdLine_strStream;
-  i0 = Strings__Length((const unsigned char*)(int)str, 2048);
-  i1 = i2 + 12;
-  i4 = (int)*(void**)i1;
-  i4 = *(int*)(i4-8);
-  i4 = i4 >= i0;
-  if (i4) goto l7;
-  i0 += 256;
+  i2 = Strings__Length((const unsigned char*)(int)str, 2048);
+  i1 = (int)*Parameter__ParseCmdLine_strStream;
+  i4 = i1 + 12;
+  i0 = (int)*(void**)i4;
+  i0 = *(int*)(i0-8);
+  i0 = i0 >= i2;
+  if (i0) goto l7;
+  i2 += 256;
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i0 < 0) _invalid_length(i0, _P(38315));
-    _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
+    if(i2 < 0) _invalid_length(i2, _P(38315));
+    _mem = GC_malloc_atomic(_not_zero(i2*1)+8);
     if (!_mem) _new_failed(_P(38295));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
-    *(--_dim_ptr) = i0;
-    i0 = (int)_var;
+    *(--_dim_ptr) = i2;
+    i2 = (int)_var;
   }
-  *(void**)i1 = (void*)i0;
+  *(void**)i4 = (void*)i2;
 l7:
-  i0 = (int)*(void**)i1;
+  i2 = (int)*Parameter__ParseCmdLine_strStream;
+  i2 += 12;
+  i2 = (int)*(void**)i2;
+  i4 = *(int*)(i2-8);
+  _string_copy(i2, (int)str, i4);
+  i4 = (int)*Parameter__ParseCmdLine_strStream;
+  i2 = *(int*)(i4-4);
+  i2 = (int)((_Type)i2)->tbprocs[2];
+  ((_TBP_Parameter__StringStreamDesc_Install)i2)((Parameter__StringStream)i4);
+  i2 = (int)cmd + 4;
+  i2 = (int)*(void**)i2;
   i4 = *(int*)(i2-4);
-  i1 = *(int*)(i0-8);
-  _string_copy(i0, (int)str, i1);
-  i1 = (int)((_Type)i4)->tbprocs[2];
-  ((_TBP_Parameter__StringStreamDesc_Install)i1)((Parameter__StringStream)i2);
-  i1 = (int)cmd + 4;
-  i1 = (int)*(void**)i1;
-  i0 = *(int*)(i1-4);
-  i0 = (int)((_Type)i0)->tbprocs[0];
   i4 = (int)((_Type)i4)->tbprocs[0];
-  ((_TBP_Parameter__SectionDesc_Parse)i0)((Parameter__Section)i1, (unsigned char)0);
-  ((_TBP_Parameter__StreamDesc_Remove)i4)((Parameter__Stream)i2);
+  ((_TBP_Parameter__SectionDesc_Parse)i4)((Parameter__Section)i2, (unsigned char)0);
+  i4 = (int)*Parameter__ParseCmdLine_strStream;
+  i2 = *(int*)(i4-4);
+  i2 = (int)((_Type)i2)->tbprocs[0];
+  ((_TBP_Parameter__StreamDesc_Remove)i2)((Parameter__Stream)i4);
   goto l11;
 l8:
   (void)memcpy((void*) (int)str, (const void*) (int)_c25, 8);
@@ -1609,10 +1615,10 @@ short int Parameter__ParseCmdLine(unsigned char optionsStartWithDash, unsigned c
     if (!_mem) _new_failed(_P(38563));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Parameter__StringStreamDesc_td.td;
-    i9 = (int)_var;
+    i8 = (int)_var;
   }
-  i0 = i9 + 16;
-  i1 = i9 + 12;
+  i0 = i8 + 16;
+  i1 = i8 + 12;
   {
     char *_mem, *_var;
     int* _dim_ptr;
@@ -1627,29 +1633,29 @@ short int Parameter__ParseCmdLine(unsigned char optionsStartWithDash, unsigned c
   (void)memcpy((void*) i0, (const void*) (int)_c29, 44);
   i0 = (int)ProgramArgs__args;
   i0 = ProgramArgs__ChannelDesc_ArgNumber((ProgramArgs__Channel)i0);
-  i1 = Parameter__skipArg;
-  i1 = i1 == 1;
-  if (i1) goto l0;
-  i10 = 1;
-  goto l1;
-l0:
-  i10 = 3;
-l1:
   Parameter__numArgs = i0;
   Parameter__restArg = -2;
+  i0 = Parameter__skipArg;
+  i0 = i0 == 1;
+  if (i0) goto l0;
+  i9 = 1;
+  goto l1;
+l0:
+  i9 = 3;
+l1:
   i0 = Parameter__numArgs;
-  i0 = i10 > i0;
+  i0 = i9 > i0;
   if (i0) goto l21;
-  i8 = Parameter__restArg;
-  i1 = i8 >= 0;
+  i7 = Parameter__restArg;
+  i1 = i7 >= 0;
   if (i1) goto l21;
   i0 = (int)msg + 1;
-  i8 = (int)currArg + 1;
+  i7 = (int)currArg + 1;
 l2:
-  Parameter__GetIndexedArg((short int)i10, (unsigned char*)(int)currArg, 2048);
-  i6 = (int)Parameter__ParseCmdLine_FindCmd((const unsigned char*)(int)currArg, 2048);
-  i7 = i6 != 0;
-  if (i7) goto l17;
+  Parameter__GetIndexedArg((short int)i9, (unsigned char*)(int)currArg, 2048);
+  i10 = (int)Parameter__ParseCmdLine_FindCmd((const unsigned char*)(int)currArg, 2048);
+  i6 = i10 != 0;
+  if (i6) goto l17;
   if (!(enableDashDash)) goto l3;
   i4 = strcmp((const char*) (int)currArg, (const char*) (int)_c19) == 0;
   if (i4) goto l15;
@@ -1658,63 +1664,63 @@ l3:
   i4 = *(unsigned char*)(int)currArg;
   i4 = i4 != 45;
   if (i4) goto l4;
-  i7 = *(unsigned char*)i8;
-  i6 = i7 != 45;
-  if (i6) goto l8;
+  i6 = *(unsigned char*)i7;
+  i10 = i6 != 45;
+  if (i10) goto l8;
 l4:
   if (!(optionsStartWithDash)) goto l5;
-  i7 = *(unsigned char*)(int)currArg;
-  i7 = i7 == 45;
-  if (i7) goto l6;
+  i6 = *(unsigned char*)(int)currArg;
+  i6 = i6 == 45;
+  if (i6) goto l6;
 l5:
-  Parameter__restArg = i10;
+  Parameter__restArg = i9;
   goto l7;
 l6:
   (void)memcpy((void*) (int)msg, (const void*) (int)_c30, 16);
   Strings__Append((const unsigned char*)(int)currArg, 2048, (unsigned char*)(int)msg, 2048);
   Parameter__FatalError((const unsigned char*)(int)msg, 2048);
 l7:
-  i3 = i9;
-  i2 = i10;
+  i3 = i8;
+  i2 = i9;
   goto l16;
 l8:
   (void)memcpy((void*) (int)msg, (const void*) (int)_c31, 3);
-  i7 = i7 != 0;
-  if (i7) goto l9;
-  i2 = i10;
-  i3 = i9;
+  i6 = i6 != 0;
+  if (i6) goto l9;
+  i2 = i9;
+  i3 = i8;
   goto l16;
 l9:
   i4 = 1;
-  i3 = i9;
-  i2 = i10;
+  i3 = i8;
+  i2 = i9;
 l10:
-  i7 = (int)currArg + i4;
-  i7 = *(unsigned char*)i7;
-  *(unsigned char*)i0 = i7;
-  i7 = (int)Parameter__ParseCmdLine_FindCmd((const unsigned char*)(int)msg, 2048);
-  i5 = i7 == 0;
+  i6 = (int)currArg + i4;
+  i6 = *(unsigned char*)i6;
+  *(unsigned char*)i0 = i6;
+  i6 = (int)Parameter__ParseCmdLine_FindCmd((const unsigned char*)(int)msg, 2048);
+  i5 = i6 == 0;
   if (i5) goto l13;
-  i6 = i7 + 16;
-  i6 = *(short int*)i6;
-  i6 = i6 != 0;
-  if (i6) goto l11;
+  i10 = i6 + 16;
+  i10 = *(short int*)i10;
+  i10 = i10 != 0;
+  if (i10) goto l11;
   strStream = (void*)i3;
   i = (short int)i2;
   strStream = (void*)i3;
   i = (short int)i2;
-  Parameter__ParseCmdLine_EvalOption((unsigned char*)(int)msg, 2048, (Parameter__CmdLineOption)i7, (short int *)(int)&i, (Parameter__StringStream *)&strStream);
+  Parameter__ParseCmdLine_EvalOption((unsigned char*)(int)msg, 2048, (Parameter__CmdLineOption)i6, (short int *)(int)&i, (Parameter__StringStream *)&strStream);
   i5 = (int)strStream;
-  i6 = i;
+  i10 = i;
   goto l12;
 l11:
   Strings__Insert((const unsigned char*)(int)_c25, 8, (short int)0, (unsigned char*)(int)msg, 2048);
   Strings__Append((const unsigned char*)(int)_c32, 49, (unsigned char*)(int)msg, 2048);
   Parameter__FatalError((const unsigned char*)(int)msg, 2048);
   i5 = i3;
-  i6 = i2;
+  i10 = i2;
 l12:
-  i2 = i6;
+  i2 = i10;
   i3 = i5;
   goto l14;
 l13:
@@ -1722,43 +1728,43 @@ l13:
   Parameter__FatalError((const unsigned char*)(int)msg, 2048);
 l14:
   i4++;
-  i7 = (int)currArg + i4;
-  i7 = *(unsigned char*)i7;
-  i7 = i7 != 0;
-  if (i7) goto l10;
+  i6 = (int)currArg + i4;
+  i6 = *(unsigned char*)i6;
+  i6 = i6 != 0;
+  if (i6) goto l10;
   goto l16;
 l15:
-  i4 = i10 + 1;
+  i4 = i9 + 1;
   Parameter__restArg = i4;
-  i2 = i10;
-  i3 = i9;
+  i2 = i9;
+  i3 = i8;
 l16:
-  i9 = i3;
+  i8 = i3;
   goto l18;
 l17:
-  strStream = (void*)i9;
-  i = (short int)i10;
-  strStream = (void*)i9;
-  i = (short int)i10;
-  Parameter__ParseCmdLine_EvalOption((unsigned char*)(int)currArg, 2048, (Parameter__CmdLineOption)i6, (short int *)(int)&i, (Parameter__StringStream *)&strStream);
-  i9 = (int)strStream;
+  strStream = (void*)i8;
+  i = (short int)i9;
+  strStream = (void*)i8;
+  i = (short int)i9;
+  Parameter__ParseCmdLine_EvalOption((unsigned char*)(int)currArg, 2048, (Parameter__CmdLineOption)i10, (short int *)(int)&i, (Parameter__StringStream *)&strStream);
+  i8 = (int)strStream;
   i2 = i;
 l18:
-  i7 = i2 + 1;
-  i6 = Parameter__skipArg;
-  i6 = i6 == i7;
-  if (i6) goto l19;
-  i10 = i7;
+  i6 = i2 + 1;
+  i10 = Parameter__skipArg;
+  i10 = i10 == i6;
+  if (i10) goto l19;
+  i9 = i6;
   goto l20;
 l19:
-  i10 = i7 + 2;
+  i9 = i6 + 2;
 l20:
-  i7 = Parameter__numArgs;
-  i7 = i10 > i7;
-  if (i7) goto l21;
-  i7 = Parameter__restArg;
-  i7 = i7 < 0;
-  if (i7) goto l2;
+  i6 = Parameter__numArgs;
+  i6 = i9 > i6;
+  if (i6) goto l21;
+  i6 = Parameter__restArg;
+  i6 = i6 < 0;
+  if (i6) goto l2;
 l21:
   i2 = Parameter__restArg;
   i1 = Parameter__skipArg;
@@ -1795,7 +1801,7 @@ void Parameter__GetArg(short int index, unsigned char* arg, int arg_0d) {
 }
 
 void Parameter_init(void) {
-  register int i0, i1, i2;
+  register int i0, i1;
   _mid = _register_module(&Parameter_md.md, &Parameter__StringStreamDesc_td.td);
   Parameter__sections = (void*)0;
   Parameter__cmdList = (void*)0;
@@ -1810,10 +1816,11 @@ void Parameter_init(void) {
   }
   Parameter__include = (void*)i0;
   i0 = (int)Parameter__include;
-  i2 = i0 + 8;
-  i1 = i0 + 9;
-  *(unsigned char*)i2 = 0;
-  *(unsigned char*)i1 = 1;
+  i1 = i0 + 8;
+  *(unsigned char*)i1 = 0;
+  i1 = (int)Parameter__include;
+  i0 = i1 + 9;
+  *(unsigned char*)i0 = 1;
   i0 = (int)ProgramArgs__args;
   i0 = (int)TextRider__ConnectReader((Channel__Channel)i0);
   Parameter__argReader = (void*)i0;

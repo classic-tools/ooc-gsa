@@ -104,190 +104,138 @@ l2:
 Data__Const StdTypes__Max(signed char form) {
   register int i0, i1;
   register double d0;
-  int int_;
-  double real;
   i0 = (0x300U & ((unsigned int)1 << form)) != 0;
-  if (i0) goto l12;
-  i0 = form == 2;
-  if (i0) goto l11;
-  i0 = form == 3;
   if (i0) goto l10;
-  if (!(form<=3 || (form>=8 && form<=11) || form>=16)) goto l0;
-  i1 = 1;
-  goto l8;
-l0:
-  if (!(form==4)) goto l1;
-  i1 = 0;
+  i0 = form == 2;
+  if (i0) goto l9;
+  i0 = form == 3;
+  if (i0) goto l8;
+  if (!(form==4)) goto l0;
   i0 = 127;
-  goto l8;
-l1:
-  if (!(form==5)) goto l2;
-  i1 = 0;
+  goto l7;
+l0:
+  if (!(form==5)) goto l1;
   i0 = 32767;
-  goto l8;
+  goto l7;
+l1:
+  if (!(form==6)) goto l2;
+  i0 = 2147483647;
+  goto l7;
 l2:
-  if (!(form==6)) goto l3;
-  i1 = 0;
+  if (!(form==7)) goto l3;
   i0 = 2147483647;
-  goto l8;
+  goto l7;
 l3:
-  if (!(form==7)) goto l4;
-  i1 = 0;
-  i0 = 2147483647;
-  goto l8;
-l4:
-  if (!(form==12)) goto l5;
-  i1 = 0;
+  if (!(form==12)) goto l4;
   i0 = 7;
-  goto l8;
-l5:
-  if (!(form==13)) goto l6;
-  i1 = 0;
+  goto l7;
+l4:
+  if (!(form==13)) goto l5;
   i0 = 15;
-  goto l8;
-l6:
-  if (!(form==14)) goto l7;
-  i1 = 0;
+  goto l7;
+l5:
+  if (!(form==14)) goto l6;
   i0 = 31;
-  goto l8;
-l7:
-  if (!(form==15)) goto l8;
-  i1 = 0;
+  goto l7;
+l6:
+  if (!(form==15)) goto l7;
   i0 = 63;
-l8:
-  if (i1) goto l9;
+l7:
   i1 = (int)StdTypes__IntType((int)i0);
   i1 = (int)Data__GetIntConst((int)i0, (Data__Struct)i1);
-  goto l17;
-l9:
-  goto l17;
-l10:
+  goto l13;
+l8:
   i1 = (int)Data__struct + 12;
   i1 = (int)*(void**)i1;
   i1 = (int)Data__GetIntConst((int)65535, (Data__Struct)i1);
-  goto l17;
-l11:
+  goto l13;
+l9:
   i1 = (int)Data__struct + 8;
   i1 = (int)*(void**)i1;
   i1 = (int)Data__GetIntConst((int)255, (Data__Struct)i1);
-  goto l17;
-l12:
-  if (!(form<=7 || form>=10)) goto l13;
-  i1 = 1;
-  goto l15;
-l13:
-  if (!(form==8)) goto l14;
-  i1 = 0;
+  goto l13;
+l10:
+  if (!(form==8)) goto l11;
   d0 = 3.4028234663852886E+38;
-  goto l15;
-l14:
-  if (!(form==9)) goto l15;
-  i1 = 0;
+  goto l12;
+l11:
+  if (!(form==9)) goto l12;
   d0 = 1.7976931348623157E+308;
-l15:
-  if (i1) goto l16;
+l12:
   i1 = (int)_ashl(form, 2, (unsigned int));
   i1 = (int)Data__struct + i1;
   i1 = (int)*(void**)i1;
   i1 = (int)Data__GetRealConst((double)d0, (Data__Struct)i1);
-  goto l17;
-l16:
-l17:
+l13:
   return (void*)i1;
 }
 
 Data__Const StdTypes__Min(signed char form) {
   register int i0, i1;
   register double d0;
-  int int_;
-  double real;
   i0 = (0x300U & ((unsigned int)1 << form)) != 0;
-  if (i0) goto l12;
-  i0 = form == 2;
-  if (i0) goto l11;
-  i0 = form == 3;
   if (i0) goto l10;
-  if (!(form<=3 || (form>=8 && form<=11) || form>=16)) goto l0;
-  i1 = 1;
-  goto l8;
-l0:
-  if (!(form==4)) goto l1;
-  i1 = 0;
+  i0 = form == 2;
+  if (i0) goto l9;
+  i0 = form == 3;
+  if (i0) goto l8;
+  if (!(form==4)) goto l0;
   i0 = -128;
-  goto l8;
-l1:
-  if (!(form==5)) goto l2;
-  i1 = 0;
+  goto l7;
+l0:
+  if (!(form==5)) goto l1;
   i0 = -32768;
-  goto l8;
+  goto l7;
+l1:
+  if (!(form==6)) goto l2;
+  i0 = (-2147483647-1);
+  goto l7;
 l2:
-  if (!(form==6)) goto l3;
-  i1 = 0;
+  if (!(form==7)) goto l3;
   i0 = (-2147483647-1);
-  goto l8;
+  goto l7;
 l3:
-  if (!(form==7)) goto l4;
-  i1 = 0;
-  i0 = (-2147483647-1);
-  goto l8;
+  if (!(form==12)) goto l4;
+  i0 = 0;
+  goto l7;
 l4:
-  if (!(form==12)) goto l5;
-  i1 = 0;
+  if (!(form==13)) goto l5;
   i0 = 0;
-  goto l8;
+  goto l7;
 l5:
-  if (!(form==13)) goto l6;
-  i1 = 0;
+  if (!(form==14)) goto l6;
   i0 = 0;
-  goto l8;
+  goto l7;
 l6:
-  if (!(form==14)) goto l7;
-  i1 = 0;
+  if (!(form==15)) goto l7;
   i0 = 0;
-  goto l8;
 l7:
-  if (!(form==15)) goto l8;
-  i1 = 0;
-  i0 = 0;
-l8:
-  if (i1) goto l9;
   i1 = (int)StdTypes__IntType((int)i0);
   i1 = (int)Data__GetIntConst((int)i0, (Data__Struct)i1);
-  goto l17;
-l9:
-  goto l17;
-l10:
+  goto l13;
+l8:
   i1 = (int)Data__struct + 12;
   i1 = (int)*(void**)i1;
   i1 = (int)Data__GetIntConst((int)0, (Data__Struct)i1);
-  goto l17;
-l11:
+  goto l13;
+l9:
   i1 = (int)Data__struct + 8;
   i1 = (int)*(void**)i1;
   i1 = (int)Data__GetIntConst((int)0, (Data__Struct)i1);
-  goto l17;
-l12:
-  if (!(form<=7 || form>=10)) goto l13;
-  i1 = 1;
-  goto l15;
-l13:
-  if (!(form==8)) goto l14;
-  i1 = 0;
+  goto l13;
+l10:
+  if (!(form==8)) goto l11;
   d0 = -3.4028234663852886E+38;
-  goto l15;
-l14:
-  if (!(form==9)) goto l15;
-  i1 = 0;
+  goto l12;
+l11:
+  if (!(form==9)) goto l12;
   d0 = -1.7976931348623157E+308;
-l15:
-  if (i1) goto l16;
+l12:
   i1 = (int)_ashl(form, 2, (unsigned int));
   i1 = (int)Data__struct + i1;
   i1 = (int)*(void**)i1;
   i1 = (int)Data__GetRealConst((double)d0, (Data__Struct)i1);
-  goto l17;
-l16:
-l17:
+l13:
   return (void*)i1;
 }
 
@@ -333,56 +281,46 @@ l4:
 
 void StdTypes__StructAlloc(Data__Struct t) {
   register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12;
-  i10 = (int)t + 52;
-  i11 = (int)t + 20;
-  *(short int*)i10 = -1;
-  i0 = *(signed char*)i11;
-  if (!(i0<=0 || (i0>=10 && i0<=11) || (i0>=18 && i0<=26) || i0>=32)) goto l0;
-  i0 = 1;
-  goto l27;
-l0:
-  if (!((i0>=1 && i0<=2) || i0==4 || i0==12 || i0==16)) goto l1;
+  i11 = (int)t + 52;
+  i10 = (int)t + 20;
+  *(short int*)i11 = -1;
+  i0 = *(signed char*)i10;
+  if (!((i0>=1 && i0<=2) || i0==4 || i0==12 || i0==16)) goto l0;
   i0 = (int)t + 48;
   *(int*)i0 = 1;
-  i0 = 0;
-  goto l27;
-l1:
-  if (!(i0==3 || i0==5 || i0==13)) goto l2;
+  goto l26;
+l0:
+  if (!(i0==3 || i0==5 || i0==13)) goto l1;
   i0 = (int)t + 48;
   *(int*)i0 = 2;
-  i0 = 0;
-  goto l27;
-l2:
-  if (!(i0==6 || i0==8 || i0==14)) goto l3;
+  goto l26;
+l1:
+  if (!(i0==6 || i0==8 || i0==14)) goto l2;
   i0 = (int)t + 48;
   *(int*)i0 = 4;
-  i0 = 0;
-  goto l27;
-l3:
-  if (!(i0==7 || i0==9 || i0==15)) goto l4;
+  goto l26;
+l2:
+  if (!(i0==7 || i0==9 || i0==15)) goto l3;
   i0 = (int)t + 48;
   *(int*)i0 = 8;
-  i0 = 0;
-  goto l27;
-l4:
-  if (!(i0==17 || (i0>=27 && i0<=28))) goto l5;
+  goto l26;
+l3:
+  if (!(i0==17 || (i0>=27 && i0<=28))) goto l4;
   i0 = (int)t + 48;
   *(int*)i0 = 4;
-  i0 = 0;
-  goto l27;
-l5:
-  if (!(i0==30)) goto l6;
+  goto l26;
+l4:
+  if (!(i0==30)) goto l5;
   i0 = (int)t + 48;
   *(int*)i0 = -2;
   i0 = (int)t + 24;
   i0 = (int)*(void**)i0;
   i0 += 52;
   i0 = *(short int*)i0;
-  *(short int*)i10 = i0;
-  i0 = 0;
-  goto l27;
-l6:
-  if (!(i0==29)) goto l7;
+  *(short int*)i11 = i0;
+  goto l26;
+l5:
+  if (!(i0==29)) goto l6;
   i2 = (int)t + 24;
   i1 = (int)*(void**)i2;
   i1 += 48;
@@ -395,226 +333,217 @@ l6:
   i2 = (int)*(void**)i2;
   i2 += 52;
   i2 = *(short int*)i2;
-  *(short int*)i10 = i2;
-  i0 = 0;
-  goto l27;
+  *(short int*)i11 = i2;
+  goto l26;
+l6:
+  if (!(i0==31)) goto l26;
+  i12 = (int)t + 44;
+  i8 = *(unsigned int*)i12;
+  i12 = (int)t + 24;
+  i6 = (int)*(void**)i12;
+  i9 = i8 & 0x3CU;
+  i12 = i6 == 0;
+  i7 = i9 != 0x0U;
+  if (i12) goto l7;
+  i12 = i6 + 52;
+  i6 += 48;
+  i12 = *(short int*)i12;
+  i9 = *(int*)i6;
+  goto l8;
 l7:
-  if (!(i0==31)) goto l27;
-  i9 = (int)t + 44;
-  i7 = *(unsigned int*)i9;
-  i9 = (int)t + 24;
-  i5 = (int)*(void**)i9;
-  i8 = i7 & 0x3CU;
-  i9 = i5 == 0;
-  i6 = i8 != 0x0U;
-  if (i9) goto l8;
-  i9 = i5 + 52;
-  i5 += 48;
-  i9 = *(short int*)i9;
-  i8 = *(int*)i5;
-  goto l9;
+  i9 = 0;
+  i12 = 1;
 l8:
-  i8 = 0;
-  i9 = 1;
-l9:
-  if (i6) goto l10;
+  if (i7) goto l9;
   i2 = 32767;
-  goto l14;
-l10:
-  i2 = (i7 & ((unsigned int)1 << 5)) != 0;
-  if (i2) goto l12;
-  i6 = 5;
-l11:
-  i6--;
-  i2 = (i7 & ((unsigned int)1 << i6)) != 0;
-  if (!(i2)) goto l11;
   goto l13;
+l9:
+  i2 = (i8 & ((unsigned int)1 << 5)) != 0;
+  if (i2) goto l11;
+  i7 = 5;
+l10:
+  i7--;
+  i2 = (i8 & ((unsigned int)1 << i7)) != 0;
+  if (!(i2)) goto l10;
+  goto l12;
+l11:
+  i7 = 5;
 l12:
-  i6 = 5;
-l13:
-  i2 = i6 - 2;
+  i2 = i7 - 2;
   i2 = (int)_ash(1, i2, (unsigned int));
+l13:
+  i8 = (int)t + 28;
+  i3 = (int)*(void**)i8;
+  i8 = i3 != 0;
+  if (i8) goto l14;
+  i1 = i9;
+  i0 = i12;
+  goto l23;
 l14:
-  i7 = (int)t + 28;
-  i12 = (int)*(void**)i7;
-  i7 = i12 != 0;
-  if (i7) goto l15;
-  i1 = i8;
-  i0 = i9;
-  goto l24;
+  i8 = (int)t + 40;
+  i0 = i12;
+  i1 = i9;
 l15:
-  i7 = (int)t + 40;
-  i0 = i9;
-  i1 = i8;
+  i7 = i3 + 28;
+  i7 = *(signed char*)i7;
+  i7 = i7 != 5;
+  if (i7) goto l22;
+  i6 = i3 + 24;
+  i7 = (int)*(void**)i6;
+  i7 += 52;
+  i5 = *(short int*)i7;
+  i7 = i2 >= i5;
+  if (i7) goto l16;
+  i5 = i2;
 l16:
-  i6 = i12 + 28;
-  i6 = *(signed char*)i6;
-  i6 = i6 != 5;
-  if (i6) goto l23;
-  i5 = i12 + 24;
-  i6 = (int)*(void**)i5;
-  i6 += 52;
-  i4 = *(short int*)i6;
-  i6 = i2 >= i4;
-  if (i6) goto l17;
-  i4 = i2;
+  i7 = *(unsigned int*)i8;
+  i7 = (i7 & ((unsigned int)1 << 7)) != 0;
+  if (i7) goto l19;
+  _mod(i4, i1, i5, int);
+  i7 = i4 != 0;
+  if (i7) goto l17;
+  i7 = i1;
+  goto l18;
 l17:
-  i6 = *(unsigned int*)i7;
-  i6 = (i6 & ((unsigned int)1 << 7)) != 0;
-  if (i6) goto l20;
-  _mod(i3, i1, i4, int);
-  i6 = i3 != 0;
-  if (i6) goto l18;
-  i6 = i1;
-  goto l19;
+  i4 = i5 - i4;
+  i7 = i1 + i4;
 l18:
-  i3 = i4 - i3;
-  i6 = i1 + i3;
+  i4 = i3 + 60;
+  *(int*)i4 = i7;
+  i4 = (int)*(void**)i6;
+  i4 += 48;
+  i4 = *(int*)i4;
+  i4 = i7 + i4;
+  goto l20;
 l19:
-  i3 = i12 + 60;
-  *(int*)i3 = i6;
-  i3 = (int)*(void**)i5;
-  i3 += 48;
-  i3 = *(int*)i3;
-  i3 = i6 + i3;
-  goto l21;
+  i4 = i3 + 60;
+  *(int*)i4 = 0;
+  i6 = (int)*(void**)i6;
+  i6 += 48;
+  i4 = *(int*)i6;
+  i6 = i1 < i4;
+  if (i6) goto l20;
+  i4 = i1;
 l20:
-  i3 = i12 + 60;
-  *(int*)i3 = 0;
-  i5 = (int)*(void**)i5;
-  i5 += 48;
-  i3 = *(int*)i5;
-  i5 = i1 < i3;
-  if (i5) goto l21;
-  i3 = i1;
+  i6 = i5 > i0;
+  if (i6) goto l21;
+  i5 = i0;
 l21:
-  i5 = i4 > i0;
-  if (i5) goto l22;
-  i4 = i0;
+  i1 = i4;
+  i0 = i5;
 l22:
-  i1 = i3;
-  i0 = i4;
+  i7 = i3 + 36;
+  i3 = (int)*(void**)i7;
+  i7 = i3 != 0;
+  if (i7) goto l15;
 l23:
-  i6 = i12 + 36;
-  i12 = (int)*(void**)i6;
-  i6 = i12 != 0;
-  if (i6) goto l16;
+  _mod(i9, i1, i0, int);
+  i12 = i9 != 0;
+  if (i12) goto l24;
+  i12 = (int)t + 48;
+  *(int*)i12 = i1;
+  goto l25;
 l24:
-  _mod(i8, i1, i0, int);
-  i9 = i8 != 0;
-  if (i9) goto l25;
+  i1 += i0;
+  i1 -= i9;
   i9 = (int)t + 48;
   *(int*)i9 = i1;
-  goto l26;
 l25:
-  i1 += i0;
-  i1 -= i8;
-  i8 = (int)t + 48;
-  *(int*)i8 = i1;
+  *(short int*)i11 = i0;
 l26:
-  *(short int*)i10 = i0;
-  i0 = 0;
-l27:
-  if (i0) goto l31;
-  i0 = *(short int*)i10;
+  i0 = *(short int*)i11;
   i0 = i0 >= 0;
-  if (i0) goto l28;
+  if (i0) goto l27;
   i0 = (int)t + 48;
   i0 = *(int*)i0;
-  *(short int*)i10 = i0;
-l28:
-  i10 = *(signed char*)i11;
-  i10 = i10 != 28;
-  if (i10) goto l31;
-  i0 = (int)t + 28;
-  i10 = (int)*(void**)i0;
-  i0 = i10 == 0;
-  if (i0) goto l31;
-l29:
-  i0 = i10 + 28;
-  i0 = *(signed char*)i0;
-  i0 = i0 != 3;
+  *(short int*)i11 = i0;
+l27:
+  i0 = *(signed char*)i10;
+  i0 = i0 != 28;
   if (i0) goto l30;
-  i11 = StdTypes__PassPerReference((Data__Object)i10, (unsigned char)0);
-  if (!(i11)) goto l30;
-  i0 = i10 + 68;
-  i11 = *(unsigned int*)i0;
-  i1 = (i11 & ((unsigned int)1 << 26)) != 0;
-  if (i1) goto l30;
-  i11 = i11 | ((unsigned int)1 << 27);
-  *(unsigned int*)i0 = i11;
-l30:
-  i0 = i10 + 36;
-  i10 = (int)*(void**)i0;
-  i0 = i10 != 0;
+  i3 = (int)t + 28;
+  i1 = (int)*(void**)i3;
+  i3 = i1 == 0;
+  if (i3) goto l30;
+l28:
+  i3 = i1 + 28;
+  i3 = *(signed char*)i3;
+  i3 = i3 != 3;
+  if (i3) goto l29;
+  i2 = StdTypes__PassPerReference((Data__Object)i1, (unsigned char)0);
+  if (!(i2)) goto l29;
+  i3 = i1 + 68;
+  i2 = *(unsigned int*)i3;
+  i0 = (i2 & ((unsigned int)1 << 26)) != 0;
   if (i0) goto l29;
-l31:
+  i2 = i2 | ((unsigned int)1 << 27);
+  *(unsigned int*)i3 = i2;
+l29:
+  i3 = i1 + 36;
+  i1 = (int)*(void**)i3;
+  i3 = i1 != 0;
+  if (i3) goto l28;
+l30:
   ;
 }
 
 int StdTypes__WholeMax(signed char range) {
   register int i0;
-  if (!(range<=-1 || range>=8)) goto l0;
-  goto l5;
-l0:
-  if (!(range==0)) goto l1;
+  if (!(range==0)) goto l0;
   i0 = 127;
-  goto l5;
-l1:
-  if (!(range==1)) goto l2;
+  goto l4;
+l0:
+  if (!(range==1)) goto l1;
   i0 = 255;
-  goto l5;
-l2:
-  if (!(range==2)) goto l3;
+  goto l4;
+l1:
+  if (!(range==2)) goto l2;
   i0 = 32767;
-  goto l5;
-l3:
-  if (!(range==3)) goto l4;
+  goto l4;
+l2:
+  if (!(range==3)) goto l3;
   i0 = 65535;
-  goto l5;
-l4:
-  if (!((range>=4 && range<=7))) goto l5;
+  goto l4;
+l3:
+  if (!((range>=4 && range<=7))) goto l4;
   i0 = 2147483647;
-l5:
+l4:
   return (int)i0;
 }
 
 int StdTypes__WholeMin(signed char range) {
   register int i0;
-  if (!(range<=-1 || range>=8)) goto l0;
-  goto l8;
-l0:
-  if (!(range==0)) goto l1;
+  if (!(range==0)) goto l0;
   i0 = -128;
-  goto l8;
+  goto l7;
+l0:
+  if (!(range==1)) goto l1;
+  i0 = 0;
+  goto l7;
 l1:
-  if (!(range==1)) goto l2;
-  i0 = 0;
-  goto l8;
-l2:
-  if (!(range==2)) goto l3;
+  if (!(range==2)) goto l2;
   i0 = -32768;
-  goto l8;
+  goto l7;
+l2:
+  if (!(range==3)) goto l3;
+  i0 = 0;
+  goto l7;
 l3:
-  if (!(range==3)) goto l4;
-  i0 = 0;
-  goto l8;
+  if (!(range==4)) goto l4;
+  i0 = (-2147483647-1);
+  goto l7;
 l4:
-  if (!(range==4)) goto l5;
-  i0 = (-2147483647-1);
-  goto l8;
+  if (!(range==5)) goto l5;
+  i0 = 0;
+  goto l7;
 l5:
-  if (!(range==5)) goto l6;
-  i0 = 0;
-  goto l8;
-l6:
-  if (!(range==6)) goto l7;
+  if (!(range==6)) goto l6;
   i0 = (-2147483647-1);
-  goto l8;
-l7:
-  if (!(range==7)) goto l8;
+  goto l7;
+l6:
+  if (!(range==7)) goto l7;
   i0 = 0;
-l8:
+l7:
   return (int)i0;
 }
 

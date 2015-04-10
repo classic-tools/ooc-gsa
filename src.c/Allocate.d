@@ -68,6 +68,7 @@ typedef struct Allocate__ResolveVarConflicts_0 {
 Allocate__Location Allocate__ConcatLoc(const unsigned char* str1__ref, int str1_0d, const unsigned char* str2__ref, int str2_0d, const unsigned char* str3__ref, int str3_0d);
 unsigned char Allocate__TransformLocation_NonlocalRef(Data__GlobalRegion greg, Data__Object obj);
 unsigned char Allocate__TransformLocation_NonlocalPassPerRef(Data__GlobalRegion greg, Data__Object obj);
+unsigned char Allocate__PassThroughInstr(Data__Instruction instr);
 void Allocate__ResolveVarConflicts_MarkObjects(Data__Object obj, int *Allocate__ResolveVarConflicts_counter);
 void Allocate__ResolveVarConflicts_MarkInstructions(Data__Region r, int *Allocate__ResolveVarConflicts_icounter);
 typedef struct Allocate__ResolveVarConflicts_0* Allocate__ResolveVarConflicts_InfoArray;
@@ -82,6 +83,7 @@ unsigned char Allocate__ResolveVarConflicts_ScanRegions_HandleRegion(struct Allo
 unsigned char Allocate__ResolveVarConflicts_ScanRegions_ScanGates(struct Allocate__ResolveVarConflicts_0* ia, Data__Merge merge, short int opn, Data__Object *Allocate__ResolveVarConflicts_ScanRegions_obj, Data__GlobalRegion *Allocate__ResolveVarConflicts_greg);
 unsigned char Allocate__ResolveVarConflicts_ScanRegions_SummarizeMerge_Before(Data__Instruction a, Data__Instruction b);
 Data__Instruction Allocate__ResolveVarConflicts_ScanRegions_SummarizeMerge(Data__Merge merge, int *Allocate__ResolveVarConflicts_counter, int *Allocate__ResolveVarConflicts_ScanRegions_i);
+Data__Result Allocate__ResolveVarConflicts_ScanRegions_GetResult(Data__Usable u);
 unsigned char Allocate__ResolveVarConflicts_ScanRegions(Data__Region r, int *Allocate__ResolveVarConflicts_counter, Data__GlobalRegion *Allocate__ResolveVarConflicts_greg);
 void Allocate__ResolveVarConflicts(Data__GlobalRegion greg);
 signed char Allocate__TargetRegFile(Data__Instruction instr);

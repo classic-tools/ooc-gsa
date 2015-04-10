@@ -201,9 +201,9 @@ void ParamOptions__BooleanOptionDesc_CopyValue(ParamOptions__BooleanOption opt, 
 void ParamOptions__IntegerOptionDesc_Set(ParamOptions__IntegerOption opt, int value) {
   register int i0, i1, i2;
   unsigned char num[32];
-  i0 = (int)opt + 12;
-  i1 = *(int*)i0;
-  i0 = value < i1;
+  i1 = (int)opt + 12;
+  i0 = *(int*)i1;
+  i0 = value < i0;
   if (i0) goto l0;
   i2 = (int)opt + 16;
   i2 = *(int*)i2;
@@ -215,6 +215,7 @@ void ParamOptions__IntegerOptionDesc_Set(ParamOptions__IntegerOption opt, int va
   goto l1;
 l0:
   (void)memcpy((void*) (int)ParamOptions__error, (const void*) (int)_c3, 36);
+  i1 = *(int*)i1;
   IntStr__IntToStr((int)i1, (unsigned char*)(int)num, 32);
   Strings__Append((const unsigned char*)(int)num, 32, (unsigned char*)(int)ParamOptions__error, 128);
   Strings__Append((const unsigned char*)(int)_c4, 10, (unsigned char*)(int)ParamOptions__error, 128);
@@ -416,26 +417,26 @@ void ParamOptions__StringOptionDesc_CopyValue(ParamOptions__StringOption opt, Pa
 }
 
 void ParamOptions__OptionsSectionDesc_Parse_GetSym(int *ParamOptions__OptionsSectionDesc_Parse_currSymPos, signed char *ParamOptions__OptionsSectionDesc_Parse_sym, Parameter__LargeString ParamOptions__OptionsSectionDesc_Parse_str, unsigned char *ParamOptions__OptionsSectionDesc_Parse_includeEnd) {
-  register int i0, i1, i2, i3;
+  register int i0, i1, i2;
   i0 = (int)Parameter__in;
   Parameter__StreamDesc_SkipWhitespace((Parameter__Stream)i0);
   i1 = (int)Parameter__in;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[4];
   i0 = ((_TBP_Parameter__StreamDesc_CurrPos)i0)((Parameter__Stream)i1);
-  i2 = (int)Parameter__in;
   *ParamOptions__OptionsSectionDesc_Parse_currSymPos = i0;
+  i2 = (int)Parameter__in;
   i0 = i2 + 6;
   i0 = *(unsigned char*)i0;
   if (i0) goto l8;
-  i1 = i2 + 5;
-  i3 = *(unsigned char*)i1;
-  if (!(i3<=33 || (i3>=35 && i3<=38) || (i3>=40 && i3<=43) || (i3>=45 && i3<=57) || i3>=60)) goto l4;
-  i1 = Parameter__IsNum((unsigned char)i3);
-  if (i1) goto l3;
-  i2 = (int)Parameter__in;
   i2 += 5;
-  i0 = *(unsigned char*)i2;
+  i1 = *(unsigned char*)i2;
+  if (!(i1<=33 || (i1>=35 && i1<=38) || (i1>=40 && i1<=43) || (i1>=45 && i1<=57) || i1>=60)) goto l4;
+  i2 = Parameter__IsNum((unsigned char)i1);
+  if (i2) goto l3;
+  i0 = (int)Parameter__in;
+  i0 += 5;
+  i0 = *(unsigned char*)i0;
   i2 = i0 == 45;
   if (i2) goto l3;
   i2 = i0 == 43;
@@ -443,14 +444,14 @@ void ParamOptions__OptionsSectionDesc_Parse_GetSym(int *ParamOptions__OptionsSec
   i0 = Parameter__IsAlpha((unsigned char)i0);
   if (!(i0)) goto l9;
   i0 = (int)Parameter__in;
-  i1 = *ParamOptions__OptionsSectionDesc_Parse_includeEnd;
   Parameter__StreamDesc_ReadIdent((Parameter__Stream)i0, (unsigned char*)(int)ParamOptions__OptionsSectionDesc_Parse_str, 2048);
-  if (!(i1)) goto l0;
-  i1 = strcmp((const char*) (int)ParamOptions__OptionsSectionDesc_Parse_str, (const char*) (int)_c7) == 0;
-  if (i1) goto l2;
+  i0 = *ParamOptions__OptionsSectionDesc_Parse_includeEnd;
+  if (!(i0)) goto l0;
+  i0 = strcmp((const char*) (int)ParamOptions__OptionsSectionDesc_Parse_str, (const char*) (int)_c7) == 0;
+  if (i0) goto l2;
 l0:
-  i1 = strcmp((const char*) (int)ParamOptions__OptionsSectionDesc_Parse_str, (const char*) (int)_c8) == 0;
-  if (i1) goto l1;
+  i0 = strcmp((const char*) (int)ParamOptions__OptionsSectionDesc_Parse_str, (const char*) (int)_c8) == 0;
+  if (i0) goto l1;
   *ParamOptions__OptionsSectionDesc_Parse_sym = 5;
   goto l9;
 l1:
@@ -460,32 +461,36 @@ l2:
   *ParamOptions__OptionsSectionDesc_Parse_sym = 7;
   goto l9;
 l3:
-  i1 = (int)Parameter__in;
-  Parameter__StreamDesc_ReadInteger((Parameter__Stream)i1, (unsigned char*)(int)ParamOptions__OptionsSectionDesc_Parse_str, 2048);
+  i2 = (int)Parameter__in;
+  Parameter__StreamDesc_ReadInteger((Parameter__Stream)i2, (unsigned char*)(int)ParamOptions__OptionsSectionDesc_Parse_str, 2048);
   *ParamOptions__OptionsSectionDesc_Parse_sym = 6;
   goto l9;
 l4:
-  if (!(i3==34 || i3==39)) goto l5;
+  if (!(i1==34 || i1==39)) goto l5;
   *ParamOptions__OptionsSectionDesc_Parse_sym = 1;
+  i2 = (int)Parameter__in;
   Parameter__StreamDesc_ReadString((Parameter__Stream)i2, (unsigned char*)(int)ParamOptions__OptionsSectionDesc_Parse_str, 2048);
   goto l9;
 l5:
-  if (!(i3==59)) goto l6;
-  i1 = *(int*)(i2-4);
+  if (!(i1==59)) goto l6;
   *ParamOptions__OptionsSectionDesc_Parse_sym = 2;
+  i2 = (int)Parameter__in;
+  i1 = *(int*)(i2-4);
   i1 = (int)((_Type)i1)->tbprocs[1];
   ((_TBP_Parameter__StreamDesc_NextChar)i1)((Parameter__Stream)i2);
   goto l9;
 l6:
-  if (!(i3==44)) goto l7;
-  i1 = *(int*)(i2-4);
+  if (!(i1==44)) goto l7;
   *ParamOptions__OptionsSectionDesc_Parse_sym = 3;
-  i1 = (int)((_Type)i1)->tbprocs[1];
-  ((_TBP_Parameter__StreamDesc_NextChar)i1)((Parameter__Stream)i2);
+  i1 = (int)Parameter__in;
+  i2 = *(int*)(i1-4);
+  i2 = (int)((_Type)i2)->tbprocs[1];
+  ((_TBP_Parameter__StreamDesc_NextChar)i2)((Parameter__Stream)i1);
   goto l9;
 l7:
-  if (!(i3==58)) goto l9;
+  if (!(i1==58)) goto l9;
   *ParamOptions__OptionsSectionDesc_Parse_sym = 4;
+  i2 = (int)Parameter__in;
   Parameter__StreamDesc_Match((Parameter__Stream)i2, (const unsigned char*)(int)_c9, 3);
   goto l9;
 l8:
@@ -495,40 +500,29 @@ l9:
 }
 
 void ParamOptions__OptionsSectionDesc_Parse_Match(signed char expected, signed char *ParamOptions__OptionsSectionDesc_Parse_sym, int *ParamOptions__OptionsSectionDesc_Parse_currSymPos, Parameter__LargeString ParamOptions__OptionsSectionDesc_Parse_str, unsigned char *ParamOptions__OptionsSectionDesc_Parse_includeEnd) {
-  register int i0, i1, i2, i3, i4;
+  register int i0, i1, i2;
   unsigned char str[32];
-  i3 = *ParamOptions__OptionsSectionDesc_Parse_sym;
-  i0 = expected != i3;
-  if (i0) goto l0;
-  i4 = 0;
-  goto l4;
-l0:
-  if (!(expected<=3 || (expected>=5 && expected<=6) || expected>=8)) goto l1;
-  i4 = 1;
-  goto l3;
-l1:
-  if (!(expected==4)) goto l2;
+  i0 = *ParamOptions__OptionsSectionDesc_Parse_sym;
+  i0 = expected == i0;
+  if (i0) goto l2;
+  if (!(expected==4)) goto l0;
   (void)memcpy((void*) (int)str, (const void*) (int)_c9, 3);
-  i4 = 0;
-  goto l3;
-l2:
-  if (!(expected==7)) goto l3;
+  goto l1;
+l0:
+  if (!(expected==7)) goto l1;
   (void)memcpy((void*) (int)str, (const void*) (int)_c7, 4);
-  i4 = 0;
-l3:
-  if (i4) goto l4;
+l1:
   Strings__Append((const unsigned char*)(int)_c10, 10, (unsigned char*)(int)str, 32);
-  i0 = (int)Parameter__in;
-  i1 = *(int*)(i0-4);
-  i2 = (int)((_Type)i1)->tbprocs[3];
+  i2 = (int)Parameter__in;
+  i1 = *(int*)(i2-4);
+  i0 = (int)((_Type)i1)->tbprocs[3];
   i1 = *ParamOptions__OptionsSectionDesc_Parse_currSymPos;
-  ((_TBP_Parameter__StreamDesc_Error)i2)((Parameter__Stream)i0, (int)i1, (const unsigned char*)(int)str, 32);
-l4:
-  if (i4) goto l5;
-  i0 = expected == 7;
-  if (i0) goto l5;
+  ((_TBP_Parameter__StreamDesc_Error)i0)((Parameter__Stream)i2, (int)i1, (const unsigned char*)(int)str, 32);
+l2:
+  i0 = expected != 7;
+  if (!(i0)) goto l3;
   ParamOptions__OptionsSectionDesc_Parse_GetSym(&*ParamOptions__OptionsSectionDesc_Parse_currSymPos, &*ParamOptions__OptionsSectionDesc_Parse_sym, ParamOptions__OptionsSectionDesc_Parse_str, &*ParamOptions__OptionsSectionDesc_Parse_includeEnd);
-l5:
+l3:
   ;
 }
 
@@ -605,50 +599,51 @@ l2:
 
 void ParamOptions__OptionsSectionDesc_Parse_Assign(unsigned char def, signed char *ParamOptions__OptionsSectionDesc_Parse_sym, ParamOptions__Option *ParamOptions__OptionsSectionDesc_Parse_opt, ParamOptions__OptionsSection *ParamOptions__OptionsSectionDesc_Parse_s, Parameter__LargeString ParamOptions__OptionsSectionDesc_Parse_str, Parameter__LargeString ParamOptions__OptionsSectionDesc_Parse_name, int *ParamOptions__OptionsSectionDesc_Parse_currSymPos, unsigned char *ParamOptions__OptionsSectionDesc_Parse_includeEnd) {
   register int i0, i1, i2, i3;
-  i2 = *ParamOptions__OptionsSectionDesc_Parse_sym;
-  i0 = i2 == 5;
+  i0 = *ParamOptions__OptionsSectionDesc_Parse_sym;
+  i0 = i0 == 5;
   if (i0) goto l0;
   i1 = (int)Parameter__in;
-  i3 = *(int*)(i1-4);
-  i0 = *ParamOptions__OptionsSectionDesc_Parse_currSymPos;
-  i3 = (int)((_Type)i3)->tbprocs[3];
-  ((_TBP_Parameter__StreamDesc_Error)i3)((Parameter__Stream)i1, (int)i0, (const unsigned char*)(int)_c14, 23);
+  i2 = *(int*)(i1-4);
+  i0 = (int)((_Type)i2)->tbprocs[3];
+  i2 = *ParamOptions__OptionsSectionDesc_Parse_currSymPos;
+  ((_TBP_Parameter__StreamDesc_Error)i0)((Parameter__Stream)i1, (int)i2, (const unsigned char*)(int)_c14, 23);
   ParamOptions__OptionsSectionDesc_Parse_GetSym(&*ParamOptions__OptionsSectionDesc_Parse_currSymPos, &*ParamOptions__OptionsSectionDesc_Parse_sym, ParamOptions__OptionsSectionDesc_Parse_str, &*ParamOptions__OptionsSectionDesc_Parse_includeEnd);
   goto l7;
 l0:
-  i2 = (int)*ParamOptions__OptionsSectionDesc_Parse_s;
-  i1 = *(int*)(i2-4);
-  i1 = (int)((_Type)i1)->tbprocs[3];
-  i1 = (int)((_TBP_ParamOptions__OptionsSectionDesc_Find)i1)((ParamOptions__OptionsSection)i2, (const unsigned char*)(int)ParamOptions__OptionsSectionDesc_Parse_str, 2048);
-  *ParamOptions__OptionsSectionDesc_Parse_opt = (void*)i1;
-  i1 = (int)*ParamOptions__OptionsSectionDesc_Parse_opt;
-  i0 = *ParamOptions__OptionsSectionDesc_Parse_currSymPos;
-  i3 = i1 != 0;
-  (void)memcpy((void*) (int)ParamOptions__OptionsSectionDesc_Parse_name, (const void*) (int)ParamOptions__OptionsSectionDesc_Parse_str, 2048);
-  if (i3) goto l1;
-  i2 += 12;
-  i3 = *(signed char*)i2;
-  i2 = i3 == 0;
-  if (i2) goto l2;
-  i3 = i3 != 1;
-  if (i3) goto l1;
-  if (!(def)) goto l2;
-l1:
-  i1 = i1 != 0;
-  if (!(i1)) goto l3;
-  if (!(def)) goto l3;
-  i1 = (int)Parameter__in;
+  i1 = (int)*ParamOptions__OptionsSectionDesc_Parse_s;
   i2 = *(int*)(i1-4);
   i2 = (int)((_Type)i2)->tbprocs[3];
-  ((_TBP_Parameter__StreamDesc_Error)i2)((Parameter__Stream)i1, (int)i0, (const unsigned char*)(int)_c16, 25);
+  i2 = (int)((_TBP_ParamOptions__OptionsSectionDesc_Find)i2)((ParamOptions__OptionsSection)i1, (const unsigned char*)(int)ParamOptions__OptionsSectionDesc_Parse_str, 2048);
+  *ParamOptions__OptionsSectionDesc_Parse_opt = (void*)i2;
+  (void)memcpy((void*) (int)ParamOptions__OptionsSectionDesc_Parse_name, (const void*) (int)ParamOptions__OptionsSectionDesc_Parse_str, 2048);
+  i3 = (int)*ParamOptions__OptionsSectionDesc_Parse_opt;
+  i2 = i3 != 0;
+  if (i2) goto l1;
+  i0 = (int)*ParamOptions__OptionsSectionDesc_Parse_s;
+  i0 += 12;
+  i1 = *(signed char*)i0;
+  i0 = i1 == 0;
+  if (i0) goto l2;
+  i1 = i1 != 1;
+  if (i1) goto l1;
+  if (!(def)) goto l2;
+l1:
+  i3 = i3 != 0;
+  if (!(i3)) goto l3;
+  if (!(def)) goto l3;
+  i3 = (int)Parameter__in;
+  i1 = *(int*)(i3-4);
+  i2 = (int)((_Type)i1)->tbprocs[3];
+  i1 = *ParamOptions__OptionsSectionDesc_Parse_currSymPos;
+  ((_TBP_Parameter__StreamDesc_Error)i2)((Parameter__Stream)i3, (int)i1, (const unsigned char*)(int)_c16, 25);
   goto l3;
 l2:
-  i3 = (int)Parameter__in;
-  i2 = *(int*)(i3-4);
-  i2 = (int)((_Type)i2)->tbprocs[3];
-  ((_TBP_Parameter__StreamDesc_Error)i2)((Parameter__Stream)i3, (int)i0, (const unsigned char*)(int)_c15, 21);
+  i1 = (int)Parameter__in;
+  i2 = *(int*)(i1-4);
+  i0 = (int)((_Type)i2)->tbprocs[3];
+  i2 = *ParamOptions__OptionsSectionDesc_Parse_currSymPos;
+  ((_TBP_Parameter__StreamDesc_Error)i0)((Parameter__Stream)i1, (int)i2, (const unsigned char*)(int)_c15, 21);
 l3:
-  *ParamOptions__OptionsSectionDesc_Parse_sym = (signed char)5;
   ParamOptions__OptionsSectionDesc_Parse_GetSym(&*ParamOptions__OptionsSectionDesc_Parse_currSymPos, &*ParamOptions__OptionsSectionDesc_Parse_sym, ParamOptions__OptionsSectionDesc_Parse_str, &*ParamOptions__OptionsSectionDesc_Parse_includeEnd);
   ParamOptions__OptionsSectionDesc_Parse_Match((signed char)4, &*ParamOptions__OptionsSectionDesc_Parse_sym, &*ParamOptions__OptionsSectionDesc_Parse_currSymPos, ParamOptions__OptionsSectionDesc_Parse_str, &*ParamOptions__OptionsSectionDesc_Parse_includeEnd);
   i2 = (int)*ParamOptions__OptionsSectionDesc_Parse_opt;
@@ -814,9 +809,10 @@ l1:
 
 void ParamOptions__Init(signed char undef) {
   register int i0, i1;
+  i1 = (int)ParamOptions__options;
+  i0 = i1 + 12;
+  *(signed char*)i0 = undef;
   i0 = (int)ParamOptions__options;
-  i1 = i0 + 12;
-  *(signed char*)i1 = undef;
   Parameter__AddSection((const unsigned char*)(int)_c20, 8, (Parameter__Section)i0);
 }
 

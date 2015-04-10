@@ -1166,13 +1166,14 @@ unsigned int TextRider__ReaderDesc_ReadSet_ReadRange(TextRider__Reader *TextRide
   register int i0, i1, i2, i3, i4;
   signed char high;
   signed char low;
-  i0 = (int)*TextRider__ReaderDesc_ReadSet_r;
-  i1 = *(int*)(i0-4);
-  i2 = (int)((_Type)i1)->tbprocs[16];
-  ((_TBP_TextRider__ReaderDesc_ReadSInt)i2)((TextRider__Reader)i0, (signed char *)(int)&low);
-  i1 = (int)*(void**)i0;
-  i1 = i1 == 0;
-  if (i1) goto l0;
+  i1 = (int)*TextRider__ReaderDesc_ReadSet_r;
+  i0 = *(int*)(i1-4);
+  i0 = (int)((_Type)i0)->tbprocs[16];
+  ((_TBP_TextRider__ReaderDesc_ReadSInt)i0)((TextRider__Reader)i1, (signed char *)(int)&low);
+  i2 = (int)*TextRider__ReaderDesc_ReadSet_r;
+  i0 = (int)*(void**)i2;
+  i0 = i0 == 0;
+  if (i0) goto l0;
   i4 = 0;
   i3 = low;
   goto l7;
@@ -1181,62 +1182,70 @@ l0:
   if (i1) goto l6;
   i1 = low > 31;
   if (i1) goto l6;
-  i3 = TextRider__Lookahead((TextRider__Reader)i0, (short int)2);
+  i3 = TextRider__Lookahead((TextRider__Reader)i2, (short int)2);
   if (!(i3)) goto l1;
-  i3 = i0 + 21;
-  i4 = *(unsigned char*)i3;
+  i3 = (int)*TextRider__ReaderDesc_ReadSet_r;
+  i0 = i3 + 21;
+  i4 = *(unsigned char*)i0;
   i4 = i4 != 46;
   if (i4) goto l1;
-  i3++;
-  i3 = *(unsigned char*)i3;
-  i3 = i3 == 46;
-  if (i3) goto l2;
+  i4 = i0 + 1;
+  i4 = *(unsigned char*)i4;
+  i4 = i4 == 46;
+  if (i4) goto l2;
 l1:
   i4 = 0;
   i3 = low;
   goto l7;
 l2:
-  i4 = TextRider__Consume((TextRider__Reader)i0);
+  i4 = TextRider__Consume((TextRider__Reader)i3);
   *TextRider__ReaderDesc_ReadSet_ch = i4;
-  i4 = TextRider__Consume((TextRider__Reader)i0);
+  i4 = (int)*TextRider__ReaderDesc_ReadSet_r;
+  i4 = TextRider__Consume((TextRider__Reader)i4);
   *TextRider__ReaderDesc_ReadSet_ch = i4;
-  TextRider__SkipBlanks((TextRider__Reader)i0);
+  i4 = (int)*TextRider__ReaderDesc_ReadSet_r;
+  TextRider__SkipBlanks((TextRider__Reader)i4);
+  i4 = (int)*TextRider__ReaderDesc_ReadSet_r;
+  i3 = *(int*)(i4-4);
+  i3 = (int)((_Type)i3)->tbprocs[16];
   high = (signed char)low;
   high = (signed char)low;
-  ((_TBP_TextRider__ReaderDesc_ReadSInt)i2)((TextRider__Reader)i0, (signed char *)(int)&high);
-  i2 = (int)*(void**)i0;
-  i2 = i2 != 0;
-  if (i2) goto l3;
-  i2 = high < 0;
-  if (i2) goto l4;
-  i2 = high > 31;
-  if (i2) goto l4;
-  i2 = high < low;
-  if (i2) goto l4;
+  ((_TBP_TextRider__ReaderDesc_ReadSInt)i3)((TextRider__Reader)i4, (signed char *)(int)&high);
+  i4 = (int)*TextRider__ReaderDesc_ReadSet_r;
+  i3 = (int)*(void**)i4;
+  i3 = i3 != 0;
+  if (i3) goto l3;
+  i3 = high < 0;
+  if (i3) goto l4;
+  i3 = high > 31;
+  if (i3) goto l4;
+  i3 = high < low;
+  if (i3) goto l4;
 l3:
   i4 = 0;
   goto l5;
 l4:
-  i2 = (int)TextRider__GetError((int)1);
-  *(void**)i0 = (void*)i2;
+  i3 = (int)TextRider__GetError((int)1);
+  *(void**)i4 = (void*)i3;
   i4 = 1;
 l5:
   i3 = high;
   goto l7;
 l6:
   i1 = (int)TextRider__GetError((int)1);
-  *(void**)i0 = (void*)i1;
+  *(void**)i2 = (void*)i1;
   i3 = low;
   i4 = 1;
 l7:
   if (i4) goto l8;
+  i0 = (int)*TextRider__ReaderDesc_ReadSet_r;
   TextRider__SkipBlanks((TextRider__Reader)i0);
-  i1 = _bit_range((unsigned int), low, i3);
+  i0 = _bit_range((unsigned int), low, i3);
   goto l9;
 l8:
-  i1 = 0x0U;
+  i0 = 0x0U;
 l9:
-  return (unsigned int)i1;
+  return (unsigned int)i0;
 }
 
 void TextRider__ReaderDesc_ReadSet(TextRider__Reader r, unsigned int *s) {
@@ -1469,20 +1478,23 @@ l0:
 }
 
 void TextRider__ScannerDesc_Scan_ReadNum_Get(short int *TextRider__ScannerDesc_Scan_pos, unsigned char TextRider__ScannerDesc_Scan_str[1024], TextRider__Scanner *TextRider__ScannerDesc_Scan_s) {
-  register int i0, i1, i2, i3, i4;
-  i3 = *TextRider__ScannerDesc_Scan_pos;
-  i1 = (int)*TextRider__ScannerDesc_Scan_s;
-  i0 = i3 >= 1024;
-  i2 = i1 + 4;
+  register int i0, i1, i2;
+  i1 = *TextRider__ScannerDesc_Scan_pos;
+  i0 = i1 >= 1024;
   if (i0) goto l0;
-  i0 = (int)*(void**)i2;
-  i4 = (int)TextRider__ScannerDesc_Scan_str + i3;
-  i0 = TextRider__Consume((TextRider__Reader)i0);
-  *(unsigned char*)i4 = i0;
+  i0 = (int)*TextRider__ScannerDesc_Scan_s;
+  i0 += 4;
+  i2 = (int)*(void**)i0;
+  i0 = (int)TextRider__ScannerDesc_Scan_str + i1;
+  i2 = TextRider__Consume((TextRider__Reader)i2);
+  *(unsigned char*)i0 = i2;
 l0:
-  i0 = (int)*(void**)i2;
-  i1 = i3 + 1;
-  *TextRider__ScannerDesc_Scan_pos = i1;
+  i0 = *TextRider__ScannerDesc_Scan_pos;
+  i0++;
+  *TextRider__ScannerDesc_Scan_pos = i0;
+  i0 = (int)*TextRider__ScannerDesc_Scan_s;
+  i0 += 4;
+  i0 = (int)*(void**)i0;
   i1 = (int)*(void**)i0;
   i1 = i1 == 0;
   if (i1) goto l1;
@@ -1506,10 +1518,10 @@ unsigned char TextRider__ScannerDesc_Scan_ReadNum_LA(TextRider__Scanner *TextRid
 }
 
 void TextRider__ScannerDesc_Scan_ReadNum(TextRider__Scanner *TextRider__ScannerDesc_Scan_s, short int *TextRider__ScannerDesc_Scan_pos, unsigned char TextRider__ScannerDesc_Scan_str[1024], signed char *TextRider__ScannerDesc_Scan_res) {
-  register int i0, i1, i2, i3, i4, i5;
+  register int i0, i1, i2, i3, i4;
   register double d0;
-  i4 = (int)*TextRider__ScannerDesc_Scan_s;
-  i0 = i4 + 4;
+  i0 = (int)*TextRider__ScannerDesc_Scan_s;
+  i0 += 4;
   i3 = (int)*(void**)i0;
   i0 = (int)*(void**)i3;
   i0 = i0 != 0;
@@ -1518,144 +1530,149 @@ void TextRider__ScannerDesc_Scan_ReadNum(TextRider__Scanner *TextRider__ScannerD
   if (!(i1)) goto l19;
   *TextRider__ScannerDesc_Scan_pos = 0;
   i2 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
-  i5 = i2 == 45;
-  if (i5) goto l0;
+  i4 = i2 == 45;
+  if (i4) goto l0;
   i2 = i2 != 43;
   if (i2) goto l1;
 l0:
   TextRider__ScannerDesc_Scan_ReadNum_Get(&*TextRider__ScannerDesc_Scan_pos, TextRider__ScannerDesc_Scan_str, (TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
 l1:
-  i5 = (int)*TextRider__ScannerDesc_Scan_s;
-  i4 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
-  i4 = CharClass__IsNumeric((unsigned char)i4);
+  i2 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
+  i4 = CharClass__IsNumeric((unsigned char)i2);
   if (i4) goto l2;
+  i3 = (int)*TextRider__ScannerDesc_Scan_s;
   i2 = (int)TextRider__GetError((int)8);
-  *(void**)i5 = (void*)i2;
+  *(void**)i3 = (void*)i2;
   goto l4;
 l2:
-  i5 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
-  i5 = TextRider__HexDigit((unsigned char)i5);
-  if (!(i5)) goto l4;
+  i2 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
+  i2 = TextRider__HexDigit((unsigned char)i2);
+  if (!(i2)) goto l4;
 l3:
   TextRider__ScannerDesc_Scan_ReadNum_Get(&*TextRider__ScannerDesc_Scan_pos, TextRider__ScannerDesc_Scan_str, (TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
-  i5 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
-  i5 = TextRider__HexDigit((unsigned char)i5);
-  if (i5) goto l3;
+  i2 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
+  i2 = TextRider__HexDigit((unsigned char)i2);
+  if (i2) goto l3;
 l4:
   if (!(i4)) goto l19;
-  i4 = (int)*TextRider__ScannerDesc_Scan_s;
-  i5 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
-  i3 = i5 == 46;
+  i2 = (int)*TextRider__ScannerDesc_Scan_s;
+  i4 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
+  i3 = i4 == 46;
   if (i3) goto l7;
-  i5 = i5 == 72;
-  if (i5) goto l5;
-  i0 = *TextRider__ScannerDesc_Scan_pos;
-  i2 = i4 + 16;
-  i3 = i4 + 28;
-  i5 = (int)TextRider__ScannerDesc_Scan_str + i0;
-  *(short int*)i2 = 2;
-  *(unsigned char*)i5 = 0;
-  i0 = *(int*)i3;
-  i2 = *TextRider__ScannerDesc_Scan_res;
-  IntStr__StrToInt((const unsigned char*)(int)TextRider__ScannerDesc_Scan_str, 1024, (int *)i3, (signed char *)(int)TextRider__ScannerDesc_Scan_res);
+  i4 = i4 == 72;
+  if (i4) goto l5;
+  i0 = i2 + 16;
+  *(short int*)i0 = 2;
+  i3 = *TextRider__ScannerDesc_Scan_pos;
+  i0 = (int)TextRider__ScannerDesc_Scan_str + i3;
+  *(unsigned char*)i0 = 0;
+  i0 = (int)*TextRider__ScannerDesc_Scan_s;
+  i0 += 28;
+  i4 = *(int*)i0;
+  i3 = *TextRider__ScannerDesc_Scan_res;
+  IntStr__StrToInt((const unsigned char*)(int)TextRider__ScannerDesc_Scan_str, 1024, (int *)i0, (signed char *)(int)TextRider__ScannerDesc_Scan_res);
   i0 = *TextRider__ScannerDesc_Scan_res;
   i0 = i0 == 0;
   if (i0) goto l19;
-  i0 = (int)TextRider__GetError((int)8);
-  *(void**)i4 = (void*)i0;
+  i0 = (int)*TextRider__ScannerDesc_Scan_s;
+  i3 = (int)TextRider__GetError((int)8);
+  *(void**)i0 = (void*)i3;
   goto l19;
 l5:
-  i0 = *TextRider__ScannerDesc_Scan_pos;
-  i2 = i4 + 28;
-  i3 = i4 + 16;
-  i5 = (int)TextRider__ScannerDesc_Scan_str + i0;
+  i3 = i2 + 16;
   *(short int*)i3 = 2;
-  *(unsigned char*)i5 = 0;
-  i3 = *(int*)i2;
-  i3 = TextRider__HexToInt((const unsigned char*)(int)TextRider__ScannerDesc_Scan_str, 1024, (int *)i2);
-  if (i3) goto l6;
-  i2 = (int)TextRider__GetError((int)8);
-  *(void**)i4 = (void*)i2;
+  i3 = *TextRider__ScannerDesc_Scan_pos;
+  i0 = (int)TextRider__ScannerDesc_Scan_str + i3;
+  *(unsigned char*)i0 = 0;
+  i3 = (int)*TextRider__ScannerDesc_Scan_s;
+  i0 = i3 + 28;
+  i4 = *(int*)i0;
+  i4 = TextRider__HexToInt((const unsigned char*)(int)TextRider__ScannerDesc_Scan_str, 1024, (int *)i0);
+  if (i4) goto l6;
+  i3 = (int)*TextRider__ScannerDesc_Scan_s;
+  i0 = (int)TextRider__GetError((int)8);
+  *(void**)i3 = (void*)i0;
 l6:
   TextRider__ScannerDesc_Scan_ReadNum_Get(&*TextRider__ScannerDesc_Scan_pos, TextRider__ScannerDesc_Scan_str, (TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
   goto l19;
 l7:
-  i0 = i4 + 16;
-  *(short int*)i0 = 3;
+  i3 = i2 + 16;
+  *(short int*)i3 = 3;
   TextRider__ScannerDesc_Scan_ReadNum_Get(&*TextRider__ScannerDesc_Scan_pos, TextRider__ScannerDesc_Scan_str, (TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
-  i0 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
-  i0 = CharClass__IsNumeric((unsigned char)i0);
-  if (!(i0)) goto l9;
+  i3 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
+  i3 = CharClass__IsNumeric((unsigned char)i3);
+  if (!(i3)) goto l9;
 l8:
   TextRider__ScannerDesc_Scan_ReadNum_Get(&*TextRider__ScannerDesc_Scan_pos, TextRider__ScannerDesc_Scan_str, (TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
-  i0 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
-  i0 = CharClass__IsNumeric((unsigned char)i0);
-  if (i0) goto l8;
+  i3 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
+  i3 = CharClass__IsNumeric((unsigned char)i3);
+  if (i3) goto l8;
 l9:
-  i0 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
-  i4 = i0 == 69;
-  if (i4) goto l10;
-  i0 = i0 == 101;
-  if (i0) goto l10;
-  i4 = 0;
+  i3 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
+  i2 = i3 == 69;
+  if (i2) goto l10;
+  i3 = i3 == 101;
+  if (i3) goto l10;
+  i2 = 0;
   goto l17;
 l10:
   TextRider__ScannerDesc_Scan_ReadNum_Get(&*TextRider__ScannerDesc_Scan_pos, TextRider__ScannerDesc_Scan_str, (TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
   i2 = *TextRider__ScannerDesc_Scan_pos;
-  i4 = i2 - 1;
-  i0 = i4 >= 1024;
-  if (i0) goto l11;
-  i0 = (int)TextRider__ScannerDesc_Scan_str + i4;
-  *(unsigned char*)i0 = 69;
+  i2--;
+  i4 = i2 >= 1024;
+  if (i4) goto l11;
+  i4 = (int)TextRider__ScannerDesc_Scan_str + i2;
+  *(unsigned char*)i4 = 69;
 l11:
   i4 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
-  i0 = i4 == 45;
-  if (i0) goto l12;
+  i2 = i4 == 45;
+  if (i2) goto l12;
   i4 = i4 != 43;
   if (i4) goto l13;
 l12:
   TextRider__ScannerDesc_Scan_ReadNum_Get(&*TextRider__ScannerDesc_Scan_pos, TextRider__ScannerDesc_Scan_str, (TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
 l13:
-  i0 = (int)*TextRider__ScannerDesc_Scan_s;
-  i4 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
-  i2 = CharClass__IsNumeric((unsigned char)i4);
-  if (i2) goto l14;
-  i4 = (int)TextRider__GetError((int)8);
-  *(void**)i0 = (void*)i4;
+  i2 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
+  i4 = CharClass__IsNumeric((unsigned char)i2);
+  if (i4) goto l14;
+  i3 = (int)*TextRider__ScannerDesc_Scan_s;
+  i2 = (int)TextRider__GetError((int)8);
+  *(void**)i3 = (void*)i2;
   goto l16;
 l14:
-  i0 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
-  i0 = CharClass__IsNumeric((unsigned char)i0);
-  if (!(i0)) goto l16;
+  i2 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
+  i2 = CharClass__IsNumeric((unsigned char)i2);
+  if (!(i2)) goto l16;
 l15:
   TextRider__ScannerDesc_Scan_ReadNum_Get(&*TextRider__ScannerDesc_Scan_pos, TextRider__ScannerDesc_Scan_str, (TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
-  i0 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
-  i0 = CharClass__IsNumeric((unsigned char)i0);
-  if (i0) goto l15;
+  i2 = TextRider__ScannerDesc_Scan_ReadNum_LA((TextRider__Scanner *)&*TextRider__ScannerDesc_Scan_s);
+  i2 = CharClass__IsNumeric((unsigned char)i2);
+  if (i2) goto l15;
 l16:
-  i4 = ! i2;
+  i2 = ! i4;
 l17:
-  if (i4) goto l19;
-  i4 = *TextRider__ScannerDesc_Scan_pos;
-  i3 = i4 < 1024;
+  if (i2) goto l19;
+  i2 = *TextRider__ScannerDesc_Scan_pos;
+  i3 = i2 < 1024;
   if (i3) goto l18;
   i3 = (int)*TextRider__ScannerDesc_Scan_s;
   i2 = (int)TextRider__GetError((int)8);
   *(void**)i3 = (void*)i2;
   goto l19;
 l18:
-  i3 = (int)*TextRider__ScannerDesc_Scan_s;
-  i0 = i3 + 32;
-  i2 = (int)TextRider__ScannerDesc_Scan_str + i4;
-  *(unsigned char*)i2 = 0;
-  d0 = *(double*)i0;
+  i3 = (int)TextRider__ScannerDesc_Scan_str + i2;
+  *(unsigned char*)i3 = 0;
+  i2 = (int)*TextRider__ScannerDesc_Scan_s;
+  i3 = i2 + 32;
+  d0 = *(double*)i3;
   i2 = *TextRider__ScannerDesc_Scan_res;
-  LRealStr__StrToReal((const unsigned char*)(int)TextRider__ScannerDesc_Scan_str, 1024, (double *)i0, (signed char *)(int)TextRider__ScannerDesc_Scan_res);
-  i0 = *TextRider__ScannerDesc_Scan_res;
-  i0 = i0 == 0;
-  if (i0) goto l19;
-  i0 = (int)TextRider__GetError((int)8);
-  *(void**)i3 = (void*)i0;
+  LRealStr__StrToReal((const unsigned char*)(int)TextRider__ScannerDesc_Scan_str, 1024, (double *)i3, (signed char *)(int)TextRider__ScannerDesc_Scan_res);
+  i2 = *TextRider__ScannerDesc_Scan_res;
+  i2 = i2 == 0;
+  if (i2) goto l19;
+  i2 = (int)*TextRider__ScannerDesc_Scan_s;
+  i3 = (int)TextRider__GetError((int)8);
+  *(void**)i2 = (void*)i3;
 l19:
   ;
 }
@@ -1676,34 +1693,34 @@ void TextRider__ScannerDesc_Scan(TextRider__Scanner s) {
   i4 = i5 + 16;
   i0 = *(short int*)i4;
   i0 = i0 >= 9;
-  if (i0) goto l21;
+  if (i0) goto l20;
   TextRider__SkipSpaces((TextRider__Scanner)i5);
   i3 = (int)*(void**)i5;
   i3 = i3 != 0;
   if (i3) goto l16;
   i2 = i5 + 4;
-  i6 = (int)*(void**)i2;
-  i1 = TextRider__Lookahead((TextRider__Reader)i6, (short int)1);
+  i0 = (int)*(void**)i2;
+  i1 = TextRider__Lookahead((TextRider__Reader)i0, (short int)1);
   if (!(i1)) goto l16;
-  i6 = *(int*)(i5-4);
-  i6 = (int)((_Type)i6)->tbprocs[0];
-  i6 = ((_TBP_TextRider__ScannerDesc_Pos)i6)((TextRider__Scanner)i5);
+  i0 = *(int*)(i5-4);
+  i0 = (int)((_Type)i0)->tbprocs[0];
+  i0 = ((_TBP_TextRider__ScannerDesc_Pos)i0)((TextRider__Scanner)i5);
   i3 = i5 + 20;
-  *(int*)i3 = i6;
-  i6 = (int)*(void**)i2;
-  i3 = *(int*)(i6-4);
+  *(int*)i3 = i0;
+  i0 = (int)*(void**)i2;
+  i3 = *(int*)(i0-4);
   i3 = (int)((_Type)i3)->tbprocs[7];
-  i6 = ((_TBP_TextRider__ReaderDesc_Eol)i3)((TextRider__Reader)i6);
-  if (i6) goto l15;
-  i6 = (int)*(void**)i2;
-  i3 = i6 + 21;
+  i0 = ((_TBP_TextRider__ReaderDesc_Eol)i3)((TextRider__Reader)i0);
+  if (i0) goto l15;
+  i0 = (int)*(void**)i2;
+  i3 = i0 + 21;
   i3 = *(unsigned char*)i3;
   if (!(i3<=33 || (i3>=35 && i3<=38) || (i3>=40 && i3<=42) || i3==44 || (i3>=46 && i3<=47) || (i3>=58 && i3<=64) || (i3>=91 && i3<=96) || i3>=124)) goto l2;
   i4 = i5 + 40;
-  i0 = *(int*)(i6-4);
+  i6 = *(int*)(i0-4);
   i3 = *(unsigned char*)i4;
-  i0 = (int)((_Type)i0)->tbprocs[6];
-  ((_TBP_TextRider__ReaderDesc_ReadChar)i0)((TextRider__Reader)i6, (unsigned char *)i4);
+  i6 = (int)((_Type)i6)->tbprocs[6];
+  ((_TBP_TextRider__ReaderDesc_ReadChar)i6)((TextRider__Reader)i0, (unsigned char *)i4);
   i4 = *(unsigned char*)i4;
   i4 = i4 == 9;
   if (i4) goto l0;
@@ -1714,7 +1731,7 @@ l0:
   s = (void*)i5;
   TextRider__ScannerDesc_Scan_SetType((signed char)6, (TextRider__Scanner *)&s);
 l1:
-  i0 = i5;
+  i6 = i5;
   goto l17;
 l2:
   if (!(i3==34 || i3==39)) goto l5;
@@ -1722,30 +1739,30 @@ l2:
   i4 = *(unsigned int*)i4;
   i4 = (i4 & ((unsigned int)1 << 3)) != 0;
   if (i4) goto l3;
-  i3 = *(int*)(i6-4);
-  i0 = i5 + 40;
+  i3 = *(int*)(i0-4);
+  i6 = i5 + 40;
   i4 = (int)((_Type)i3)->tbprocs[6];
-  i3 = *(unsigned char*)i0;
-  ((_TBP_TextRider__ReaderDesc_ReadChar)i4)((TextRider__Reader)i6, (unsigned char *)i0);
+  i3 = *(unsigned char*)i6;
+  ((_TBP_TextRider__ReaderDesc_ReadChar)i4)((TextRider__Reader)i0, (unsigned char *)i6);
   s = (void*)i5;
   TextRider__ScannerDesc_Scan_SetType((signed char)0, (TextRider__Scanner *)&s);
   goto l4;
 l3:
-  i4 = *(int*)(i6-4);
-  i0 = i5 + 41;
+  i4 = *(int*)(i0-4);
+  i6 = i5 + 41;
   i4 = (int)((_Type)i4)->tbprocs[9];
-  ((_TBP_TextRider__ReaderDesc_ReadString)i4)((TextRider__Reader)i6, (unsigned char*)i0, 256);
+  ((_TBP_TextRider__ReaderDesc_ReadString)i4)((TextRider__Reader)i0, (unsigned char*)i6, 256);
   s = (void*)i5;
   TextRider__ScannerDesc_Scan_SetType((signed char)1, (TextRider__Scanner *)&s);
 l4:
-  i0 = i5;
+  i6 = i5;
   goto l17;
 l5:
   if (!((i3>=65 && i3<=90) || (i3>=97 && i3<=122))) goto l9;
   i4 = i5 + 41;
-  i3 = *(int*)(i6-4);
+  i3 = *(int*)(i0-4);
   i3 = (int)((_Type)i3)->tbprocs[11];
-  ((_TBP_TextRider__ReaderDesc_ReadIdentifier)i3)((TextRider__Reader)i6, (unsigned char*)i4, 256);
+  ((_TBP_TextRider__ReaderDesc_ReadIdentifier)i3)((TextRider__Reader)i0, (unsigned char*)i4, 256);
   i3 = (int)*(void**)i2;
   i3 = (int)*(void**)i3;
   i3 = i3 != 0;
@@ -1768,35 +1785,35 @@ l7:
   s = (void*)i5;
   TextRider__ScannerDesc_Scan_SetType((signed char)4, (TextRider__Scanner *)&s);
 l8:
-  i0 = i5;
+  i6 = i5;
   goto l17;
 l9:
   if (!(i3==43 || i3==45)) goto l11;
-  i0 = i5 + 12;
-  i0 = *(unsigned int*)i0;
-  i0 = (i0 & ((unsigned int)1 << 4)) != 0;
-  if (i0) goto l10;
-  i3 = *(int*)(i6-4);
+  i6 = i5 + 12;
+  i6 = *(unsigned int*)i6;
+  i6 = (i6 & ((unsigned int)1 << 4)) != 0;
+  if (i6) goto l10;
+  i3 = *(int*)(i0-4);
   i4 = i5 + 40;
-  i0 = (int)((_Type)i3)->tbprocs[6];
+  i6 = (int)((_Type)i3)->tbprocs[6];
   i3 = *(unsigned char*)i4;
-  ((_TBP_TextRider__ReaderDesc_ReadChar)i0)((TextRider__Reader)i6, (unsigned char *)i4);
+  ((_TBP_TextRider__ReaderDesc_ReadChar)i6)((TextRider__Reader)i0, (unsigned char *)i4);
   s = (void*)i5;
   TextRider__ScannerDesc_Scan_SetType((signed char)0, (TextRider__Scanner *)&s);
-  i0 = i5;
+  i6 = i5;
   goto l17;
 l10:
   s = (void*)i5;
   s = (void*)i5;
   TextRider__ScannerDesc_Scan_ReadNum((TextRider__Scanner *)&s, &pos, str, &res);
-  i0 = (int)s;
+  i6 = (int)s;
   goto l17;
 l11:
   if (!((i3>=48 && i3<=57))) goto l12;
   s = (void*)i5;
   s = (void*)i5;
   TextRider__ScannerDesc_Scan_ReadNum((TextRider__Scanner *)&s, &pos, str, &res);
-  i0 = (int)s;
+  i6 = (int)s;
   goto l17;
 l12:
   if (!(i3==123)) goto l17;
@@ -1804,24 +1821,24 @@ l12:
   i4 = *(unsigned int*)i4;
   i4 = (i4 & ((unsigned int)1 << 2)) != 0;
   if (i4) goto l13;
-  i3 = *(int*)(i6-4);
-  i0 = i5 + 40;
+  i3 = *(int*)(i0-4);
+  i6 = i5 + 40;
   i4 = (int)((_Type)i3)->tbprocs[6];
-  i3 = *(unsigned char*)i0;
-  ((_TBP_TextRider__ReaderDesc_ReadChar)i4)((TextRider__Reader)i6, (unsigned char *)i0);
+  i3 = *(unsigned char*)i6;
+  ((_TBP_TextRider__ReaderDesc_ReadChar)i4)((TextRider__Reader)i0, (unsigned char *)i6);
   s = (void*)i5;
   TextRider__ScannerDesc_Scan_SetType((signed char)0, (TextRider__Scanner *)&s);
   goto l14;
 l13:
-  i0 = *(int*)(i6-4);
+  i6 = *(int*)(i0-4);
   i3 = i5 + 300;
-  i4 = (int)((_Type)i0)->tbprocs[19];
-  i0 = *(unsigned int*)i3;
-  ((_TBP_TextRider__ReaderDesc_ReadSet)i4)((TextRider__Reader)i6, (unsigned int *)i3);
+  i4 = (int)((_Type)i6)->tbprocs[19];
+  i6 = *(unsigned int*)i3;
+  ((_TBP_TextRider__ReaderDesc_ReadSet)i4)((TextRider__Reader)i0, (unsigned int *)i3);
   s = (void*)i5;
   TextRider__ScannerDesc_Scan_SetType((signed char)5, (TextRider__Scanner *)&s);
 l14:
-  i0 = i5;
+  i6 = i5;
   goto l17;
 l15:
   *(short int*)i4 = 7;
@@ -1831,46 +1848,45 @@ l15:
   i2 = *(int*)i4;
   i2++;
   *(int*)i4 = i2;
-  i0 = i5;
+  i6 = i5;
   goto l17;
 l16:
   i3 = i5 + 4;
   i3 = (int)*(void**)i3;
   i3 = TextRider__Consume((TextRider__Reader)i3);
-  i0 = i5;
+  i6 = i5;
 l17:
-  i3 = i0 + 4;
+  i3 = i6 + 4;
   i3 = (int)*(void**)i3;
-  i2 = (int)*(void**)i3;
-  i3 = i2 == 0;
-  if (i3) goto l18;
-  i3 = (int)*(void**)i0;
-  i3 = i3 != 0;
-  if (i3) goto l18;
-  *(void**)i0 = (void*)i2;
+  i3 = (int)*(void**)i3;
+  i2 = i3 == 0;
+  if (i2) goto l18;
+  i2 = (int)*(void**)i6;
+  i2 = i2 != 0;
+  if (i2) goto l18;
+  *(void**)i6 = (void*)i3;
 l18:
-  i1 = (int)*(void**)i0;
-  i3 = i1 == 0;
+  i2 = (int)*(void**)i6;
+  i3 = i2 == 0;
+  if (i3) goto l20;
+  i3 = i2 + 12;
+  i1 = (int)*(void**)i3;
+  i3 = (int)TextRider__errorContext;
+  i3 = i1 != i3;
+  if (i3) goto l20;
+  i2 += 8;
+  i2 = *(int*)i2;
+  i3 = i2 == 8;
   if (i3) goto l19;
-  i2 = i1 + 12;
-  i3 = (int)*(void**)i2;
-  i2 = (int)TextRider__errorContext;
-  i2 = i3 != i2;
+  i2 = i2 == 1;
   if (i2) goto l19;
-  i1 += 8;
-  i1 = *(int*)i1;
-  i2 = i1 == 8;
-  if (i2) goto l20;
-  i1 = i1 == 1;
-  if (i1) goto l20;
-l19:
-  i3 = i0 + 16;
+  i3 = i6 + 16;
   *(short int*)i3 = 9;
-  goto l21;
+  goto l20;
+l19:
+  i2 = i6 + 16;
+  *(short int*)i2 = 10;
 l20:
-  i1 = i0 + 16;
-  *(short int*)i1 = 10;
-l21:
   ;
 }
 
@@ -2340,7 +2356,7 @@ TextRider__Reader TextRider__ConnectReader(Channel__Channel ch) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(36)+8);
-    if (!_mem) _new_failed(_P(46213));
+    if (!_mem) _new_failed(_P(46238));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &TextRider__ReaderDesc_td.td;
     i1 = (int)_var;
@@ -2395,7 +2411,7 @@ TextRider__Writer TextRider__ConnectWriter(Channel__Channel ch) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(20)+8);
-    if (!_mem) _new_failed(_P(46892));
+    if (!_mem) _new_failed(_P(46917));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &TextRider__WriterDesc_td.td;
     i1 = (int)_var;
@@ -2431,7 +2447,7 @@ TextRider__Scanner TextRider__ConnectScanner(Channel__Channel ch) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(312)+8);
-    if (!_mem) _new_failed(_P(47444));
+    if (!_mem) _new_failed(_P(47469));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &TextRider__ScannerDesc_td.td;
     i1 = (int)_var;
@@ -2452,7 +2468,7 @@ void TextRider_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(4)+8);
-    if (!_mem) _new_failed(_P(47582));
+    if (!_mem) _new_failed(_P(47607));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &TextRider__ErrorContextDesc_td.td;
     i0 = (int)_var;

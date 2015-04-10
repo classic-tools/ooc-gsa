@@ -17,6 +17,14 @@ typedef struct Parameter__SectionDesc {
   char _10pad, _11pad;
 } Parameter__SectionDesc;
 typedef struct Parameter__SectionDesc* Parameter__Section;
+typedef struct Parameter__IncludeSectionDesc {
+  Parameter__Section next;
+  Parameter__String name;
+  unsigned char defined;
+  unsigned char noWrite;
+  char _10pad, _11pad;
+} Parameter__IncludeSectionDesc;
+typedef struct Parameter__IncludeSectionDesc* Parameter__IncludeSection;
 typedef unsigned char Parameter__LargeString[2048];
 typedef struct Parameter__StreamDesc {
   struct Parameter__StreamDesc* prev;
@@ -54,14 +62,7 @@ typedef struct Parameter__StringStreamDesc {
 } Parameter__StringStreamDesc;
 typedef struct Parameter__StringStreamDesc* Parameter__StringStream;
 extern Parameter__Stream Parameter__in;
-typedef struct Parameter__IncludeSectionDesc {
-  Parameter__Section next;
-  Parameter__String name;
-  unsigned char defined;
-  unsigned char noWrite;
-  char _10pad, _11pad;
-} Parameter__IncludeSectionDesc;
-extern struct Parameter__IncludeSectionDesc* Parameter__include;
+extern Parameter__IncludeSection Parameter__include;
 extern void Parameter__Warning(const unsigned char* msg__ref, int msg_0d);
 extern void Parameter__FatalError(const unsigned char* msg__ref, int msg_0d);
 extern unsigned char Parameter__IsAlpha(unsigned char ch);
@@ -132,7 +133,6 @@ extern void Parameter__FileStreamDesc_Error(Parameter__FileStream s, int pos, co
 typedef int(* _TBP_Parameter__FileStreamDesc_CurrPos)(Parameter__FileStream s);
 #define _TBN_Parameter__FileStreamDesc_CurrPos 4
 extern int Parameter__FileStreamDesc_CurrPos(Parameter__FileStream s);
-typedef struct Parameter__IncludeSectionDesc* Parameter__IncludeSection;
 typedef void(* _TBP_Parameter__IncludeSectionDesc_Parse)(Parameter__IncludeSection incl, unsigned char includeEnd);
 #define _TBN_Parameter__IncludeSectionDesc_Parse 0
 extern void Parameter__IncludeSectionDesc_Parse(Parameter__IncludeSection incl, unsigned char includeEnd);
