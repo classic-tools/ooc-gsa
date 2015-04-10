@@ -53,10 +53,11 @@ BeOS 4.5.2/PPC                    mwcc 1.5
 BeOS 4.5.2/ix86                   egcs-1.0.2
 OS/2 Warp                         EMX 0.9d [2]
 Windows NT & Cygwin32 Beta 19     gcc 2.7-B19
-Windows NT & Cygwin32 Beta 20     egcs-1.1
+Windows NT & Cygwin32 Beta 20     egcs-1.1 [3]
 
   [1] works after modification to LowLReal.Mod (see PROBLEMS)
   [2] works after some modifications to oo2c
+  [3] a bug with file renaming was fixed in Cygwin 1.1.3
 
 oo2c_64:
 operating system                  compiler

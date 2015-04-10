@@ -1,4 +1,4 @@
-(* 	$Id: CNTexi2HTML.Mod,v 1.8 2000/01/07 21:21:55 ooc-devel Exp $	 *)
+(* 	$Id: CNTexi2HTML.Mod,v 1.9 2000/08/20 13:39:16 ooc-devel Exp $	 *)
 MODULE CNTexi2HTML;
 (*  Converts Texinfo text to HTML, similar to texi2html.
     Copyright (C) 1999, 2000  Michael van Acken
@@ -115,6 +115,10 @@ PROCEDURE Convert* (texinfo: Texinfo.Texinfo;
           currBlock. Append ("_");
           ConvertInline (list, noFormat);
           currBlock. Append ("_")
+        | Texinfo.cmdFile:
+          currBlock. Append ("`<tt>");
+          ConvertInline (list, noFormat);
+          currBlock. Append ("</tt>'")
         | Texinfo.cmdOberonParam:
           currBlock. Append ("<var>");
           ConvertInline (list, noFormat);

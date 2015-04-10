@@ -1,4 +1,4 @@
-/*	$Id: __Descr.c,v 1.5 1999/10/03 11:49:55 ooc-devel Exp $	*/
+/*	$Id: __Descr.c,v 1.6 2000/09/23 19:40:47 ooc-devel Exp $	*/
 /* this file is included into __oo2c.c */
 
 /*  Low-level functions to manage module and type descriptors.
@@ -30,7 +30,7 @@ struct _MD Kernel__md = {
   &Kernel__ModuleDesc_td.td, 
   {
     NULL, 
-    (const CHAR*)_n0.name, 
+    (const OOC_CHAR*)_n0.name, 
     -1, 
     NULL
   }
@@ -46,7 +46,7 @@ struct _TD Kernel__ModuleDesc_td = {
   {
     NULL, 
     NULL, 
-    (const CHAR*)_n1.name, 
+    (const OOC_CHAR*)_n1.name, 
     &Kernel__md.md, 
     0, 
     '0', '1', 
@@ -66,7 +66,7 @@ struct _MD Types__md = {
   &Kernel__ModuleDesc_td.td, 
   {
     NULL, 
-    (const CHAR*)_n2.name, 
+    (const OOC_CHAR*)_n2.name, 
     -1, 
     NULL
   }
@@ -82,7 +82,7 @@ struct _TD Types__TypeDesc_td = {
   {
     NULL, 
     NULL, 
-    (const CHAR*)_n3.name, 
+    (const OOC_CHAR*)_n3.name, 
     &Types__md.md, 
     0, 
     '0', '1', 

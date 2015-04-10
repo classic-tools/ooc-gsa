@@ -1,6 +1,80 @@
 Note: Directory parts of files mentioned here refer to the
       OOC source tree, not the shrunk oo2c distribution.
 
+2000-10-09  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/Msg.Mod: Texified documentation.
+
+2000-09-23  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Build.Mod: Use OOC_CHAR** instead of CHAR** for argv.
+
+	* backend/ansi-c/lib/__oo2c.c, backend/ansi-c/lib/__oo2c.h, backend/ansi-c/lib/__StdTypes.h, backend/ansi-c/lib/__Descr.h, backend/ansi-c/lib/__Exception.h, backend/ansi-c/lib/__Descr.c, backend/ansi-c/lib/SysClock.c, backend/ansi-c/lib/Signal.c, backend/ansi-c/lib/OakFiles.c, backend/ansi-c/lib/PosixFileDescr.c, backend/ansi-c/lib/Locales.c, backend/ansi-c/lib/LocStrings.c, backend/ansi-c/lib/Files.c, backend/ansi-c/lib/Exception.c:
+	Renamed C types: BOOLEAN, BYTE, and CHAR are now OOC_BOOLEAN, OOC_BYTE, and
+	OOC_CHAR.  This is intended to resolve a conflict with header files under
+	Windows.
+
+	* backend/ansi-c/lib/PosixFileDescr.c, backend/ansi-c/lib/Termination.c:
+	Set typedef ssize_t when including io.h.
+
+2000-09-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/Files.c:
+	Include unistd.h or io.h, whatever happens to be available.  Use
+	different mode flags for open() with MingW32.  If F_OK is not defined,
+	use 0 instead.
+
+	* backend/ansi-c/lib/PosixFileDescr.c:
+	Include unistd.h or io.h, whatever happens to be available.  Define
+	ssize_t for MingW32.
+
+	* backend/ansi-c/lib/Signal.c:
+	Include unistd.h or io.h, whatever happens to be available.  Use the
+	kill() workaround only if raise() is not available.
+
+	* backend/ansi-c/lib/OakFiles.c:
+	Include unistd.h or io.h, whatever happens to be available.  Use
+	different mode flags for open() with MingW32.
+
+	* backend/ansi-c/lib/SysClock.c:
+	Include unistd.h or io.h, whatever happens to be available.
+
+	* backend/ansi-c/lib/Termination.c:
+	Include unistd.h or io.h, whatever happens to be available.  Use the
+	kill() workaround only if raise() is not available.  Define ssize_t
+	for MingW32.  Don't catch SIGHUP or SIGQUIT if they are not defined.
+
+	* backend/ansi-c/lib/__oo2c.c:
+	Include unistd.h or io.h, whatever happens to be available.  Use the
+	kill() workaround only if raise() is not available.
+
+2000-09-21  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__oo2c.c:
+	Use raise() instead of the kill() workaround with __MINGW32__
+	defined.  [Mh, I wonder why the workaround is there in the first
+	place.  Maybe its for old SunOS 4 systems...]
+
+	* backend/ansi-c/lib/__oo2c.h:
+	Added #include <malloc.h> if __VISUAL_C__ is defined.
+
+2000-09-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenInclude.Mod, frontend/ParamPaths.Mod:
+	Replace any ":" characters in the non-directory part of a file name
+	with "_".  Otherwise, structured module names do not work under CygWin
+	& friends.
+
+2000-08-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNTexi2HTML.Mod, tools/CNTexi2Text.Mod, tools/CNTexinfo.Mod:
+	Added command @file.
+
+2000-07-25  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNDecl.Mod (GetDeclSym):
+	Ignore type-bound procedure declarations during search.
+
 2000-07-21  Michael van Acken  <acken@informatik.uni-kl.de>
 
 	* backend/ansi-c/lib/Files.c (add_msg_attribute):

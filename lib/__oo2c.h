@@ -1,4 +1,4 @@
-/*	$Id: __oo2c.h,v 1.19 2000/05/28 20:40:12 ooc-devel Exp $	*/
+/*	$Id: __oo2c.h,v 1.21 2000/09/23 19:40:51 ooc-devel Exp $	*/
 /*  Run-time system for oo2c programs.
     Copyright (C) 1997-2000  Michael van Acken
 
@@ -23,7 +23,9 @@
 
 /* AIX requires this to be the first thing in the file, except for 
    comments and preprocessor directives */
-#if defined(_ALLOCA_H)
+#ifdef __VISUALC__
+#    include <malloc.h>
+#elif defined(_ALLOCA_H)
 /* ignore if alloca.h has already been included */
 #elif __GNUC__
 #  define alloca __builtin_alloca
@@ -88,7 +90,7 @@ extern void NORETURN _array_stack_overflow(_Pos pos) NORETURN2;
 #define _div_by_zero _integer_div_by_zero 
   /* for compability between 1.3.1 and 1.3.2; will be removed later... */
 
-extern void NORETURN _default_exception_handler(void* source, LONGINT number, const CHAR* message) NORETURN2;
+extern void NORETURN _default_exception_handler(void* source, LONGINT number, const OOC_CHAR* message) NORETURN2;
 extern void NORETURN _halt(LONGINT code) NORETURN2;
 
 
@@ -185,7 +187,7 @@ extern char* _end_vs;  /* end of value stack */
 
 #define _string_copy2l(_dest,_src,_max_len) {				\
   LONGCHAR* _d=(LONGCHAR*)_dest;					\
-  const CHAR* _s=(const CHAR*)_src;					\
+  const OOC_CHAR* _s=(const OOC_CHAR*)_src;					\
   LONGCHAR* _max=_d+_max_len-1;						\
   while ((_d != _max) && (*(_d++) = (LONGCHAR)*(_s++)));		\
   if (_d == _max) *_d = 0;						\
@@ -225,7 +227,7 @@ extern int strcmpl(const LONGCHAR *S1, const LONGCHAR *S2);
 #define _P(pos) pos##U*1024+_mid
 extern void _oo2c_init(void);
 extern LONGINT _program_argc;
-extern CHAR **_program_argv;
+extern OOC_CHAR **_program_argv;
 extern INTEGER _program_exit_code;
 #define _not_zero(_x) ((_x)?(_x):1)
 

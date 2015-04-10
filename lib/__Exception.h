@@ -1,4 +1,4 @@
-/*	$Id: __Exception.h,v 1.9 1999/10/03 11:50:25 ooc-devel Exp $	*/
+/*	$Id: __Exception.h,v 1.10 2000/09/23 19:40:49 ooc-devel Exp $	*/
 /* __config.h and __StdTypes.h have to be included prior to this file; the 
    definitions for the variables and functions declared below are part of 
    __oo2c.c */
@@ -44,7 +44,7 @@ extern void* _exception_signal;
    module isn't part of the program, the variables are initialized with unique
    values */
 
-extern void (*_exception_raise) (void*, LONGINT, const CHAR*, LONGINT);
+extern void (*_exception_raise) (void*, LONGINT, const OOC_CHAR*, LONGINT);
 /* if the module Exception is part of the program, this variable refers to its
    RAISE function; otherwise it's NULL.  */
 

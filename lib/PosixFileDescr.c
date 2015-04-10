@@ -1,6 +1,6 @@
-/*	$Id: PosixFileDescr.c,v 1.19 1999/10/31 13:59:36 ooc-devel Exp $	*/
+/*	$Id: PosixFileDescr.c,v 1.23 2000/09/23 19:40:44 ooc-devel Exp $	*/
 /*  Generalized access to POSIX-style file descriptors.
-    Copyright (C) 1997-1999  Michael van Acken
+    Copyright (C) 1997-2000  Michael van Acken
 
     This module is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public License
@@ -17,7 +17,6 @@
     59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 #include <stddef.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -44,9 +43,14 @@
 #if HAVE_SOCKET_H
 #include <socket.h>
 #endif
-
 #if HAVE_SYSLIMITS_H
 #include <syslimits.h>
+#endif
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#elif HAVE_IO_H
+#include <io.h>
+typedef int ssize_t;
 #endif
 
 #ifndef SSIZE_MAX
@@ -313,7 +317,7 @@ static Msg__Msg get_error(Msg__Code code, int use_errno) {
 #if HAVE_STRERROR
     char *errstr = strerror(errno);
     DYN_TBCALL(Msg,MsgDesc,SetStringAttrib,msg,
-	       (msg, (const Msg__String)"errstr", 7, (CHAR*)errstr));
+	       (msg, (const Msg__String)"errstr", 7, (OOC_CHAR*)errstr));
 #endif
     DYN_TBCALL(Msg,MsgDesc,SetIntAttrib,msg,
 	       (msg, (const Msg__String)"errno", 6, (LONGINT)errno));
@@ -351,7 +355,7 @@ static Msg__Msg read_error(void) {
 }
 
 static Msg__Msg read_bytes(PosixFileDescr__Channel ch, LONGINT pos, LONGINT n,
-                           BYTE *x, LONGINT *bytes_read) {
+                           OOC_BYTE *x, LONGINT *bytes_read) {
 /* Reads only a single line for line buffered input from terminal; in this case
    `n´ should be large enough to hold a single line.  */
   size_t size, acc;
@@ -388,7 +392,7 @@ static Msg__Msg read_bytes(PosixFileDescr__Channel ch, LONGINT pos, LONGINT n,
 }
 
 static Msg__Msg write_bytes(PosixFileDescr__Channel ch, LONGINT pos, LONGINT n,
-                            BYTE *x, LONGINT *bytes_written) {
+                            OOC_BYTE *x, LONGINT *bytes_written) {
   size_t size, acc;
   ssize_t res;
   
@@ -522,7 +526,7 @@ void PosixFileDescr__ReaderDesc_SetPos(PosixFileDescr__Reader r, LONGINT newPos)
   }
 }
 
-void PosixFileDescr__ReaderDesc_ReadByte(PosixFileDescr__Reader r, BYTE *x) {
+void PosixFileDescr__ReaderDesc_ReadByte(PosixFileDescr__Reader r, OOC_BYTE *x) {
   PosixFileDescr__Result res;
   LONGINT bytesRead;
   PosixFileDescr__Channel ch = (PosixFileDescr__Channel)r->base;
@@ -578,7 +582,7 @@ void PosixFileDescr__ReaderDesc_ReadByte(PosixFileDescr__Reader r, BYTE *x) {
   }
 }
 
-void PosixFileDescr__ReaderDesc_ReadBytes(PosixFileDescr__Reader r, BYTE* x, int x_0d, LONGINT start, LONGINT n) {
+void PosixFileDescr__ReaderDesc_ReadBytes(PosixFileDescr__Reader r, OOC_BYTE* x, int x_0d, LONGINT start, LONGINT n) {
   PosixFileDescr__Result res;
   LONGINT bytesRead, size;
   PosixFileDescr__Channel ch = (PosixFileDescr__Channel)r->base;
@@ -737,7 +741,7 @@ void PosixFileDescr__WriterDesc_SetPos(PosixFileDescr__Writer w, LONGINT newPos)
   }
 }
 
-void PosixFileDescr__WriterDesc_WriteByte(PosixFileDescr__Writer w, BYTE x) {
+void PosixFileDescr__WriterDesc_WriteByte(PosixFileDescr__Writer w, OOC_BYTE x) {
   PosixFileDescr__Result res;
   PosixFileDescr__Channel ch = (PosixFileDescr__Channel)w->base;
   
@@ -779,7 +783,7 @@ void PosixFileDescr__WriterDesc_WriteByte(PosixFileDescr__Writer w, BYTE x) {
       w->bytesWritten = 1;
 
       if ((ch->buffering == PosixFileDescr__lineBuffer) &&
-          ((CHAR)x == CharClass__eol)) {
+          ((OOC_CHAR)x == CharClass__eol)) {
         res = flush_buffer(ch);
         if (res != Channel__done) {
           w->res = res;
@@ -807,7 +811,7 @@ static PosixFileDescr__Result flush_lines (PosixFileDescr__Channel ch,
   }
 }
 
-void PosixFileDescr__WriterDesc_WriteBytes(PosixFileDescr__Writer w, BYTE* x, int x_0d, LONGINT start, LONGINT n) {
+void PosixFileDescr__WriterDesc_WriteBytes(PosixFileDescr__Writer w, OOC_BYTE* x, int x_0d, LONGINT start, LONGINT n) {
   PosixFileDescr__Result res;
   LONGINT size, s, e;
   PosixFileDescr__Channel ch = (PosixFileDescr__Channel)w->base;

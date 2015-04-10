@@ -1,6 +1,6 @@
-/*	$Id: Termination.c,v 1.6 1999/10/03 11:49:39 ooc-devel Exp $	*/
+/*	$Id: Termination.c,v 1.9 2000/09/23 11:55:49 ooc-devel Exp $	*/
 /*  Provides procedures for program finalization.
-    Copyright (C) 1997, 1999  Michael van Acken
+    Copyright (C) 1997, 1999, 2000  Michael van Acken
 
     This module is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public License
@@ -19,7 +19,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <signal.h>
-#include <unistd.h>
 #include <sys/types.h>
 
 #include "__oo2c.h"
@@ -27,6 +26,12 @@
 #include "__StdTypes.h"
 #include "__config.h"
 
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#elif HAVE_IO_H
+#include <io.h>
+typedef int ssize_t;
+#endif
 
 /* --- begin #include "Termination.d" */
 #include "Termination.h"
@@ -138,7 +143,11 @@ static RETSIGTYPE signal_handler (int sig) {
     noSignalHandlerInProgress = 0;
     run_term_procs();
   }
-  kill(getpid(), sig);   /* raise signal to call default handler */
+#if HAVE_RAISE
+  raise(sig);
+#else
+  (void)kill(getpid(), sig);	/* raise signal to call default handler */
+#endif
 }
 
 static void catch_signal (int sig) {
@@ -170,9 +179,13 @@ void Termination_init(void) {
 #endif
   
   /* termination signals */
+#ifdef SIGHUP
   catch_signal(SIGHUP);
+#endif
   catch_signal(SIGINT);
+#ifdef SIGQUIT
   catch_signal(SIGQUIT);
+#endif
   catch_signal(SIGTERM);
   
   /* normal program exit */

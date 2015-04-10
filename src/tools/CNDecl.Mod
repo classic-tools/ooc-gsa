@@ -1,4 +1,4 @@
-(*	$Id: CNDecl.Mod,v 1.4 2000/04/22 15:02:53 ooc-devel Exp $	*)
+(*	$Id: CNDecl.Mod,v 1.5 2000/07/25 12:00:02 ooc-devel Exp $	*)
 MODULE CNDecl;
 (*  Facilities to access declarations in abstract syntax trees.
     Copyright (C) 1998, 2000  Michael van Acken
@@ -182,7 +182,8 @@ PROCEDURE IsDeclaration* (ident: AST.Ident): BOOLEAN;
 
 PROCEDURE GetDeclSym (start: AST.Node; ident: AST.Symbol; 
                       ignorePos: BOOLEAN): AST.IdentDef;
-(* Locates definition refered to by the name `ident' returns its identifier.  
+(* Locates definition refered to by the name `ident' and returns its
+   identifier.  
    The node `start' is used as a starting point into the abstract syntax.  
    Unless `ignorePos' is TRUE all declarations following `ident.pos' will be
    ignored.
@@ -242,17 +243,21 @@ PROCEDURE GetDeclSym (start: AST.Node; ident: AST.Symbol;
         IF (body # NIL) THEN
           decl := body. declSeq;
           WHILE (decl # NIL) DO
-            name := GetName (decl, isList);
-            IF (name # NIL) THEN
-              IF isList THEN
-                WHILE (name # NIL) DO
-                  IF (name. name. str^ = ident. str^) THEN
-                    RETURN name
-                  END;
-                  name := name. next
+            IF ~(decl IS AST.ProcDecl) OR
+               (decl(AST.ProcDecl). receiver = NIL)THEN
+              (* don't consider type-bound procedures in this search *)
+              name := GetName (decl, isList);
+              IF (name # NIL) THEN
+                IF isList THEN
+                  WHILE (name # NIL) DO
+                    IF (name. name. str^ = ident. str^) THEN
+                      RETURN name
+                    END;
+                    name := name. next
+                  END
+                ELSIF (name. name. str^ = ident. str^) THEN
+                  RETURN name
                 END
-              ELSIF (name. name. str^ = ident. str^) THEN
-                RETURN name
               END
             END;
             decl := decl.  next

@@ -1,6 +1,6 @@
-/* $Id: Signal.c,v 1.9 1999/10/03 11:48:56 ooc-devel Exp $ */
+/* $Id: Signal.c,v 1.12 2000/09/23 19:40:45 ooc-devel Exp $ */
 /*  Signal handling facilities.
-    Copyright (C) 1997, 1998, 1999  Michael van Acken
+    Copyright (C) 1997-2000  Michael van Acken
 
     This module is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public License
@@ -18,13 +18,18 @@
 */
 #include <signal.h>
 #include <string.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <sys/types.h>
 
 #include "__oo2c.h"
+#include "__config.h"
 #include "Signal.h"
 
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#elif HAVE_IO_H
+#include <io.h>
+#endif
 
 Exception__Source Signal__exception;
 Signal__SigHandler Signal__handlerDefault;
@@ -275,11 +280,15 @@ static void handle_exception(Signal__SigNumber signum) {
 
   (void)signal((int)signum, handle_exception);
   sprintf(str, "[Signal] Caught signal number %i", signum);
-  Exception__RAISE(Signal__exception, signum, (CHAR*)str, strlen(str));
+  Exception__RAISE(Signal__exception, signum, (OOC_CHAR*)str, strlen(str));
 }
 
 void Signal__Raise(Signal__SigNumber signum) {
+#if HAVE_RAISE
+  raise((int)signum);
+#else
   (void)kill(getpid(), (int)signum);
+#endif
 }
 
 void Signal_init(void) {

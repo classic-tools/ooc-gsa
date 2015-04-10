@@ -1,6 +1,6 @@
-/*	$Id: OakFiles.c,v 1.12 1999/10/03 11:47:46 ooc-devel Exp $	*/
+/*	$Id: OakFiles.c,v 1.15 2000/09/23 19:40:44 ooc-devel Exp $	*/
 /*  Oakwood compliant file access.
-    Copyright (C) 1997, 1998  Michael van Acken, Juergen Zimmermann
+    Copyright (C) 1997, 1998, 2000  Michael van Acken, Juergen Zimmermann
 
     This module is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public License
@@ -17,15 +17,20 @@
     59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 #include "__oo2c.h"
+#include "__config.h"
 #define _POSIX_SOURCE  /* file uses POSIX.1 functions */
 
 #include <fcntl.h>
 #include <errno.h>
 #include <stdio.h>
-#include <unistd.h> 
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#elif HAVE_IO_H
+#include <io.h>
+#endif
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
 # include <time.h>
@@ -39,6 +44,14 @@
 
 #ifndef O_BINARY  /* be kind to MS-DOG based systems */
 #define O_BINARY 0
+#endif
+
+#ifdef __MINGW32__
+#define MODE_CREATE_FILE (S_IREAD | S_IWRITE)
+#define MODE_PURGE_FILE (S_IREAD | S_IWRITE)
+#else
+#define MODE_CREATE_FILE (S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)
+#define MODE_PURGE_FILE (S_IRUSR|S_IWUSR)
 #endif
 
 #include "__config.h"
@@ -65,13 +78,13 @@ static void finalize(void *obj, void *client_data);
 #define sizeBuffer (4*largeBlock)
 #define maxFilenameLen 256
 
-typedef CHAR (* FileName);
+typedef OOC_CHAR (* FileName);
 
 static int maxFdUsed = 10; /* max. number of physical files used */
 static OakFiles__File openFiles = NULL; /* there are no files at startup */
 static int fdInUse = 0; /* no fd's used by this module at startup*/
 static int swapBytes = 0; /* do not swap bytes on write */
-BOOLEAN OakFiles_permanentClose = 0;
+OOC_BOOLEAN OakFiles_permanentClose = 0;
 
 
 static _ModId _mid;
@@ -96,11 +109,11 @@ static struct _MD OakFiles__md = {
 
 
 
-static void CreateTmpName(CHAR *name) {
+static void CreateTmpName(OOC_CHAR *name) {
 /* create a name for a temporary file */
-  CHAR *tmp = NULL;
+  OOC_CHAR *tmp = NULL;
   
-  tmp = (CHAR*)tmpnam(NULL);
+  tmp = (OOC_CHAR*)tmpnam(NULL);
   _string_copy(name, tmp, maxFilenameLen);
 }
 
@@ -111,7 +124,7 @@ static void ClearBuffer(OakFiles__Buffer *buf) {
   buf->read = 1;
 }
 
-static OakFiles__File NewFile(const CHAR *name) {
+static OakFiles__File NewFile(const OOC_CHAR *name) {
 /* Allocate memory for a new File structure and initialize it. */
   OakFiles__File newfile;
   
@@ -198,8 +211,7 @@ static int GetFileDesc(OakFiles__File file, int newfile) {
     /* Create a new file. The Unix permissions for the new file are
       set to rw-rw-rw */
     do
-      fd = open((char*)fn,(O_CREAT|O_TRUNC|O_RDWR|O_BINARY),
-		(S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH));
+      fd = open((char*)fn,(O_CREAT|O_TRUNC|O_RDWR|O_BINARY), MODE_CREATE_FILE);
     while ((fd == -1) && (errno == EINTR));
     
     if ((fd == -1) && ((errno == EMFILE) || (errno == ENFILE)) && (fdInUse != 0)) {
@@ -300,7 +312,7 @@ static void InsertFile(OakFiles__File file) {
 
 
 #if USE_GC
-static BOOLEAN StillInUse(OakFiles__File file)
+static OOC_BOOLEAN StillInUse(OakFiles__File file)
 {
   OakFiles__File walk = openFiles;
 
@@ -333,7 +345,7 @@ static void RemoveFile(OakFiles__File file) {
 }
 
 
-static LONGINT WriteToFile(OakFiles__File f, LONGINT pos, BYTE *adr, LONGINT n) {
+static LONGINT WriteToFile(OakFiles__File f, LONGINT pos, OOC_BYTE *adr, LONGINT n) {
   /* WriteToFile (f, pos, adr, n) writes the first n bytes starting at
     memory address adr to file f at position pos.
     f.pos is updated accordingly.
@@ -356,7 +368,7 @@ static LONGINT WriteToFile(OakFiles__File f, LONGINT pos, BYTE *adr, LONGINT n) 
   }
 }
 
-static LONGINT ReadFromFile(OakFiles__File f, LONGINT pos, BYTE *adr, LONGINT n) {
+static LONGINT ReadFromFile(OakFiles__File f, LONGINT pos, OOC_BYTE *adr, LONGINT n) {
   /* ReadFromFile (f, pos, buf, n) reads the first n bytes at
     position pos from file f and stores them at memory address adr.
     f.pos is updated accordingly.
@@ -391,10 +403,10 @@ static void Flush(OakFiles__File f) {
 }
 
 
-static void SwapOrder(BYTE x[], LONGINT len) {
+static void SwapOrder(OOC_BYTE x[], LONGINT len) {
   if (swapBytes) {
     LONGINT i,j;
-    BYTE c;
+    OOC_BYTE c;
     /* swap the bytes */
     i=0; j=len-1;
     while (i < j) {
@@ -404,7 +416,7 @@ static void SwapOrder(BYTE x[], LONGINT len) {
   }
 }
 
-static void InitSwap(BYTE x[]) {
+static void InitSwap(OOC_BYTE x[]) {
   swapBytes=(x[0] != 1);
 /*
   if (swapBytes)
@@ -473,7 +485,7 @@ void OakFiles_Close(OakFiles__File *f) {
 }
 
 
-void OakFiles_Delete(const CHAR *name, INTEGER *res) {
+void OakFiles_Delete(const OOC_CHAR *name, INTEGER *res) {
   *res = (-unlink((const char*)name));
 }
 
@@ -538,7 +550,7 @@ LONGINT OakFiles_Length(OakFiles__File f) {
 }
 
 
-OakFiles__File OakFiles_New(const CHAR *name) {
+OakFiles__File OakFiles_New(const OOC_CHAR *name) {
   OakFiles__File f = NULL;
   
   f = NewFile(name);
@@ -553,7 +565,7 @@ OakFiles__File OakFiles_New(const CHAR *name) {
 }
 
 
-OakFiles__File OakFiles_Old(const CHAR *name) {
+OakFiles__File OakFiles_Old(const OOC_CHAR *name) {
   OakFiles__File f = NULL;
 
   f = NewFile(name);
@@ -603,8 +615,7 @@ void OakFiles_Purge(OakFiles__File f)
    }
    
    do {
-      fd = open((char*)(f->name),(O_TRUNC|O_RDWR|O_BINARY),
-		(S_IRUSR|S_IWUSR));
+      fd = open((char*)(f->name),(O_TRUNC|O_RDWR|O_BINARY), MODE_PURGE_FILE);
    } while ((fd == -1) && (errno == EINTR));
    
    if (fd == -1) {
@@ -620,7 +631,7 @@ void OakFiles_Purge(OakFiles__File f)
    f->pos=-1;
 }
 
-void OakFiles_ReadBytes(struct OakFiles__Rider *r, BYTE *x, LONGINT n) {
+void OakFiles_ReadBytes(struct OakFiles__Rider *r, OOC_BYTE *x, LONGINT n) {
   OakFiles__File f;
   LONGINT n0;
   
@@ -658,7 +669,7 @@ void OakFiles_ReadBytes(struct OakFiles__Rider *r, BYTE *x, LONGINT n) {
   }
 }
 
-void OakFiles_WriteBytes(struct OakFiles__Rider *r, BYTE *x, LONGINT n) {
+void OakFiles_WriteBytes(struct OakFiles__Rider *r, OOC_BYTE *x, LONGINT n) {
   OakFiles__File f;
 
   f = r->file;
@@ -699,8 +710,8 @@ void OakFiles_Register(OakFiles__File f) {
   LONGINT oldpos;
   INTEGER dummy;
   int res;
-  BYTE buffer[bufSize];
-  BOOLEAN err;
+  OOC_BYTE buffer[bufSize];
+  OOC_BOOLEAN err;
   LONGINT n;
   
   if (regFile == NULL) {
@@ -776,7 +787,7 @@ void OakFiles_Register(OakFiles__File f) {
   }
 }
 
-void OakFiles_Rename(const CHAR *old, const CHAR *newname, INTEGER *res) {
+void OakFiles_Rename(const OOC_CHAR *old, const OOC_CHAR *newname, INTEGER *res) {
   *res = -(rename((const char*)old,(const char*)newname));
 }
 
@@ -793,19 +804,19 @@ void OakFiles_Set(struct OakFiles__Rider *r, OakFiles__File f, LONGINT pos)
   }
 }
 
-static void WriteBytesSwap(struct OakFiles__Rider *r, BYTE *x, LONGINT n) {
+static void WriteBytesSwap(struct OakFiles__Rider *r, OOC_BYTE *x, LONGINT n) {
   SwapOrder(x,n);
   OakFiles_WriteBytes(r,x,n);
 }
 
-static void ReadBytesSwap(struct OakFiles__Rider *r, BYTE *x, LONGINT n) {
+static void ReadBytesSwap(struct OakFiles__Rider *r, OOC_BYTE *x, LONGINT n) {
   OakFiles_ReadBytes(r,x,n);
   SwapOrder(x,n);
 }
 
 
 
-void OakFiles_Write (struct OakFiles__Rider *r, BYTE x) {
+void OakFiles_Write (struct OakFiles__Rider *r, OOC_BYTE x) {
 /* Write (r, x) writes the byte x to struct OakFiles__Rider r and advances r accordingly. */
   if ((r->file->buffer.read == 0) &&
      (r->file->buffer.start <= r->pos) &&
@@ -818,11 +829,11 @@ void OakFiles_Write (struct OakFiles__Rider *r, BYTE x) {
     if (r->file->buffer.end < r->pos)
       r->file->buffer.end = r->pos;
   } else {
-    OakFiles_WriteBytes(r,&x,sizeof(BYTE));
+    OakFiles_WriteBytes(r,&x,sizeof(OOC_BYTE));
   }
 }
 
-void OakFiles_WriteBool (struct OakFiles__Rider *r, BOOLEAN x) {
+void OakFiles_WriteBool (struct OakFiles__Rider *r, OOC_BOOLEAN x) {
   if (x == 1)
     OakFiles_Write(r,'\001');
   else
@@ -830,15 +841,15 @@ void OakFiles_WriteBool (struct OakFiles__Rider *r, BOOLEAN x) {
 }
 
 void OakFiles_WriteInt (struct OakFiles__Rider *r, INTEGER x) {
-  WriteBytesSwap(r,(BYTE*)&x,sizeof(INTEGER));
+  WriteBytesSwap(r,(OOC_BYTE*)&x,sizeof(INTEGER));
 }
 
 void OakFiles_WriteLInt (struct OakFiles__Rider *r, LONGINT x) {
-  WriteBytesSwap(r,(BYTE*)&x,sizeof(LONGINT));
+  WriteBytesSwap(r,(OOC_BYTE*)&x,sizeof(LONGINT));
 }
 
 void OakFiles_WriteLReal (struct OakFiles__Rider *r, LONGREAL x) {
-  WriteBytesSwap(r,(BYTE*)&x,sizeof(LONGREAL));
+  WriteBytesSwap(r,(OOC_BYTE*)&x,sizeof(LONGREAL));
 }
 
 void OakFiles_WriteNum (struct OakFiles__Rider *r, LONGINT x) {
@@ -847,36 +858,36 @@ void OakFiles_WriteNum (struct OakFiles__Rider *r, LONGINT x) {
   while ((x< -64) || (x >63))
   {
     _mod(m, x, 128, LONGINT);
-    OakFiles_Write(r, (CHAR)(m+128));
+    OakFiles_Write(r, (OOC_CHAR)(m+128));
     _div(x, x, 128, LONGINT);
   }
   _mod(m, x, 128, LONGINT);
-  OakFiles_Write(r,(CHAR)m);
+  OakFiles_Write(r,(OOC_CHAR)m);
 }
 
 void OakFiles_WriteReal (struct OakFiles__Rider *r, REAL x) {
-  WriteBytesSwap(r,(BYTE*)&x,sizeof(REAL));
+  WriteBytesSwap(r,(OOC_BYTE*)&x,sizeof(REAL));
 }
 
 void OakFiles_WriteSet (struct OakFiles__Rider *r, SET x) {
-  WriteBytesSwap(r,(BYTE*)&x,sizeof(SET));
+  WriteBytesSwap(r,(OOC_BYTE*)&x,sizeof(SET));
 }
 
-void OakFiles_WriteString (struct OakFiles__Rider *r, const CHAR *x) {
+void OakFiles_WriteString (struct OakFiles__Rider *r, const OOC_CHAR *x) {
   LONGINT i=-1;
   do {
     i++;
-    OakFiles_Write(r,(BYTE)x[i]);
+    OakFiles_Write(r,(OOC_BYTE)x[i]);
   } while (x[i] != '\000');
 }
 
-void OakFiles_Read (struct OakFiles__Rider *r, BYTE *x) {
-  OakFiles_ReadBytes(r,x,sizeof(BYTE));
+void OakFiles_Read (struct OakFiles__Rider *r, OOC_BYTE *x) {
+  OakFiles_ReadBytes(r,x,sizeof(OOC_BYTE));
 }
 
 
-void OakFiles_ReadBool (struct OakFiles__Rider *r, BOOLEAN *x) {
-  BYTE y;
+void OakFiles_ReadBool (struct OakFiles__Rider *r, OOC_BOOLEAN *x) {
+  OOC_BYTE y;
   OakFiles_Read(r,&y);
   if (y == 1)
     *x=1;
@@ -885,20 +896,20 @@ void OakFiles_ReadBool (struct OakFiles__Rider *r, BOOLEAN *x) {
 }
 
 void OakFiles_ReadInt (struct OakFiles__Rider *r, INTEGER *x) {
-  ReadBytesSwap(r,(BYTE*)x,sizeof(INTEGER));
+  ReadBytesSwap(r,(OOC_BYTE*)x,sizeof(INTEGER));
 }
 
 void OakFiles_ReadLInt (struct OakFiles__Rider *r, LONGINT *x) {
-  ReadBytesSwap(r,(BYTE*)x,sizeof(LONGINT));
+  ReadBytesSwap(r,(OOC_BYTE*)x,sizeof(LONGINT));
 }
 
 void OakFiles_ReadLReal (struct OakFiles__Rider *r, LONGREAL *x) {
-  ReadBytesSwap(r,(BYTE*)x,sizeof(LONGREAL));
+  ReadBytesSwap(r,(OOC_BYTE*)x,sizeof(LONGREAL));
 }
 
 void OakFiles_ReadNum (struct OakFiles__Rider *r, LONGINT *x) {
   SHORTINT s = 0;
-  CHAR ch;
+  OOC_CHAR ch;
   LONGINT n = 0;
 
   OakFiles_Read(r, &(ch));
@@ -924,14 +935,14 @@ void OakFiles_ReadNum (struct OakFiles__Rider *r, LONGINT *x) {
 }
 
 void OakFiles_ReadReal (struct OakFiles__Rider *r, REAL *x) {
-  ReadBytesSwap(r,(BYTE*)x,sizeof(REAL));
+  ReadBytesSwap(r,(OOC_BYTE*)x,sizeof(REAL));
 }
 
 void OakFiles_ReadSet (struct OakFiles__Rider *r, SET *x) {
-  ReadBytesSwap(r,(BYTE*)x,sizeof(SET));
+  ReadBytesSwap(r,(OOC_BYTE*)x,sizeof(SET));
 }
 
-void OakFiles_ReadString (struct OakFiles__Rider *r, CHAR *x) {
+void OakFiles_ReadString (struct OakFiles__Rider *r, OOC_CHAR *x) {
   LONGINT i = -1;
   do {
     i++;
@@ -968,7 +979,7 @@ void Cleanup(void) {
 void OakFiles_init (void) {
   INTEGER swapTest = 1;
   _mid = _register_module (&OakFiles__md.md, NULL);
-  InitSwap((BYTE*)&swapTest);
+  InitSwap((OOC_BYTE*)&swapTest);
   fdInUse = 0;
   Termination__RegisterProc(Cleanup);
 }

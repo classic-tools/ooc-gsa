@@ -99,7 +99,7 @@ AC_MSG_RESULT($have_gc)
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS(fcntl.h sys/time.h unistd.h socket.h syslimits.h)
+AC_CHECK_HEADERS(fcntl.h sys/time.h unistd.h socket.h syslimits.h io.h pwd.h utime.h)
 AC_HEADER_TIME
 
 dnl Checks for typedefs, structures, and compiler characteristics.
@@ -122,7 +122,7 @@ dnl Checks for library functions.
 AC_FUNC_ALLOCA
 AC_TYPE_SIGNAL
 dnl   ANSI functions:
-AC_CHECK_FUNCS(atexit)
+AC_CHECK_FUNCS(atexit raise)
 dnl   POSIX.1 functions:
 AC_CHECK_FUNCS(getcwd strerror)
 dnl   BSD functions:

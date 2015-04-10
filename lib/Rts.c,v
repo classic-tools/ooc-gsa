@@ -1,4 +1,29 @@
-#include "__oo2c.h"
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.1
+date	2000.09.23.19.40.52;	author ooc-devel;	state Exp;
+branches;
+next	;
+
+
+desc
+@Renamed C types: BOOLEAN, BYTE, and CHAR are now OOC_BOOLEAN, OOC_BYTE, and
+OOC_CHAR.  This is intended to resolve a conflict with header files under
+Windows.
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@#include "__oo2c.h"
 #include "__config.h"
 
 #define _POSIX_SOURCE  /* file uses POSIX.1 functions */
@@ -210,3 +235,4 @@ void Rts_init (void) {
   }
 }
 
+@

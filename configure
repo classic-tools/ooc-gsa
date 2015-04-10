@@ -1361,7 +1361,7 @@ EOF
 
 fi
 
-for ac_hdr in fcntl.h sys/time.h unistd.h socket.h syslimits.h
+for ac_hdr in fcntl.h sys/time.h unistd.h socket.h syslimits.h io.h pwd.h utime.h
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
@@ -2115,7 +2115,7 @@ cat >> confdefs.h <<EOF
 EOF
 
 
-for ac_func in atexit
+for ac_func in atexit raise
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
 echo "configure:2122: checking for $ac_func" >&5

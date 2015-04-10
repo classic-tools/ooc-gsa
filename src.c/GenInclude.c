@@ -17,6 +17,7 @@ void GenInclude__IncludeFile(TextRider__Writer w, const unsigned char* name__ref
   i1 = (int)((_Type)i2)->tbprocs[19];
   ((_TBP_TextRider__WriterDesc_WriteLn)i1)((TextRider__Writer)(int)w);
   ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c0, 11);
+  ParamPaths__NormalizeFileName((unsigned char*)(int)name, name_0d);
   ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)name, name_0d);
   i1 = (int)((_Type)i2)->tbprocs[7];
   ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)suffix, suffix_0d);

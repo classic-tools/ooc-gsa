@@ -115,7 +115,7 @@ ParamPaths__Path ParamPaths__ParsePatterns_PathList_NewPath(unsigned char* str, 
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(8)+8);
-    if (!_mem) _new_failed(_P(6233));
+    if (!_mem) _new_failed(_P(6224));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamPaths__PathDesc_td.td;
     i0 = (int)_var;
@@ -126,9 +126,9 @@ ParamPaths__Path ParamPaths__ParsePatterns_PathList_NewPath(unsigned char* str, 
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i2 < 0) _invalid_length(i2, _P(6290));
+    if(i2 < 0) _invalid_length(i2, _P(6281));
     _mem = GC_malloc_atomic(_not_zero(i2*1)+8);
-    if (!_mem) _new_failed(_P(6253));
+    if (!_mem) _new_failed(_P(6244));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i2;
@@ -243,7 +243,7 @@ ParamPaths__Pattern ParamPaths__ParsePatterns_PatternList_NewPattern(const unsig
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(16)+8);
-    if (!_mem) _new_failed(_P(7976));
+    if (!_mem) _new_failed(_P(7967));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamPaths__PatternDesc_td.td;
     i0 = (int)_var;
@@ -255,9 +255,9 @@ ParamPaths__Pattern ParamPaths__ParsePatterns_PatternList_NewPattern(const unsig
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i2 < 0) _invalid_length(i2, _P(8081));
+    if(i2 < 0) _invalid_length(i2, _P(8072));
     _mem = GC_malloc_atomic(_not_zero(i2*1)+8);
-    if (!_mem) _new_failed(_P(8029));
+    if (!_mem) _new_failed(_P(8020));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i2;
@@ -559,6 +559,33 @@ l6:
   ;
 }
 
+void ParamPaths__NormalizeFileName(unsigned char* fileName, int fileName_0d) {
+  register int i0, i1, i2, i3;
+  i2 = Strings__Length((const unsigned char*)(int)fileName, fileName_0d);
+  i0 = i2 < 0;
+  if (i0) goto l2;
+  i1 = (int)fileName + i2;
+  i1 = *(unsigned char*)i1;
+  i0 = i1 == 47;
+  if (i0) goto l2;
+l0:
+  i3 = (int)fileName + i2;
+  i1 = *(unsigned char*)i3;
+  i1 = i1 != 58;
+  if (i1) goto l1;
+  *(unsigned char*)i3 = 95;
+l1:
+  i2--;
+  i1 = i2 < 0;
+  if (i1) goto l2;
+  i1 = (int)fileName + i2;
+  i1 = *(unsigned char*)i1;
+  i1 = i1 != 47;
+  if (i1) goto l0;
+l2:
+  ;
+}
+
 unsigned char ParamPaths__FindPath(const unsigned char* fileName__ref, int fileName_0d, unsigned char keepGivenPath, unsigned char* filePath, int filePath_0d) {
   register int i0, i1, i2, i3, i4, i5, i6, i7, i8;
   Parameter__Filename dirPart;
@@ -566,6 +593,7 @@ unsigned char ParamPaths__FindPath(const unsigned char* fileName__ref, int fileN
   unsigned char* fileName;
   char* _old_top_vs = _top_vs;
   _push_value(int, fileName, fileName__ref, fileName_0d);
+  ParamPaths__NormalizeFileName((unsigned char*)(int)fileName, fileName_0d);
   Filenames__GetPath((const unsigned char*)(int)fileName, fileName_0d, (unsigned char*)(int)dirPart, 256, (unsigned char*)(int)filePart, 256);
   if (!(keepGivenPath)) goto l0;
   i0 = strcmp((const char*) (int)dirPart, (const char*) (int)_c25) == 0;
@@ -674,6 +702,7 @@ void ParamPaths__GeneratePath(const unsigned char* fileName__ref, int fileName_0
   unsigned char* fileName;
   char* _old_top_vs = _top_vs;
   _push_value(int, fileName, fileName__ref, fileName_0d);
+  ParamPaths__NormalizeFileName((unsigned char*)(int)fileName, fileName_0d);
   i1 = (int)ParamPaths__newFiles;
   i0 = i1 + 8;
   i0 = *(unsigned char*)i0;
@@ -800,7 +829,7 @@ void ParamPaths_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(20)+8);
-    if (!_mem) _new_failed(_P(17674));
+    if (!_mem) _new_failed(_P(18198));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamPaths__PathsSectionDesc_td.td;
     i0 = (int)_var;
@@ -814,7 +843,7 @@ void ParamPaths_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(20)+8);
-    if (!_mem) _new_failed(_P(17748));
+    if (!_mem) _new_failed(_P(18272));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamPaths__NewFilesDesc_td.td;
     i1 = (int)_var;

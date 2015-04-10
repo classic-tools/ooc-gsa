@@ -1,8 +1,8 @@
 ;;; oberon2.el --- major mode for Oberon-2 editing and compilation
 
-;; Copyright (C) 1995-1999  Michael van Acken  <acken@informatik.uni-kl.de>
+;; Copyright (C) 1995-2000  Michael van Acken  <acken@informatik.uni-kl.de>
 ;; 
-;; Version: 1.15, requires Emacs 19.28
+;; Version: 1.16, requires Emacs 19.28
 ;; You can ignore the "free variable o2-source-for-errors" errors when 
 ;; byte-compiling this file.
 
@@ -138,6 +138,7 @@ from its source code.")
     
     (define-key map "\C-c\C-c" 'o2-comment-region)
     (define-key map "\C-c\C-v" 'o2-uncomment-around-point)
+    (define-key map "\C-cd" 'o2-edit-comment)
     
     (define-key map "\C-c\C-n" 'o2-next-visible-proc)
     (define-key map "\C-c\C-p" 'o2-previous-visible-proc)
@@ -239,6 +240,7 @@ level (default 2).
 Inserting Oberon-2 constructs:
 \\[o2-comment-region]		comment region
 \\[o2-uncomment-around-point]		uncomment text around point
+\\[o2-edit-comment]		edit comment in other window
 \\[o2-insert-module]		MODULE outline
 \\[o2-insert-procedure]		PROCEDURE outline 
 \\[o2-insert-typebound-procedure]		typebound PROCEDURE outline 
@@ -2285,3 +2287,166 @@ procedure is part of the region."
     (sort
      (imenu-default-create-index-function)
      (function imenu--sort-by-name)))))
+
+
+
+;;;; added 2000/07/29: editing of texinfo comments
+;;
+;; These functions add the feature to edit Texinfo comments in another
+;; window using the Texinfo mode, and inserting it back into the document 
+;; at the place it came from.
+;; The function is bound to C-c d, leaving the editor buffer is also done
+;; with C-c d.
+
+(make-variable-buffer-local 'o2-texinfo-start-marker)
+(make-variable-buffer-local 'o2-texinfo-end-marker)
+(make-variable-buffer-local 'o2-texinfo-comment-prefix)
+(make-variable-buffer-local 'o2-texinfo-indent-column)
+
+;; Like o2-in-commentp, with two exceptions: Report point on comment if the
+;; point is on the "(*" that starts a comment, and the starting position is
+;; the "(" character beginning the comment symbol.
+(defun o2-on-commentp (&optional point)
+  (save-excursion
+    (if point (goto-char point))
+    (let ((comment
+	   (progn
+	     (cond ((looking-at "(\\*")
+		    (forward-char 2))
+		   ((looking-at "\\*")
+		    (forward-char 1)))
+	     (o2-in-commentp))))
+      (if comment (cons (- (car comment) 2) (cdr comment))))))
+
+;; Returns buffer that is used for texinfo editing.
+(defun o2-get-edit-buffer ()
+  (let ((buffer (get-buffer "*o2-texinfo*")))
+    (cond ((not buffer)
+	   (setq buffer (generate-new-buffer "*o2-texinfo*"))
+	   (save-excursion
+	     (set-buffer buffer)
+	     (texinfo-mode))))
+    buffer))
+
+;; Does fill-region, except that example blocks are skipped
+(defun o2-fill-region (pmin pmax)
+  (save-excursion
+    (let ((end-marker (set-marker (make-marker) pmax))
+	  (start (point)))
+      (goto-char pmin)
+      (while (< (point) end-marker)
+	(setq start (point))
+	(cond ((re-search-forward "^@example" end-marker t)
+	       (print "a")
+	       (fill-region start (point))
+	       (re-search-forward "^@end example" end-marker 'move))
+	      (t
+	       (print "b")
+	       (fill-region start end-marker)
+	       (goto-char end-marker)))))))
+
+(defun o2-edit-comment ()
+  "Takes text from comment at or around point and displays it in another window
+for editing.  If there is no comment at point, inserts an empty comment
+followed by a newline and start editing with the empty text."
+  (interactive)
+  (barf-if-buffer-read-only)
+  
+  (let* ((comment 
+	  (or (o2-on-commentp)
+	      (progn 
+		(save-excursion (insert "(***)") (o2-newline))
+		(o2-on-commentp))))
+	 (comment-prefix "")
+	 (start-offset
+	  (save-excursion
+	    (goto-char (+ (car comment) 2))
+	    (if (looking-at "[ *]") 
+		(progn (setq comment-prefix (char-to-string (char-after))) 3)
+	      2)))
+	 (start-marker
+	  (set-marker (make-marker) (car comment)))
+	 (start-text
+	  (+ (car comment) start-offset))
+	 (end-marker
+	  (set-marker (make-marker) (cdr comment)))
+	 (end-text
+	  (- (cdr comment) 2))
+	 (start-column 
+	  (save-excursion
+	    (goto-char start-text)
+	    (current-column)))
+	 (text (buffer-substring-no-properties start-text end-text))
+	 (point-offset (- (point) start-text))
+	 (buffer (o2-get-edit-buffer)))
+    ;; switch to texinfo buffer and insert text from comment
+    (set-buffer buffer)
+    (if (and (buffer-modified-p)
+	     (not 
+	      (yes-or-no-p "Texinfo buffer is modified.  Discard old text? ")))
+	(error "Aborting"))
+    (erase-buffer)
+    (insert text)
+    
+    ;; display texinfo buffer in other window, and make sure point is ok
+    (switch-to-buffer-other-window buffer)
+    (set-window-point (selected-window) (1+ point-offset))
+    (setq o2-texinfo-start-marker start-marker
+	  o2-texinfo-end-marker end-marker
+	  o2-texinfo-comment-prefix comment-prefix
+	  o2-texinfo-indent-column start-column)
+
+    ;; rewrite texinfo buffer: remove indentation, fix full column, fill the
+    ;; whole buffer, and remove the modified flag
+    (let ((left-margin 9999)) (delete-to-left-margin))
+    (setq fill-column (- 79 start-column))
+    (o2-fill-region (point-min) (point-max))
+    (set-buffer-modified-p nil)
+
+    (local-set-key "\C-cd" 'o2-reinsert-texinfo)
+    (message "Press `C-c d' to return to source buffer")))
+
+(defun o2-reinsert-texinfo ()
+  "Takes the text from the Texinfo window, performs block fill on the whole 
+buffer, and inserts it at the place where the text orginally was taken from."
+  (interactive)
+  (cond ((not (buffer-modified-p))
+	 (delete-window)
+	 (message "Text not modified"))
+	 
+	((and (boundp 'o2-texinfo-start-marker)
+	      (boundp 'o2-texinfo-end-marker)
+	      (boundp 'o2-texinfo-comment-prefix))
+	 (let ((buffer (current-buffer))
+	       (curr-point (point))
+	       (start-marker o2-texinfo-start-marker)
+	       (end-marker o2-texinfo-end-marker)
+	       (comment-prefix o2-texinfo-comment-prefix)
+	       (point-offet 0))
+	   (save-excursion
+	     (o2-fill-region (point-min) (point-max))
+	     (goto-char (point-max))
+	     (if (re-search-backward "[^ \n\t]" nil t)
+		 (delete-region (1+ (point)) (point-max)))
+	     (goto-char (point-min))
+	     (forward-line)
+	     (indent-region (point) (point-max) o2-texinfo-indent-column))
+	   (setq point-offset (point))
+	   (set-buffer (marker-buffer start-marker))
+	   (goto-char start-marker)
+	   (delete-region start-marker end-marker)
+	   (insert (concat "(*" comment-prefix 
+			   (save-excursion
+			     (set-buffer buffer)
+			     (buffer-substring-no-properties
+			      (point-min)
+			      (point-max)))
+			   "  *)"))
+	   (set-marker end-marker (point))
+	   
+	   (set-buffer buffer)
+	   (set-buffer-modified-p nil)
+	   (delete-window)
+	   (forward-char (+ 1 (length comment-prefix) point-offset))))
+	
+	(t (error "Not in a o2-texinfo buffer"))))

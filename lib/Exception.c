@@ -1,4 +1,4 @@
-/*      $Id: Exception.c,v 1.10 1999/10/03 11:46:36 ooc-devel Exp $    */
+/*      $Id: Exception.c,v 1.11 2000/09/23 19:39:18 ooc-devel Exp $    */
 /*  Provides facilities to raise and handle exceptions.
     Copyright (C) 1997, 1998, 1999  Michael van Acken
 
@@ -120,10 +120,10 @@ static Exception__Source eexcept;
 #define MESSAGE_LENGTH 128
 static _ExecutionContext _Exception__context = NULL;
 static LONGINT _Exception__number = 0;
-static CHAR _Exception__message[MESSAGE_LENGTH];
+static OOC_CHAR _Exception__message[MESSAGE_LENGTH];
 
 
-#define STR_PARAM(text) (CHAR*)text,sizeof(text)
+#define STR_PARAM(text) (OOC_CHAR*)text,sizeof(text)
 
 
 static _ModId _mid;
@@ -175,7 +175,7 @@ void Exception__AllocateSource(Exception__Source *newSource) {
 }
 
 void Exception__RAISE(Exception__Source source, LONGINT number, 
-                     const CHAR* message__ref, LONGINT message_0d) {
+                     const OOC_CHAR* message__ref, LONGINT message_0d) {
   if (!source) {
     Exception__RAISE(eexcept, INVALID_RAISE, 
                     STR_PARAM("[Exception] First parameter of RAISE is NIL"));
@@ -214,7 +214,7 @@ LONGINT Exception__CurrentNumber(Exception__Source source) {
   }
 }
 
-void Exception__GetMessage(CHAR* text, LONGINT text_0d) {
+void Exception__GetMessage(OOC_CHAR* text, LONGINT text_0d) {
   if(is_exception) {
     _string_copy(text, _Exception__message, text_0d);
   } else {
@@ -223,8 +223,8 @@ void Exception__GetMessage(CHAR* text, LONGINT text_0d) {
   }
 }
 
-BOOLEAN Exception__IsExceptionalExecution(void) {
-  return (BOOLEAN)(is_exception != 0);
+OOC_BOOLEAN Exception__IsExceptionalExecution(void) {
+  return (OOC_BOOLEAN)(is_exception != 0);
 }
 
 void Exception_init(void) {
@@ -236,5 +236,5 @@ void Exception_init(void) {
   Exception__AllocateSource(&Exception__signal);
   _exception_halt = Exception__halt;
   _exception_assert = Exception__assert;
-  _exception_raise = (void (*) (void*, LONGINT, const CHAR*, LONGINT)) Exception__RAISE;
+  _exception_raise = (void (*) (void*, LONGINT, const OOC_CHAR*, LONGINT)) Exception__RAISE;
 }

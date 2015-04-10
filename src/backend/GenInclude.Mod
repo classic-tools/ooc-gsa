@@ -1,7 +1,7 @@
-(*	$Id: GenInclude.Mod,v 1.8 1997/10/13 11:56:16 acken Exp $	*)
+(*	$Id: GenInclude.Mod,v 1.9 2000/09/12 09:09:48 ooc-devel Exp $	*)
 MODULE GenInclude;
 (*  Writes include statments.
-    Copyright (C) 1996, 1997  Michael van Acken
+    Copyright (C) 1996, 1997, 2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -30,6 +30,7 @@ PROCEDURE IncludeFile* (w: TextRider.Writer; name, suffix: ARRAY OF CHAR);
   BEGIN
     w. WriteLn;
     w. WriteString ('#include "');
+    ParamPaths.NormalizeFileName (name);
     w. WriteString (name);
     w. WriteString (suffix);
     w. WriteChar ('"');

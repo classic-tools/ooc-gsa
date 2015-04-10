@@ -88,7 +88,7 @@ extern void oo2c_init(void);
 
 int main (int argc, char *argv[]) {
   _program_argc = argc;
-  _program_argv = (CHAR**) argv;
+  _program_argv = (OOC_CHAR**) argv;
   _top_vs = (char*)malloc(32000);
   _end_vs = _top_vs+32000;
   _oo2c_init();

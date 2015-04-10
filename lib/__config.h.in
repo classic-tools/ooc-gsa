@@ -77,6 +77,9 @@
 /* Define if you have the gettimeofday function.  */
 #undef HAVE_GETTIMEOFDAY
 
+/* Define if you have the raise function.  */
+#undef HAVE_RAISE
+
 /* Define if you have the settimeofday function.  */
 #undef HAVE_SETTIMEOFDAY
 
@@ -89,6 +92,12 @@
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
 
+/* Define if you have the <io.h> header file.  */
+#undef HAVE_IO_H
+
+/* Define if you have the <pwd.h> header file.  */
+#undef HAVE_PWD_H
+
 /* Define if you have the <socket.h> header file.  */
 #undef HAVE_SOCKET_H
 
@@ -100,6 +109,9 @@
 
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
+
+/* Define if you have the <utime.h> header file.  */
+#undef HAVE_UTIME_H
 
 
 /* unless USE_GC is already defined, set it to HAVE_GC */

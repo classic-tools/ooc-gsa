@@ -1,7 +1,7 @@
-(* 	$Id: CNTexinfo.Mod,v 1.8 2000/01/02 15:08:43 ooc-devel Exp $	 *)
+(* 	$Id: CNTexinfo.Mod,v 1.10 2000/08/20 13:38:55 ooc-devel Exp $	 *)
 MODULE CNTexinfo;
 (*  A parser of embedded Texinfo comments.
-    Copyright (C) 1999  Michael van Acken
+    Copyright (C) 1999, 2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -75,19 +75,20 @@ CONST
   cmdDfn* = class3Low+4;
   cmdEmail* = class3Low+5;
   cmdEmph* = class3Low+6;
-  cmdKbd* = class3Low+7;
-  cmdOberonModule* = class3Low+8;
-  cmdOberonConst* = class3Low+9;
-  cmdOberonField* = class3Low+10;
-  cmdOberonParam* = class3Low+11;
-  cmdOberonProc* = class3Low+12;
-  cmdOberonType* = class3Low+13;
-  cmdOberonVar* = class3Low+14;
-  cmdSamp* = class3Low+15;
-  cmdStrong* = class3Low+16;
-  cmdUref* = class3Low+17;
-  cmdUrl* = class3Low+18;
-  cmdVar* = class3Low+19;
+  cmdFile* = class3Low+7;
+  cmdKbd* = class3Low+8;
+  cmdOberonModule* = class3Low+9;
+  cmdOberonConst* = class3Low+10;
+  cmdOberonField* = class3Low+11;
+  cmdOberonParam* = class3Low+12;
+  cmdOberonProc* = class3Low+13;
+  cmdOberonType* = class3Low+14;
+  cmdOberonVar* = class3Low+15;
+  cmdSamp* = class3Low+16;
+  cmdStrong* = class3Low+17;
+  cmdUref* = class3Low+18;
+  cmdUrl* = class3Low+19;
+  cmdVar* = class3Low+20;
   class3High* = cmdVar;
   
   (* Class 4: Alphabetic commands that occupy an entire line.
@@ -914,6 +915,7 @@ PROCEDURE FixExamples (list: TextElement);
             ptr. string[0] := CharClass.eol;
             ptr. string[1] := 0X
           END
+        ELSE (* mh, don't actually know what else could happen here... *)
         END;
         ptr := ptr. nextElement
       END
@@ -1639,6 +1641,7 @@ BEGIN
   Register (cmdDfn , "dfn");
   Register (cmdEmail, "email"); RegisterArgs (cmdEmail, 1, 2);
   Register (cmdEmph, "emph");
+  Register (cmdFile, "file");
   Register (cmdKbd, "kbd");
   Register (cmdOberonModule, "omodule");
   Register (cmdOberonConst, "oconst");

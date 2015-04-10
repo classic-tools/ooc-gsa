@@ -1,7 +1,7 @@
-(*      $Id: Build.Mod,v 1.42 1999/11/06 15:35:26 ooc-devel Exp $       *)
+(*      $Id: Build.Mod,v 1.43 2000/09/23 19:41:52 ooc-devel Exp $       *)
 MODULE Build;
 (*  Runs C compiler and linker to built executable.
-    Copyright (C) 1996-1999  Michael van Acken
+    Copyright (C) 1996-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -224,7 +224,7 @@ PROCEDURE Main (modList: Make.Module; main: FileData.FileData;
     (* generate main() function *)
     w. WriteString ("int main (int argc, char *argv[]) {"); w. WriteLn;
     w. WriteString ("  _program_argc = argc;"); w. WriteLn;
-    w. WriteString ("  _program_argv = (CHAR**) argv;"); w. WriteLn;
+    w. WriteString ("  _program_argv = (OOC_CHAR**) argv;"); w. WriteLn;
     
     IF (GenStatm.valueStack. value >= 0) THEN
       w. WriteString ("  _top_vs = (char*)malloc(");

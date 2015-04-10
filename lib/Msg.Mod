@@ -1,4 +1,4 @@
-(*      $Id: Msg.Mod,v 1.10 2000/03/01 09:55:55 ooc-devel Exp $   *)
+(*      $Id: Msg.Mod,v 1.11 2000/10/09 14:38:06 ooc-devel Exp $   *)
 MODULE Msg [OOC_EXTENSIONS];
 (*  Framework for messages (creation, expansion, conversion to text).
     Copyright (C) 1999, 2000  Michael van Acken
@@ -19,7 +19,7 @@ MODULE Msg [OOC_EXTENSIONS];
 *)
 
 
-(*
+(**
 
 This module combines several concepts: messages, message attributes,
 message contexts, and message lists.  This four aspects make this
@@ -31,8 +31,8 @@ modules that generate messages.  They determine the content of the
 message, and how it can be translated into readable text.  A user will
 mostly be in the position of message consumer, and will be handed
 filled in message objects.  For a user, the typical operation will be
-to convert a message into descriptive text (see methode GetText() and
-GetLText()).
+to convert a message into descriptive text (see methods
+@oproc{Msg.GetText} and @oproc{Msg.GetLText}).
 
 Message lists are a convenience feature for modules like parsers,
 which normally do not abort after a single error message.  Usually,
@@ -46,11 +46,11 @@ IMPORT
 
 CONST
   sizeAttrName* = 128-1;
-  (* Maximum length of the attribute name for `InitAttribute', 
-     `NewIntAttrib', `NewStringAttrib', `NewLStringAttrib', or 
-     `NewMsgAttrib'.  *)
+  (**Maximum length of the attribute name for @oproc{InitAttribute},
+     @oproc{NewIntAttrib}, @oproc{NewStringAttrib}, @oproc{NewLStringAttrib},
+     or @oproc{NewMsgAttrib}.  *)
   sizeAttrReplacement* = 16*1024-1;
-  (* Maximum length of an attribute's replacement text.  *)
+  (**Maximum length of an attribute's replacement text.  *)
   
 TYPE  (* the basic string and character types used by this module: *)
   Char* = CHAR;
@@ -62,55 +62,75 @@ TYPE  (* the basic string and character types used by this module: *)
   LStringPtr* = POINTER TO LString;
   
   Code* = LONGINT;
-  (* Identifier for a message's content.  Together with the message context,
+  (**Identifier for a message's content.  Together with the message context,
      this value uniquely identifies the type of the message.  *)
 
 TYPE
   Attribute* = POINTER TO AttributeDesc;
   AttributeDesc* = RECORD [ABSTRACT]
-    (* An attribute is a (name, value) tuple, which can be associated with
-       a message.  When a message is tranlated into its readable version 
-       through the `GetText' function, the value part is first converted to
-       some textual representation, and then inserted into the message's text.
-       Within a message, an attribute is uniquely identified by its name.  *)
+    (**An attribute is a @samp{(name, value)} tuple, which can be associated
+       with a message.  When a message is tranlated into its readable version
+       through the @oproc{Msg.GetText} function, the value part is first
+       converted to some textual representation, and then inserted into the
+       message's text.  Within a message, an attribute is uniquely identified
+       by its name.  *)
     nextAttrib-: Attribute;
-    name-: StringPtr;             (* restricted to `sizeAttrName' characters *)
+    (**Points to the next attribute in the message's attribute list.  *)
+    name-: StringPtr;
+    (**The attribute name.  Note that it is restricted to @oconst{sizeAttrName}
+       characters.  *)
   END;
 
 TYPE
   Context* = POINTER TO ContextDesc;
   ContextDesc* = RECORD
-    (* Describes the context under which messages are converted into
-       their textual representation.  Together, a message's context and
-       its code identify the message type.  As a debugging aid, an 
-       identification string can be associated with a context object (see
-       procedure `InitContext').  *)
+    (**Describes the context under which messages are converted into their
+       textual representation.  Together, a message's context and its code
+       identify the message type.  As a debugging aid, an identification string
+       can be associated with a context object (see procedure
+       @oproc{InitContext}).  *)
     id-: StringPtr;
+    (**The textual id associated with the context instance.  See procedure
+       @oproc{InitContext}.  *)
   END;
   
 TYPE
   Msg* = POINTER TO MsgDesc;
   MsgDesc* = RECORD
-    (* A message is an object that can be converted to human readable text
-       and presented to a program's user.  Within the OOC library, messages
-       are used to store errors in the I/O modules, and the XML library uses
-       them to create an error list when parsing an XML document.
-       
+    (**A message is an object that can be converted to human readable text and
+       presented to a program's user.  Within the OOC library, messages are
+       used to store errors in the I/O modules, and the XML library uses them
+       to create an error list when parsing an XML document.
+
        A message's type is uniquely identified by its context and its code.
        Using these two attributes, a message can be converted to text.  The
        text may contain placeholders, which are filled by the textual
        representation of attribute values associated with the message.  *)
-    nextMsg-, prevMsg-: Msg;  (* initialized to NIL, used by `MsgList' *)
+    nextMsg-, prevMsg-: Msg;
+    (**Used by @otype{MsgList}.  Initialized to @code{NIL}.  *)
     code-: Code;
+    (**The message code.  *)
     context-: Context;
-    attribList-: Attribute;       (* sorted by name *)
+    (**The context in which the message was created.  Within a given context,
+       the message code @ofield{code} uniquely identifies the message type.  *)
+    attribList-: Attribute;
+    (**The list of attributes associated with the message.  They are sorted by
+       name.  *)
   END;
 
 TYPE
   MsgList* = POINTER TO MsgListDesc;
   MsgListDesc* = RECORD
-    msgCount-: LONGINT;                  (* number of messages *)
+  (**A message list is an often used contruct to collect several error messages
+     that all refer to the same resource.  For example within a parser,
+     multiple messages are collected before aborting processing and presenting
+     all messages to the user.  *)
+    msgCount-: LONGINT;
+    (**The number of messages in the list.  An empty list has a
+       @ofield{msgCount} of zero.  *)
     msgList-, lastMsg: Msg;
+    (**The error messages in the list.  The messages are linked using the
+       fields @ofield{Msg.nextMsg} and @ofield{Msg.prevMsg}.  *)
   END;
 
 TYPE (* default implementations for some commonly used message attributes: *)
@@ -140,35 +160,39 @@ TYPE (* default implementations for some commonly used message attributes: *)
    ------------------------------------------------------------------------ *)
 
 PROCEDURE InitContext* (context: Context; id: String);
-(* The string argument `id' should describe the message context to the
-   programmer.  It should not appear in output generated for a
-   program's user, or at least it should not be necessary for a user
-   to interpret ths string to understand the message.  It is a good
-   idea to use the module name of the context variable for the
-   identifier.  If this is not sufficient to identify the variable,
-   add the variable name to the string.  *)
+(**The string argument @oparam{id} should describe the message context to the
+   programmer.  It should not appear in output generated for a program's user,
+   or at least it should not be necessary for a user to interpret ths string to
+   understand the message.  It is a good idea to use the module name of the
+   context variable for the identifier.  If this is not sufficient to identify
+   the variable, add the variable name to the string.  *)
   BEGIN
     NEW (context. id, Strings.Length (id)+1);
     COPY (id, context. id^)
   END InitContext;
 
 PROCEDURE (context: Context) GetTemplate* (msg: Msg; VAR templ: LString);
-(* Returns a template string for the message `msg'.  The string may
-   contain attribute references.  Instead of the reference `${foo}',
-   the procedure `GetText' (see below) will insert the textual
-   representation of the attribute with the name `foo'.  The special
-   reference `${MSG_CONTEXT}' is replaced by the value of
-   `context.id', and `${MSG_CODE}' with `msg.code'.
-   
+(**Returns a template string for the message @oparam{msg}.  The string may
+   contain attribute references.  Instead of the reference @samp{$@{foo@}}, the
+   procedure @oproc{Msg.GetText} will insert the textual representation of the
+   attribute with the name @samp{foo}.  The special reference
+   @samp{$@{MSG_CONTEXT@}} is replaced by the value of @ofield{context.id}, and
+   @samp{$@{MSG_CODE@}} with @ofield{msg.code}.
+
    The default implementation returns this string:
-     MSG_CONTEXT: ${MSG_CONTEXT}
-     MSG_CODE: ${MSG_CODE}
-     attribute_name: ${attribute_name}
-   
-   The last list is repeated for every attribute name.  The lines are
-   separated by `CharClass.eol'.  
-   
-   pre: msg # NIL *)
+
+   @example
+   MSG_CONTEXT: $@{MSG_CONTEXT@}
+   MSG_CODE: $@{MSG_CODE@}
+   attribute_name: $@{attribute_name@}
+   @end example
+
+   The last line is repeated for every attribute name.  The lines are separated
+   by @oconst{CharClass.eol}.
+
+   @precond
+   @oparam{msg} is not @code{NIL}.
+   @end precond  *)
   VAR
     attrib: Attribute;
     buffer: ARRAY sizeAttrReplacement+1 OF LONGCHAR;
@@ -196,7 +220,7 @@ PROCEDURE (context: Context) GetTemplate* (msg: Msg; VAR templ: LString);
    ------------------------------------------------------------------------ *)
 
 PROCEDURE InitAttribute* (attr: Attribute; name: String);
-(* Initializes attribute object and sets its name.  *)
+(**Initializes attribute object and sets its name.  *)
   BEGIN
     attr. nextAttrib := NIL;
     NEW (attr. name, Strings.Length (name)+1);
@@ -204,10 +228,10 @@ PROCEDURE InitAttribute* (attr: Attribute; name: String);
   END InitAttribute;
 
 PROCEDURE (attr: Attribute) [ABSTRACT] ReplacementText* (VAR text: LString);
-(* Converts attribute value into some textual representation.  The length of
-   the resulting string must not exceed `sizeAttrReplacement' characters:
-   `GetLText()' calls this procedure with a text buffer of
-   `sizeAttrReplacement+1' bytes.  *)
+(**Converts attribute value into some textual representation.  The length of
+   the resulting string must not exceed @oconst{sizeAttrReplacement}
+   characters: @oproc{Msg.GetLText} calls this procedure with a text buffer of
+   @samp{@oconst{sizeAttrReplacement}+1} bytes.  *)
   END ReplacementText;
 
 
@@ -215,7 +239,7 @@ PROCEDURE (attr: Attribute) [ABSTRACT] ReplacementText* (VAR text: LString);
    ------------------------------------------------------------------------ *)
 
 PROCEDURE New* (context: Context; code: Code): Msg;
-(* Creates a new message object for the given context, using the specified
+(**Creates a new message object for the given context, using the specified
    message code.  The message's attribute list is empty.  *)
   VAR
     msg: Msg;
@@ -230,10 +254,13 @@ PROCEDURE New* (context: Context; code: Code): Msg;
   END New;
 
 PROCEDURE (msg: Msg) SetAttribute* (attr: Attribute);
-(* Append an attribute to the message's attribute list.  If an attribute of
+(**Appends an attribute to the message's attribute list.  If an attribute of
    the same name exists already, it is replaced by the new one.
-   pre: Length(attr.name^)<=sizeAttrName
-        `attr' has not been attached to any other message *)
+
+   @precond
+   @samp{Length(attr.name^)<=sizeAttrName} and @oparam{attr} has not been
+   attached to any other message.
+   @end precond  *)
   
   PROCEDURE Insert (VAR aList: Attribute; attr: Attribute);
     BEGIN
@@ -255,8 +282,8 @@ PROCEDURE (msg: Msg) SetAttribute* (attr: Attribute);
   END SetAttribute;
 
 PROCEDURE (msg: Msg) GetAttribute* (name: String): Attribute;
-(* Returns the attribute `name' of the message object.  If no such attribute
-   exists, the value NIL is returned.  *)
+(**Returns the attribute @oparam{name} of the message object.  If no such
+   attribute exists, the value @code{NIL} is returned.  *)
   VAR
     a: Attribute;
   BEGIN
@@ -268,14 +295,17 @@ PROCEDURE (msg: Msg) GetAttribute* (name: String): Attribute;
   END GetAttribute;
 
 PROCEDURE (msg: Msg) GetLText* (VAR text: LString);
-(* Converts a message into a string.  The basic format of the string is 
-   determined by calling `msg.context.GetTemplate'.  Then the attributes
-   are inserted into the template string: the placeholder string `${foo}' 
-   is replaced with the textual representation of attribute.
-   
-   pre: LEN(text)<2^15
+(**Converts a message into a string.  The basic format of the string is
+   determined by calling @oproc{msg.context.GetTemplate}.  Then the attributes
+   are inserted into the template string: the placeholder string
+   @samp{$@{foo@}} is replaced with the textual representation of attribute.
+
+   @precond
+   @samp{LEN(@oparam{text}) < 2^15}
+   @end precond
+
    Note: Behaviour is undefined if replacement text of attribute contains an
-         attribute reference.  *)
+   attribute reference.  *)
   VAR
     attr: Attribute;
     attrName: ARRAY sizeAttrName+4 OF LONGCHAR;
@@ -321,9 +351,9 @@ PROCEDURE (msg: Msg) GetLText* (VAR text: LString);
   END GetLText;
 
 PROCEDURE (msg: Msg) GetText* (VAR text: String);
-(* Like `GetLText', but the message text is truncated to ISO-Latin1 
-   characters.  All characters that are not part of ISO-Latin1 are mapped
-   to question marks "?".  *)
+(**Like @oproc{Msg.GetLText}, but the message text is truncated to ISO-Latin1
+   characters.  All characters that are not part of ISO-Latin1 are mapped to
+   question marks @samp{?}.  *)
   VAR
     buffer: ARRAY ASH(2,15)-1 OF LChar;
     i: INTEGER;
@@ -361,9 +391,11 @@ PROCEDURE NewMsgList* (): MsgList;
   END NewMsgList;
 
 PROCEDURE (l: MsgList) Append* (msg: Msg);
-(**Appends the message `msg'.  to the list `l'.
+(**Appends the message @oparam{msg} to the list @oparam{l}.
 
-   pre: `msg' is not part of another message list.  *)
+   @precond
+   @oparam{msg} is not part of another message list.
+   @end precond  *)
   BEGIN
     msg. nextMsg := NIL;
     IF (l. msgList = NIL) THEN
@@ -378,9 +410,9 @@ PROCEDURE (l: MsgList) Append* (msg: Msg);
   END Append;
 
 PROCEDURE (l: MsgList) AppendList* (source: MsgList);
-(**Appends the messages of list `source' to `l'.  Afterwards, `source' is
-   an empty list, and the elements of `source' can be found at the end of
-   the list `l'.  *)
+(**Appends the messages of list @oparam{source} to @oparam{l}.  Afterwards,
+   @oparam{source} is an empty list, and the elements of @oparam{source} can be
+   found at the end of the list @oparam{l}.  *)
   BEGIN
     IF (source. msgCount # 0) THEN
       IF (l. msgCount = 0) THEN
@@ -496,7 +528,7 @@ PROCEDURE (attr: MsgAttribute) ReplacementText* (VAR text: LString);
    ------------------------------------------------------------------------ *)
 
 PROCEDURE GetStringPtr* (str: String): StringPtr;
-(* Creates a copy of `str' on the heap and returns a pointer to it.  *)
+(**Creates a copy of @oparam{str} on the heap and returns a pointer to it.  *)
   VAR
     s: StringPtr;
   BEGIN
@@ -506,7 +538,7 @@ PROCEDURE GetStringPtr* (str: String): StringPtr;
   END GetStringPtr;
 
 PROCEDURE GetLStringPtr* (str: LString): LStringPtr;
-(* Creates a copy of `str' on the heap and returns a pointer to it.  *)
+(**Creates a copy of @oparam{str} on the heap and returns a pointer to it.  *)
   VAR
     s: LStringPtr;
   BEGIN

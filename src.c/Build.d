@@ -192,7 +192,7 @@ static const unsigned char _c21[] = "  _oo2c_init();";
 static const unsigned char _c20[] = "  _end_vs = _top_vs+";
 static const unsigned char _c19[] = ");";
 static const unsigned char _c18[] = "  _top_vs = (char*)malloc(";
-static const unsigned char _c17[] = "  _program_argv = (CHAR**) argv;";
+static const unsigned char _c17[] = "  _program_argv = (OOC_CHAR**) argv;";
 static const unsigned char _c16[] = "  _program_argc = argc;";
 static const unsigned char _c15[] = "int main (int argc, char *argv[]) {";
 static const unsigned char _c14[] = "__libc";

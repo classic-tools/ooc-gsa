@@ -1,4 +1,4 @@
-(* 	$Id: CNTexi2Text.Mod,v 1.5 2000/01/02 15:10:15 ooc-devel Exp $	 *)
+(* 	$Id: CNTexi2Text.Mod,v 1.6 2000/08/20 13:39:03 ooc-devel Exp $	 *)
 MODULE CNTexi2Text;
 (*  Converts Texinfo text to plain ASCII file, similar to makeinfo.
     Copyright (C) 1999, 2000  Michael van Acken
@@ -94,6 +94,10 @@ PROCEDURE Convert* (texinfo: Texinfo.Texinfo;
           currBlock. Append ("_");
           ConvertInline (list, noFormat);
           currBlock. Append ("_")
+        | Texinfo.cmdFile:
+          currBlock. Append ("`");
+          ConvertInline (list, noFormat);
+          currBlock. Append ("'")
         | Texinfo.cmdStrong:
           currBlock. Append ("*");
           ConvertInline (list, noFormat);

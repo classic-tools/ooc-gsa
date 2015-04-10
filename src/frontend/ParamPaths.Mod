@@ -1,7 +1,7 @@
-(* 	$Id: ParamPaths.Mod,v 1.12 1999/08/08 18:28:15 acken Exp $	 *)
+(* 	$Id: ParamPaths.Mod,v 1.13 2000/09/12 09:09:42 ooc-devel Exp $	 *)
 MODULE ParamPaths;
 (*  Parsing and maintenance of path lists, locating files.
-    Copyright (C) 1995, 1996, 1997, 1999  Michael van Acken
+    Copyright (C) 1995-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -368,6 +368,21 @@ PROCEDURE (s: PathsSection) Write*;
     END
   END Write;
 
+PROCEDURE NormalizeFileName* (VAR fileName: ARRAY OF CHAR);
+(* The character ":" cannot be used in MSDOS-based platforms.  As a quick hack,
+   all occurences of ":" in the non-directory part of `fileName' are 
+   replaced with "_".  *)
+  VAR
+    i: LONGINT;
+  BEGIN
+    i := Strings.Length (fileName);
+    WHILE (i >= 0) & (fileName[i] # "/") DO
+      IF (fileName[i] = ":") THEN
+        fileName[i] := "_"
+      END;
+      DEC (i)
+    END
+  END NormalizeFileName;
 
 PROCEDURE FindPath* (fileName: ARRAY OF CHAR; keepGivenPath: BOOLEAN;
                      VAR filePath: ARRAY OF CHAR): BOOLEAN;
@@ -396,6 +411,7 @@ PROCEDURE FindPath* (fileName: ARRAY OF CHAR; keepGivenPath: BOOLEAN;
     dirPart, filePart: Param.Filename;
     rcsEnabled, searchPaths: BOOLEAN;
   BEGIN
+    NormalizeFileName (fileName);
     Filenames.GetPath (fileName, dirPart, filePart);
     (* search path list if `fileName' has no directory part or if 
        `keepGivenPath' isn't set *)
@@ -441,6 +457,7 @@ PROCEDURE GeneratePath* (fileName: ARRAY OF CHAR; VAR filePath: ARRAY OF CHAR);
     pattern: Pattern;
     found: BOOLEAN;
   BEGIN
+    NormalizeFileName (fileName);
     found := FALSE;
     
     IF (newFiles. defined OR (newFiles. patternList # NIL)) THEN

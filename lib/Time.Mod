@@ -1,4 +1,4 @@
-(*	$Id: Time.Mod,v 1.5 1999/09/02 13:27:32 acken Exp $	*)
+(*	$Id: Time.Mod,v 1.6 2000/08/05 18:39:09 ooc-devel Exp $	*)
 MODULE Time;
 
 (*
@@ -120,7 +120,7 @@ END Delta;
 
 PROCEDURE (VAR a: TimeStamp) Cmp* (b: TimeStamp) : SHORTINT;
 (* Compares 'a' to 'b'.  Result: -1: a<b;  0: a=b;  1: a>b 
-   Above convention makes more sense since the comparison 
+   This means the comparison 
    can be directly extrapolated to a comparison between the 
    two numbers e.g.,
    

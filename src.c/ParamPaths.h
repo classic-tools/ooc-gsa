@@ -40,6 +40,7 @@ typedef struct ParamPaths__NewFilesDesc {
 typedef struct ParamPaths__NewFilesDesc* ParamPaths__NewFilesSection;
 extern ParamPaths__PathsSection ParamPaths__paths;
 extern ParamPaths__NewFilesSection ParamPaths__newFiles;
+extern void ParamPaths__NormalizeFileName(unsigned char* fileName, int fileName_0d);
 extern unsigned char ParamPaths__FindPath(const unsigned char* fileName__ref, int fileName_0d, unsigned char keepGivenPath, unsigned char* filePath, int filePath_0d);
 extern void ParamPaths__GeneratePath(const unsigned char* fileName__ref, int fileName_0d, unsigned char* filePath, int filePath_0d);
 extern unsigned char ParamPaths__FindPathExt(const unsigned char* fileName__ref, int fileName_0d, const unsigned char* ext__ref, int ext_0d, unsigned char keepGivenPath, unsigned char* filePath, int filePath_0d);

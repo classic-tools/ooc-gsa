@@ -1,4 +1,4 @@
-/*	$Id: Locales.c,v 1.5 1999/06/03 12:12:27 acken Exp $	*/
+/*	$Id: Locales.c,v 1.6 2000/09/23 19:40:43 ooc-devel Exp $	*/
 #include <limits.h>
 #include <locale.h>
 #include <time.h>
@@ -43,15 +43,15 @@ static _ModId _mid;
 static struct tm Locales__base;
 
 
-void Locales__RecoverPattern_ReplacePattern(const CHAR* pattern, LONGINT pattern_0d,
-                                           CHAR* str, LONGINT str_0d) {
+void Locales__RecoverPattern_ReplacePattern(const OOC_CHAR* pattern, LONGINT pattern_0d,
+                                           OOC_CHAR* str, LONGINT str_0d) {
   int i;
-  BOOLEAN found;
+  OOC_BOOLEAN found;
   INTEGER pos;
-  CHAR src[132];
+  OOC_CHAR src[132];
 
   i = strftime((char*)src, 132, (const char*)pattern, &Locales__base);
-  Strings__FindNext((const CHAR*)src, 132, (const CHAR*)str, str_0d, 
+  Strings__FindNext((const OOC_CHAR*)src, 132, (const OOC_CHAR*)str, str_0d, 
 		   0, &found, &pos);
   if (found) {
     i = Strings__Length(src, 132);
@@ -60,28 +60,28 @@ void Locales__RecoverPattern_ReplacePattern(const CHAR* pattern, LONGINT pattern
   }
 }
 
-void Locales__RecoverPattern(CHAR* str, LONGINT str_0d) {
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%A", 3, str, str_0d);
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%a", 3, str, str_0d);
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%B", 3, str, str_0d);
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%b", 3, str, str_0d);
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%d", 3, str, str_0d);
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%H", 3, str, str_0d);
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%I", 3, str, str_0d);
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%j", 3, str, str_0d);
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%m", 3, str, str_0d);
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%M", 3, str, str_0d);
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%p", 3, str, str_0d);
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%S", 3, str, str_0d);
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%U", 3, str, str_0d);
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%W", 3, str, str_0d);
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%w", 3, str, str_0d);
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%Y", 3, str, str_0d);
-  Locales__RecoverPattern_ReplacePattern((const CHAR*)"%y", 3, str, str_0d);
+void Locales__RecoverPattern(OOC_CHAR* str, LONGINT str_0d) {
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%A", 3, str, str_0d);
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%a", 3, str, str_0d);
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%B", 3, str, str_0d);
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%b", 3, str, str_0d);
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%d", 3, str, str_0d);
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%H", 3, str, str_0d);
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%I", 3, str, str_0d);
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%j", 3, str, str_0d);
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%m", 3, str, str_0d);
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%M", 3, str, str_0d);
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%p", 3, str, str_0d);
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%S", 3, str, str_0d);
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%U", 3, str, str_0d);
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%W", 3, str, str_0d);
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%w", 3, str, str_0d);
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%Y", 3, str, str_0d);
+  Locales__RecoverPattern_ReplacePattern((const OOC_CHAR*)"%y", 3, str, str_0d);
 }
 
-BOOLEAN Locales__GetStr(LONGINT id, CHAR* ls, LONGINT ls_0d) {
-  CHAR* str;
+OOC_BOOLEAN Locales__GetStr(LONGINT id, OOC_CHAR* ls, LONGINT ls_0d) {
+  OOC_CHAR* str;
   struct tm tp;
   struct lconv *loc;
   LONGINT ret;
@@ -90,16 +90,16 @@ BOOLEAN Locales__GetStr(LONGINT id, CHAR* ls, LONGINT ls_0d) {
     /* use the C localization information */
     loc=localeconv();
     switch (id) {
-      case (Locales__decimalPoint):      str=(CHAR*)loc->decimal_point; break;
-      case (Locales__thousandsSep):      str=(CHAR*)loc->thousands_sep; break;
-      case (Locales__grouping):          str=(CHAR*)loc->grouping; break;
-      case (Locales__intCurrencySymbol): str=(CHAR*)loc->int_curr_symbol; break;
-      case (Locales__currencySymbol):    str=(CHAR*)loc->currency_symbol; break;
-      case (Locales__monDecimalPoint):   str=(CHAR*)loc->mon_decimal_point; break;
-      case (Locales__monThousandsSep):   str=(CHAR*)loc->mon_thousands_sep; break;
-      case (Locales__monGrouping):       str=(CHAR*)loc->mon_grouping; break;
-      case (Locales__positiveSign):      str=(CHAR*)loc->positive_sign; break;
-      case (Locales__negativeSign):      str=(CHAR*)loc->negative_sign; break;
+      case (Locales__decimalPoint):      str=(OOC_CHAR*)loc->decimal_point; break;
+      case (Locales__thousandsSep):      str=(OOC_CHAR*)loc->thousands_sep; break;
+      case (Locales__grouping):          str=(OOC_CHAR*)loc->grouping; break;
+      case (Locales__intCurrencySymbol): str=(OOC_CHAR*)loc->int_curr_symbol; break;
+      case (Locales__currencySymbol):    str=(OOC_CHAR*)loc->currency_symbol; break;
+      case (Locales__monDecimalPoint):   str=(OOC_CHAR*)loc->mon_decimal_point; break;
+      case (Locales__monThousandsSep):   str=(OOC_CHAR*)loc->mon_thousands_sep; break;
+      case (Locales__monGrouping):       str=(OOC_CHAR*)loc->mon_grouping; break;
+      case (Locales__positiveSign):      str=(OOC_CHAR*)loc->positive_sign; break;
+      case (Locales__negativeSign):      str=(OOC_CHAR*)loc->negative_sign; break;
       default:                          return 0; break;
     }
     _string_copy(ls, str, ls_0d);
@@ -149,8 +149,8 @@ LONGINT Locales__GetInt(LONGINT id) {
   }
 }
 
-void Locales__Set(LONGINT category, const CHAR* name, LONGINT name_0d, 
-		 CHAR* old, LONGINT old_0d) {
+void Locales__Set(LONGINT category, const OOC_CHAR* name, LONGINT name_0d, 
+		 OOC_CHAR* old, LONGINT old_0d) {
   char* oloc;
 
   oloc = setlocale(category, (const char*)name);

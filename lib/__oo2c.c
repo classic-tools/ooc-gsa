@@ -1,6 +1,6 @@
-/*	$Id: __oo2c.c,v 1.21 1999/10/03 11:51:13 ooc-devel Exp $	*/
+/*	$Id: __oo2c.c,v 1.24 2000/09/23 19:40:51 ooc-devel Exp $	*/
 /*  Run-time system for oo2c programs.
-    Copyright (C) 1997-1999  Michael van Acken
+    Copyright (C) 1997-2000  Michael van Acken
 
     This module is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public License
@@ -18,10 +18,14 @@
 */
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <signal.h>
 #include <sys/types.h>
 #include <string.h>
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#elif HAVE_IO_H
+#include <io.h>
+#endif
 
 #if USE_GC
 #  define _GC_H
@@ -41,7 +45,7 @@ char* _top_vs;  /* top of value stack */
 char* _end_vs;  /* end of value stack */
 
 LONGINT _program_argc;
-CHAR **_program_argv;
+OOC_CHAR **_program_argv;
 INTEGER _program_exit_code = 0;
 
 /* the following variables are used by the default exception handler; they are
@@ -51,7 +55,7 @@ void* _exception_halt = (void*)1;
 void* _exception_assert = (void*)2;
 void* _exception_runtime = (void*)3;
 void* _exception_signal = (void*)4;
-void (*_exception_raise) (void*, LONGINT, const CHAR*, LONGINT) = NULL;
+void (*_exception_raise) (void*, LONGINT, const OOC_CHAR*, LONGINT) = NULL;
 void (* _exception_run_term_procs) (void) = NULL;
 
 
@@ -108,7 +112,7 @@ static void write_backtrace () {
 }
 
 void _default_exception_handler(void* source, LONGINT number, 
-				const CHAR* message) {
+				const OOC_CHAR* message) {
 /* Default exception handler, activated if the Exception module isn't part of
    the program, or if the stack of execution contexts is empty.  Depending on
    the value of `source' one of the following actions will be taken:
@@ -179,7 +183,11 @@ void _default_exception_handler(void* source, LONGINT number,
 	_exception_run_term_procs();
       }
       write_backtrace();
+#if HAVE_RAISE
+      raise(number);
+#else
       (void)kill(getpid(), number);
+#endif
       _break_rtc();
     } else if (source == _exception_assert) {
       write_backtrace();
@@ -198,10 +206,10 @@ static void raise_exception(void* source, LONGINT number,
    handler.  */
   _exception_pos = pos;
   if (_exception_raise) {
-    _exception_raise(source, number, (const CHAR*)message, strlen(message)+1);
+    _exception_raise(source, number, (const OOC_CHAR*)message, strlen(message)+1);
     exit(127);			/* should never be reached */
   } else {
-    _default_exception_handler(source, number, (const CHAR*)message);
+    _default_exception_handler(source, number, (const OOC_CHAR*)message);
   }
 }
 
@@ -278,11 +286,11 @@ void _with_failed(_Pos pos) {
 }
 
 void _type_guard_failed(void* tag, _Pos pos) {
-  const CHAR *tname = ((_Type)tag)->name;
-  const CHAR *mname = ((_Type)tag)->module->name;
+  const OOC_CHAR *tname = ((_Type)tag)->name;
+  const OOC_CHAR *mname = ((_Type)tag)->module->name;
   char s[512];
 
-  if (!tname) tname = (const CHAR*)"<unknown>";
+  if (!tname) tname = (const OOC_CHAR*)"<unknown>";
   (void)sprintf(s, "Type guard failed\nThe variable's dynamic type is %s.%s",
 		mname, tname);
   raise_exception(_exception_runtime, RT_typeGuardFailed, s, pos);

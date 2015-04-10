@@ -1,7 +1,7 @@
-/*	$Id: SysClock.c,v 1.11 1999/09/02 13:42:41 acken Exp $	*/
+/*	$Id: SysClock.c,v 1.14 2000/09/23 19:40:46 ooc-devel Exp $	*/
 /*  SysClock - facilities for accessing a system clock that records the 
                date and time of day.
-    Copyright (C) 1996-1999  Michael Griebling, Michael van Acken
+    Copyright (C) 1996-2000  Michael Griebling, Michael van Acken
  
     This module is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as 
@@ -17,7 +17,6 @@
     License along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#include <unistd.h>
 #include <errno.h>
 
 #include "__oo2c.h"
@@ -33,6 +32,11 @@
 # else
 #  include <time.h>
 # endif
+#endif
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#elif HAVE_IO_H
+#include <io.h>
 #endif
 
 /* --- begin #include "SysClock.d" */
@@ -97,18 +101,18 @@ struct _TD SysClock__DateTime_td = {
 static _ModId _mid;
 
 
-BOOLEAN SysClock__CanGetClock(void) {
-  struct timeval t;
+OOC_BOOLEAN SysClock__CanGetClock(void) {
 #if HAVE_GETTIMEOFDAY
-  return (BOOLEAN)(gettimeofday(&t, NULL) == 0);
+  struct timeval t;
+  return (OOC_BOOLEAN)(gettimeofday(&t, NULL) == 0);
 #else
   return 0;
 #endif
 }
 
-BOOLEAN SysClock__CanSetClock(void) {
+OOC_BOOLEAN SysClock__CanSetClock(void) {
 #if HAVE_SETTIMEOFDAY
-  return (BOOLEAN)(geteuid() == 0);  /* root can set clock */
+  return (OOC_BOOLEAN)(geteuid() == 0);  /* root can set clock */
 #else
   return 0;
 #endif
@@ -136,7 +140,7 @@ SHORTINT SysClock__DaysPerMonth(SHORTINT mon, INTEGER year) {
   }
 }
 
-BOOLEAN SysClock__IsValidDateTime(const SysClock__DateTime *d) {
+OOC_BOOLEAN SysClock__IsValidDateTime(const SysClock__DateTime *d) {
   return 
     (d->month > 0) && (d->month <= 12) &&
     (d->day > 0) && (d->day <= SysClock__DaysPerMonth(d->month, d->year)) &&

@@ -1,4 +1,4 @@
-/*	$Id: Files.c,v 1.17 2000/07/21 17:02:49 ooc-devel Exp $	*/
+/*	$Id: Files.c,v 1.20 2000/09/23 19:40:08 ooc-devel Exp $	*/
 /*  Access to files and file attributes.
     Copyright (C) 1997-2000  Michael van Acken
 
@@ -19,13 +19,11 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <errno.h>
 #include <string.h>
-#include <utime.h>
 #include <limits.h>
 
 #include "__oo2c.h"
@@ -42,6 +40,16 @@
 # else
 #  include <time.h>
 # endif
+#endif
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#elif HAVE_IO_H
+#include <io.h>
+#endif
+#if HAVE_UTIME_H
+#include <utime.h>
+#else
+#include <sys/utime.h>
 #endif
 
 /* the minimum number of temporary files supported by any system; GNU libc info
@@ -61,6 +69,14 @@ static mode_t active_umask;
 #define PATH_MAX 2048
 #endif
 
+#ifdef __MINGW32__
+#define PERMISSIONS_REGISTER (S_IREAD | S_IWRITE)
+#define PERMISSIONS_WRITE_ONLY S_IWRITE
+#else
+#define PERMISSIONS_REGISTER (S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)
+#define PERMISSIONS_WRITE_ONLY S_IWUSR
+#endif
+#define PERMISSIONS_READ_WRITE PERMISSIONS_REGISTER
 
 /* --- begin #include "Files.d" */
 #include "Files.h"
@@ -84,7 +100,7 @@ static struct _MD Files_md = {
   &Kernel__ModuleDesc_td.td, 
   {
     NULL, 
-    (const CHAR*)_n0.name, 
+    (const OOC_CHAR*)_n0.name, 
     -1, 
     NULL
   }
@@ -128,7 +144,7 @@ struct _TD Files__FileDesc_td = {
   {
     Files__FileDesc_tdb.btypes,
     _tb0.tbprocs,
-    (const CHAR*)_n1.name,
+    (const OOC_CHAR*)_n1.name,
     &Files_md.md,
     2, 
     '0', '1',
@@ -173,7 +189,7 @@ struct _TD Files__ReaderDesc_td = {
   {
     Files__ReaderDesc_tdb.btypes,
     _tb1.tbprocs,
-    (const CHAR*)_n2.name,
+    (const OOC_CHAR*)_n2.name,
     &Files_md.md,
     2, 
     '0', '1',
@@ -218,7 +234,7 @@ struct _TD Files__WriterDesc_td = {
   {
     Files__WriterDesc_tdb.btypes,
     _tb2.tbprocs,
-    (const CHAR*)_n3.name,
+    (const OOC_CHAR*)_n3.name,
     &Files_md.md,
     2, 
     '0', '1',
@@ -259,7 +275,7 @@ struct _TD Files__ErrorContextDesc_td = {
   {
     Files__ErrorContextDesc_tdb.btypes,
     _tb3.tbprocs,
-    (const CHAR*)_n4.name,
+    (const OOC_CHAR*)_n4.name,
     &Files_md.md,
     3, 
     '0', '1',
@@ -359,7 +375,7 @@ void Files__ErrorContextDesc_GetTemplate (Files__ErrorContext context,
 static void add_msg_attribute(Files__Result msg, const char* name, const char* value) {
   DYN_TBCALL(Msg,MsgDesc,SetStringAttrib,msg,
 	     (msg, (const Msg__String)name, strlen(name)+1,
-              Msg__GetStringPtr((CHAR*)value, strlen(value)+1)));
+              Msg__GetStringPtr((OOC_CHAR*)value, strlen(value)+1)));
 }
 
 static Files__Result get_error(Msg__Code code, int use_errno, Files__File f) {
@@ -460,6 +476,19 @@ static void free_tmp_name (Files__File f) {
   }
 }
 
+static int open_file(const OOC_CHAR* name, int open_flags, int pflags) {
+  int fd;
+
+#ifdef O_BINARY  /* be kind to MS-DOG based systems */
+  open_flags |= O_BINARY;
+#endif
+
+  do {
+    fd = open((const char*)name, open_flags, pflags);
+  } while ((fd == -1) && (errno == EINTR));
+  return fd;
+}
+  
 void Files__FileDesc_Register(Files__File f) {
   if (!f->open) {
     f->res = get_error(Files__channelClosed, 0, f);
@@ -475,8 +504,7 @@ void Files__FileDesc_Register(Files__File f) {
        add group and others permissions to the file as far as the umask 
        allows it */
     res = chmod((const char*)f->tmpName, 
-		(S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH) & 
-		~active_umask);
+		PERMISSIONS_REGISTER & ~active_umask);
     
     if (res != -1) {	/* rename file atomically */
       res = rename((const char*)f->tmpName, (const char*)f->name);
@@ -546,22 +574,6 @@ void Files__WriterDesc_Truncate(Files__Writer w, int newLength) {
   PosixFileDescr__Truncate ((PosixFileDescr__Writer)w->base, newLength);
 }
 
-
-
-static int open_file(const CHAR* name, int open_flags, int pflags) {
-  int fd;
-
-#ifdef O_BINARY  /* be kind to MS-DOG based systems */
-  open_flags |= O_BINARY;
-#endif
-
-  do {
-    fd = open((const char*)name, open_flags, pflags);
-  } while ((fd == -1) && (errno == EINTR));
-  return fd;
-}
-  
-
 #define NO_ERROR ((fd == -2) || ((fd == -1) && (errno == EACCES)))
 #define RD_FLAGS ((1<<Files__read) | (1<<Files__tryRead))
 #define WR_FLAGS ((1<<Files__write) | (1<<Files__tryWrite))
@@ -570,7 +582,7 @@ static int open_file(const CHAR* name, int open_flags, int pflags) {
 #define MODE_TMP 2
 #define MODE_TMP_GEN_NAME 3
 
-static int call_open (const CHAR* name, SET flags, int mode, int *access_mode) {
+static int call_open (const OOC_CHAR* name, SET flags, int mode, int *access_mode) {
   /* create a new file or open one; try to open the file first with read and 
      write, permissions, then just read, then just write; if everything fails
      report `access denied'; for temporary files the permissions on the file
@@ -594,9 +606,9 @@ static int call_open (const CHAR* name, SET flags, int mode, int *access_mode) {
     open_flags = 0;
   }
   if (mode == MODE_NEW) {
-    permissions = S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH;
+    permissions = PERMISSIONS_READ_WRITE;
   } else {
-    permissions = S_IWUSR;
+    permissions = PERMISSIONS_WRITE_ONLY;
   }
 
   fd = -2;
@@ -630,15 +642,15 @@ static int call_open (const CHAR* name, SET flags, int mode, int *access_mode) {
   return fd;
 }
 
-static CHAR* local_strdup (const CHAR* str) {
+static OOC_CHAR* local_strdup (const OOC_CHAR* str) {
   /* strdup is a SVID function; it can't be used in this file */
-  CHAR *new;
-  new = (CHAR*)GC_malloc_atomic(strlen((const char*)str)+1);
+  OOC_CHAR *new;
+  new = (OOC_CHAR*)GC_malloc_atomic(strlen((const char*)str)+1);
   if (new) (void)strcpy((char*)new, (const char*)str);
   return new;
 }
 
-static Files__File create_file(const CHAR* name, SET flags, int mode,
+static Files__File create_file(const OOC_CHAR* name, SET flags, int mode,
 			       Files__Result *res) {
 /* Open the file `name' using the flags in `flags' that were initially passed 
    to New() or Tmp().  `mode' characterizes one of the four ways a file can
@@ -666,7 +678,7 @@ static Files__File create_file(const CHAR* name, SET flags, int mode,
       } else {
 	(void)sprintf(tname, "%s^", (const char*)name);
       }
-      fd = call_open((const CHAR*)tname, flags, mode, &access_mode);
+      fd = call_open((const OOC_CHAR*)tname, flags, mode, &access_mode);
       count++;
     } while ((fd == -1) && (errno == EEXIST));
   } else {
@@ -687,7 +699,7 @@ static Files__File create_file(const CHAR* name, SET flags, int mode,
     PosixFileDescr__Init((PosixFileDescr__Channel)ch, fd, access_mode);
     ch->next = open_files;
     if (mode == MODE_TMP_GEN_NAME) {
-      ch->tmpName = local_strdup((const CHAR*)tname);
+      ch->tmpName = local_strdup((const OOC_CHAR*)tname);
     } else {
       ch->tmpName = NULL;
     }
@@ -699,15 +711,15 @@ static Files__File create_file(const CHAR* name, SET flags, int mode,
   return ch;
 }
 
-Files__File Files__New(const CHAR* file__ref, int file_0d, unsigned int flags, Files__Result *res) {
+Files__File Files__New(const OOC_CHAR* file__ref, int file_0d, unsigned int flags, Files__Result *res) {
   return create_file(file__ref, flags, MODE_NEW, res);
 }
 
-Files__File Files__Old(const CHAR* file__ref, int file_0d, unsigned int flags, Files__Result *res) {
+Files__File Files__Old(const OOC_CHAR* file__ref, int file_0d, unsigned int flags, Files__Result *res) {
   return create_file(file__ref, flags, MODE_OLD, res);
 }
 
-Files__File Files__Tmp(const CHAR* file__ref, int file_0d, unsigned int flags, Files__Result *res) {
+Files__File Files__Tmp(const OOC_CHAR* file__ref, int file_0d, unsigned int flags, Files__Result *res) {
   Files__File ch = NULL;
   char new_name[L_tmpnam];
   char *tname;
@@ -729,7 +741,7 @@ Files__File Files__Tmp(const CHAR* file__ref, int file_0d, unsigned int flags, F
       /* there aren't any discarded names available right now; try to 
 	 get a new one */
       tname = tmpnam(new_name);
-      if (tname) tname = (char*)local_strdup((CHAR*)tname);
+      if (tname) tname = (char*)local_strdup((OOC_CHAR*)tname);
     }
   } else {
     tname = (char*)file__ref;
@@ -738,12 +750,12 @@ Files__File Files__Tmp(const CHAR* file__ref, int file_0d, unsigned int flags, F
   if (tname) {
     /* create file with minimal permissions; the permissions are extended
        upon registration if the umask allows it */
-    ch = create_file((const CHAR*)tname, flags, 
+    ch = create_file((const OOC_CHAR*)tname, flags, 
 		     file__ref[0]?MODE_TMP_GEN_NAME:MODE_TMP, res);
     if (ch) {
       ch->anonymous = anonymous;
       if (anonymous) {
-	ch->tmpName = (CHAR*)tname;
+	ch->tmpName = (OOC_CHAR*)tname;
       } else {
 	ch->name = local_strdup(file__ref);
       }
@@ -761,7 +773,7 @@ Files__File Files__Tmp(const CHAR* file__ref, int file_0d, unsigned int flags, F
 #define end_of_epoch 65442
 #define secs_per_day 86400
 
-void Files__SetModTime(const CHAR* file__ref, int file_0d, const Time__TimeStamp *mtime__ref, Files__Result *fres) {
+void Files__SetModTime(const OOC_CHAR* file__ref, int file_0d, const Time__TimeStamp *mtime__ref, Files__Result *fres) {
   if ((mtime__ref->days < days_to_epoch) || 
       (mtime__ref->days >= end_of_epoch) ||
       (mtime__ref->msecs < 0) ||
@@ -798,7 +810,7 @@ void Files__SetModTime(const CHAR* file__ref, int file_0d, const Time__TimeStamp
 #define days_to_epoch 40587
 #define secs_per_day 86400
 
-void Files__GetModTime(const CHAR* file__ref, int file_0d, Time__TimeStamp *mtime, _Type mtime__tag, Files__Result *fres) {
+void Files__GetModTime(const OOC_CHAR* file__ref, int file_0d, Time__TimeStamp *mtime, _Type mtime__tag, Files__Result *fres) {
   int res;
   struct stat stat_buf;
 
@@ -815,7 +827,10 @@ void Files__GetModTime(const CHAR* file__ref, int file_0d, Time__TimeStamp *mtim
   }
 }
 
-extern BOOLEAN Files__Exists(const CHAR* file__ref, int file_0d) {
+extern OOC_BOOLEAN Files__Exists(const OOC_CHAR* file__ref, int file_0d) {
+#ifndef F_OK
+#define F_OK 0
+#endif
   return (access((const char*)file__ref, F_OK) == 0);
 }
 

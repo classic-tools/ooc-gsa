@@ -15,9 +15,9 @@ void Msg__InitContext(Msg__Context context, const Msg__String id__ref, int id_0d
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i0 < 0) _invalid_length(i0, _P(5803));
+    if(i0 < 0) _invalid_length(i0, _P(6843));
     _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
-    if (!_mem) _new_failed(_P(5766));
+    if (!_mem) _new_failed(_P(6806));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i0;
@@ -69,9 +69,9 @@ void Msg__InitAttribute(Msg__Attribute attr, const Msg__String name__ref, int na
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i1 < 0) _invalid_length(i1, _P(7722));
+    if(i1 < 0) _invalid_length(i1, _P(8878));
     _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
-    if (!_mem) _new_failed(_P(7684));
+    if (!_mem) _new_failed(_P(8840));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i1;
@@ -92,7 +92,7 @@ Msg__Msg Msg__New(Msg__Context context, int code) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(20)+8);
-    if (!_mem) _new_failed(_P(8449));
+    if (!_mem) _new_failed(_P(9634));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__MsgDesc_td.td;
     i0 = (int)_var;
@@ -296,7 +296,7 @@ Msg__MsgList Msg__NewMsgList(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(12)+8);
-    if (!_mem) _new_failed(_P(12565));
+    if (!_mem) _new_failed(_P(13862));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__MsgListDesc_td.td;
     i0 = (int)_var;
@@ -365,7 +365,7 @@ Msg__IntAttribute Msg__NewIntAttrib(const Msg__String name__ref, int name_0d, in
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(12)+8);
-    if (!_mem) _new_failed(_P(13911));
+    if (!_mem) _new_failed(_P(15285));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__IntAttributeDesc_td.td;
     i0 = (int)_var;
@@ -406,7 +406,7 @@ Msg__StringAttribute Msg__NewStringAttrib(const Msg__String name__ref, int name_
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(12)+8);
-    if (!_mem) _new_failed(_P(14555));
+    if (!_mem) _new_failed(_P(15929));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__StringAttributeDesc_td.td;
     i0 = (int)_var;
@@ -445,7 +445,7 @@ Msg__LStringAttribute Msg__NewLStringAttrib(const Msg__String name__ref, int nam
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(12)+8);
-    if (!_mem) _new_failed(_P(15162));
+    if (!_mem) _new_failed(_P(16536));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__LStringAttributeDesc_td.td;
     i0 = (int)_var;
@@ -484,7 +484,7 @@ Msg__MsgAttribute Msg__NewMsgAttrib(const Msg__String name__ref, int name_0d, Ms
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(12)+8);
-    if (!_mem) _new_failed(_P(15756));
+    if (!_mem) _new_failed(_P(17130));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__MsgAttributeDesc_td.td;
     i0 = (int)_var;
@@ -527,9 +527,9 @@ Msg__StringPtr Msg__GetStringPtr(const Msg__String str__ref, int str_0d) {
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i0 < 0) _invalid_length(i0, _P(16465));
+    if(i0 < 0) _invalid_length(i0, _P(17846));
     _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
-    if (!_mem) _new_failed(_P(16437));
+    if (!_mem) _new_failed(_P(17818));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i0;
@@ -551,9 +551,9 @@ Msg__LStringPtr Msg__GetLStringPtr(const Msg__LString str__ref, int str_0d) {
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i0 < 0) _invalid_length(i0, _P(16718));
+    if(i0 < 0) _invalid_length(i0, _P(18106));
     _mem = GC_malloc_atomic(_not_zero(i0*2)+8);
-    if (!_mem) _new_failed(_P(16686));
+    if (!_mem) _new_failed(_P(18074));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i0;

@@ -279,7 +279,7 @@ l3:
   ((_TBP_TextRider__WriterDesc_WriteLn)i3)((TextRider__Writer)i2);
   ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i2, (const unsigned char*)(int)_c16, 24);
   ((_TBP_TextRider__WriterDesc_WriteLn)i3)((TextRider__Writer)i2);
-  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i2, (const unsigned char*)(int)_c17, 33);
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)i2, (const unsigned char*)(int)_c17, 37);
   ((_TBP_TextRider__WriterDesc_WriteLn)i3)((TextRider__Writer)i2);
   i5 = (int)GenStatm__valueStack;
   i6 = i5 + 8;
@@ -2144,7 +2144,7 @@ void Build_init(void) {
     char *_mem, *_var;
     int* _dim_ptr;
     _mem = GC_malloc_atomic(_not_zero(992*1)+8);
-    if (!_mem) _new_failed(_P(40886));
+    if (!_mem) _new_failed(_P(40890));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 992;
