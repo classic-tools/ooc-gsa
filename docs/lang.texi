@@ -25,6 +25,7 @@ of OOC that go beyond the scope of the language report.
 * Specifications::              Specifications beyond the language report.  
 * Non-conformant Mode::         Deviations from the Language Report in 
                                   "Non-conformant" Mode.  
+* Multi-part Module Names::     Structured names for modules.
 * Additional Data Types::       Additional basic data types used by OOC.
 * Language Extensions::         Experimental extensions to the language.
 * Illegal Operations::          Illegal operations and their effects.  
@@ -64,6 +65,7 @@ Name       Size in Bytes             MIN(T)            MAX(T)
 -------------------------------------------------------------
 BOOLEAN         1                      n/a                n/a
 CHAR            1                       0X               0FFX
+LONGCHAR        2                       0X             0FFFFX
 SHORTINT        1                     -128                127
 INTEGER         2                   -32768              32767
 LONGINT         4              -2147483648         2147483647
@@ -92,6 +94,48 @@ exact absolute value, refer to the constant @code{LowLReal.large}.
 The string constant @samp{""} and the character constant @samp{0X} are
 interchangeable.  This implies that a string constant cannot contain
 the character @samp{0X}.
+
+@subheading Evaluation of Constant Expressions
+A constant expression is an expression that can be evaluated by a mere
+textual scan without actually executing the program.  Its operands are
+constants or predefined functions that can be evaluated at compile time.
+Constant expressions of @emph{integer} type are evaluated like this:
+
+@enumerate
+@item
+The relevant integer operands of the expression (where expression
+is a monadic operation, a dyadic operation, or an evaluation of a
+predefined function) are promoted to the largest available
+integer type.
+@item
+The value of the expression is calculated.  An error is signaled if the
+result cannot be represented in the largest integer type.
+@item
+Unless there is an error, the result is assigned the smallest
+integer type that can represent the value.
+@end enumerate
+
+Because the type conversion operations @code{LONG} and @code{SHORT} are
+identity operations, they have no effect whatsoever on the result (value
+@emph{or} type) of the operation.  Both @code{LONG} and @code{SHORT} can
+be applied to any constant expression of integer type.
+
+These rules ensure that constant expressions are evaluated by the
+compiler front-end as if they had no fixed type, while assigning them
+the "closest fitting" integer type in the end.  For this reason, an
+expression like @samp{127+1} is evaluated to the @code{INTEGER} value
+@samp{128}, although both of its operands are of type @code{SHORTINT}.
+To give another example, the following statements (originally taken from
+an OOC library module) are both valid and equivalent:
+
+@smallexample
+VAR int: ARRAY 170 OF INTEGER;
+VAR len: INTEGER;
+@dots{}
+FOR len:=0 TO LEN(int)-1 DO @dots{} END
+FOR len:=0 TO SHORT(LEN(int)-1) DO @dots{} END
+FOR len:=0 TO SHORT(LEN(int))-1 DO @dots{} END
+@end smallexample
 
 @subheading Array Types of Length Zero
 Arrays of length zero are permitted, but the compiler will emit a warning if
@@ -237,7 +281,7 @@ defined before its use.
 
 
 
-@node Non-conformant Mode, Additional Data Types, Specifications, Language
+@node Non-conformant Mode, Multi-part Module Names, Specifications, Language
 @section Non-conformant Mode
 @cindex conformant mode
 @cindex non-conformant mode
@@ -345,15 +389,14 @@ or not.  In conformant mode, the more restrictive interpretation of the ETH
 compilers is applied.
 
 @subheading Redefinition of Type-bound Procedures
-The language report specifies that, when redefining a type-bound
-procedure, the formal parameters of the original procedure and the
-redefinition must @emph{match}.  OOC enfores this rule in conformant
-mode.  However, in non-conformant mode, the compiler applies a less
-restrictive rule that was first introduced by Oberon/F: If @code{P'} is
-a redefinition of the type-bound procedure @code{P}, the formal
-parameters of @code{P} and @code{P'} must @emph{match} with the
-exception of the function result of @code{P'}, which may be an extension
-of the result of @code{P}.
+The language report specifies that, when redefining a type-bound procedure,
+the formal parameters of the original procedure and the redefinition must
+@emph{match}.  OOC enforces this rule in conformant mode.  However, in
+non-conformant mode, the compiler applies a less restrictive rule that was
+first introduced by Oberon/F: If @code{P'} is a redefinition of the
+type-bound procedure @code{P}, the formal parameters of @code{P} and
+@code{P'} must @emph{match} with the exception of the function result of
+@code{P'}, which may be an extension of the result of @code{P}.
 
 @emph{Example:}
 
@@ -388,7 +431,48 @@ be used separately from the base module @samp{Channel}.
 
 
 
-@node Additional Data Types, Language Extensions, Non-conformant Mode, Language
+@node Multi-part Module Names, Additional Data Types, Non-conformant Mode, Language
+@section Multi-part Module Names
+@cindex multi-part module name
+
+Standard Oberon-2 has a single flat name space for module names.  To
+point out relationships between modules, a common string prefix must be
+used for the modules in question.  OOC goes one step further and
+supports so called multi-part module names.  A @dfn{multi-part module
+name} is a list of identifiers, separated by colon (@samp{:})
+characters.  Examples of such identifiers are @samp{OOC:Core:Strings} or
+@samp{OOC:Scanner:Symbol}.
+
+Usage of multi-part names is restricted to the name of the module, and
+to import statements in the module's import list.  In the EBNF syntax of
+Oberon-2, the changes look like this:
+
+@example
+mp_ident   = ident @{":" ident@}.
+Module     = "MODULE" mp_ident ";" @dots{}  "END" mp_ident ".".
+ImportList = "IMPORT" [ident ":="] mp_ident 
+             @{"," [ident ":="] mp_ident@} ";".
+@end example
+
+An import statement using a multi-part module identifier without
+assigning it an alias name is equivalent to an alias declaration that
+assigns the @emph{last} part of the multi-part identifier to the module.
+That is, the following two import statements are equivalent:
+
+@example
+IMPORT OOC:Scanner:Symbol;
+IMPORT Symbol := OOC:Scanner:Symbol;
+@end example
+
+Multi-part names cannot be used as part of a qualified identifier in the
+module text.  The target system usually maps multi-part names on a
+directory structure, but this is not required.  Also note that the
+existence of a module named @samp{Foo:Bar} does not imply, nor preclude,
+the existence of a module @samp{Foo}.
+
+
+
+@node Additional Data Types, Language Extensions, Multi-part Module Names, Language
 @section Additional Data Types
 @cindex set types
 @cindex 64-bit data types

@@ -1,7 +1,7 @@
-(* 	$Id: CNDecoration.Mod,v 1.1 1999/11/14 18:35:42 ooc-devel Exp $	 *)
+(* 	$Id: CNDecoration.Mod,v 1.3 2000/01/07 20:59:18 ooc-devel Exp $	 *)
 MODULE CNDecoration;
 (*  Abstraction layer dealing with comment decorations.
-    Copyright (C) 1999  Michael van Acken
+    Copyright (C) 1999, 2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -79,7 +79,7 @@ PROCEDURE Remove* (sym: S.Symbol; VAR deco: Decoration): S.String;
      string.  *)
     VAR
       plainIndent: PlainIndent;
-      i, indent, len: LONGINT;
+      i, j, d, h, indent, len: LONGINT;
     BEGIN
       (* replace comment delimiters with whitespace *)
       ASSERT (str[0] = "(");
@@ -107,7 +107,7 @@ PROCEDURE Remove* (sym: S.Symbol; VAR deco: Decoration): S.String;
       plainIndent. indent := GetIndent (str^, 0, sym. column-1);
       plainIndent. scrWidth := 80-1;
       FOR i := 0 TO len DO
-        IF (str[i] = Ascii.lf) THEN
+        IF (str[i] = CharClass.eol) THEN
           indent := GetIndent (str^, i, 0);
           IF (indent < plainIndent. indent) THEN
             plainIndent. indent := indent
@@ -116,6 +116,35 @@ PROCEDURE Remove* (sym: S.Symbol; VAR deco: Decoration): S.String;
       END;
       IF (plainIndent. indent = noIndent) THEN
         plainIndent. indent := 0
+      END;
+      
+      IF (plainIndent. indent > 0) THEN
+        (* remove indentation from all lines of the string; do _not_ remove
+           more than `plainIndent. indent' characters from the beginning of
+           each line *)
+        i := 0; d := 0;
+        WHILE (i <= len) DO
+          IF (i = 0) OR (str[i] = CharClass.eol) THEN
+            IF (i # 0) THEN
+              str[i-d] := CharClass.eol;
+              INC (i)
+            END;
+            
+            j := i;
+            WHILE (str[j] = " ") OR (str[j] = Ascii.ht) DO
+              INC (j)
+            END;
+            IF (j-i > plainIndent. indent) THEN (* upper bound on removal *)
+              j := i+plainIndent. indent
+            END;
+            
+            INC (d, j-i);
+            i := j
+          ELSE
+            str[i-d] := str[i];
+            INC (i)
+          END
+        END
       END;
       
       RETURN plainIndent

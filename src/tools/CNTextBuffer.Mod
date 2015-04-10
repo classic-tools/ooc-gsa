@@ -1,7 +1,7 @@
-(* 	$Id: CNTextBuffer.Mod,v 1.2 1999/11/14 19:20:48 ooc-devel Exp $	 *)
+(* 	$Id: CNTextBuffer.Mod,v 1.4 2000/01/02 16:28:26 ooc-devel Exp $	 *)
 MODULE CNTextBuffer;
 (*  Text buffers are used to accumulate a text from substrings.
-    Copyright (C) 1999  Michael van Acken
+    Copyright (C) 1999, 2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -245,4 +245,130 @@ PROCEDURE FormatBlock* (dest, source: Buffer;
     END
   END FormatBlock;
 
+PROCEDURE FormatBlockHTML* (dest, source: Buffer;
+                            indent, scrWidth, offsetFirst: LONGINT);
+(* Copy text from `source' to the target buffer `dest', formatting it on 
+   the fly.  The text in `source' is formatted with an indentation of `indent',
+   for a screen width of `scrWidth'.  If `offsetFirst' is negative, then format
+   the first line of text without any indentation, with an assumed screen width
+   reduced by ABS(offsetFirst).  If `offsetFirst' is non-negative, indent the
+   first line by additional `offsetFirst' spaces.
+   
+   HTML tags are treated as if they had a length of zero, and character
+   references like "&amp;" are assumed to have a length of one.  *)
+  VAR
+    s: S.String;
+    i, start, end: LONGINT;
+    firstLine: BOOLEAN;
+  
+  PROCEDURE LastWord (s: S.String; sLen, start, width: LONGINT): LONGINT;
+    VAR
+      j, lastWord, len: LONGINT;
+    BEGIN
+      j := start; lastWord := -1; len := 0;
+      WHILE (s[j] # 0X) DO
+        IF (s[j] = "&") THEN
+          WHILE (s[j] # 0X) & (s[j] # ";") DO
+            INC (j)
+          END;
+          INC (len)
+        ELSIF (s[j] = "<") THEN
+          WHILE (s[j] # 0X) & (s[j] # ">") DO
+            INC (j)
+          END
+        ELSIF (s[j] <= " ") THEN
+          IF (j # start) & (s[j-1] > " ") THEN
+            IF (len > width) THEN
+              IF (lastWord < 0) THEN
+                RETURN j
+              ELSE
+                RETURN lastWord
+              END
+            ELSE
+              lastWord := j;
+              INC (j); INC (len)
+            END
+          ELSE
+            INC (j); INC (len)
+          END
+        ELSE
+          INC (j); INC (len)
+        END
+      END;
+      IF (len > width) THEN
+        IF (lastWord < 0) THEN
+          RETURN j
+        ELSE
+          RETURN lastWord
+        END
+      ELSE
+        RETURN j
+      END
+    END LastWord;
+  
+  BEGIN
+    IF (scrWidth-indent < minTextWidth) THEN
+      scrWidth := indent+minTextWidth
+    END;
+    s := source. str;
+    
+    IF (source. len = 0) THEN             (* empty block *)
+      dest. AppendEOL;
+      RETURN
+    END;
+    
+    firstLine := TRUE;
+    i := 0;
+    WHILE (s[i] # 0X) DO
+      (* skip leading whitespace *)
+      WHILE (0X < s[i]) & (s[i] <= " ") DO
+        INC (i)
+      END;
+      
+      IF (s[i] # 0X) THEN
+        (* find end of last word that would fit into [indent, scrWidth] *)
+        start := i;
+        IF firstLine THEN
+          IF (offsetFirst < 0) THEN
+            end := LastWord (s, source. len, start, scrWidth+offsetFirst)
+          ELSE
+            end := LastWord (s, source. len, start, scrWidth-indent-offsetFirst)
+          END;
+          IF (offsetFirst >= 0) THEN
+            dest. AppendSpaces (offsetFirst+indent)
+          END;
+          firstLine := FALSE
+        ELSE
+          end := LastWord (s, source. len, start, scrWidth-indent);
+          dest. AppendSpaces (indent)
+        END;
+        
+        dest. AppendSubstring (s^, start, end);
+        dest. AppendEOL;
+        
+        i := end
+      END
+    END
+  END FormatBlockHTML;
+
+PROCEDURE IndentBlock* (dest, source: Buffer; indent: LONGINT; padLine: BOOLEAN);
+  VAR
+    s: S.String;
+    i, start: LONGINT;
+  BEGIN
+    s := source. str;
+    i := 0;
+    WHILE (s[i] # 0X) DO
+      start := i;
+      WHILE (s[i] # 0X) & (s[i] # CharClass.eol) DO
+        INC (i)
+      END;
+      IF (s[i] = CharClass.eol) THEN
+        INC (i)
+      END;
+      dest. AppendSpaces (indent);
+      dest. AppendSubstring (s^, start, i)
+    END
+  END IndentBlock;
+  
 END CNTextBuffer.

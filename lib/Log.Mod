@@ -1,7 +1,7 @@
-(*	$Id: Log.Mod,v 1.9 1999/10/31 13:53:46 ooc-devel Exp $	*)
+(*	$Id: Log.Mod,v 1.10 2000/01/13 08:39:47 ooc-devel Exp $	*)
 MODULE Log [OOC_EXTENSIONS];
 (*  Simple logging facility to stderr.
-    Copyright (C) 1998, 1999 Michael van Acken
+    Copyright (C) 1998-2000 Michael van Acken
  
     This module is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as 
@@ -72,7 +72,33 @@ PROCEDURE String* (msg[NO_COPY]: ARRAY OF CHAR; s[NO_COPY]: ARRAY OF CHAR);
     writer. WriteString (s);
     writer. WriteLn
   END String;
-  
+
+PROCEDURE LString* (msg[NO_COPY]: ARRAY OF CHAR; s[NO_COPY]: ARRAY OF LONGCHAR);
+(* Very primitive.  It writes a string of SHORTed characters.  If a character
+   cannot be shorted, it is replaced by "?".  In the future, this may be
+   changed to UTF-8 output.  Use at your own risk!  
+   
+   As it is, this procedure should _not_ be documented in the reference
+   manual.  *)
+  VAR
+    i: LONGINT;
+  BEGIN
+    writer. WriteString (msg);
+    writer. WriteString (": ");
+    i := 0;
+    WHILE (s[i] # 0X) DO
+      WHILE (s[i] # 0X) & (s[i] <= MAX (CHAR)) DO
+        writer. WriteChar (SHORT (s[i]));
+        INC (i)
+      END;
+      WHILE (s[i] # 0X) & (s[i] > MAX (CHAR)) DO
+        writer. WriteChar ("?");
+        INC (i)
+      END
+    END;
+    writer. WriteLn
+  END LString;
+
 PROCEDURE Bool* (msg[NO_COPY]: ARRAY OF CHAR; bool: BOOLEAN);
   BEGIN
     writer. WriteString (msg);

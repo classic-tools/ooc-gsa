@@ -1253,6 +1253,14 @@ Remove all system flags from the source text.  For example, if a module uses
 any of the flags that are enabled by @samp{OOC_EXTENSIONS}, applying this
 filter reduces the module to standard Oberon-2 code.
 
+@item @samp{--strip-mp-ident}
+Convert multi-part module names to simple identifiers.  The colon
+characters are removed from the name, and import statements without an
+alias declaration are rewritten to alias to the last part of the
+previous multi-part name.  @emph{Please note}: This transformation may
+map distinct multi-part names onto the same identifier.  For example,
+@samp{Foo:Bar} and @samp{FooB:ar} are both mapped to @samp{FooBar}.
+
 @item @samp{--mod2foreign}
 This code transformation is intended for advanced users, who want to
 write @samp{FOREIGN} modules (@pxref{FOREIGN Modules}).  It turns any
@@ -2031,7 +2039,7 @@ interface to the declarations in the module is written by the compiler.
 
 @item INIT_FCT
 The @samp{INIT_FCT} flag signals that module @file{Foo.Mod} links in a
-function @code{void Foo__init(void)}, which will be called during
+function @code{void Foo_init(void)}, which will be called during
 program startup as part of the normal module initialization.
 @end table
 
@@ -2598,7 +2606,15 @@ Indentation:
 @item RET
 Make a newline, but indent like the previous line.
 @item TAB
-Indent @code{o2-indent} spaces.  With a numeric prefix, indent region.
+Serves two functions:
+@enumerate
+@item 
+At or before the first non-whitespace character of a line, indent
+@code{o2-indent} spaces.  With a numeric prefix, indent region.
+@item 
+Within a line, identifier completion.  This is @kbd{TAB} completion as known
+from any shell, using the hippie-expand heuristics.
+@end enumerate
 @item DEL
 Convert tabs to spaces while moving backward.
 @item C-c TAB
@@ -2752,7 +2768,7 @@ Both the @kbd{DEL} key and the @kbd{backspace} key automatically
 convert tabs to spaces as they step back.  
 @item
 In o2-mode, the @kbd{TAB} key does not insert any new tab characters, but
-instead, inserts @code{o2-indent} spaces.
+instead, inserts @code{o2-indent} spaces or provides identifier completion.
 @item
 @kbd{M-;} indents or create a comment on the current line at column 41
 (default).

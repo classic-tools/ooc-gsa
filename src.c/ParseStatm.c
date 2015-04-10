@@ -38,12 +38,13 @@ l3:
 void ParseStatm__AssignmentCompatible(Data__Region region, Data__Struct varType, Attributes__Item *expr, _Type expr__tag) {
   register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9;
   i7 = (int)expr + 8;
-  i4 = (int)*(void**)i7;
   i6 = (int)varType + 20;
+  ParseExpr__CheckValue((Attributes__Item *)(int)expr, expr__tag);
   i8 = *(signed char*)i6;
-  i0 = i4 + 20;
-  i5 = *(signed char*)i0;
+  i4 = (int)*(void**)i7;
   i0 = i8 == 0;
+  i1 = i4 + 20;
+  i5 = *(signed char*)i1;
   if (i0) goto l20;
   i0 = i5 == 0;
   if (i0) goto l20;
@@ -4944,7 +4945,7 @@ l6:
   {
     char *_mem, *_var;
     _mem = GC_malloc(12+8);
-    if (!_mem) _new_failed(_P(97836));
+    if (!_mem) _new_failed(_P(97869));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParseStatm__StatementSeq_WithGuardDesc_td.td;
     i0 = (int)_var;

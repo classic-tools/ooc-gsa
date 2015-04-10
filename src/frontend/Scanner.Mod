@@ -1,7 +1,7 @@
-(* 	$Id: Scanner.Mod,v 1.40 1999/11/06 15:33:54 ooc-devel Exp $	 *)
+(* 	$Id: Scanner.Mod,v 1.41 2000/03/01 09:45:33 ooc-devel Exp $	 *)
 MODULE Scanner;
 (*  Lexical scanner for Oberon-2 source code.
-    Copyright (C) 1995-1999  Michael van Acken
+    Copyright (C) 1995-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -605,6 +605,7 @@ PROCEDURE ParsePragma;
           CheckSym (then)
         ELSIF (sym = else) THEN
           CheckForIf (TRUE);
+          condStack. elsePresent := TRUE;
           GetSym;
           evalText := ~condStack. skippedCond & ~condStack.foundTrue;
         ELSIF (sym = end) THEN

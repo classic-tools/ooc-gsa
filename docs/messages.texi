@@ -1,0 +1,489 @@
+@node Messages, Standard Mappers, Channels, I/O Subsystem
+@section Messages
+@cindex messages
+@cindex message objects
+@cindex attributes (messages)
+@cindex contexts (messages)
+@cindex message lists
+
+Module @file{Msg} provides a framework for messages, which are used as a
+level of indirection between simple error codes and human readable error
+messages.  Unlike numeric error codes, an instance of @code{Msg} carries its
+own interpretation context.  Using this context, plus the error code stored
+in the message, and possibly additional data, the message can be converted
+into a description.  The additional data can be text fragments, numbers, or
+other messages, and it can be inserted anywhere into the message's text.
+There is no need to determine the message text at the place the message is
+created.  A message can be converted to text anywhere in the program.
+
+This module actually combines several concepts: messages, message
+attributes, message contexts, and message lists.  Although this may seem a
+bit complicated, the actual mechanism is very simple.
+
+A @dfn{message} is an object that can be converted to human readable
+text and presented to a program's user.  Within the OOC Library,
+messages are used to store errors in the I/O modules.  Another example
+is an XML parser, which uses messages to create an error list when
+parsing an XML document.
+
+@dfn{Contexts} and @dfn{attributes} are primarily of interest for modules
+that generate messages.  These determine the content of the message, and how
+it can be translated into readable text.  A typical user will mostly be in
+the position of message consumer, and will be handed filled in message
+objects.  For a user, the typical operation will be to convert a message
+into descriptive text (see methods @code{Message.GetText()} and
+@code{Message.GetLText()}).
+
+@dfn{Message lists} are a convenience feature for modules like parsers,
+which normally do not abort after a single error message.  Usually, they try
+to continue their work after an error, looking for more problems and
+possibly emitting more error messages.  Using message lists, errors can be
+collected together (e.g., within a compiler) to be presented to the user in
+a single batch.
+
+
+@subheading Messages 
+@deftp {Class} Msg = POINTER TO MsgDesc
+A message's type is uniquely identified by its context and its code.  Using
+these two attributes, a message can be converted to text.  The text may
+contain placeholders, which are filled by the textual representation of
+attribute values associated with the message.
+@table @asis
+@item Field: @b{nextMsg}@minus{}: @code{Msg}
+
+@item Field: @b{prevMsg}@minus{}: @code{Msg}
+These two fields are initialized to @code{NIL}, and are used by
+@code{MsgList}.
+
+@item Field: @b{code}@minus{}: @code{Code}
+
+@item Field: @b{context}@minus{}: @code{Context}
+
+@item Field: @b{attribList}@minus{}: @code{Attribute}
+This list of attributes is sorted by name.  Follow
+@code{Attribute.nextAttrib} to traverse the list.
+@end table
+@end deftp
+
+
+The following function is a constructor for a message object:
+
+@deffn Function New @code{(@var{context}: Context; @var{code}: Code): Msg}
+This function creates and returns a new message object for the given
+context, using the specified message code.  The message's attribute list is
+empty.
+@end deffn
+
+Users of messages will be most interested in the following methods, which
+are used to retrieve the textual representation of a message:
+
+@table @asis
+@item Method: @code{(@var{msg}: Msg)} @b{GetLText} @code{(VAR @var{text}: LString)}
+This method converts a message into a text string.  The basic format of the
+string is determined by calling @code{msg.context.GetTemplate}.  Then the
+attributes are inserted into the template string; the placeholder string
+@samp{$@{foo@}} is replaced with the textual representation of each
+attribute (see @code{Context.GetTemplate}).
+
+@strong{Pre-condition}: @code{LEN(text)<2^15}
+
+@strong{Please note:} Behaviour is undefined if replacement text of
+an attribute contains an attribute reference.
+
+@item Method: @code{(@var{msg}: Msg)} @b{GetText} @code{(VAR @var{text}: String)}
+This method operates just like @code{GetLText}, but the message text is
+truncated to ISO-Latin-1 characters.  All characters that are not part of
+ISO-Latin-1 are mapped to question marks @samp{?}.
+@end table
+
+@emph{Example:}
+
+@smallexample
+VAR r: TextRider.Reader;
+    f: Files.File;
+    str: ARRAY 256 OF CHAR;
+    res: Files.Result;     (* `Result' is an alias for `Msg.Msg'. *)
+    
+  f := Files.Old("Sample.txt", @{Files.read@}, res);
+  IF (f = NIL) THEN
+     res.GetText(str);
+     Err.String(str); Err.Ln;
+  ELSE
+     r := TextRider.ConnectReader(f); 
+     IF (r # NIL) THEN 
+        r.ReadLine(str);	    (* Read the lines of a file. *)
+        WHILE r.res=Files.done DO
+           Out.String(str); Out.Ln; (* And output them to the screen. *)
+           r.ReadLine(str);	
+        END;
+        (*  Check to see if it stopped reading because it reached
+         *  end-of-file.  If not, then print the error string.
+         *)
+        IF (r.res.code#Files.readAfterEnd) THEN 
+           r.res.GetText(str);
+           Err.String(str); Err.Ln;
+        END;    
+     END;
+  END;
+@end smallexample
+
+
+A programmer who is creating a library module can use the following methods
+to manage the attributes of a message:
+
+@table @asis
+@item Method: @code{(@var{msg}: Msg)} @b{GetAttribute} @code{(@var{name}: String): Attribute}
+This method returns the attribute @var{name} of the message object.  If no
+such attribute exists, the value @code{NIL} is returned.
+
+@item Method: @code{(@var{msg}: Msg)} @b{SetAttribute} @code{(@var{attr}: Attribute)}
+This method appends an attribute to the message's attribute list.  If an
+attribute of the same name exists already, it is replaced by the new one.
+
+@strong{Pre-condition}: @code{Length(attr.name^)<=sizeAttrName} and
+@var{attr} has not been attached to any other message.
+
+@item Method: @code{(@var{msg}: Msg)} @b{SetIntAttrib} @code{(@var{name}: String; @var{value}: LONGINT)}
+@strong{Pre-condition}: @code{Length(name)<=sizeAttrName}
+@end table
+
+@emph{Example:}
+
+@smallexample
+VAR
+  lineVal, colVal: LONGINT;
+  attrib1, attrib2: Msg.Attribute;
+
+msg.SetIntAttrib ("line", lineVal);
+msg.SetIntAttrib ("column", colVal);
+
+...
+
+attrib1 := GetAttribute("line");
+attrib2 := GetAttribute("column");
+@end smallexample
+
+@table @asis
+@item Method: @code{(@var{msg}: Msg)} @b{SetStringAttrib} @code{(@var{name}: String; @var{value}: StringPtr)}
+@strong{Pre-condition}: @code{Length(name)<=sizeAttrName}
+
+@item Method: @code{(@var{msg}: Msg)} @b{SetLStringAttrib} @code{(@var{name}: String; @var{value}: LStringPtr)}
+@strong{Pre-condition}: @code{Length(name)<=sizeAttrName}
+
+@item Method: @code{(@var{msg}: Msg)} @b{SetMsgAttrib} @code{(@var{name}: String; @var{value}: Msg)}
+@strong{Pre-condition}: @code{Length(name)<=sizeAttrName}
+@end table
+
+
+@subheading Contexts and Attributes
+
+When writing a library module (or perhaps a set of related library modules),
+a @code{Context} is defined, which may specify message formats and handle
+generation of messages.  Specific @code{Attributes} that directly relate to
+a @code{Context}, and its related messages, are defined to go along with
+that @code{Context}.
+
+The basic steps are
+@itemize @bullet
+@item 
+Declare a subclass of @code{Context}.
+@item 
+Define a variable of that @code{Context} class (and be sure to initialize it
+in the module body).
+@item
+(Optional) Define attributes that are applicable to the context.
+@item
+Override the @code{GetTemplate} method so that it supplies messages in the
+desired format (using @code{GetAttribute} to retrieve attribute information,
+if necessary).
+@item
+(Optional) Write a message generating function to produce appropriate
+message objects.
+@end itemize
+
+The following is an example showing how a @code{Context} can be set up.  (In
+this case, for a command line parser).  Note that use of @code{Attributes}
+is not required (and not shown in this example), and that this example has
+only a single error message.
+
+
+@smallexample
+MODULE CmdLine;
+
+IMPORT Msg;
+
+(* Context and template infrastructure *)
+CONST
+  connectFailed = 1;
+  
+TYPE
+  ErrorContext = POINTER TO ErrorContextDesc;
+  ErrorContextDesc = RECORD
+    (Msg.ContextDesc)
+  END;
+
+VAR
+  cmdLineContext: ErrorContext;
+
+PROCEDURE (context: ErrorContext) GetTemplate* (msg: Msg.Msg; 
+                                                VAR templ: Msg.LString);
+  VAR
+    t: ARRAY 128 OF Msg.LChar;
+  BEGIN
+    CASE msg. code OF
+    | connectFailed:
+      t := "Failed to connect reader to program arguments"
+    END;
+    COPY (t, templ)
+  END GetTemplate;
+
+
+
+PROCEDURE Error (code: Msg.Code): Msg.Msg;
+(* Create error message for context `cmdLineContext', using the error
+   code `code'.  *)
+  VAR
+    err: Msg.Msg;
+  BEGIN
+    err := Msg.New (cmdLineContext, code);
+    RETURN err
+  END Error;
+
+
+BEGIN
+  (* initialize error context *)
+  NEW (cmdLineContext);
+  Msg.InitContext (cmdLineContext, "CmdLine")
+END CmdLine.
+@end smallexample
+
+
+@deftp {Class} Context = POINTER TO ContextDesc
+Instances of this class describe the context under which messages are
+converted into their textual representation.  Together, a message's context
+and its code identify the message type.
+
+@table @asis
+@item Field: @b{id}@minus{}: @code{StringPtr}
+As a debugging aid, this field is usually filled with an string that
+identifies the module that created this context instance (see procedure
+@code{InitContext}).
+@end table
+@end deftp
+
+The following is an initialization procedure for @code{Context}s:
+
+@deffn Procedure InitContext @code{(@var{context}: Context; @var{id}: String)}
+This procedure intializes an instance of @code{Context}.  The string
+argument @var{id} should describe the message context to the programmer.  It
+should not appear in output generated for a program's user, or at least, it
+should not be necessary for a user to interpret this string to understand the
+message.  Generally, it is a good idea to use the module name of the context
+variable for the identifier.  If this is not sufficient to identify the
+variable, add the variable name to the string.
+@end deffn
+
+
+@table @asis
+@item Method: @code{(@var{context}: Context)} @b{GetTemplate} @code{(@var{msg}: Msg; VAR @var{templ}: LString)}
+This method returns a template string for the message @var{msg}.  The
+template is used as the basis for the human readable string returned by
+@code{GetText}.  Typically, the string is derived from the message code, and
+it contains attribute references.  Instead of the reference @samp{$@{foo@}},
+the procedure @code{GetText} (see below) will insert the textual
+representation of the attribute with the name @samp{foo}.  The special
+reference @samp{$@{MSG_CONTEXT@}} is replaced by the value of
+@code{context.id}, and @samp{$@{MSG_CODE@}} with @code{msg.code}.
+
+The default implementation returns this string:
+@smallexample
+MSG_CONTEXT: $@{MSG_CONTEXT@}
+MSG_CODE: $@{MSG_CODE@}
+attribute_name: $@{attribute_name@}
+@end smallexample
+
+The last item is repeated for every attribute name.  The lines are separated
+by @code{CharClass.eol}.
+
+@strong{Pre-condition}: @code{msg # NIL}
+@end table
+
+
+@emph{Example:}
+
+@smallexample
+PROCEDURE (context: aContext) GetTemplate* (msg: Msg.Msg; 
+                                            VAR templ: Msg.LString);
+VAR
+   t: ARRAY 128 OF Msg.LChar;
+BEGIN
+   CASE msg. code OF
+
+   ...  (* set the value of `t' with appropriate message *)
+
+   END;
+   COPY (t, templ);
+   (* then append the line and column numbers ---
+    * note that attribute values are later substituted by
+    * `Msg.GetLText' or `Msg.GetText'.
+    *)
+   LongStrings.Append (" line=$@{line@}, column=$@{column@}", templ);
+END GetTemplate;
+@end smallexample
+
+
+@subsubheading Attributes
+
+@defvr {Constant} sizeAttrName
+Maximum length of the attribute name for @code{InitAttribute},
+@code{NewIntAttrib}, @code{NewStringAttrib}, @code{NewLStringAttrib}, or
+@code{NewMsgAttrib}.
+@end defvr
+
+@deftp {Class} Attribute = POINTER TO AttributeDesc
+An attribute is a (name, value) tuple, which can be associated with a
+message.  When a message is tranlated into its readable version through the
+@code{GetText} function, the value part of each attribute can be converted
+to some textual representation, and then inserted into the message's text.
+Within a message, an attribute is uniquely identified by its name.
+@table @asis
+@item Field: @b{nextAttrib}@minus{}: @code{Attribute}
+
+@item Field: @b{name}@minus{}: @code{StringPtr}
+The name of an @code{Attribute} is restricted to @code{sizeAttrName}
+characters.
+@end table
+@end deftp
+
+The following is an initialization procedure for @code{Attribute}s:
+
+@deffn Procedure InitAttribute @code{(@var{attr}: Attribute; @var{name}: String)}
+This procedure initializes an attribute object and sets its @var{name}.
+@end deffn
+
+@table @asis
+@item Method: @code{(@var{attr}: Attribute)} @b{ReplacementText} @code{(VAR @var{text}: LString)}
+This method converts the attribute value into some textual representation.
+The length of the resulting string must not exceed
+@code{sizeAttrReplacement} characters.  Note that @code{GetLText()} calls
+this procedure with a text buffer of @samp{sizeAttrReplacement+1} bytes.
+@end table
+
+
+The following are default implementations for some commonly used message
+attributes and their corresponding constructors and @code{ReplacementText}
+methods:
+
+@deftp {Class} IntAttribute = POINTER TO IntAttributeDesc
+@table @asis
+@item Field: @b{int}@minus{}: @code{LONGINT}
+@end table
+@end deftp
+
+@deffn Function NewIntAttrib @code{(@var{name}: String; @var{value}: LONGINT): IntAttribute}
+This function creates and returns a new attribute (@code{IntAttribute})
+object.  
+
+@strong{Pre-condition}: @code{Length(name)<=sizeAttrName}
+@end deffn
+
+@table @asis
+@item Method: @code{(@var{attr}: IntAttribute)} @b{ReplacementText} @code{(VAR @var{text}: LString)}
+@end table
+
+
+@deftp {Class} StringAttribute = POINTER TO StringAttributeDesc
+@table @asis
+@item Field: @b{string}@minus{}: @code{StringPtr}
+@end table
+@end deftp
+
+@deffn Function NewStringAttrib @code{(@var{name}: String; @var{value}: StringPtr): StringAttribute}
+This function creates and returns a new attribute (@code{StringAttribute})
+object.
+
+@strong{Pre-condition}: @code{Length(name)<=sizeAttrName}
+@end deffn
+
+@table @asis
+@item Method: @code{(@var{attr}: StringAttribute)} @b{ReplacementText} @code{(VAR @var{text}: LString)}
+@end table
+
+
+@deftp {Class} LStringAttribute = POINTER TO LStringAttributeDesc
+@table @asis
+@item Field: @b{string}@minus{}: @code{LStringPtr}
+@end table
+@end deftp
+
+@deffn Function NewLStringAttrib @code{(@var{name}: String; @var{value}: LStringPtr): LStringAttribute}
+This function creates and returns a new attribute (@code{LStringAttribute})
+object.
+
+@strong{Pre-condition}: @code{Length(name)<=sizeAttrName}
+@end deffn
+
+@table @asis
+@item Method: @code{(@var{attr}: LStringAttribute)} @b{ReplacementText} @code{(VAR @var{text}: LString)}
+@end table
+
+
+
+@deftp {Class} MsgAttribute = POINTER TO MsgAttributeDesc
+@end deftp
+@table @asis
+@item Field: @b{msg}@minus{}: @code{Msg}
+@end table
+
+@deffn Function NewMsgAttrib @code{(@var{name}: String; @var{value}: Msg): MsgAttribute}
+This function creates and returns a new attribute (@code{MsgAttribute})
+object.
+
+@strong{Pre-condition}: @code{Length(name)<=sizeAttrName}
+@end deffn
+
+@table @asis
+@item Method: @code{(@var{attr}: MsgAttribute)} @b{ReplacementText} @code{(VAR @var{text}: LString)}
+@end table
+
+
+@subheading Message Lists
+
+@deftp {Class} MsgList = POINTER TO MsgListDesc
+@table @asis
+@item Field: @b{msgCount}@minus{}: @code{LONGINT}
+The number of messages on the list.
+
+@item Field: @b{msgList}@minus{}: @code{Msg}
+The messages of the list can be traversed using the fields
+@code{Msg.nextMsg} and @code{Msg.prevMsg}.
+@end table
+@end deftp
+
+
+The following are for construction and initialization of @code{MsgList}s:
+
+@deffn Procedure InitMsgList @code{(@var{l}: MsgList)}
+This procedure initializes a message list object.
+@end deffn
+
+@deffn Function NewMsgList @code{(): MsgList}
+This function creates and returns a new message list object.
+@end deffn
+
+
+The following methods are used to add messages to a message list:
+
+@table @asis
+@item Method: @code{(@var{l}: MsgList)} @b{Append} @code{(@var{msg}: Msg)}
+Appends the message @var{msg} to the list @var{l}.
+
+@strong{Pre-condition}: @var{msg} is not part of another message list.
+
+@item Method: @code{(@var{l}: MsgList)} @b{AppendList} @code{(@var{source}: MsgList)}
+Appends the messages of list @var{source} to @var{l}.  Afterwards,
+@var{source} is an empty list, and the elements of @var{source} can be
+found at the end of the list @var{l}.
+@end table
+
+

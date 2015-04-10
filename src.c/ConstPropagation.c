@@ -1896,11 +1896,14 @@ ConstPropagation__Lattice ConstPropagation__LatticeOfGuard(Data__Guard guard) {
   i0 += 4;
   i4 = (int)*(void**)i0;
   i0 = i2 == 66;
-  if (i0) goto l11;
-  i1 = i4 + 12;
-  i1 = *(int*)i1;
-  i0 = i1 > 2;
-  if (i0) goto l9;
+  if (i0) goto l12;
+  i6 = (int)ConstPropagation__unreachableLattice;
+  i1 = i4 == i6;
+  if (i1) goto l11;
+  i0 = i4 + 12;
+  i0 = *(int*)i0;
+  i1 = i0 > 2;
+  if (i1) goto l9;
   i6 = i2 == 67;
   if (i6) goto l2;
   i3 = i2 == 65;
@@ -1908,38 +1911,38 @@ ConstPropagation__Lattice ConstPropagation__LatticeOfGuard(Data__Guard guard) {
   i2 = i2 == 64;
   if (i2) goto l0;
   i5 = 0;
-  goto l12;
+  goto l13;
 l0:
-  i5 = i1 == 2;
+  i5 = i0 == 2;
   if (i5) goto l1;
-  goto l12;
+  goto l13;
 l1:
   i6 = (int)ConstPropagation__trueLattice;
   i6 = i4 == i6;
   i3 = i3 == i6;
   i3 = (int)SymbolTable__GetBoolConst((unsigned char)i3);
   i6 = (int)ConstPropagation__ConstLattice((Data__Const)i3);
-  goto l12;
+  goto l13;
 l2:
-  i5 = i1 == 2;
+  i5 = i0 == 2;
   if (i5) goto l3;
-  goto l12;
+  goto l13;
 l3:
   i6 = i4 + 16;
   i6 = (int)*(void**)i6;
   i3 += 8;
   i6 += 24;
-  i0 = *(int*)i6;
+  i1 = *(int*)i6;
   i2 = (int)*(void**)i3;
 l4:
   i3 = (int)*(void**)i2;
   i6 = i3 + 24;
   i6 = *(int*)i6;
-  i6 = i6 > i0;
+  i6 = i6 > i1;
   if (i6) goto l5;
   i3 += 28;
   i3 = *(int*)i3;
-  i3 = i0 <= i3;
+  i3 = i1 <= i3;
   if (i3) goto l6;
 l5:
   i6 = 0;
@@ -1955,26 +1958,29 @@ l7:
 l8:
   i3 = (int)SymbolTable__GetBoolConst((unsigned char)i6);
   i6 = (int)ConstPropagation__ConstLattice((Data__Const)i3);
-  goto l12;
+  goto l13;
 l9:
-  i0 = (int)guard + 4;
-  i6 = (int)*(void**)i0;
-  i0 = i6 + 12;
-  i0 = *(int*)i0;
-  i0 = i0 < i1;
-  if (i0) goto l10;
+  i1 = (int)guard + 4;
+  i6 = (int)*(void**)i1;
+  i1 = i6 + 12;
+  i1 = *(int*)i1;
+  i1 = i1 < i0;
+  if (i1) goto l10;
   i6 = i4;
 l10:
   i5 = 1;
-  goto l12;
+  goto l13;
 l11:
+  i5 = 1;
+  goto l13;
+l12:
   i6 = (int)guard + 4;
   i6 = (int)*(void**)i6;
   i5 = 1;
-l12:
-  if (i5) goto l13;
-  i6 = (int)ConstPropagation__nonConstLattice;
 l13:
+  if (i5) goto l14;
+  i6 = (int)ConstPropagation__nonConstLattice;
+l14:
   return (void*)i6;
 }
 
@@ -2142,51 +2148,54 @@ l2:
 }
 
 void ConstPropagation__ConstPropagation_ReplaceByConstants(Data__Region region) {
-  register int i0, i1, i2, i3, i4, i5;
+  register int i0, i1, i2, i3, i4, i5, i6;
   i0 = (int)region + 56;
-  i4 = (int)*(void**)i0;
-  i0 = i4 == 0;
-  if (i0) goto l4;
+  i5 = (int)*(void**)i0;
+  i0 = i5 == 0;
+  if (i0) goto l5;
 l0:
-  i1 = *(int*)(i4-4);
-  i0 = _type_test(i1, &Data__MergeDesc_td.td, 6);
-  i2 = i4 + 4;
-  i5 = (int)*(void**)i2;
-  i3 = i4 + 36;
-  i3 = (int)*(void**)i3;
-  if (i0) goto l2;
-  i0 = _type_test(i1, &Data__RegionDesc_td.td, 5);
-  if (i0) goto l1;
-  i0 = i5 + 12;
-  i0 = *(int*)i0;
-  i0 = i0 != 2;
+  i2 = (int)ConstPropagation__unreachableLattice;
+  i3 = i5 + 4;
+  i1 = (int)*(void**)i3;
+  i0 = i1 == i2;
+  i6 = i5 + 36;
+  i6 = (int)*(void**)i6;
   if (i0) goto l3;
-  i5 += 16;
-  i1 = (int)((_Type)i1)->tbprocs[1];
-  i0 = (int)*(void**)i5;
-  i5 = i4 + 48;
-  ((void(*)(Data__Usable, Data__Usable))i1)((Data__Usable)i4, (Data__Usable)i0);
-  i1 = *(unsigned int*)i5;
-  i1 = i1 & ~((unsigned int)1 << 0);
-  *(unsigned int*)i5 = i1;
-  goto l3;
+  i0 = *(int*)(i5-4);
+  i4 = _type_test(i0, &Data__MergeDesc_td.td, 6);
+  if (i4) goto l2;
+  i4 = _type_test(i0, &Data__RegionDesc_td.td, 5);
+  if (i4) goto l1;
+  i4 = i1 + 12;
+  i4 = *(int*)i4;
+  i4 = i4 != 2;
+  if (i4) goto l4;
+  i1 += 16;
+  i0 = (int)((_Type)i0)->tbprocs[1];
+  i1 = (int)*(void**)i1;
+  ((void(*)(Data__Usable, Data__Usable))i0)((Data__Usable)i5, (Data__Usable)i1);
+  Data__InstructionDesc_Delete((Data__Instruction)i5);
+  goto l4;
 l1:
-  ConstPropagation__ConstPropagation_ReplaceByConstants((Data__Region)i4);
-  goto l3;
+  ConstPropagation__ConstPropagation_ReplaceByConstants((Data__Region)i5);
+  goto l4;
 l2:
-  ConstPropagation__ConstPropagation_ReplaceByConstants((Data__Region)i4);
-  i2 = (int)*(void**)i2;
+  ConstPropagation__ConstPropagation_ReplaceByConstants((Data__Region)i5);
+  i2 = (int)*(void**)i3;
   i2 += 12;
   i2 = *(int*)i2;
   i2 = i2 != 2;
-  if (i2) goto l3;
-  ConstPropagation__ConstPropagation_ReplaceGatesByArgument((Data__Merge)i4);
+  if (i2) goto l4;
+  ConstPropagation__ConstPropagation_ReplaceGatesByArgument((Data__Merge)i5);
+  goto l4;
 l3:
-  i0 = i3 != 0;
-  if (!(i0)) goto l4;
-  i4 = i3;
-  goto l0;
+  Data__InstructionDesc_Delete((Data__Instruction)i5);
 l4:
+  i0 = i6 != 0;
+  if (!(i0)) goto l5;
+  i5 = i6;
+  goto l0;
+l5:
   ;
 }
 
@@ -2605,7 +2614,7 @@ void ConstPropagation_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(20+8);
-    if (!_mem) _new_failed(_P(45589));
+    if (!_mem) _new_failed(_P(45755));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConstPropagation__LatticeDesc_td.td;
     i0 = (int)_var;
@@ -2613,7 +2622,7 @@ void ConstPropagation_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(20+8);
-    if (!_mem) _new_failed(_P(45618));
+    if (!_mem) _new_failed(_P(45784));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConstPropagation__LatticeDesc_td.td;
     i1 = (int)_var;
@@ -2621,7 +2630,7 @@ void ConstPropagation_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(20+8);
-    if (!_mem) _new_failed(_P(45643));
+    if (!_mem) _new_failed(_P(45809));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConstPropagation__LatticeDesc_td.td;
     i2 = (int)_var;

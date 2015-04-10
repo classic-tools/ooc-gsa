@@ -18,8 +18,8 @@ modules begin with the prefix ``Oak''.
 @node OakStrings, OakFiles,  , Oakwood Compliant Modules
 @section Module OakStrings
 
-Module Strings provides a set of operations on strings (i.e., on string
-constants and character arrays, both of which contain the character
+Module @file{OakStrings} provides a set of operations on strings (i.e., on
+string constants and character arrays, both of which contain the character
 @code{0X} as a terminator).  All positions in strings start at @code{0}.
 
 (@cite{The Oakwood Guildlines} remark that string assignments and string
@@ -54,9 +54,8 @@ Deletes @var{n} characters from @var{s} starting at position @var{pos}
 @end deffn
 
 @deffn Procedure Replace @code{(@var{src}: ARRAY OF CHAR; @var{pos}: INTEGER; VAR @var{dst}: ARRAY OF CHAR)}
-Has the same effect as 
-@code{Delete(@var{dst}, @var{pos}, Length(@var{src}))}
-followed by 
+Has the same effect as @code{Delete(@var{dst}, @var{pos},
+Length(@var{src}))} followed by
 @format
 @code{Insert(@var{src}, @var{pos}, @var{dst})}.
 @end format
@@ -443,14 +442,14 @@ bytes from buf to rider @var{r} and advances @var{r} accordingly.
 @node OakIn, OakOut, OakFiles, Oakwood Compliant Modules
 @section Module OakIn
 
-Module @file{In} provides a set of basic routines for formatted input of
+Module @file{OakIn} provides a set of basic routines for formatted input of
 characters, character sequences, numbers, and names.  It assumes a standard
 input stream with a current position that can be reset to the beginning of
-the stream.  A call to procedure @code{Open} initializes module @file{In}
-and sets it to read from the standard input channel
-@code{StdChannels.stdin} (@pxref{StdChannels})
+the stream.  A call to procedure @code{Open} initializes module @file{OakIn}
+and sets it to read from the standard input channel @code{StdChannels.stdin}
+(@pxref{StdChannels})
 
-Module @file{In} has a concept of a @dfn{current position}, which is the
+Module @file{OakIn} has a concept of a @dfn{current position}, which is the
 character position in the input stream from where the next symbol is read.
 @code{Open} (re)sets it to the beginning of the input stream.  After reading
 a symbol, the current position is set to the position immediately after this
@@ -535,8 +534,8 @@ where @samp{char} is any character greater than blank.
 @node OakOut, OakMath and OakMathL, OakIn, Oakwood Compliant Modules
 @section Module OakOut
 
-Module @file{Out} provides a set of basic routines for formatted output of
-characters, numbers, and strings.  It assumes a standard output stream to
+Module @file{OakOut} provides a set of basic routines for formatted output
+of characters, numbers, and strings.  It assumes a standard output stream to
 which the symbols are written.
 
 @deffn Procedure Open

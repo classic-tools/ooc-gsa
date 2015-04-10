@@ -1,4 +1,4 @@
-@node Complex Numbers, Random Numbers, Arbitrary Precision Integers, Mathematics
+@node Complex Numbers, Random Numbers, Arbitrary Precision Real Numbers, Mathematics
 @section Complex Numbers
 @pindex ComplexMath
 @pindex LComplexMath

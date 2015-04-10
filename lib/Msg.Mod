@@ -1,7 +1,7 @@
-(*      $Id: Msg.Mod,v 1.7 1999/11/27 17:17:22 ooc-devel Exp $   *)
+(*      $Id: Msg.Mod,v 1.10 2000/03/01 09:55:55 ooc-devel Exp $   *)
 MODULE Msg [OOC_EXTENSIONS];
 (*  Framework for messages (creation, expansion, conversion to text).
-    Copyright (C) 1999  Michael van Acken
+    Copyright (C) 1999, 2000  Michael van Acken
 
     This module is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public License
@@ -290,13 +290,15 @@ PROCEDURE (msg: Msg) GetLText* (VAR text: LString);
       COPY (attr. name^, attrName);
       LongStrings.Insert ("${", 0, attrName);
       LongStrings.Append ("}", attrName);
-      LongStrings.FindNext (attrName, text, 0, found, pos);
       
-      IF found THEN
+      LongStrings.FindNext (attrName, text, 0, found, pos);
+      WHILE found DO
         len := LongStrings.Length (attrName);
         LongStrings.Delete (text, pos, len);
         attr. ReplacementText (insert);
-        LongStrings.Insert (insert, pos, text)
+        LongStrings.Insert (insert, pos, text);
+        LongStrings.FindNext (attrName, text, pos+LongStrings.Length (insert),
+                              found, pos)
       END;
       
       attr := attr. nextAttrib
@@ -359,6 +361,9 @@ PROCEDURE NewMsgList* (): MsgList;
   END NewMsgList;
 
 PROCEDURE (l: MsgList) Append* (msg: Msg);
+(**Appends the message `msg'.  to the list `l'.
+
+   pre: `msg' is not part of another message list.  *)
   BEGIN
     msg. nextMsg := NIL;
     IF (l. msgList = NIL) THEN
@@ -371,6 +376,24 @@ PROCEDURE (l: MsgList) Append* (msg: Msg);
     l. lastMsg := msg;
     INC (l. msgCount)
   END Append;
+
+PROCEDURE (l: MsgList) AppendList* (source: MsgList);
+(**Appends the messages of list `source' to `l'.  Afterwards, `source' is
+   an empty list, and the elements of `source' can be found at the end of
+   the list `l'.  *)
+  BEGIN
+    IF (source. msgCount # 0) THEN
+      IF (l. msgCount = 0) THEN
+        l^ := source^
+      ELSE  (* both `source' and `l' are not empty *)
+        INC (l. msgCount, source. msgCount);
+        l. lastMsg. nextMsg := source. msgList;
+        source. msgList. prevMsg := l. lastMsg;
+        l. lastMsg := source. lastMsg;
+        InitMsgList (source)
+      END
+    END
+  END AppendList;
 
 
 (* Standard Attributes
@@ -466,5 +489,30 @@ PROCEDURE (attr: MsgAttribute) ReplacementText* (VAR text: LString);
   BEGIN
     attr. msg. GetLText (text)
   END ReplacementText;
+
+
+
+(* Auxiliary functions
+   ------------------------------------------------------------------------ *)
+
+PROCEDURE GetStringPtr* (str: String): StringPtr;
+(* Creates a copy of `str' on the heap and returns a pointer to it.  *)
+  VAR
+    s: StringPtr;
+  BEGIN
+    NEW (s, Strings.Length (str)+1);
+    COPY (str, s^);
+    RETURN s
+  END GetStringPtr;
+
+PROCEDURE GetLStringPtr* (str: LString): LStringPtr;
+(* Creates a copy of `str' on the heap and returns a pointer to it.  *)
+  VAR
+    s: LStringPtr;
+  BEGIN
+    NEW (s, LongStrings.Length (str)+1);
+    COPY (str, s^);
+    RETURN s
+  END GetLStringPtr;
 
 END Msg.

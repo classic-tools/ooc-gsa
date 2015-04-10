@@ -67,6 +67,8 @@ extern Msg__IntAttribute Msg__NewIntAttrib(const Msg__String name__ref, int name
 extern Msg__StringAttribute Msg__NewStringAttrib(const Msg__String name__ref, int name_0d, Msg__StringPtr value);
 extern Msg__LStringAttribute Msg__NewLStringAttrib(const Msg__String name__ref, int name_0d, Msg__LStringPtr value);
 extern Msg__MsgAttribute Msg__NewMsgAttrib(const Msg__String name__ref, int name_0d, Msg__Msg value);
+extern Msg__StringPtr Msg__GetStringPtr(const Msg__String str__ref, int str_0d);
+extern Msg__LStringPtr Msg__GetLStringPtr(const Msg__LString str__ref, int str_0d);
 #define _TBP_Msg__ContextDesc_GetTemplate void(*)(Msg__Context context, Msg__Msg msg, Msg__LString templ, int templ_0d)
 #define _TBN_Msg__ContextDesc_GetTemplate 0
 extern void Msg__ContextDesc_GetTemplate(Msg__Context context, Msg__Msg msg, Msg__LString templ, int templ_0d);
@@ -88,6 +90,9 @@ extern void Msg__MsgDesc_GetText(Msg__Msg msg, Msg__String text, int text_0d);
 #define _TBP_Msg__MsgListDesc_Append void(*)(Msg__MsgList l, Msg__Msg msg)
 #define _TBN_Msg__MsgListDesc_Append 0
 extern void Msg__MsgListDesc_Append(Msg__MsgList l, Msg__Msg msg);
+#define _TBP_Msg__MsgListDesc_AppendList void(*)(Msg__MsgList l, Msg__MsgList source)
+#define _TBN_Msg__MsgListDesc_AppendList 1
+extern void Msg__MsgListDesc_AppendList(Msg__MsgList l, Msg__MsgList source);
 #define _TBP_Msg__MsgDesc_SetIntAttrib void(*)(Msg__Msg msg, const Msg__String name__ref, int name_0d, int value)
 #define _TBN_Msg__MsgDesc_SetIntAttrib 4
 extern void Msg__MsgDesc_SetIntAttrib(Msg__Msg msg, const Msg__String name__ref, int name_0d, int value);

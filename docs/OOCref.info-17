@@ -1,0 +1,392 @@
+This is Info file OOCref.info, produced by Makeinfo version 1.68 from
+the input file OOCref.texinfo.
+
+   This file documents the Optimizing Oberon-2 Compiler (OOC) and its
+library.
+
+   This is Edition 0.10 DRAFT, last updated 29 February 2000, of `The
+OOC Library Reference Manual', for Version 1.5.1 or later of oo2c.
+
+   Copyright (C) 1997-2000 Eric Nikitin Part II Copyright (C) 1998-2000
+Michael van Acken
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the text of the translation of the section
+entitled "GNU General Public License" must be approved for accuracy by
+the Foundation.
+
+
+File: OOCref.info,  Node: Variable & Constant Index,  Next: File Index,  Prev: Procedure Index,  Up: Top
+
+Variable & Constant Index
+*************************
+
+* Menu:
+
+* accessDenied:                          Summary of File Constants.
+* ack:                                   Ascii.
+* active:                                SysClock.
+* anonymousFile:                         Summary of File Constants.
+* april:                                 Calendar.
+* args:                                  ProgramArgs.
+* assert::                               Predefined Exception Sources.
+* august:                                Calendar.
+* bel:                                   Ascii.
+* bigEndian:                             Summary of BinaryRider Constants.
+* bool <1>:                              Summary of TextRider Constants.
+* bool:                                  Summary of UnicodeRider Constants.
+* bs:                                    Ascii.
+* can:                                   Ascii.
+* channelClosed <1>:                     Summary of File Constants.
+* channelClosed:                         Summary of Channel Constants.
+* char <1>:                              Summary of TextRider Constants.
+* char:                                  Summary of UnicodeRider Constants.
+* closeError <1>:                        Summary of Channel Constants.
+* closeError:                            Summary of File Constants.
+* cr:                                    Ascii.
+* curMant::                              Arbitrary Precision Real Numbers.
+* dc1:                                   Ascii.
+* dc2:                                   Ascii.
+* dc3:                                   Ascii.
+* dc4:                                   Ascii.
+* december:                              Calendar.
+* defReaderOptions <1>:                  Summary of UnicodeRider Constants.
+* defReaderOptions:                      Summary of TextRider Constants.
+* defScannerOptions <1>:                 Summary of UnicodeRider Constants.
+* defScannerOptions:                     Summary of TextRider Constants.
+* defWriterOptions <1>:                  Summary of UnicodeRider Constants.
+* defWriterOptions:                      Summary of TextRider Constants.
+* del:                                   Ascii.
+* derefOfNIL:                            Runtime Exception Numbers.
+* directoryFull:                         Summary of File Constants.
+* dirWriteDenied:                        Summary of File Constants.
+* dle:                                   Ascii.
+* done <1>:                              Summary of BinaryRider Constants.
+* done <2>:                              Summary of File Constants.
+* done <3>:                              Summary of UnicodeRider Constants.
+* done <4>:                              Summary of Channel Constants.
+* done:                                  Summary of TextRider Constants.
+* Done::                                 OakIn.
+* e:                                     OakMath and OakMathL.
+* elementOutOfRange:                     Runtime Exception Numbers.
+* em:                                    Ascii.
+* endOfFunction:                         Runtime Exception Numbers.
+* enq:                                   Ascii.
+* eol <1>:                               CharClass.
+* eol:                                   Ascii.
+* eot:                                   Ascii.
+* eps::                                  Arbitrary Precision Real Numbers.
+* equal:                                 Compare & Searching Strings.
+* err::                                  Arbitrary Precision Real Numbers.
+* error <1>:                             Summary of TextRider Constants.
+* error:                                 Summary of UnicodeRider Constants.
+* esc:                                   Ascii.
+* etb:                                   Ascii.
+* etx:                                   Ascii.
+* exception:                             Low-level Numeric Properties.
+* exception::                            Signal.
+* exp1:                                  Mathematical Functions.
+* expoMax:                               Low-level Numeric Properties.
+* expoMin:                               Low-level Numeric Properties.
+* extend:                                Low-level Numeric Properties.
+* february:                              Calendar.
+* ff:                                    Ascii.
+* fileError:                             Summary of File Constants.
+* freeErrorCode:                         Summary of Channel Constants.
+* friday:                                Calendar.
+* fs:                                    Ascii.
+* greater:                               Compare & Searching Strings.
+* gs:                                    Ascii.
+* gUnderflow:                            Low-level Numeric Properties.
+* halt::                                 Predefined Exception Sources.
+* handlerDefault::                       Signal.
+* handlerError::                         Signal.
+* handlerException::                     Signal.
+* handlerIgnore::                        Signal.
+* ht:                                    Ascii.
+* i:                                     Complex Numbers.
+* ident <1>:                             Summary of TextRider Constants.
+* ident:                                 Summary of UnicodeRider Constants.
+* IEC559:                                Low-level Numeric Properties.
+* illegalLength:                         Runtime Exception Numbers.
+* inactive:                              SysClock.
+* indexOutOfRange:                       Runtime Exception Numbers.
+* int <1>:                               Summary of UnicodeRider Constants.
+* int:                                   Summary of TextRider Constants.
+* integerDivByZero:                      Runtime Exception Numbers.
+* integerOverflow:                       Runtime Exception Numbers.
+* interpretBools <1>:                    Summary of UnicodeRider Constants.
+* interpretBools:                        Summary of TextRider Constants.
+* interpretSets <1>:                     Summary of UnicodeRider Constants.
+* interpretSets:                         Summary of TextRider Constants.
+* interpretStrings <1>:                  Summary of UnicodeRider Constants.
+* interpretStrings:                      Summary of TextRider Constants.
+* invalid <1>:                           ConvTypes.
+* invalid <2>:                           Summary of TextRider Constants.
+* invalid:                               Summary of UnicodeRider Constants.
+* invalidChannel <1>:                    Summary of File Constants.
+* invalidChannel:                        Summary of Channel Constants.
+* invalidFormat <1>:                     Summary of TextRider Constants.
+* invalidFormat <2>:                     Summary of Channel Constants.
+* invalidFormat <3>:                     Summary of File Constants.
+* invalidFormat <4>:                     Summary of BinaryRider Constants.
+* invalidFormat:                         Summary of UnicodeRider Constants.
+* invalidTime:                           Summary of File Constants.
+* isDirectory:                           Summary of File Constants.
+* january:                               Calendar.
+* july:                                  Calendar.
+* june:                                  Calendar.
+* large:                                 Low-level Numeric Properties.
+* lchar:                                 Summary of UnicodeRider Constants.
+* less:                                  Compare & Searching Strings.
+* lf:                                    Ascii.
+* LIA1:                                  Low-level Numeric Properties.
+* lident:                                Summary of UnicodeRider Constants.
+* line <1>:                              Summary of TextRider Constants.
+* line:                                  Summary of UnicodeRider Constants.
+* linkLoop:                              Summary of File Constants.
+* littleEndian:                          Summary of BinaryRider Constants.
+* lline:                                 Summary of UnicodeRider Constants.
+* ln10::                                 Arbitrary Precision Real Numbers.
+* ln2::                                  Arbitrary Precision Real Numbers.
+* localTime:                             SysClock.
+* log10eps:                              Arbitrary Precision Real Numbers.
+* lstring:                               Summary of UnicodeRider Constants.
+* ltab:                                  Summary of UnicodeRider Constants.
+* march:                                 Calendar.
+* maxDigits:                             Arbitrary Precision Real Numbers.
+* maxExp:                                Arbitrary Precision Real Numbers.
+* maxLengthEol <1>:                      Class Reader (Rider).
+* maxLengthEol <2>:                      Class Reader (TextRider).
+* maxLengthEol <3>:                      Summary of UnicodeRider Constants.
+* maxLengthEol:                          Summary of TextRider Constants.
+* maxMant:                               Arbitrary Precision Real Numbers.
+* maxSecondParts:                        SysClock.
+* may:                                   Calendar.
+* modulo:                                Random Numbers.
+* monday:                                Calendar.
+* msecPerDay:                            Time.
+* msecPerHour:                           Time.
+* msecPerMin:                            Time.
+* msecPerSec:                            Time.
+* nak:                                   Ascii.
+* nameTooLong:                           Summary of File Constants.
+* nativeEndian:                          Summary of BinaryRider Constants.
+* nModes:                                Low-level Numeric Properties.
+* noBuffering <1>:                       Summary of UnicodeRider Constants.
+* noBuffering:                           Summary of TextRider Constants.
+* noLength <1>:                          Summary of Channel Constants.
+* noLength:                              Summary of File Constants.
+* noMatchingLabel:                       Runtime Exception Numbers.
+* noModTime <1>:                         Summary of File Constants.
+* noModTime:                             Summary of Channel Constants.
+* noPosition <1>:                        Summary of Channel Constants.
+* noPosition:                            Summary of File Constants.
+* noReadAccess <1>:                      Summary of File Constants.
+* noReadAccess:                          Summary of Channel Constants.
+* noRoom <1>:                            Summary of Channel Constants.
+* noRoom:                                Summary of File Constants.
+* noSuchFile:                            Summary of File Constants.
+* notDirectory:                          Summary of File Constants.
+* noTmpName <1>:                         Summary of Channel Constants.
+* noTmpName:                             Summary of File Constants.
+* notOwner:                              Summary of File Constants.
+* noValidGuard:                          Runtime Exception Numbers.
+* november:                              Calendar.
+* noWriteAccess <1>:                     Summary of Channel Constants.
+* noWriteAccess:                         Summary of File Constants.
+* nul:                                   Ascii.
+* null:                                  StdChannels.
+* october:                               Calendar.
+* one:                                   Complex Numbers.
+* outDigits:                             Arbitrary Precision Real Numbers.
+* outOfMemory:                           Runtime Exception Numbers.
+* outOfRange <1>:                        Summary of File Constants.
+* outOfRange:                            Summary of Channel Constants.
+* padding:                               ConvTypes.
+* pi <1>:                                Mathematical Functions.
+* pi:                                    OakMath and OakMathL.
+* pi::                                   Arbitrary Precision Real Numbers.
+* places:                                Low-level Numeric Properties.
+* radix:                                 Low-level Numeric Properties.
+* read:                                  Summary of File Constants.
+* readAfterEnd <1>:                      Summary of Channel Constants.
+* readAfterEnd <2>:                      Summary of BinaryRider Constants.
+* readAfterEnd:                          Summary of File Constants.
+* reader:                                In.
+* readError <1>:                         Summary of Channel Constants.
+* readError:                             Summary of File Constants.
+* readOnlyFileSystem:                    Summary of File Constants.
+* real <1>:                              Summary of TextRider Constants.
+* real:                                  Summary of UnicodeRider Constants.
+* realDivByZero:                         Runtime Exception Numbers.
+* realOverflow:                          Runtime Exception Numbers.
+* returnCtrlChars <1>:                   Summary of UnicodeRider Constants.
+* returnCtrlChars:                       Summary of TextRider Constants.
+* rounds:                                Low-level Numeric Properties.
+* rs:                                    Ascii.
+* runtime::                              Predefined Exception Sources.
+* saturday:                              Calendar.
+* september:                             Calendar.
+* set <1>:                               Summary of UnicodeRider Constants.
+* set:                                   Summary of TextRider Constants.
+* si:                                    Ascii.
+* sigabrt:                               Signal.
+* sigalrm:                               Signal.
+* sigbus:                                Signal.
+* sigchld:                               Signal.
+* sigcld:                                Signal.
+* sigcont:                               Signal.
+* sigDigs::                              Arbitrary Precision Real Numbers.
+* sigdil:                                Signal.
+* sigemt:                                Signal.
+* SigFigs <1>:                           RealConv.
+* SigFigs:                               LRealConv.
+* sigfpe:                                Signal.
+* sighup:                                Signal.
+* sigill:                                Signal.
+* siginfo:                               Signal.
+* sigint:                                Signal.
+* sigio:                                 Signal.
+* sigiot:                                Signal.
+* sigkill:                               Signal.
+* siglost:                               Signal.
+* sigpipe:                               Signal.
+* sigpoll:                               Signal.
+* sigpwr:                                Signal.
+* sigquit:                               Signal.
+* sigsegv:                               Signal.
+* sigstkflt:                             Signal.
+* sigstop:                               Signal.
+* sigsys:                                Signal.
+* sigterm:                               Signal.
+* sigtrap:                               Signal.
+* sigtstp:                               Signal.
+* sigttin:                               Signal.
+* sigttou:                               Signal.
+* sigurg:                                Signal.
+* sigusr1:                               Signal.
+* sigusr2:                               Signal.
+* sigvtalrm:                             Signal.
+* sigwinch:                              Signal.
+* sigxcpu:                               Signal.
+* sigxfsz:                               Signal.
+* sizeAttrName:                          Messages.
+* small:                                 Low-level Numeric Properties.
+* so:                                    Ascii.
+* soh:                                   Ascii.
+* sp:                                    Ascii.
+* stackOverflow:                         Runtime Exception Numbers.
+* startMJD:                              JulianDay.
+* startTJD:                              JulianDay.
+* stderr:                                StdChannels.
+* stdin:                                 StdChannels.
+* stdout:                                StdChannels.
+* strAllRight:                           ConvTypes.
+* strEmpty:                              ConvTypes.
+* string <1>:                            Summary of TextRider Constants.
+* string:                                Summary of UnicodeRider Constants.
+* strOutOfRange:                         ConvTypes.
+* strWrongFormat:                        ConvTypes.
+* stx:                                   Ascii.
+* sub:                                   Ascii.
+* sunday:                                Calendar.
+* syn:                                   Ascii.
+* systemEol:                             CharClass.
+* tab <1>:                               Summary of UnicodeRider Constants.
+* tab:                                   Summary of TextRider Constants.
+* terminator:                            ConvTypes.
+* thursday:                              Calendar.
+* tooManyFiles:                          Summary of File Constants.
+* tryRead:                               Summary of File Constants.
+* tryWrite:                              Summary of File Constants.
+* tuesday:                               Calendar.
+* typeAssertFailed:                      Runtime Exception Numbers.
+* typeGuardFailed:                       Runtime Exception Numbers.
+* undefined <1>:                         Summary of TextRider Constants.
+* undefined:                             Summary of UnicodeRider Constants.
+* unknown:                               SysClock.
+* unknownSignal:                         Signal.
+* unknownZone:                           SysClock.
+* us:                                    Ascii.
+* UseGregorian:                          JulianDay.
+* useSignedNumbers <1>:                  Summary of UnicodeRider Constants.
+* useSignedNumbers:                      Summary of TextRider Constants.
+* valid:                                 ConvTypes.
+* valueOutOfRange <1>:                   Summary of TextRider Constants.
+* valueOutOfRange:                       Summary of UnicodeRider Constants.
+* vt:                                    Ascii.
+* wednesday:                             Calendar.
+* write:                                 Summary of File Constants.
+* writeError <1>:                        Summary of File Constants.
+* writeError:                            Summary of Channel Constants.
+* writer:                                Out.
+* xoff:                                  Ascii.
+* xon:                                   Ascii.
+* zero:                                  Complex Numbers.
+* zoneMax:                               SysClock.
+* zoneMin:                               SysClock.
+
+
+File: OOCref.info,  Node: File Index,  Prev: Variable & Constant Index,  Up: Top
+
+Program and File Index
+**********************
+
+* Menu:
+
+* Ascii:                                 Ascii.
+* BinaryRider:                           BinaryRider.
+* Calendar:                              Calendar.
+* Channel:                               Channel.
+* CharClass:                             CharClass.
+* ComplexMath:                           Complex Numbers.
+* ConvTypes:                             ConvTypes.
+* Err:                                   Err.
+* Files:                                 Files.
+* In:                                    In.
+* IntConv:                               IntConv.
+* Integers:                              Arbitrary Precision Integers.
+* IntStr:                                IntStr.
+* JulianDay:                             JulianDay.
+* LComplexMath:                          Complex Numbers.
+* LongRider:                             LongRider.
+* LongStrings:                           Strings.
+* LowLReal:                              Low-level Numeric Properties.
+* LowReal:                               Low-level Numeric Properties.
+* LRealConv:                             LRealConv.
+* LRealMath:                             Mathematical Functions.
+* oo2c:                                  oo2c options.
+* oob:                                   oob options.
+* oocn:                                  oocn options.
+* ooef:                                  ooef options.
+* oolibtool:                             oo2c libraries.
+* oowhereis:                             oowhereis options.
+* Out:                                   Out.
+* ProgramArgs:                           ProgramArgs.
+* RandomNumbers:                         Random Numbers.
+* RealConv:                              RealConv.
+* RealMath:                              Mathematical Functions.
+* Reals:                                 Arbitrary Precision Real Numbers.
+* RealStr:                               RealStr.
+* Rider:                                 Rider.
+* StdChannels:                           StdChannels.
+* Strings:                               Strings.
+* SysClock:                              SysClock.
+* TextRider:                             TextRider.
+* Time:                                  Time.
+* UnicodeRider:                          UnicodeRider.
+
+

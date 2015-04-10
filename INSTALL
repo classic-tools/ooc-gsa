@@ -14,7 +14,7 @@ setting --disable-gc or --disable-libs.
      detect this and use it automatically.
 
      Otherwise, get the garbage collector sources from Boehm's server
-       http://reality.sgi.com/employees/boehm_mti/gc_source/
+      http://reality.sgi.com/boehm_mti/gc_source/
      and unpack the tar file in oo2c's top-level directory.
 
      Check the README and Makefile in the newly created subdirectory

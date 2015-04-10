@@ -1,4 +1,4 @@
-(*	$Id: CNFilter.Mod,v 1.5 1999/08/08 08:22:57 acken Exp $	*)
+(*	$Id: CNFilter.Mod,v 1.6 1999/12/07 11:44:10 ooc-devel Exp $	*)
 MODULE CNFilter;
 (*  Simple code transformation on AST.
     Copyright (C) 1999  Michael van Acken
@@ -42,7 +42,7 @@ VAR
   stripPragmas: ParamOptions.BooleanOption;
   stripSystemFlags: ParamOptions.BooleanOption;
   handleForeign: ParamOptions.IntegerOption;
-  stripMIdent: ParamOptions.BooleanOption;
+  stripMpIdent: ParamOptions.BooleanOption;
 
 
 PROCEDURE GetOptions*(): Set;
@@ -56,7 +56,7 @@ PROCEDURE GetOptions*(): Set;
     IF stripSystemFlags. true THEN INCL (set, removeSystemFlags) END;
     IF handleForeign. value = 0 THEN INCL (set, removeForeign) END;
     IF handleForeign. value = 1 THEN INCL (set, addForeign) END;
-    IF stripMIdent. true THEN INCL (set, removeMIdent) END;
+    IF stripMpIdent. true THEN INCL (set, removeMIdent) END;
     RETURN set
   END GetOptions;
 
@@ -285,7 +285,7 @@ BEGIN
   ParamOptions.options. CmdLineOption ("--mod2foreign", "handleForeign:=1");
   ParamOptions.options. CmdLineOption ("--foreign2mod", "handleForeign:=0");
 
-  stripMIdent := ParamOptions.CreateBoolean ("stripMIdent", FALSE);
-  ParamOptions.options. Add (stripMIdent);
-  ParamOptions.options. CmdLineOption ("--strip-mident", "stripMIdent:=TRUE");
+  stripMpIdent := ParamOptions.CreateBoolean ("stripMpIdent", FALSE);
+  ParamOptions.options. Add (stripMpIdent);
+  ParamOptions.options. CmdLineOption ("--strip-mp-ident", "stripMpIdent:=TRUE");
 END CNFilter.

@@ -1,7 +1,7 @@
-(* 	$Id: ParseExpr.Mod,v 1.116 1999/11/06 11:16:50 ooc-devel Exp $	 *)
+(* 	$Id: ParseExpr.Mod,v 1.117 2000/02/27 16:29:31 ooc-devel Exp $	 *)
 MODULE ParseExpr;
 (*  Parses Oberon-2 expressions and translates them to GSA.
-    Copyright (C) 1995-1999  Michael van Acken
+    Copyright (C) 1995-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -280,6 +280,7 @@ PROCEDURE CheckType (type: D.Struct; expected: SHORTINT; pos: LONGINT);
       CASE ABS (expected) OF
       | D.strBoolean: class := "Boolean"
       | D.grpInteger: class := "Integer"
+      | D.grpSet    : class := "Set"
       END;
       Sym.TypeName (ins, type);
       E.ErrIns2 (pos, 234, class, ins)
@@ -1139,12 +1140,10 @@ PROCEDURE CheckOperandType (VAR x: Attr.Item;
       E.Err (x. pos, 232);             (* value expected, not data type *)
       RETURN -1
     ELSE
-      i := 0;
-      WHILE (i <= MAX (SET)) &
-            ~((i IN legalTypes) & Sym.TypeInGroup (x. type, i)) DO
-        INC (i)
-      END;
-      IF (i > MAX (SET)) & (legalTypeGroups # {}) THEN
+      IF (x. type. form IN legalTypes) THEN
+        i := x. type. form
+      ELSE
+        i := MAX (SET)+1;
         WHILE (i <= 2*MAX (SET)+1) &
               ~(((i+D.grpOffset) IN legalTypeGroups) & 
                 Sym.TypeInGroup (x. type, i)) DO
@@ -1922,6 +1921,10 @@ PROCEDURE Expr* (region: D.Region; VAR x: Attr.Item);
                       {D.grpNumeric+D.grpOffset, D.grpString8+D.grpOffset,
                        D.grpString16+D.grpOffset, D.grpChar+D.grpOffset}) 
       | S.in:                            (* membership test *)
+        IF ~Sym.TypeInGroup (y. type, D.grpSet) THEN
+          CheckType (y. type, D.grpSet, y. pos);
+          Attr.CreateItem (y, D.GetSetConst ({}, D.struct[D.strSet32]), y. pos)
+        END;
         BoundSetElement (region, y. type. form, x);
         instr := Attr.DyadicOp (region, 
                        Opc.baseBitTest+D.OperatorSubclass (y. type, 0), 

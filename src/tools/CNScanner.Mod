@@ -1,7 +1,7 @@
-(* 	$Id: CNScanner.Mod,v 1.13 1999/11/14 18:17:08 ooc-devel Exp $	 *)
+(* 	$Id: CNScanner.Mod,v 1.14 2000/01/02 21:13:49 ooc-devel Exp $	 *)
 MODULE CNScanner;
 (*  Lexical scanner for Oberon-2 source code.
-    Copyright (C) 1998, 1999  Michael van Acken
+    Copyright (C) 1998-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -486,12 +486,13 @@ PROCEDURE (from: Symbol) CopyCoord* (to: Symbol; inclColumn: BOOLEAN);
   END CopyCoord;
 
 PROCEDURE DocString* (sym: Symbol): BOOLEAN;
-  BEGIN  (* re: "\(\*\*[ a-zA-Z]"
+  BEGIN  (* re: "\(\*\*[ a-zA-Z@]"
             whitespace is defined as in CharClass.IsWhiteSpace *)
     RETURN (sym. id = comment) & 
            (sym. str[2] = "*") &
            (CharClass.IsWhiteSpace (sym. str[3]) OR
-            CharClass.IsLetter (sym. str[3]))
+            CharClass.IsLetter (sym. str[3]) OR
+            (sym. str[3] = "@"))
   END DocString;
 
 

@@ -1,4 +1,4 @@
-@node Standard Mappers, Standard I/O, Channels, I/O Subsystem
+@node Standard Mappers, Standard I/O, Messages, I/O Subsystem
 @section Standard Mappers
 @cindex standard mappers
 @cindex mappers, standard
@@ -110,11 +110,25 @@ attached to.
 Also note that, after any failed read operation, all further attempts to
 read will be ignored until the error is cleared using @code{ClearError}.
 
-@xref{Class Reader (TextRider)} for examples of usage.
+@xref{Class Reader (TextRider)}, for examples of usage.
 
 @table @asis
 @item Field: @b{opt}@minus{}: @code{SET}
 The current read options setting for the reader.
+
+@item Field: @b{res}@minus{}: @code{Msg.Msg}
+This field indicates the status of the last read operation (e.g.,
+@code{ReadLine}, @code{ReadInt}, @code{SetPos}, etc.).
+
+Error codes (for @code{res.code}) are highly dependent on the channel being
+read, and therefore on the basic riders provided by that channel, so you
+must look at the result codes for a particular channel's reader type (e.g.,
+@code{Files.Reader} error codes).  See the various channel types for details
+of these error codes (i.e., @ref{Files}, @ref{StdChannels}, or
+@ref{ProgramArgs}).
+
+If @code{res#done}, use either @code{res.GetLText()} or @code{res.GetText()}
+to get a plain text error description corresponding to the error code.
 
 @item Field: @b{base}@minus{}: @code{Channel.Channel}
 This field refers to the channel the reader is connected to.  
@@ -156,37 +170,18 @@ operations.
 @item Method: @code{(@var{r}: Reader)} @b{Eol} @code{(): BOOLEAN}
 This method returns @code{TRUE} if the reader is currently positioned at an
 end-of-line marker (see @code{SetEol} below).  This will also return
-@code{TRUE} if @code{@var{r}.Res() # done}.  Otherwise, @code{FALSE} is
+@code{TRUE} if @code{@var{r}.res # done}.  Otherwise, @code{FALSE} is
 returned.
-
-@item Method: @code{(@var{r}: Reader)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
-Retrieves a descriptive error message string stating the reason why one of
-the previous operations failed. 
 
 @item Method: @code{(@var{r}: Reader)} @b{Pos} @code{(): LONGINT}
 Returns the current reading position associated with the reader @var{r} in
 channel @code{@var{r}.base}.
 
-@item Method: @code{(@var{r}: Reader)} @b{Res} @code{(): INTEGER}
-This method returns the status of the last read operation (e.g.,
-@code{ReadLine}, @code{ReadInt}, @code{SetPos}, etc.).  Note that unlike
-some other reader types, @code{Res()} is a method rather than a field; but
-otherwise, it performs equivalently.  
-
-Error codes are highly dependent on the channel being read, and therefore on
-the basic riders provided by that channel, so you must look at the result
-codes for a particular channel's reader type (e.g., Files.Reader error
-codes).  See the various channel types for details of these error codes
-(i.e., @ref{Files}, @ref{StdChannels}, or @ref{ProgramArgs}).
-
-Use method @code{ErrorDescr} to get a plain text error description of this
-error code.
-
 @item Method: @code{(@var{r}: Reader)} @b{SetEol} @code{(@var{marker}: ARRAY OF CHAR; @var{markerLen}: INTEGER)}
 This method sets the end-of-line marker; that is, what character(s) is used
 to mark the end of a line.  If the passed string @var{marker} does not fit
 into the field @code{eol}, or if it contains a character >= @samp{ }, then
-@code{@var{r}.Res()} is set to @code{invalidFormat}.
+@code{@var{r}.res.code} is set to @code{invalidFormat}.
 
 A marker length @code{markerLen=-1} enables auto detection of the
 end-of-line convention used by the channel.  For auto detection to work, the
@@ -218,7 +213,7 @@ encountered.
 @strong{Pre-condition}: All of the following apply:
 @enumerate
 @item
-@code{r.Res() = done}, and 
+@code{r.res = done}, and 
 @item
 @code{(markerLen = -1) OR (1 <= markerLen < LEN (marker))}, and
 @item
@@ -242,7 +237,7 @@ reading a token; there are only three methods that do not skip whitespace:
 @code{ReadChar}, @code{ReadLn}, and @code{ReadLine}.  
 
 When attempting to read, and if the value is not properly formatted for its
-type, @code{r.Res()} returns @code{invalidFormat}.  The reader remains
+type, @code{r.res.code} is set to @code{invalidFormat}.  The reader remains
 positioned at the character which caused the @code{invalidFormat} error, but
 further reading can not take place until the error is cleared.
 
@@ -258,15 +253,15 @@ A @code{valueOutOfRange} error also occurs for methods reading into an
 entire input.
 
 Otherwise, for any operation attempting to read when there are no characters
-left to be read, a read-after-end error occurs and @code{Reader.Res()}
-returns @code{readAfterEnd}.
+left to be read, a read-after-end error occurs and @code{Reader.res.code} is
+set to @code{readAfterEnd}.
 
 In any case, whenever an error occurs, it is safest to assume that @emph{no}
 value has been read.  That is, the variable being read into is left with an
 undefined value.
 
 All further calls of these read methods will be ignored if
-@code{@var{r}.Res()#done}.  That is, no new characters will be read if an
+@code{@var{r}.res#done}.  That is, no new characters will be read if an
 error has occurred previously.
 
 @table @asis
@@ -417,12 +412,26 @@ This class provides facilities for writing various types of text.  Note that
 this type does not inherit properties from any basic writer type; rather it
 uses the basic writer type associated with the channel it is attached to.
 
-@xref{Class Writer (TextRider)} for examples of usage.
+@xref{Class Writer (TextRider)}, for examples of usage.
 
 @table @asis
 @item Field: @b{opt}@minus{}: @code{SET}
 The current write options setting for the writer.  See @ref{Summary of
 TextRider Constants} for possible option values.
+
+@item Field: @b{res}@minus{}: @code{Msg.Msg}
+This field indicates the status of the last write operation (e.g.,
+@code{WriteBytes}, @code{WriteInt}, @code{SetPos}, etc.).
+
+Error codes are highly dependent on the channel being written to (and
+therefore on the basic riders provided for that channel), so you must look
+at the result codes for the basic writer that is associated with that
+particular channel (e.g., @code{Files.Writer} error codes).  See the various
+channel types for details of these error codes (i.e., @ref{Files},
+@ref{StdChannels}, or @ref{ProgramArgs}).
+
+If @code{res#done}, use either @code{res.GetLText()} or @code{res.GetText()}
+to get a plain text error description corresponding to the error code.
 
 @item Field: @b{base}@minus{}: @code{Channel.Channel}
 This field refers to the channel the writer is connected to.  
@@ -439,41 +448,21 @@ descriptions of those are given here.
 Clears error conditions on the writer @var{w}, re-enabling further write
 operations.
 
-@item Method: @code{(@var{w}: Writer)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
-Retrieves a descriptive error message string stating the reason why one of
-the previous operations failed.
-
 @item Method: @code{(@var{w}: Writer)} @b{Pos} @code{() : LONGINT}
 Returns the current writing position associated with the writer @code{w} in
 channel @code{@var{w}.base}.
 
-@item Method: @code{(@var{w}: Writer)} @b{Res} @code{() : INTEGER}
-This method returns the status of the last write operation (e.g.,
-@code{WriteBytes}, @code{WriteInt}, @code{SetPos}, etc.)  Note that unlike
-some other writer types, @code{Res()} is a method rather than a field; but
-otherwise, it performs equivalently.
-
-Error codes are highly dependent on the channel being written to (and
-therefore on the basic riders provided for that channel), so you must look
-at the result codes for the basic writer that is associated with that
-particular channel (e.g., Files.Writer error codes).  See the various
-channel types for details of these error codes (i.e., @ref{Files},
-@ref{StdChannels}, @ref{ProgramArgs})
-
-Use @code{ErrorDescr} to get a plain text error description of this error
-code.
-
 @item Method: @code{(@var{w}: Writer)} @b{SetEol} @code{(@var{marker}: ARRAY OF CHAR; @var{markerLen}: INTEGER)}
 This method sets the end-of-line marker; that is, what character(s) is used
 to mark the end of a line.  If the passed string @var{marker} does not fit
-into the field @code{eol}, then @code{@var{w}.Res()} is set to
+into the field @code{eol}, then @code{@var{w}.res.code} is set to
 @code{invalidFormat}.  The empty marker is permitted.  The default value for
 a newly created writer is @code{CharClass.systemEol}.
 
 @strong{Pre-condition}: All of the following apply:
 @enumerate
 @item
-@code{w.Res() = done}, and
+@code{w.res = done}, and
 @item
 @code{0 <= markerLen < LEN (marker)}, and
 @item
@@ -604,7 +593,7 @@ Along with some typical reader methods, such as @code{SetPos}, the primary
 method of a scanner is @code{Scan}, which simply scans the next token based
 on the scanner's current options setting.  
 
-@xref{Class Scanner (TextRider)} for examples of usage.
+@xref{Class Scanner (TextRider)}, for examples of usage.
 
 @deftp {Data type} String 
 A string type of pre-defined length for use within a scanner.  Note that
@@ -652,6 +641,13 @@ point to the start of the @code{invalid} token (whereas @code{Pos()} would
 be positioned @emph{after} the invalid token).  You could, for example,
 reset the scanner options and re-position the scanner back at the invalid
 token to attempt a re-scan.
+
+@item Field: @b{res}@minus{}: @code{Msg.Msg}
+This field indicates the status of the last read operation (e.g.,
+@code{Scan}, @code{SetPos}, etc.).
+
+If @code{res#done}, use either @code{res.GetLText()} or @code{res.GetText()}
+to get a plain text error description corresponding to the error code.
 
 @item Field: @b{type}@minus{}: @code{INTEGER}
 The type of the token that has been most recently scanned.  The constants
@@ -705,22 +701,10 @@ Returns the number of bytes available for the next scanning operation.
 Clears error conditions on the scanner @var{s}, re-enabling further
 operations on @var{s}.
 
-@item Method: @code{(@var{s}: Scanner)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
-Retrieves a descriptive error message string stating the reason why one of
-the previous operations failed.
-
 @item Method: @code{(@var{s}: Scanner)} @b{Pos} @code{(): LONGINT}
 Returns the current reading position associated with the scanner @var{s} in
 channel @code{@var{s}.base}.  Note that the value returned by this method is
 different from the position indicated by the scanner's @code{pos} field.
-
-@item Method: @code{(@var{s}: Scanner)} @b{Res} @code{(): INTEGER}
-This method returns the status of the last read operation (e.g.,
-@code{Scan}, @code{SetPos}, etc.).  Note that @code{Res()} is a method
-rather than a field; but otherwise, it performs equivalently.
-
-Use method @code{ErrorDescr} to get a plain text error description of this
-error code.
 
 @item Method: @code{(@var{s}: Scanner)} @b{SetEol} @code{(@var{marker}: ARRAY OF CHAR; @var{markerLen}: INTEGER)}
 This method sets the end-of-line marker; it provides the same facility as
@@ -1025,13 +1009,13 @@ done):
 VAR r: TextRider.Reader;
     f: Files.File;
     str: ARRAY 256 OF CHAR;
-    res: INTEGER;
+    res: Result;
     
   f := Files.Old("Sample.txt", @{Files.read@}, res);
   r := TextRider.ConnectReader(f); 
 
   r.ReadLine(str);	
-  WHILE r.Res()=Files.done DO
+  WHILE r.res=Files.done DO
      Out.String(str); Out.Ln;
      r.ReadLine(str);	
   END;
@@ -1070,6 +1054,20 @@ read will be ignored until the error is cleared using @code{ClearError}.
 @item Field: @b{opt}@minus{}: @code{SET}
 The current read options setting for the reader.  See @ref{Summary of
 TextRider Constants} for possible option values.  
+
+@item Field: @b{res}@minus{}: @code{Msg.Msg}
+This field indicates the status of the last read operation (e.g.,
+@code{ReadLine}, @code{ReadInt}, @code{SetPos}, etc.).
+
+Error codes (for @code{res.code}) are highly dependent on the channel being
+read, and therefore on the basic riders provided by that channel, so you
+must look at the result codes for a particular channel's reader type (e.g.,
+@code{Files.Reader} error codes).  See the various channel types for details
+of these error codes (i.e., @ref{Files}, @ref{StdChannels}, or
+@ref{ProgramArgs}).
+
+If @code{res#done}, use either @code{res.GetLText()} or @code{res.GetText()}
+to get a plain text error description corresponding to the error code.
 
 @item Field: @b{base}@minus{}: @code{Channel.Channel}
 This field refers to the channel the reader is connected to.  
@@ -1111,37 +1109,18 @@ operations.
 @item Method: @code{(@var{r}: Reader)} @b{Eol} @code{(): BOOLEAN}
 This method returns @code{TRUE} if the reader is currently positioned at an
 end-of-line marker (see @code{SetEol} below).  This will also return
-@code{TRUE} if @code{@var{r}.Res() # done}.  Otherwise, @code{FALSE} is
+@code{TRUE} if @code{@var{r}.res # done}.  Otherwise, @code{FALSE} is
 returned.
-
-@item Method: @code{(@var{r}: Reader)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
-Retrieves a descriptive error message string stating the reason why one of
-the previous operations failed. 
 
 @item Method: @code{(@var{r}: Reader)} @b{Pos} @code{(): LONGINT}
 Returns the current reading position associated with the reader @var{r} in
 channel @code{@var{r}.base}.
 
-@item Method: @code{(@var{r}: Reader)} @b{Res} @code{(): INTEGER}
-This method returns the status of the last read operation (e.g.,
-@code{ReadLine}, @code{ReadInt}, @code{SetPos}, etc.).  Note that unlike
-some other reader types, @code{Res()} is a method rather than a field; but
-otherwise, it performs equivalently.  
-
-Error codes are highly dependent on the channel being read, and therefore on
-the basic riders provided by that channel, so you must look at the result
-codes for a particular channel's reader type (e.g., Files.Reader error
-codes).  See the various channel types for details of these error codes
-(i.e., @ref{Files}, @ref{StdChannels}, or @ref{ProgramArgs}).
-
-Use method @code{ErrorDescr} to get a plain text error description of this
-error code.
-
 @item Method: @code{(@var{r}: Reader)} @b{SetEol} @code{(@var{marker}: ARRAY OF CHAR; @var{markerLen}: INTEGER)}
 This method sets the end-of-line marker; that is, what character(s) is used
 to mark the end of a line.  If the passed string @var{marker} does not fit
 into the field @code{eol}, or if it contains a character >= @samp{ }, then
-@code{@var{r}.Res()} is set to @code{invalidFormat}.
+@code{@var{r}.res.code} is set to @code{invalidFormat}.
 
 A marker length @code{markerLen=-1} enables auto detection of the
 end-of-line convention used by the channel.  For auto detection to work, the
@@ -1173,7 +1152,7 @@ encountered.
 @strong{Pre-condition}: All of the following apply:
 @enumerate
 @item
-@code{r.Res() = done}, and 
+@code{r.res = done}, and
 @item
 @code{(markerLen = -1) OR (1 <= markerLen < LEN (marker))}, and
 @item
@@ -1207,7 +1186,7 @@ reading a token; there are only three methods that do not skip whitespace:
 @code{ReadChar}, @code{ReadLn}, and @code{ReadLine}.  
 
 When attempting to read, and if the value is not properly formatted for its
-type, @code{r.Res()} returns @code{invalidFormat}.  The reader remains
+type, @code{r.res.code} is set to @code{invalidFormat}.  The reader remains
 positioned at the character which caused the @code{invalidFormat} error, but
 further reading can not take place until the error is cleared.
 
@@ -1223,15 +1202,15 @@ A @code{valueOutOfRange} error also occurs for methods reading into an
 entire input.
 
 Otherwise, for any operation attempting to read when there are no characters
-left to be read, a read-after-end error occurs and @code{Reader.Res()}
-returns @code{readAfterEnd}.
+left to be read, a read-after-end error occurs and @code{Reader.res.code}
+is set to @code{readAfterEnd}.
 
 In any case, whenever an error occurs, it is safest to assume that @emph{no}
 value has been read.  That is, the variable being read into is left with an
 undefined value.
 
 All further calls of these read methods will be ignored if
-@code{@var{r}.Res()#done}.  That is, no new characters will be read if an
+@code{@var{r}.res#done}.  That is, no new characters will be read if an
 error has occurred previously.
 
 @table @asis
@@ -1291,7 +1270,7 @@ r.ReadIdentifier(str)
 r.ReadIdentifier(str)
    @result{} str = "y2"
 r.ReadIdentifier(str)
-   @result{} r.Res() = invalidFormat, str = undefined
+   @result{} r.res.code = invalidFormat, str = undefined
 @end smallexample
  
 @item Method: @code{(@var{r}: Reader)} @b{ReadInt} @code{(VAR @var{int}: INTEGER)}
@@ -1321,10 +1300,10 @@ VAR intVar: INTEGER;
 r.ReadInt(intVar);
    @result{} intVar = 12345
 r.ReadInt(intVar);
-   @result{} r.Res() = valueOutOfRange, intVar = undefined
+   @result{} r.res.code = valueOutOfRange, intVar = undefined
 r.ClearError;
 r.ReadInt(intVar); (* attempting to read `forty-two' *)
-   @result{} r.Res() = invalidFormat, intVar = undefined
+   @result{} r.res.code = invalidFormat, intVar = undefined
         (* r.Pos() is still at the `f' in `forty-two' *)
 @end smallexample
 
@@ -1393,12 +1372,12 @@ r.ReadString(str);
 r.ReadString(str);
    @result{} str = "This is well-formed too"
 r.ReadString(str);
-   @result{} r.Res() = invalidFormat, str = undefined
+   @result{} r.res.code = invalidFormat, str = undefined
         (* r.Pos() is now at the end of this line *)
 r.ClearError;
 r.ReadString(str);  
    (* attempting to read `because of line break"' *)
-   @result{} r.Res() = invalidFormat, str = undefined
+   @result{} r.res.code = invalidFormat, str = undefined
 @end smallexample
 
 @item Method: @code{(@var{r}: Reader)} @b{ReadReal} @code{(VAR @var{real}: REAL)}
@@ -1435,14 +1414,14 @@ r.ReadReal(realVar);
 r.ReadReal(realVar);
    @result{} realVar = 5.432100E+34
 r.ReadReal(realVar);
-   @result{} r.Res() = valueOutOfRange, realVar = undefined
+   @result{} r.res.code = valueOutOfRange, realVar = undefined
 r.ReadReal(realVar);
-   @result{} r.Res() = done, realVar = 0.000000
+   @result{} r.res = done, realVar = 0.000000
         (* r.Pos() is now at `A' *)
 r.ClearError; r.ReadLn; 
    @result{} Clear error and skip to the beginning of the next line 
 r.ReadReal(realVar);
-   @result{} r.Res() = invalidFormat, realVar = undefined
+   @result{} r.res.code = invalidFormat, realVar = undefined
         (* r.Pos() is still at the `_' in `_34.56' *)
 @end smallexample
 
@@ -1482,25 +1461,25 @@ r.ReadSet(setVar);
 r.ReadSet(setVar);
    @result{} setVar = @{0..5@}
 r.ReadSet(setVar);
-   @result{} r.Res() = valueOutOfRange, setVar = undefined
+   @result{} r.res.code = valueOutOfRange, setVar = undefined
         (* r.Pos() is now at the `@}' after the `1024' *)
 r.ClearError; r.ReadLn; 
    @result{} Clear error and skip to the beginning of the next line 
 
 r.ReadSet(setVar);  (* attempt to read `@{6, 7, W@}' *)
-   @result{} r.Res() = invalidFormat, setVar = undefined
+   @result{} r.res.code = invalidFormat, setVar = undefined
         (* r.Pos() is now at `W' *)
 r.ClearError; r.ReadLn; 
    @result{} Clear error and skip to the beginning of the next line 
 
 r.ReadSet(setVar);  (* attempt to read `9..11' *)
-   @result{} r.Res() = invalidFormat, setVar = undefined
+   @result{} r.res.code = invalidFormat, setVar = undefined
         (* r.Pos() is now at `9' *)
 r.ClearError; r.ReadLn; 
    @result{} Clear error and skip to the beginning of the next line 
 
 r.ReadSet(setVar);  (* attempt to read `@{13..12@}' *)
-   @result{} r.Res() = invalidFormat, setVar = undefined
+   @result{} r.res.code = invalidFormat, setVar = undefined
         (* r.Pos() is now at the `@}' after the `12' *)
 @end smallexample
 @end table
@@ -1520,6 +1499,20 @@ uses the basic writer type associated with the channel it is attached to.
 The current write options setting for the writer.  See @ref{Summary of
 TextRider Constants} for possible option values.
 
+@item Field: @b{res}@minus{}: @code{Msg.Msg}
+This field indicates the status of the last write operation (e.g.,
+@code{WriteBytes}, @code{WriteInt}, @code{SetPos}, etc.).
+
+Error codes are highly dependent on the channel being written to (and
+therefore on the basic riders provided for that channel), so you must look
+at the result codes for the basic writer that is associated with that
+particular channel (e.g., @code{Files.Writer} error codes).  See the various
+channel types for details of these error codes (i.e., @ref{Files},
+@ref{StdChannels}, or @ref{ProgramArgs}).
+
+If @code{res#done}, use either @code{res.GetLText()} or @code{res.GetText()}
+to get a plain text error description corresponding to the error code.
+
 @item Field: @b{base}@minus{}: @code{Channel.Channel}
 This field refers to the channel the writer is connected to.  
 @end table
@@ -1535,41 +1528,21 @@ descriptions of those are given here.
 Clears error conditions on the writer @var{w}, re-enabling further write
 operations.
 
-@item Method: @code{(@var{w}: Writer)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
-Retrieves a descriptive error message string stating the reason why one of
-the previous operations failed.
-
 @item Method: @code{(@var{w}: Writer)} @b{Pos} @code{() : LONGINT}
 Returns the current writing position associated with the writer @code{w} in
 channel @code{@var{w}.base}.
 
-@item Method: @code{(@var{w}: Writer)} @b{Res} @code{() : INTEGER}
-This method returns the status of the last write operation (e.g.,
-@code{WriteBytes}, @code{WriteInt}, @code{SetPos}, etc.)  Note that unlike
-some other writer types, @code{Res()} is a method rather than a field; but
-otherwise, it performs equivalently.
-
-Error codes are highly dependent on the channel being written to (and
-therefore on the basic riders provided for that channel), so you must look
-at the result codes for the basic writer that is associated with that
-particular channel (e.g., Files.Writer error codes).  See the various
-channel types for details of these error codes (i.e., @ref{Files},
-@ref{StdChannels}, @ref{ProgramArgs})
-
-Use @code{ErrorDescr} to get a plain text error description of this error
-code.
-
 @item Method: @code{(@var{w}: Writer)} @b{SetEol} @code{(@var{marker}: ARRAY OF CHAR; @var{markerLen}: INTEGER)}
 This method sets the end-of-line marker; that is, what character(s) is used
 to mark the end of a line.  If the passed string @var{marker} does not fit
-into the field @code{eol}, then @code{@var{w}.Res()} is set to
+into the field @code{eol}, then @code{@var{w}.res.code} is set to
 @code{invalidFormat}.  The empty marker is permitted.  The default value for
 a newly created writer is @code{CharClass.systemEol}.
 
 @strong{Pre-condition}: All of the following apply:
 @enumerate
 @item
-@code{w.Res() = done}, and
+@code{w.res = done}, and
 @item
 @code{0 <= markerLen < LEN (marker)}, and
 @item
@@ -1832,7 +1805,7 @@ look similar the following program fragment:
 @smallexample
 VAR s: TextRider.Scanner;
     f: Files.File;
-    res: INTEGER;
+    res: Files.Result;
     
   f := Files.Old("Sample.txt", @{Files.read@}, res);
   s := TextRider.ConnectScanner(f); 
@@ -1902,6 +1875,13 @@ be positioned @emph{after} the invalid token).  You could, for example,
 reset the scanner options and re-position the scanner back at the invalid
 token to attempt a re-scan.
 
+@item Field: @b{res}@minus{}: @code{Msg.Msg}
+This field indicates the status of the last read operation (e.g.,
+@code{Scan}, @code{SetPos}, etc.).
+
+If @code{res#done}, use either @code{res.GetLText()} or @code{res.GetText()}
+to get a plain text error description corresponding to the error code.
+
 @item Field: @b{type}@minus{}: @code{INTEGER}
 The type of the token that has been most recently scanned.  The constants
 @code{bool}, @code{char}, @code{error}, @code{int}, @code{invalid},
@@ -1949,16 +1929,16 @@ descriptions are given here.
 @quotation
 @strong{Please note:} Normally when scanning text, a program will monitor a
 scanner's @code{type} field and check for @code{invalid} tokens and the
-occurance of @code{error}.  The @code{Res()} or @code{ErrorDescr} methods
-need to be checked only to find out error details (and then, possibly, the
-@code{ClearError} method can be used to clear the error).
+occurance of @code{error}.  The @code{res.code} needs to be checked only to
+find out error details (and then, possibly, the @code{ClearError} method can
+be used to clear the error).
 
 @emph{Example:}  
 
 @smallexample
 VAR s: TextRider.Scanner;
     f: Files.File;
-    res: INTEGER;
+    res: Files.Result;
     str: ARRAY 256 OF CHAR;
     
 f := Files.Old("Sample.txt", @{Files.read@}, res);
@@ -1967,7 +1947,7 @@ s := TextRider.ConnectScanner(f);
 f.Close;
 s.Scan;
    @result{} s.type = error
-s.ErrorDescr(str);
+s.res.GetText(str);
    @result{} str = "File has been closed"
 @end smallexample
 @end quotation
@@ -1980,22 +1960,10 @@ Returns the number of bytes available for the next scanning operation.
 Clears error conditions on the scanner @var{s}, re-enabling further
 operations on @var{s}.
 
-@item Method: @code{(@var{s}: Scanner)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
-Retrieves a descriptive error message string stating the reason why one of
-the previous operations failed.
-
 @item Method: @code{(@var{s}: Scanner)} @b{Pos} @code{(): LONGINT}
 Returns the current reading position associated with the scanner @var{s} in
 channel @code{@var{s}.base}.  Note that the value returned by this method is
 different from the position indicated by the scanner's @code{pos} field.
-
-@item Method: @code{(@var{s}: Scanner)} @b{Res} @code{(): INTEGER}
-This method returns the status of the last read operation (e.g.,
-@code{Scan}, @code{SetPos}, etc.).  Note that @code{Res()} is a method
-rather than a field; but otherwise, it performs equivalently.
-
-Use method @code{ErrorDescr} to get a plain text error description of this
-error code.
 
 @item Method: @code{(@var{s}: Scanner)} @b{SetEol} @code{(@var{marker}: ARRAY OF CHAR; @var{markerLen}: INTEGER)}
 This method sets the end-of-line marker; it provides the same facility as
@@ -2108,22 +2076,22 @@ position for non-positionable channels.
 @deffn Function ConnectReader @code{(@var{ch}: Channel.Channel): Reader}
 This function creates a new reader and attaches it to the channel @var{ch}.
 @code{@var{ch}.res} is set to @code{done} on success and the new reader is
-returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
-to indicate the error cause.
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res.code} is
+set to indicate the error cause.
 @end deffn
 
 @deffn Function ConnectWriter @code{(@var{ch}: Channel.Channel): Writer}
 This function creates a new writer and attaches it to the channel @var{ch}.
 @code{@var{ch}.res} is set to @code{done} on success and the new writer is
-returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
-to indicate the error cause.  
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res.code} is
+set to indicate the error cause.
 @end deffn
 
 @deffn Function ConnectScanner @code{(@var{ch}: Channel.Channel): Scanner}
 This function creates a new scanner and attaches it to the channel @var{ch}.
 @code{@var{ch}.res} is set to @code{done} on success and the new scanner is
-returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
-to indicate the error cause.
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res.code} is
+set to indicate the error cause.
 @end deffn
 
 @emph{Example:}
@@ -2132,7 +2100,7 @@ to indicate the error cause.
 VAR
   r: TextRider.Reader;
   f: Files.File;
-  res: INTEGER;
+  res: Files.Result;
   
   f := Files.Old("test.dat", @{Files.read@}, res);
   IF (res # Files.done) THEN (* error processing *) END;
@@ -2155,11 +2123,14 @@ For other constant values that may be applicable when using module
 reading to or writing from, such as @ref{Files}, @ref{StdChannels}, or
 @ref{ProgramArgs}.
 
-The following are possible return values for @code{Res()} methods:
+The following constant applies to the @code{res} field, and may be compared
+to it.  (i.e., @code{rider.res = done} or @code{rider.res # done}.)
 
 @defvr Constant done
 This indicates successful completion of the last operation.  
 @end defvr
+
+The following are possible values for @code{res.code}:
 
 @defvr Constant invalidFormat
 Indicates that the text at the current reading (or scanning) position
@@ -2492,22 +2463,22 @@ position for non-positionable channels.
 @deffn Function ConnectReader @code{(@var{ch}: Channel.Channel): Reader}
 This function creates a new reader and attaches it to the channel @var{ch}.
 @code{@var{ch}.res} is set to @code{done} on success and the new reader is
-returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
-to indicate the error cause.
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res.code} is
+set to indicate the error cause.
 @end deffn
 
 @deffn Function ConnectWriter @code{(@var{ch}: Channel.Channel): Writer}
 This function creates a new writer and attaches it to the channel @var{ch}.
 @code{@var{ch}.res} is set to @code{done} on success and the new writer is
-returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
-to indicate the error cause.  
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res.code} is
+set to indicate the error cause.
 @end deffn
 
 @deffn Function ConnectScanner @code{(@var{ch}: Channel.Channel): Scanner}
 This function creates a new scanner and attaches it to the channel @var{ch}.
 @code{@var{ch}.res} is set to @code{done} on success and the new scanner is
-returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
-to indicate the error cause.
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res.code} is
+set to indicate the error cause.
 @end deffn
 
 
@@ -2526,11 +2497,14 @@ For other constant values that may be applicable when using module
 reading to or writing from, such as @ref{Files}, @ref{StdChannels}, or
 @ref{ProgramArgs}.
 
-The following are possible return values for @code{Res()} methods:
+The following constant applies to the @code{res} field, and may be compared
+to it.  (i.e., @code{rider.res = done} or @code{rider.res # done}.)
 
 @defvr Constant done
 This indicates successful completion of the last operation.  
 @end defvr
+
+The following are possible values for @code{res.code}:
 
 @defvr Constant invalidFormat
 Indicates that the text at the current reading (or scanning) position
@@ -2725,13 +2699,13 @@ no error checking is done):
 VAR r: BinaryRider.Reader;
     f: Files.File;
     ch: CHAR;
-    res: INTEGER;
+    res: Files.Result;
     
   f := Files.Old("Sample.txt", @{Files.read@}, res);
   r := BinaryRider.ConnectReader(f); 
 
   r.ReadChar(ch);	
-  WHILE r.Res()=Files.done DO
+  WHILE r.res=Files.done DO
      Out.Char(ch);
      r.ReadChar(ch);	
   END;
@@ -2781,6 +2755,20 @@ is provided instead.
 @end quotation
 
 @table @asis
+@item Field: @b{res}@minus{}: @code{Msg.Msg}
+This field indicates the status of the last read operation (e.g.,
+@code{ReadLine}, @code{ReadInt}, @code{SetPos}, etc.).
+
+Error codes (for @code{res.code}) are highly dependent on the channel being
+read, and therefore on the basic riders provided by that channel, so you
+must look at the result codes for a particular channel's reader type (e.g.,
+@code{Files.Reader} error codes).  See the various channel types for details
+of these error codes (i.e., @ref{Files}, @ref{StdChannels}, or
+@ref{ProgramArgs}).
+
+If @code{res#done}, use either @code{res.GetLText()} or @code{res.GetText()}
+to get a plain text error description corresponding to the error code.
+
 @item Field: @b{byteOrder}@minus{}: @code{SHORTINT}
 The current endian (byte order) setting for the reader.  
 
@@ -2801,25 +2789,9 @@ Returns the number of bytes available for the next reading operation.
 Clears error conditions on the reader @var{r}, re-enabling further read
 operations.
 
-@item Method: @code{(@var{r}: Reader)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
-Retrieves a descriptive error message string stating the reason why one of
-the previous operations failed.  
-
 @item Method: @code{(@var{r}: Reader)} @b{Pos} @code{() : LONGINT}
 Returns the current reading position associated with the reader @var{r} in
 channel @code{@var{r}.base}.
-
-@item Method: @code{(@var{r}: Reader)} @b{Res} @code{() : INTEGER}
-This method returns the status of the last read operation.  Note that unlike
-some other reader types, @code{Res()} is a method rather than a field; but
-otherwise, it performs equivalently.
-
-Error codes are highly dependent on the channel being read, and therefore
-on the basic riders provided by that channel, so you must look at the result
-codes for a particular channel's reader type. 
-
-Use method @code{ErrorDescr} to get a plain text error description of this
-error code.
 
 @item Method: @code{(@var{r}: Reader)} @b{SetByteOrder} @code{(@var{order}: SHORTINT)}
 Sets @code{byteOrder} in reader @var{r} to @var{order}.  This affects the
@@ -2855,10 +2827,10 @@ Sets the reading position to @var{newPos}.
 
 The following methods read a value of the given type from the current
 position of the Reader.  If the value is invalid for its type,
-@code{Reader.Res()} returns @code{invalidFormat}.
+@code{Reader.res.code} is set to @code{invalidFormat}.
 
 Otherwise, if there aren't enough bytes to satisfy the request,
-@code{Reader.Res()} returns @code{readAfterEnd}.
+@code{Reader.res.code} is set to @code{readAfterEnd}.
 
 @table @asis
 @item Method: @code{(@var{r}: Reader)} @b{ReadBool} @code{(VAR @var{bool}: BOOLEAN)}
@@ -2993,6 +2965,20 @@ is provided instead.
 @end quotation
 
 @table @asis
+@item Field: @b{res}@minus{}: @code{Msg.Msg}
+This field indicates the status of the last write operation (e.g.,
+@code{WriteBytes}, @code{WriteInt}, @code{SetPos}, etc.).
+
+Error codes are highly dependent on the channel being written to (and
+therefore on the basic riders provided for that channel), so you must look
+at the result codes for the basic writer that is associated with that
+particular channel (e.g., @code{Files.Writer} error codes).  See the various
+channel types for details of these error codes (i.e., @ref{Files},
+@ref{StdChannels}, or @ref{ProgramArgs}).
+
+If @code{res#done}, use either @code{res.GetLText()} or @code{res.GetText()}
+to get a plain text error description corresponding to the error code.
+
 @item Field: @b{base}@minus{}: @code{Channel.Channel}
 This field refers to the channel the writer is connected to.  
 
@@ -3010,26 +2996,9 @@ given here.
 Clears error conditions on the writer @var{w}, re-enabling further write
 operations.
 
-@item Method: @code{(@var{w}: Writer)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
-Retrieves a descriptive error message string stating the reason why one of
-the previous operations failed.
-
 @item Method: @code{(@var{w}: Writer)} @b{Pos} @code{() : LONGINT}
 Returns the current writing position associated with the writer @code{w} in
 channel @code{@var{w}.base}.
-
-@item Method: @code{(@var{w}: Writer)} @b{Res} @code{() : INTEGER}
-This method returns the status of the last write operation.  Note that
-unlike some other writer types, @code{Res()} is a method rather than a
-field; but otherwise, it performs equivalently.
-
-Error codes are highly dependent on the channel being written to (and
-therefore on the basic riders provided for that channel), so you must look
-at the result codes for the basic writer that is associated with that
-particular channel.
-
-Use @code{ErrorDescr} to get a plain text error description of this error
-code.
 
 @item Method: @code{(@var{w}: Writer)} @b{SetPos} @code{(@var{newPos}: LONGINT)}
 Sets the writing position to @var{newPos}.
@@ -3199,15 +3168,15 @@ position for non-positionable channels.
 @deffn Function ConnectReader @code{(VAR @var{ch}: Channel.Channel): Reader}
 This function creates a new reader and attaches it to the channel @var{ch}.
 @code{@var{ch}.res} is set to @code{done} on success and the new reader is
-returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
-to indicate the error cause.
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res.code} is
+set to indicate the error cause.
 @end deffn
 
 @deffn Function ConnectWriter @code{(VAR @var{ch}: Channel.Channel): Writer}
 This function creates a new writer and attaches it to the channel @var{ch}.
 @code{@var{ch}.res} is set to @code{done} on success and the new writer is
-returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
-to indicate the error cause.  
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res.code} is
+set to indicate the error cause.
 @end deffn
 
 @emph{Example:}  
@@ -3216,7 +3185,7 @@ to indicate the error cause.
 VAR
   f: Files.File;
   r: BinaryRider.Reader;
-  res: INTEGER;
+  res: Files.Result;
   
   f := Files.Old("test.dat", @{Files.read, Files.write@}, res);
   IF (res # Files.done) THEN (* error processing *) END;
@@ -3231,14 +3200,17 @@ VAR
 @cindex binary riders, constants 
 
 For other constant values that may be applicable when using module
-BinaryRider, see the specific channel implementation that you are reading to
-or writing from.
+@file{BinaryRider}, see the specific channel implementation that you are
+reading to or writing from.
 
-The following are possible return values for @code{Res()} methods:
+The following constant applies to the @code{res} field, and may be compared
+to it.  (i.e., @code{rider.res = done} or @code{rider.res # done}.) 
 
 @defvr Constant done
 This indicates successful completion of the last operation.  
 @end defvr
+
+The following are possible values for @code{res.code}:
 
 @defvr Constant invalidFormat
 Indicates that the data at the current reading position is not properly

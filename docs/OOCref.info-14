@@ -4,11 +4,11 @@ the input file OOCref.texinfo.
    This file documents the Optimizing Oberon-2 Compiler (OOC) and its
 library.
 
-   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
-Library Reference Manual', for Version 1.4.5 or later of oo2c.
+   This is Edition 0.10 DRAFT, last updated 29 February 2000, of `The
+OOC Library Reference Manual', for Version 1.5.1 or later of oo2c.
 
-   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
-1999 Michael van Acken
+   Copyright (C) 1997-2000 Eric Nikitin Part II Copyright (C) 1998-2000
+Michael van Acken
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -28,1102 +28,1035 @@ entitled "GNU General Public License" must be approved for accuracy by
 the Foundation.
 
 
-File: OOCref.info,  Node: OOC Error Messages,  Next: Copying,  Prev: SYSTEM,  Up: Top
-
-OOC Error Messages
-******************
-
-   All implementations of OOC try to provide error messages that are as
-helpful as possible; the problem causing the message should be readily
-identifiable.  Counter examples to this approach are most C compilers.
-They combine a cryptic error text with a line number and leave it to
-the programmer to find out what might be wrong.
-
-   OOC tries to precisely mark the faulty construct triggering an
-error.  It provides an exact position in the given piece of source
-code.  The error message has to interpreted relative to the context of
-this file position.  Without knowing the reference point, most error
-messages don't make sense.  Therefore, we strongly suggest to use an
-editor or other tool to display errors together with their context.
-
-   Compilation continues after errors.  This usually works quite well,
-but sometimes error recovery will fail and many meaningless error
-messages will be emitted in succession.  Certain kinds of syntax errors
-can send the compiler down a completely wrong path.  In such cases, all
-but the very first error message should be ignored.
-
-   Some of the error texts listed below contain the placeholder
-character `%'.  The compiler will replace the placeholders with
-identifiers, numbers, or text fragments.
-
-   Implementations of OOC may introduce their own errors and warnings,
-starting at number 500 and ending at 998.
-
-`1: Comment not terminated'
-     While reading the source code, the scanner found a `(*' with no
-     matching `*)', even after searching to the end of the file.
-
-`2: Illegal character in string'
-     An unprintable ASCII control code appears in the string.  That is,
-     a character with an ASCII code in the range `00X..1FX'.  This
-     restriction isn't explicitly stated in the Oberon-2 report, but it
-     is implemented this way by the ETH compilers.  *Please note*: The
-     character `0X' is actually interpreted as end of file marker by
-     the scanner and a string containing it will generate the message
-     `String not terminated'.
-
-`3: String not terminated'
-     No terminating quote character was found before reaching the end
-     of the line, which matched the one that started the string.  Keep
-     in mind that it is not possible to embed the string's quote
-     character in the string (i.e., a `"' cannot occur in `"..."', nor
-     `'' in `'...'')  and that a string can't stretch over multiple
-     lines.  *Please note*: This message will also be generated if the
-     string contains the ASCII character `0X', which the scanner uses
-     to mark the end of the file.
-
-`4: No comment started'
-     The character sequence `*)' was found outside a comment.  Because
-     no legal Oberon-2 program can contain this as a symbol sequence,
-     it is assumed that it was intended to terminate a comment.
-
-`5: Illegal cipher'
-     Any symbol starting with a decimal cipher is considered to be a
-     number.  It extends to the first character not in the ranges
-     `0..9' or `A..F', plus a possible suffix `X' or `H'.  Without one
-     of those suffixes, only decimal digits are allowed and any
-     character from `A..F' will be considered as an invalid cipher.
-     For a real number's exponent, only the characters `0..9' are valid.
-
-`6: Number out of range'
-     The value of the numeric constant is too large to be converted
-     into the internal representation.  Four cases have to be
-     distinguished:
-
-        * A decimal integer constant (or a real number's exponent) has
-          to be less or equal to `MAX(LONGINT)'
-
-        * A hex number has to be in the range `0H..0FFFFFFFFH'
-
-        * A `REAL' number (i.e., a real constant without any exponent
-          or with the exponent symbol `E') has to be less than or equal
-          to `MAX(REAL)'
-
-        * A `LONGREAL' number (i.e., a real constant with the exponent
-          symbol `D') has to be less or equal to `MAX(LONGREAL)'
-
-     *Caution*: Hex constants in the range `08000000H..0FFFFFFFFH'
-     would exceed `MAX(LONGINT)' when interpreted as positive and are
-     actually mapped onto negative values in the range
-     `MIN(LONGINT)..-1' matching the bit pattern of the unsigned
-     constant.
-
-`7: Not a valid character constant'
-     Character constants have to be in the range `0X' to `0FFX'.
-
-`8: Illegal symbol'
-     All characters that have no special meaning in Oberon-2 (such as
-     `!', `%', etc.) cause this error message when they appear in the
-     symbol stream.  They are only permitted as part of comments or
-     string constants.
-
-`9: Illegal exponent format'
-     The exponent following the mantissa of a real number has to comply
-     to the syntax `[D|E][+|-]digit{digit}'.  This means the exponent
-     marker (`D' for `LONGREAL', `E' for `REAL') must be followed by an
-     optional sign and a non-empty sequence of decimal digits.
-
-`10: Illegal character'
-     An underscore cannot be used in identifiers except for within
-     `INTERFACE' modules and when refering to objects declared in
-     `INTERFACE' modules.
-
-`11: No pragma command started'
-     The character sequence `*>' was found without a preceding `<*'.
-
-`12: Nested `<*' not allowed'
-     The token `<*' was found inside a pragma, although a pragma inside
-     another pragma is not permitted.
-
-`13: `IF' statement lacks `END''
-     An `IF' statement appears inside a pragma, but there is no matching
-     `END' before the end of the file.
-
-`14: No open `IF' statement'
-     An `ELSIF', `ELSE', or `END' statement appears inside a pragma
-     without any preceding (and still open) `IF' statement.
-
-`15: `ELSE' part already defined'
-     The indicated `ELSIF' or `ELSE' statement is part of an `IF'
-     statement that already defines an `ELSE' statement.
-
-`16: Pragma stack empty'
-     At the place of the `POP' statement, the stack of pragma variables
-     is empty.  In order to do a `POP', a `PUSH' has to be done
-     beforehand.  Having more `PUSH's than `POP's is allowed, but the
-     reverse isn't true.
-
-`17: Undeclared pragma variable'
-     A pragma variable has to be defined before being used in an
-     expression or for the left hand side of a (non-defining)
-     assignment. Such a definition can be done in the configuration
-     file, or in a pragma, by prefixing an assignment statement with
-     the keyword `DEFINE'.  There is also a command line option to
-     introduce defines.
-
-`18: Pragma variable already defined'
-     Each pragma variable can only be defined exactly once.  After its
-     definition, all subsequent assignments have to be non-defining
-     ones. That is, they must not be prefixed with `DEFINE'.
-
-`19: Value cannot be assigned to % variable'
-     The initial definition of a pragma variable assigns a type
-     (boolean, integer, or string) to it.  All subsequent assignments
-     have to assign values of the same type.
-
-`20: Boolean expression expected'
-     The expression at the indicated location must evaluate to a
-     boolean value.
-
-`21: Illegal variable name'
-     The pragma keywords `TRUE', `FALSE', `PUSH', `POP', and `DEFINE'
-     cannot be used as names of pragma variables.
-
-`30: String too long (maximum is % characters)'
-     The given string value exceeds the hard limit the compiler imposes
-     on the length of string constants.  You'll have to split the
-     constant into several smaller ones and concatenate them together
-     in a character array variable.
-
-`31: Warning: String longer than % characters'
-     The given string value exceeds the soft limit for the length of
-     string constants.  Check the documentation of your particular
-     compiler implementation for the implications.
-
-`32: Identifier too long (maximum is % characters)'
-     The indicated identifier exceeds the hard limit the compiler
-     imposes on the length of identifiers.  Replace the name with a
-     smaller one.
-
-`33: Warning: Identifier longer than % characters'
-     The indicated identifier exceeds the soft limit for the length of
-     identifiers.  Check the documentation of your particular compiler
-     implementation for the implications.
-
-`34: Warning: Hexadecimal constant is mapped to negative value'
-     When hexadecimal constants are greater than the maximum value of
-     the largest integer type, they are mapped onto negative values.
-     For example, if the compiler does not support the `HUGEINT' type,
-     hex constants in the range `08000000H..0FFFFFFFFH' are mapped onto
-     negative values in the range `MIN(LONGINT)..-1' matching the bit
-     pattern of the constant.  If `HUGEINT' constants are available
-     they are mapped onto the positive `HUGEINT' values `2^31..2^32-1'.
-     This means that the interpretation of such constants depends on
-     the compiler.  Without special precautions modules using them are
-     not portable to systems that support additional, larger integer
-     types.
-
-`35: Malformed module identifier'
-     A module identifier with a non-empty path prefix must satisfy the
-     regular expression `[a-zA-Z][a-zA-Z0-9]*(:[a-zA-Z][a-zA-Z0-9]*)*'.
-
-   The following error messages indicate that the compiler expected a
-different symbol at the indicated position than it actually got.  In
-other words, the current symbol doesn't fit into the current
-syntactical context.
-
-`100: Identifier expected'
-
-`109: `=' expected'
-
-`118: `.' expected'
-
-`119: `,' expected'
-
-`120: `:' expected'
-
-`122: `)' expected'
-
-`123: `]' expected'
-
-`124: `}' expected'
-
-`125: `OF' expected'
-
-`126: `THEN' expected'
-
-`127: `DO' expected'
-
-`128: `TO' expected'
-
-`130: `(' expected'
-
-`134: `:=' expected'
-
-`137: String expected'
-
-`139: `;' expected'
-
-`141: `END' expected'
-
-`144: `UNTIL' expected'
-
-`163: `MODULE' expected'
-
-`166: `*>' expected'
-
-`180: Unexpected symbol'
-
-`181: Factor starts with illegal symbol'
-
-`182: Data type expected'
-
-`183: Statement expected'
-
-`197: Undeclared identifier'
-     The indicated identifier is not associated to any definition.
-     With the exception of names used as pointer base types (e.g., the
-     name `T' in `POINTER TO T'), all identifiers have to be declared
-     prior to their use.  This declaration has to appear in the local
-     scope or in one of the enclosing scopes textually before any using
-     occurrence of the name.
-
-`198: Identifier `%' expected'
-     The identifier given at the end of a procedure or module has to be
-     the same as the name that was assigned to the respective procedure
-     or module in its heading.
-
-`199: %'
-     This error message can be filled by the compiler with arbitrary
-     text.
-
-`200: Export only possible on top level'
-     Only declarations on a module's top level can be part of the
-     public interface of the module.  All names defined inside a
-     procedure are local to their respective procedure and are not
-     visible outside.
-
-`201: Can only be exported with `*''
-     Constants, types, and procedures cannot be exported with `-'
-     because the notion of a restricted, read-only access doesn't make
-     sense for these objects.
-
-`202: Has to be exported like inherited declaration'
-     A redefinition of a type-bound procedure in an extended type has
-     to be exported if the base definition was marked as exported.  In
-     other words, if the type-bound procedure `P' in `T' is exported,
-     then all redefinitions of `P' in extensions of `T' have to be
-     exported as well.
-
-`203: Can't use type constructor here'
-     Oberon-2 type rules prevent calls of a procedure whose parameter's
-     type is defined by a type constructor.  Such a formal parameter
-     won't match any actual parameter.  The only exception to this rule
-     is open array parameters, where the actual parameter is required
-     to be array compatible (see Appendix A of the language report)
-     with the formal one.
-
-`204: Receiver has to be a record or a record pointer'
-     The type of the receiver parameter of a type-bound procedure is
-     restricted to record or record pointer types.  In the former case,
-     the receiver has to be a variable parameter, and a value parameter
-     in the latter.
-
-`205: Illegal type for function result'
-     An Oberon-2 function cannot return a structured result.  If a
-     procedure has to pass a record or array value back to the caller,
-     a variable parameter has to be used instead.
-
-`206: Can't use type constructor here'
-     The type expression denoting the result type of a function
-     procedure has to be the name of an unstructured type.  Otherwise,
-     the Oberon-2 type rules would prevent the use of the function as
-     part of an expression.
-
-`207: Illegal pointer base type'
-     Pointers can only refer to record or array types.  An open array
-     can be used as pointer base type.  It is not possible to define a
-     pointer to one of the predefined types, to a procedure type, or
-     another pointer.
-
-`208: Open array can't be used here'
-     Oberon-2 imposes certain restrictions on the use of open array
-     types.  Such a type can only appear as type of a procedure
-     parameter (to relax the rules for passing array values to
-     procedures), as pointer base type (to be able to allocate arrays
-     of arbitrary size on the heap), and as element type of another
-     open array (to implement multi-dimensional open arrays).  All other
-     applications of open arrays are illegal.  An open array type can
-     have a name.  That is, a declaration of the form `TYPE S=ARRAY OF
-     CHAR;' is legal.
-
-`209: This has to be an integer constant'
-     This applies to two cases:
-
-        * The length of a fixed size array type has to be a positive
-          integer constant.
-
-        * The increment value of a `FOR' loop has to be a non-zero
-          integer constant.
-
-     Note that wherever a constant value is required, a constant
-     expression can be used.
-
-`210: Arrays of negative length are not allowed'
-     The length specified for a dimension of an array type has to be a
-     non-negative integer value.  A length of zero is allowed even
-     though it isn't possible to access an element of such a variable.
-
-`211: Data type expected'
-     The name at the indicated location has to refer to a type
-     definition.
-
-`212: This record type cannot be extended'
-     The given name refers to a record type that cannot serve as a base
-     type for extension.  This usually means that the record was
-     defined as part of an interface module for another language (e.g.,
-     C).  Such a foreign type is not associated with any kind of meta
-     information (i.e., type descriptor), which is necessary to
-     implement type extension.
-
-`213: This has to be a record type'
-     The name given inside parenthesis after the keyword `RECORD' has to
-     refer to a record type.
-
-`214: Receiver of pointer type has to be a value parameter'
-     If the type of the receiver of a type-bound procedure is a record
-     pointer, it has to be defined as a value parameter.
-
-`215: Receiver of record type has to be a variable parameter'
-     If the type of the receiver of a type-bound procedure is a record,
-     it has to be defined as a variable parameter.
-
-`216: Illegal receiver type'
-     The type of a receiver parameter is restricted to record or
-     pointer to record.
-
-`217: This has to be a top level type'
-     Any record type serving as an anchor to a type-bound procedure has
-     to be defined on the top level of the current module.  It cannot
-     be imported because this would imply a modification of the
-     interface of a type that isn't defined in (and under the control
-     of) the local module.  Also, a record defined inside a procedure
-     cannot serve as receiver type because all type-bound procedures
-     have to be global.  This is required for the same reason that only
-     global procedures can be assigned to variables: a nested procedure
-     can only be executed in the context of its enclosing procedure,
-     whereas type-bound procedures (and procedure variables) can be
-     activated anywhere.
-
-`218: Type-bound procedure has to be declared on top level'
-     A type-bound procedure has to be declared on the global level of
-     the module that defines its anchor record.  This is required for
-     the same reason that only global procedures can be assigned to
-     variables: a nested procedure can only be executed in the context
-     of its enclosing procedure, whereas type-bound procedures and
-     procedure variables can be activated anywhere.
-
-`219: Multiple forward declaration of same name'
-     A procedure is forward declared multiple times.
-
-`220: Formal parameters don't match forward declaration'
-     The formal parameters of the procedure definition do not match the
-     ones of the previous forward declaration.  This means that there
-     is a difference in the number of parameters, one of the parameter
-     types or mode (i.e., value or variable), or the result type.
-
-`221: Receiver doesn't match forward declaration'
-     The receiver type of the procedure definition does not match the
-     previous forward declaration.  With the language restrictions on
-     receivers, this can only mean that the forward declaration uses a
-     pointer receiver and the declaration a record, or vice versa; both
-     must use the same kind of receiver.
-
-`222: Export mark differs from forward declaration'
-     The export status of a procedure definition has to match the
-     forward declaration (if present).  Either both of them must have
-     an export mark, or neither.
-
-`223: Formal parameters don't match inherited declaration'
-     One of the base types of the type-bound procedure's anchor record
-     declares a procedure of the same name, but the formal parameters
-     of both procedures do not match.  If the current declaration is
-     intended to be a redefinition of the previous procedure, it is
-     necessary to adjust the formal parameter list.  If it is intended
-     as a new procedure, the name has to be changed.
-
-`224: Receiver doesn't match inherited declaration'
-     One of the base types of the type-bound procedure's anchor record
-     declares a procedure of the same name, but with a receiver of a
-     different mode.  With the restrictions on receivers, this can only
-     mean that the base declaration uses a pointer receiver and the
-     current declaration a record, or vice versa.  Both must use the
-     same kind of receiver.
-
-`225: Field of this name already declared in extension `%''
-     The name of the indicated type-bound procedure conflicts with that
-     of a field defined in one of the extensions of its receiver's
-     anchor record.  In other words, the type-bound procedure `P' is
-     bound to the record `R' and a record `R0' extending `R' (in the
-     local module) defines a field that is also called `P'.  This would
-     imply that the record `R0' actually contains two objects called
-     `P': its own record field and an inherited type-bound procedure.
-     This violates the rule that an identifier has to refer to an
-     unique object in its scope.
-
-`226: This procedure has already been declared in extension `%''
-     The name of the indicated type-bound procedure conflicts with that
-     of a previously declared procedure bound to one of the extensions
-     of its receiver's anchor record.  In other words, the type-bound
-     procedure `P' is bound to the record `R' and a record `R0'
-     extending `R' (in the local module) also defines a type-bound
-     procedure `P', but the latter procedure is declared first.  If the
-     order of declaration of the two procedures is reversed (i.e., the
-     procedure bound to the extension declared after the one of the
-     base type), the former would be recognized as a redefinition of
-     the latter and everything would be fine.  But when written in the
-     wrong sequence, the single-pass compiler cannot handle this
-     properly and flags it as error.
-
-`227: Not a record (is `%')'
-     The left side of a field or type-bound procedure selector has to
-     be a record or a record pointer value.
-
-`228: Not a pointer (is `%')'
-     The left side of a dereference operator has to be a pointer value.
-
-`229: `%' has no base type'
-     For a super call of the form `x.P^()', the type of `x' has to be a
-     true extension of another type that also defines the type-bound
-     procedure `P'.
-
-`230: Procedure `%' not declared in base type'
-     For a super call of the form `x.P^()', the type of `x' has to be a
-     true extension of another type, which provides the the original
-     definition of the type-bound procedure `P'.
-
-`231: Operator not applicable to type `%''
-     The indicated operator cannot take a value of the given type as an
-     operand.
-
-`232: Value expected instead of a data type'
-     The name given as an operand refers to a type instead of a value.
-     Type names are only applicable in type constructors, variable and
-     parameter declarations, and certain predefined functions like
-     `MIN', `MAX', `SIZE', and `SYSTEM.VAL'.
-
-`233: Operand incompatible to left hand side `%''
-     The operator is not applicable to values of the given types.  See
-     Appendix A of the language report for a list of legal argument
-     types for the operator.
-
-`234: % expression expected (instead of `%')'
-     This applies to the following cases:
-
-        * The index of an array selector has to be an integer value.
-
-        * A set element has to be an integer value.
-
-        * The guard of an `IF', `WHILE', or `REPEAT' statement has to
-          be a boolean expression.
-
-`235: This item has no memory address'
-     `SYSTEM.ADR' is only applicable to variables, procedure names, and
-     string constants.
-
-`236: Lower bound has to be less or equal to upper bound'
-     If both bounds `a' and `b' of a set constructor `{a..b}' are
-     constant, then `a <= b' has to hold.  The compiler assumes `a > b'
-     to be an error because otherwise the result would be the empty set
-     `{}'--which is most likely not what the programmer wanted in the
-     first place.  The same holds for a range of labels in a `CASE'
-     statement.
-
-`237: This has to be a character constant'
-     If the select expression of a `CASE' statement is a character
-     value, then the labels of the case branches have to be character
-     constants.
-
-`238: This has to be a constant expression'
-     The language requires constant values to be used for the right
-     side of a constant declaration, an array's length, the step
-     constant of a `FOR' statement, and the labels of a `CASE'
-     statement.  A constant expression may contain constant values and
-     applications of predefined operators and functions.  For example,
-     the declaration `CONST m=10*MAX(SET);' would be legal and
-     equivalent to `m=310'.  Note that every integer constant
-     expression is assigned the smallest integer type containing the
-     given value *after* the whole expression has been evaluated.  For
-     the above example, `m' would be of type `INTEGER'.
-
-`239: Not assignment compatible to type `%''
-     The referenced expression is not assignment compatible to a
-     variable of the indicated type.  The right side of an assignment
-     statement has to be assignment compatible with the variable on the
-     left side, an argument of a procedure call corresponding to formal
-     value parameter has to be assignment compatible with the type of
-     the parameter, and the argument of an `RETURN' statement has to be
-     assignment compatible with the result type of its function.
-     Appendix A of the language report lists the rules for assignment
-     compatibility.
-
-`240: This isn't a function procedure'
-     The definition of proper procedure cannot contain `RETURN'
-     statements with an argument.
-
-`241: Missing function result'
-     Every `RETURN' statement appearing as part of the definition of a
-     function procedure has to have an argument describing the
-     function's result value.  The argument has to be assignment
-     compatible to the function's result type.
-
-`242: `EXIT' not within a `LOOP''
-     The indicated `EXIT' statement is not part of a `LOOP' statement.
-     `EXIT' can only be used inside a `LOOP', although it may be nested
-     arbitrarily deep into other statements.  An `EXIT' always refers
-     to the nearest enclosing `LOOP'.
-
-`243: Not an array (is `%')'
-     The element selector `[...]' may not be used on a variable
-     designator that isn't of array or array pointer type.
-
-`244: This isn't a variable designator'
-     This applies to the following cases:
-
-        * Only a modifiable variable designator may appear on the left
-          side of an assignment statement.  The variable designator may
-          not refer to a variable or record field that has been
-          exported as read-only.
-
-        * The control variable of a `FOR' statement has to be an
-          unqualified (i.e., local) variable identifier.
-
-     Note that dereferencing a read-only pointer variable will grant
-     unrestricted access to the pointer's contents.
-
-`245: This is imported read-only'
-     This applies to the left side of an assignment statement and to
-     variables passed to a `VAR' parameter as part of a procedure call.
-     This means that the destination variable (or designator) has to
-     be either
-
-       1. imported as read-write (and no following selector accesses a
-          read-only record field), or
-
-       2. the value of a dereferenced pointer variable.
-
-     Contrary to a pointer dereference, an element of a read-only array
-     is read-only, just like a field of a read-only record variable.
-
-`246: Too many parameters (maximum is %)'
-     The number of declared parameters exceeds the compiler's limit.
-     You will have to reduce their number; for example, by moving some
-     of the parameters into a single record, and passing this record to
-     the callee.
-
-`247: Not a procedure (is `%')'
-     The designator to the left of an argument list does not denote a
-     procedure or a procedure variable.
-
-`248: More actual than formal parameters'
-     The argument list of the procedure call contains more parameters
-     than specified in the procedure's formal parameter list.
-
-`249: Parameter expected'
-     The argument list of the procedure call contains fewer parameters
-     than specified in the procedure's formal parameter list.
-
-`250: Not array compatible to formal parameter `%''
-     The actual parameter of the procedure call is not array compatible
-     to the formal value parameter specified in the procedure heading.
-     The formal and actual parameter must either
-
-       1. have the same type, or
-
-       2. the formal parameter is an open array and their element types
-          are array compatible, or
-
-       3. the formal parameter is an `ARRAY OF CHAR' and the actual
-          parameter a string constant.
-
-     Note that a character constant (e.g., `"a"' or `41X') is also a
-     string constant.  For details see Appendix A of the language
-     report.
-
-`251: Not compatible to formal variable parameter `%''
-     The indicated argument cannot be passed to the corresponding
-     formal variable parameter specified in the procedure heading.  For
-     the type of the formal parameter TF and the type of the actual
-     parameter TA one of the following statements has to hold:
-
-        * both are of the same type
-
-        * TF is a record, and TA is an extension of TF
-
-        * TF is an open array, and TA is array compatible with it
-
-        * TF is `SYSTEM.BYTE', and TA is `CHAR', `SHORTINT', or
-          `SYSTEM.SET8'
-
-        * TF is `SYSTEM.PTR', and TA is a pointer type
-
-     Note that special rules apply for the arguments of predefined
-     procedures of the language.
-
-`252: This isn't a proper procedure'
-     A function procedure cannot be activated as if it were a proper
-     procedure.  That is, unlike C, Oberon-2 does not discard the
-     function's result automatically.  In such a case, the result may
-     be discarded by assigning it to an unused variable.
-
-`253: This isn't a function procedure'
-     A proper procedure cannot be activated as if it were a function.
-
-`254: This has to be a simple identifier'
-     The control variable of a `FOR' statement is restricted to local
-     variables (or parameters) of the current procedure, of enclosing
-     procedures, or the module.  It is not possible to use an imported
-     variable or a variable designator containing any selectors.
-
-`255: Has to be a nonzero integer constant'
-     The increment value of a `FOR' statement must be a nonzero constant
-     value.
-
-`256: Too large with respect to control variable of type `%''
-     The increment value of a `FOR' statement has to be included within
-     the range of the type of the control variable.
-
-`257: This variable has no dynamic type'
-     A type test is only applicable to variables whose dynamic type
-     (i.e., the type during run time) may differ from their static one
-     (i.e., the type specified when compiling).  This means that the
-     variable either has to be a record pointer, a dereferenced record
-     pointer, or a variable parameter of record type.  Note that record
-     types defined as part of an interface module for another language
-     will lack any Oberon-2 run-time type information.  Those records
-     (and pointer types derived from them) cannot be subjected to type
-     tests or type guards.
-
-`258: This isn't a record pointer'
-     Only record pointers (and variable parameters of record type) can
-     be subjected to type tests or type guards.
-
-`259: This type is no extension of the variable's type'
-     A type used for a type test or type guard has to be an extension
-     of the tested variable's type.  For a record, this means that the
-     variable's type has to be a direct or indirect base type of the
-     given type.  For a pointer, this relation has to hold for the
-     pointer base types.  Note that testing a variable against its own
-     type is possible, but redundant.
-
-`260: Integer or character expression expected'
-     The select expression of a `CASE' statement must be either of type
-     integer, or of type character; boolean, real, or complex
-     expressions are not allowed.
-
-`261: Case label not included in type of case selector'
-     The case label lies outside the range of values the select
-     expression can possibly assume.
-
-`262: Case labels (%..%) already used'
-     The given range of values is already assigned to another `CASE'
-     branch.  The labels of any two branches have to be distinct.
-
-`263: Has to be a (qualified) identifier'
-     The language only allows application of a regional type guard to
-     simple variables.  Complex designators (variables followed by a
-     nonempty list of selectors) are not permitted.  However, the
-     variable can be imported from another module.
-
-`264: This type has no `MIN'/`MAX' value'
-     The predefined functions `MIN' and `MAX' are only applicable to
-     integer, real, and set types.  For the numeric types, they return,
-     respectively, the smallest and largest values a variable of the
-     given type can assume.  For set types, they return the smallest
-     and largest valid set elements.
-
-`265: Value incompatible with variable'
-     The second argument of an activation of `INC' or `DEC' must be a
-     value that is included in the type of the first argument.  If
-     conformant mode is enabled, and the second argument is a
-     non-constant expression, the second argument has to have the same
-     type as the first argument.
-
-`266: This type has no fixed size'
-     The predefined function `SIZE' cannot be applied to open array
-     types because these types represent a set of arbitrarily sized
-     variable instantiations during run time.  In other words, such
-     types don't have a size.  Variables of those types do have a fixed
-     size, but `SIZE' is not applicable to variables.  To get the size
-     of an open array variable, you would have to multiply the size of
-     the array element type by the array's length.
-
-`267: Illegal definition for a previously used pointer base type'
-     If the base type `T' of a type `POINTER TO T' is defined later in
-     the text, `T' has to be declared as a legal pointer base type.
-     That is, it must be a record or an array type.
-
-`268: Cannot copy this value to `%''
-     The predefined procedure `COPY' cannot copy a string composed of
-     `LONGCHAR' characters to an array of `CHAR' elements.  It can copy
-     towards an array using the same character type, and to a larger
-     character type.  In the latter case the function `LONG' is applied
-     to every character.
-
-`269: Cannot modify value parameter that has no local copy'
-     For an open array value parameter with `NO_LENGTH_TAG', the
-     compiler cannot create a local copy of the array argument.  This
-     means that it cannot guarantee the normal semantics of value
-     parameters.  (Recall that value parameters normally follow these
-     rules: local modifications to the parameter stay local, and
-     modifications to the variable that was passed to the parameter are
-     not reflected in the parameter's local value.)
-
-     In this case, instead of the standard behaviour, the compiler
-     treats the parameter like a read-only variable and prevents *local
-     changes* to the parameter's value.  However, any changes to the
-     original *array variable*, which was passed to the parameter in
-     the first place, are reflected by the parameter's value.  This
-     resembles the semantics of the keyword `const' when applied to C
-     pointer types.
-
-`280: No information on length of variable available'
-     It is attempted to perform an operation on an array variable that
-     needs to compute the array's length.  This error can occur only in
-     connection with types or procedures defined in interface modules
-     to other languages.
-
-`281: This type has no type descriptor'
-     An attempted operation on a record variable needs to compute the
-     record's dynamic type, and that type information is not available.
-     This error can occur only in connection with types or procedures
-     defined in interface modules to other languages.
-
-`282: NEW cannot allocate memory for this type'
-     The predefined function `NEW' is not applicable to non-standard
-     types; that is, types that do not follow the rules of Oberon-2.
-     Such types are usually introduced by interface modules providing
-     access to programs written in other languages.  If the interface
-     does not provide a way to allocate heap objects of this type, you
-     will have to use `SYSTEM.NEW'.
-
-`300: Unresolved forward declaration'
-     This applies to both forward declarations of procedures, and to
-     base types of pointers.  Every forward declaration of a procedure
-     has to be resolved by a procedure definition of the same name
-     within the same scope.  The definition's formal parameters must
-     match the ones of the forward declaration, and both declarations
-     have to share the same export status.  For every undeclared type
-     `T' appearing as base type of a `POINTER TO T', there has to be a
-     definition of `T' as a record or array type within the same scope.
-
-`301: Multiple declaration of same name'
-     Within a single scope multiple declarations share the same name.
-     This conflicts with the Oberon-2 rule that every object has an
-     unique name within its scope.
-
-`302: `%' imports `%' with illegal key'
-     The symbol file of the first module contains a key for second
-     module that differs from the one read from the second's symbol
-     file.  This usually means that these symbol files are out of sync.
-     Normally, the make facility ensures that the exported and the
-     imported interfaces match, although direct manipulations of the
-     (compiler generated) files and problems with files' time stamps
-     may defeat it.  The latter case can happen when different clocks
-     apply for source files and generated files; for example, when the
-     sources are read over NFS and the compiler generated files are put
-     onto a local hard disk.  If nothing else helps, the compiler
-     should be run with `--make --all', forcing recompilation of all
-     files whose sources are available.
-
-`303: Can't open/read symbol file of module `%''
-     The symbol file for this module either does not exist, or the user
-     has no read permissions for it.  In the first case, it can be
-     compiled by hand, or by telling the compiler to do a make.  The
-     latter case probably means that something is amiss in the compiler
-     installation (contact the person who installed your compiler) or
-     the local setup (check the configuration files and compiler
-     options).
-
-`304: Symbol file `%' starts with illegal key'
-     The compiler found a file that should contain a module's exported
-     interface, but the file does not start with the required magic
-     number.  The file was probabably corrupted and should be deleted.
-
-`305: Unexpected end of symbol file `%''
-     The symbol file ends without containing all the data expected by
-     the compiler.  The file was probably corrupted and should be
-     deleted.
-
-`306: A module cannot import itself'
-     The name of a module cannot appear as part of its own import list.
-
-`307: Can't find module `%''
-     During a make, the indicated module name appears in an import
-     list, but neither the module's symbol file nor its sources can be
-     found.
-
-`308: Invalid symbol file format (format id is %)'
-     The format identifier of the symbol file is not supported by the
-     compiler.  This usually means that symbol files of compilers for
-     different target architectures have been mixed up.
-
-`309: This name is already defined in base type `%''
-     The field name conflicts with the name of a field or type-bound
-     procedure inherited from one of the record's base types.  Note
-     that multiple fields, and type-bound procedures, can share the
-     same name as long as their declarations in the base type are not
-     visible within the current module.  That is, when the base type is
-     defined in another module and the declarations in question aren't
-     exported.
-
-`310: Invalid symbol file version (version is %)'
-     The version number of the symbol file format doesn't match the
-     compiler.  This usually means that the symbol file was written
-     with an older version of the compiler and that the new compiler
-     has changed the file format.  The out-of-date symbol file should
-     be deleted.
-
-`350: Overflow during constant folding'
-     Evaluation of the constant expression resulted in a value that
-     cannot be represented by the compiler.  For an integer expression,
-     this means that the result is not a valid `LONGINT' (or possibly
-     `HUGEINT') value.  If it is a real expression, then the resulting
-     value isn't representable for the given real type.
-
-`351: Division by zero'
-     A constant expression (real or integer) divides by zero.
-
-`352: Constant not representable as `%''
-     An attempt is made to convert a constant expression to a type that
-     cannot hold the expression's value.
-
-`353: Set element out of range %'
-     Any element index of a set operation has to satisfy the relation
-     `MIN(S) <= e <= MAX(S)', where `S' is the applicable set type.
-     Such errors are detected during compilation if the element index
-     is a constant expression.  Otherwise, the compiler inserts
-     appropriate run-time checks (unless disabled).
-
-`354: Index out of range %'
-     The constant index doesn't denote a valid array element.
-
-`355: Constant parameter out of range %'
-     A constant value in a valid range is required by the predefined
-     procedures `LEN' for its dimension argument, and `ASSERT' and
-     `HALT' for their trap number argument.  For `LEN', the constant
-     has to satisfy `0 <= c < dim(T)', where `T' is the type of the
-     array variable.  For `HALT' and `ASSERT', the limits depend on the
-     target system.
-
-   The following items are warnings generated by the compiler.  The only
-difference to errors is that a warning will not cause termination of a
-make.
-
-     Some explanations regarding warnings about uninitialized variables
-     should be considered: The compiler will try to detect possible
-     uses of a variable in a procedure or module body where the
-     variable has an undefined value.  This means that the variable
-     could take on different values depending on the program state and
-     environment, causing the program to behave randomly.  In this
-     case, a warning is emitted based upon examination of the possible
-     paths through the statement sequence.  The warning is not
-     necessarily appropriate because the analysis does not take guards
-     of conditional statements into account, but rather assumes that
-     every path through an conditional statement can be combined with
-     all paths through any of the subsequent statements.  Note that the
-     compiler only checks the data flow of scalar values this way;
-     record and array variables are ignored.  The compiler also ignores
-     variable definitions by means of `SYSTEM.MOVE' when looking for
-     uninitialized variables.
-
-`400: Warning: Module name differs from file name `%''
-     Although strict correspondence between a module's name and the
-     name of its source file is not required, a name mismatch might
-     lead to confusion.  The name given in a module's header determines
-     the names for the generated (symbol and object) files.  Also, when
-     the make facility parses an import list, it uses the name from the
-     list to derive the file name.  A name mismatch might lead to the
-     situation that a module called `X' is imported as module `Y'.  It
-     is advisable to keep module and file names the same.
-
-`401: Warning: Symbol file imported as `%' calls itself `%''
-     While reading a symbol file for a module `X', it is discovered
-     that the imported module as been compiled with the name `Y'.  See
-     warning `400' for reasons to avoid such a name conflict.
-
-`402: Warning: Ignoring last % bytes of file `%''
-     The symbol file has been parsed successfully, but there are still
-     bytes left in the file.  The file has probably been corrupted and
-     should be deleted.
-
-`403: Warning: Parameter name differs from forward declaration'
-     The language report states that formal parameters of a forward
-     declaration must match that of the procedure definition.  However,
-     corresponding parameter *names* are not required to match.  A
-     warning is issued because using different names might lead to
-     confusion.
-
-`404: Warning: Variable is used uninitialized'
-     The compiler detected the use of a variable that has not been
-     assigned a value beforehand.
-
-`405: Warning: Variable may be used uninitialized'
-     The compiler detected the potential use of a variable that might
-     not have been assigned a value beforehand.
-
-`406: Warning: Function procedure contains no `RETURN' statement'
-     If a function procedure does not contain a `RETURN' statement, it
-     cannot be left in a legal way.  Reaching the end of the function
-     will trigger a run-time check (unless disabled).
-
-`407: Warning: Control reaches end of function procedure'
-     The compiler detected a potential path through a function
-     procedure that does not end in a `RETURN' statement.  This means
-     that under certain circumstances the end of the function could be
-     reached without a proper return value.  Like warnings about
-     undefined variables, this message might not be totally accurate.
-
-`408: Warning: Loop will never terminate'
-     The `LOOP' statement does not have any associated `EXIT'
-     statement, and it also does not contain a `RETURN' statement.  This
-     means that the loop will never terminate unless the program as a
-     whole is aborted.
-
-`409: Warning: Redundant type guard'
-     This type guard is the same as the static type of the variable.
-     Because the guard asserts that the variable's dynamic type is the
-     same as its static type (or an extension of the static type), this
-     will always be true (unless the variable's value is `NIL').  In
-     these cases, the type guard can usually be safely removed.
-
-`410: Warning: Type test always evaluates to `TRUE''
-     This type test is the same as the static type of the variable.
-     Because the type test asserts that the variable's dynamic type is
-     the same as its static type (or an extension of the static type),
-     this will always evaluate to `TRUE' (unless the variable's value
-     is `NIL').
-
-`411: Warning: Formal parameter type modified by `WITH' statement'
-     This warning is emitted only if conformant mode is enabled.  In
-     this case, care must be taken when a regional type guard is
-     applied to a formal parameter.  The `WITH' statement will not only
-     change the parameter's type locally, but also its type in the
-     procedure's formal parameter list.  This in turn might break
-     recursive calls to the procedure from within the regional type
-     guard that depend on the type of the parameter as stated in the
-     procedure heading.  Note that this is implemented in OOC because
-     OP2 based ETH compilers handle it this way.  (This strange
-     behaviour is not warranted by the language report in our opinion.)
-     Disabling conformant mode will restrict effects of `WITH'
-     statements to the inside of the statement without modifying any
-     formal parameter list.
-
-`412: Warning: Guard never reached'
-     Whenever testing a variable successively with a regional type
-     guard, it is easy to construct one with branches that will never
-     be reached.  Example: `WITH v: P1 DO ... | v: P2 DO ... END',
-     where `P2' is an extension of `P1'.  Because `v IS P2' implies `v
-     IS P1', a variable of dynamic type `P2' will always take the first
-     branch and never reach the second.  Simply swapping the branches,
-     writing the one that tests for the most special case first, will
-     fix this.
-
-`413: Warning: Cast converts between types of different size'
-     The results are unpredictable if a type cast (i.e., `SYSTEM.VAL')
-     casts between types of different sizes.  Such a cast depends on
-     the storage layout and the byte ordering of the target system and
-     generally should be avoided.
-
-`414: Warning: Procedure may read uninitialized `%''
-     The compiler detected the potential use of a local variable during
-     the activation of a nested procedure that might not have been
-     assigned a value beforehand.  [NOTE: This warning has been
-     disabled because it is also emitted if a local procedure writes to
-     a variable of the caller that isn't defined at the place of the
-     call, even if the called procedure never reads this undefined
-     variable.  For technical reasons the compiler can't currently
-     suppress this misleading warning.]
-
-`415: Warning: Variable parameter may be used uninitialized'
-     The compiler detected the potential use of a local variable
-     through a variable parameter that might not have been assigned a
-     value beforehand.
-
-`416: Warning: Call may change guarded variable `%''
-     It is possible to circumvent a regional type guard by calling a
-     procedure that has direct access (through the scoping rules) to
-     the guarded variable.  Because the called procedure may assign any
-     value to the variable, it can change its dynamic type at will,
-     invalidating the guard after the procedure call.  The compiler is
-     able to detect that the call of a nested procedure changes a
-     guarded variable and issues this warning.  It normally does not
-     recognize such a situation if the called procedure has been
-     imported from another module.
-
-`417: Warning: Cast converts to type with higher alignment'
-     Casting a variable of, say, alignment 2, to a type with an
-     alignment of 4 may cause a run-time error if the variable is only
-     2-aligned by chance and the target architecture does not allow
-     misaligned accesses.  Generally such a situation should be avoided.
-
-`418: Warning: Defining an array of size zero'
-     The indicated type definition specifies a length of zero for one
-     of the array dimensions.  This will create an array of size zero.
-     While such an array variable is legal, it isn't possible to access
-     an element of a variable of this type.  However, such a variable
-     can be passed to an open array parameter.
-
-`419: Warning: Allocating an array of size zero'
-     The indicated call to `NEW' allocates an array with a length of
-     zero for the given dimension.  This will allocate an array of size
-     zero.  While this isn't considered an error, it isn't possible to
-     access an element of a heap object of this type.  However, such an
-     object can be passed to an open array parameter.
-
-`420: Warning: Unused object'
-     The designated name is never used anywhere in the program.
-     Therefore, its declaration can safely be removed without
-     invalidating the module.  Note that the compiler only checks that
-     there is no using occurrence of the name anywhere.  If one exists,
-     the declaration is assumed to be used.  For this reason, recursive
-     data types are never marked as unused because the record type
-     refers to the pointer type and vice versa, providing uses for both
-     the record and the pointer type even if they don't appear anywhere
-     else.
-
-`450: Type must not be abstract'
-     The indicated type is abstract and cannot be instantiated.
-     Abstract types cannot be used for variable, record field, or array
-     type declarations.  A pointer to an abstract type cannot be used
-     as an argument to the `NEW' procedure.
-
-`451: Type-bound procedure `%' still abstract'
-     The indicated type is concrete and has not implemented the named
-     inherited abstract method.  Concrete types must implement all
-     inherited abstract methods.
-
-`452: Receiver type is not declared "abstract"'
-     The indicated procedure is declared abstract, but is bound to a
-     concrete type.  Abstract procedures may only be bound to abstract
-     types.
-
-`453: No BEGIN section permitted in abstract procedure'
-     The indicated `BEGIN' statement is illegal because it occurs in an
-     abstract procedure.  Abstract procedures cannot contain an
-     implementation.
-
-`454: Super call to abstract procedure'
-     The indicated procedure is abstract in the base class.  It is
-     illegal to call an abstract method via a super call.
-
-`455: Abstract procedure must be exported'
-     All abstract procedures must be declared with an export mark.
-
-`999: Unexpected compiler termination'
-     Either the process was killed by an external signal, or the
-     compiler aborted due to an internal run-time error.  The latter
-     case should not happen; but if it does, check the compiler's
-     `README' file for information how to report such a bug to the
-     authors.
+File: OOCref.info,  Node: Module Flags,  Next: Type Flags,  Prev: System Flags,  Up: System Flags
+
+Module Flags
+............
+
+   Module flags have the most complex syntax of the system flags.  The
+extended module header is defined like this:
+
+     Module         = "MODULE" ident [ModuleFlags] ";" ...
+     ModuleFlags    =
+       "[" ["LIBRARY" LibName Version ";"]
+           [ "INTERFACE" | "FOREIGN"] CallingConvention {"," ModuleFlag}
+           [ ";" "LINK" LinkSection {";" LinkSection} "END" ] "]".
+     CallingConvention = string.
+     ModuleFlag     = "CODE_FILE" | "INIT_FCT" | "GCC_ATTRIB_STDCALL".
+     LinkSection    = File | Object | Library.
+     File           = "FILE" string [Options].
+     Object         = "OBJ" string.
+     Library        = "LIB" string [DependenceList] [Options].
+     Options        = "ADD_OPTION" ident ["," ident].
+     DependenceList = "(" string {"," string} ")".
+     LibName        = string.
+     Version        = string.
+
+   `INTERFACE' modules are used to access existing C code, and are not
+required to follow the Oberon-2 typing and heap conventions (*note
+INTERFACE Modules::.).  On the other hand, `FOREIGN' modules behave
+exactly like standard Oberon-2 modules, but are implemented in another
+language (*note FOREIGN Modules::.).  Both of these describe external
+modules; that is, modules containing declarations of various objects
+whose actual implementation is provided by means such as C code or a
+system library.  `LIBRARY' headers are used when creating new shared or
+static libraries with `oo2c', and are explained in *Note oo2c
+libraries::.
+
+   The "calling convention" string specifies how procedures declared in
+this module are to be activated by the compiler.  At the moment, the
+only calling convention supported for all target operating systems is
+`"C"'.  If the target operating system is `Win32', then the calling
+convention `"Pascal"' is also available.  The default calling
+convention used is `"C"' for all targets.
+
+   The implementation of a module can be taken from a number of
+sources: an uncompiled C file, an object file, a library, or an
+arbitrary mix of these input formats.  The `LINK' directive specifies
+which files must be included, and its options are as follows:
+
+`FILE "foo.c"'
+     Use external C code from file `foo.c'.  `oo2c' calls the C
+     compiler for this file if either the object file `foo.o' is
+     missing or the source `foo.c' is more recent than `foo.o'.  Note
+     that `oo2c' cannot detect if a file included into `foo.c' has
+     changed.  In this case, the user has to remove `foo.o' by hand to
+     trigger a recompilation of the source file.
+
+     If additional options must be passed to the C compiler to
+     translate the file `foo.c', the necessary arguments can be added
+     to the command line with `ADD_OPTION'.  The keyword `ADD_OPTION'
+     is followed by one or two (comma separated) identifiers, which
+     refer to `oo2c' compiler `OPTIONS' variables of string type.  The
+     values of the variables (if they exist) are added to the argument
+     list of the C compiler invocation.
+
+`OBJ "foo.o"'
+     Include object file `foo.o' when linking the program.  Note that
+     this directive cannot be used in modules that contribute to a
+     library created with `--make-lib'.  In other words, only foreign
+     code that is available as source text can be included in
+     `--make-lib' libraries.
+
+`LIB "foo"'
+     Link the program against library `foo'; that is, add the option
+     `-lfoo' to the argument list when invoking the linker.  The user
+     must make sure that the library is in the linker's search path,
+     either by setting the appropriate environment variable, by
+     adjusting the `--ldflags' option, or by using the `ADD_OPTION'
+     mechanism (see below).  The last method, `ADD_OPTION', is
+     preferred.
+
+     All other libraries used directly by library `foo' must also be
+     included in the `LIB' option, and are listed in parentheses after
+     `foo'.  This determines the order of `-l...' arguments for the
+     linker.  For example, a library `B' uses definitions from another
+     library `A', and therefore, it must be declared as `LIB "B"
+     ("A")'.  That is, `B' relies on `A' and they are to be linked in
+     using `-lB -lA'.
+
+     To adjust the linker's search path using `ADD_OPTION', the library
+     name is followed by the keyword `ADD_OPTION' and one or two (comma
+     separated) identifiers, which refer to `oo2c' compiler `OPTIONS'
+     variables of string type.  The value of the first identifier is
+     called the "prefix string", and the second is called the "suffix
+     string".  During compilation, the prefix string is inserted before
+     the linker argument for the library, and if a suffix string is
+     present, its value is inserted after the linker argument.
+
+     For example, if compiler options are defined as follows:
+
+          DEFINE LibX11Prefix := " -L/usr/X11R6/lib -lSM -lICE";
+          DEFINE LibX11Suffix := "-lsocket -lnsl";
+
+     Then, the following command may be used to link in the library
+     `X11':
+
+          LINK LIB "X11" ADD_OPTION LibX11Prefix, LibX11Suffix
+
+     which translates to the linker flags
+
+           -L/usr/X11R6/lib -lSM -lICE -lX11 -lsocket -lnsl
+
+     The prefix string is usually used to extend the linker's library
+     search path, whereas the suffix string is, in this particular
+     case, filled by the `configure' program with system specific
+     options.
+
+   *Please note*: The file names given after `FILE' or `OBJ' are
+subject to the usual file search mechanism, unless a directory part is
+included.
+
+   The following flags can be set for a module:
+`CODE_FILE'
+     This flag indicates that a module should be translated into header
+     and code files.  For example, the file `Foo.Mod' would be
+     translated both into a header `Foo.h' and code files `Foo.c' and
+     `Foo.d'.  The module can contain Oberon-2 procedures with non-empty
+     bodies, which could then be used to provide Oberon-2
+     implementations of C macros.  Without this option, only a header
+     `Foo.h' with the C interface to the declarations in the module is
+     written by the compiler.
+
+`INIT_FCT'
+     The `INIT_FCT' flag signals that module `Foo.Mod' links in a
+     function `void Foo_init(void)', which will be called during
+     program startup as part of the normal module initialization.
+
+
+File: OOCref.info,  Node: Type Flags,  Next: Declaration Flags,  Prev: Module Flags,  Up: System Flags
+
+Type Flags
+..........
+
+   The following flags can be applied to type definitions:
+
+`NOT_EXTENSIBLE'
+     The record type cannot be used as base type of another record.
+
+`NO_DESCRIPTOR'
+     The record or array type has no type descriptor.
+
+`UNION'
+     Translates the record type into a C `union' instead of a `struct'.
+
+`NO_LENGTH_INFO'
+     The open array type has no length information.  Such an array
+     cannot have another open array as its element type.
+
+`STATIC_POINTER'
+     The pointer has no type tag.  If the pointer's base type is a
+     record or an open array with `NO_DESCRIPTOR', this flag is
+     automatically set for the pointer type.
+
+`DISABLE_NEW'
+     The predefined procedure `NEW' cannot be applied to this pointer
+     type.  To allocate storage for a pointer variable of this type,
+     `SYSTEM.NEW' or a suitable low-level function of the operating
+     system must be used.  This flag is automatically set if the
+     pointer or the base type is marked with `NO_DESCRIPTOR',
+     `NO_LENGTH_INFO', or `STATIC_POINTER'.
+
+`ALIGN1, ALIGN2, ALIGN4, ALIGN8'
+     Determines the alignment of record fields.  By default, record
+     fields of scalar type are aligned at addresses that are a multiple
+     of the type's size in bytes(1).  Specifying `ALIGNn' forces the
+     alignment to be at most `n' bytes; that is, all fields that would
+     be aligned with more than `n' bytes are instead aligned at `n'
+     byte boundaries.  `ALIGN1' effectively disables all padding
+     between record fields.
+
+`CSTRING'
+     Setting this flag for a pointer type whose base type is a
+     character array enables C-style array assignment semantics for
+     variables derived from this type.  Assigning a character array or
+     string constant to such a pointer variable is legal, and assigns
+     the *address* (but not the *contents*) of the array or string to
+     the variable.  With this feature, external C functions with string
+     parameters can be called without reverting to the cumbersome
+     `SYSTEM.VAL(P,SYSTEM.ADR(a))' construction.
+
+   Procedure types and procedure declarations inherit the calling
+convention specified at the beginning of the module.  This can be
+overridden by including a string as part of the system flags of the
+type, which indicates the procedure's calling convention.
+
+   The special parameter `...' is allowed as the last formal parameter
+of any procedure declaration without a body part.  This parameter
+corresponds to variable arguments parameters in C, as used, for
+example, by `printf()'.
+
+   With the extended semantics of parameters, it is necessary to adjust
+the rules for matching parameter lists: two corresponding parameters are
+required to share the same system flags in order to match.
+
+   `oo2c' uses the default calling convention of the target operating
+system for standard Oberon-2 procedures.  This means that any matching C
+function can be assigned to an Oberon-2 procedure variable unless the
+function's calling convention has been overidden.  The compiler will
+prevent an assignment if the calling convention of the procedure
+variable differs from that of the procedure.
+
+   ---------- Footnotes ----------
+
+   (1) At the moment, this is even done if the target system uses less
+alignment for some basic types.  This only leads to problems, e.g. on
+ix86 systems, if the record declaration contains a field of type
+`double' that must be aligned at 4 bytes.
+
+
+File: OOCref.info,  Node: Declaration Flags,  Next: INTERFACE Modules,  Prev: Type Flags,  Up: System Flags
+
+Declaration Flags
+.................
+
+   The following table lists non-standard properties that apply to
+declarations in external modules:
+
+Variable Declarations
+
+    `NO_DESCRIPTOR'
+          Applies to variables of record type.  A record with this
+          property cannot appear in type tests and type guards, and it
+          cannot be passed to formal parameters that need a type tag.
+
+    `STATIC_POINTER'
+          Applies to record pointers, and means that the pointer's
+          dynamic type is always equal to its static type.
+
+    `NO_LENGTH_INFO'
+          Applies to variables of open array type, and means that the
+          predefined function `LEN' cannot be called on this variable.
+          Also, the array value cannot be passed to a formal open array
+          parameter that expects to get the length of any open
+          dimensions.
+
+Parameter Declarations
+
+    `NO_TYPE_TAG'
+          Applies to formal variable parameters of record type, and
+          means that it is not accompanied by a type tag.  Such a
+          parameter cannot appear in a type test or type guard, and it
+          cannot be passed to a formal parameter that expects to get a
+          type tag.  This flag is implicitly set if the record type is
+          marked with `NO_DESCRIPTOR'.
+
+    `NO_LENGTH_TAG'
+          Applies to open array parameters, and means that it cannot be
+          passed as first argument to `LEN' and cannot be passed to a
+          formal open array parameter that expects to get the length of
+          any open dimensions.
+
+          If such a parameter is used in a normal Oberon-2 procedure,
+          the compiler cannot create a local copy of the array
+          argument.  This means that it cannot guarantee the normal
+          semantics of value parameters.  (Recall that value parameters
+          normally follow these rules: local modifications to the
+          parameter stay local, and modifications to the variable that
+          was passed to the parameter are not reflected in the
+          parameter's local value.)
+
+          In this case, instead of the standard behaviour, the compiler
+          treats the parameter like a read-only variable and prevents
+          *local changes* to the parameter's value.  However, any
+          changes to the original *array variable*, which was passed to
+          the parameter in the first place, are reflected by the
+          parameter's value.  This resembles the semantics of the
+          keyword `const' when applied to C pointer types.
+
+          If the array type is marked with `NO_LENGTH_INFO', this flag
+          is implicitly set.
+
+    `NIL_COMPAT'
+          Can be applied to any formal parameter passed by reference,
+          and means that the value `NIL' can be passed to it.
+
+Linkage Names
+     Linkage names can be specified by a string literal, which is
+     included in the list of system flags of a variable or procedure
+     declaration.  This sets the declaration's C level name.  This
+     means that the specified string is used in the emitted C code
+     instead of the name generated by `oo2c' (usually module name plus
+     two underscores plus declaration name).
+
+Oberon-2 Procedures
+     Normally, a procedure declaration in an external module is taken
+     to be a declaration of an externally linked procedure definition.
+     That is, such procedure declarations usually have no body.  By
+     writing `CODE_FILE' into the module header, it is possible to
+     define standard Oberon-2 procedures, which have a non-empty body
+     part in the module.  Such procedures have to be marked with
+     `HAS_BODY'.
+
+Special Code Procedures
+     A procedure's list of system flags may contain the directive
+     `PROC_ID=n', where `n' is a positive integer constant.  This
+     signals the compiler to insert code pattern `n' for every call to
+     this procedure.  This is used to implement direct calls of math
+     functions built into the processor, or procedures that cannot be
+     implemented in the usual way (like the `oo2c' implementation of
+     `Exceptions.PUSHCONTEXT').  This flag is of use only when the
+     backend is extended to emit code for the new pseudo procedure.
+
+
+File: OOCref.info,  Node: INTERFACE Modules,  Next: FOREIGN Modules,  Prev: Declaration Flags,  Up: Interfacing to C Code
+
+INTERFACE Modules
+-----------------
+
+   An "interface module" describes the Oberon-2 interface to a piece of
+existing software.  In the case of `oo2c', this can be a file with C
+code, an object file, or a library.  The existing code is not required
+to follow the Oberon-2 typing and heap conventions.  Therefore, one
+must assume that the semantics of types, variables, and procedures in
+such a module are different from their Oberon-2 counterparts.
+
+   Names declared in an interface module, with the exception of the
+module name itself, can contain underscores `_' in place of a
+character.  The default linkage names of variables and procedures are
+the same as their Oberon-2 names, but without a module prefix.  All
+other names appearing in the module's C header file get a prefix built
+from the module name followed by two underscores.
+
+   None of the record types defined in the module have a type
+descriptor, and they cannot be extended.  Likewise, array types have no
+type descriptor and open arrays carry no length information.  Pointer
+types have no type tag or length information, meaning that type tests,
+type guards, and `LEN' cannot be applied to them.  Parameters are
+passed without any implicit arguments containing a type tag or length
+information.
+
+   The special parameter `...' is permitted as last argument in the
+formal parameter list of the declaration of a procedure or a procedure
+type.  Note that, in this case, the parameter list has to include at
+least one normal parameter.
+
+   The following examples are taken from the Oberon-2 module `X11.Mod',
+which defines the interface to the X11 library.  The module header looks
+like this:
+
+     MODULE X11 [INTERFACE "C";
+                 LINK LIB "X11" ADD_OPTION LibX11Prefix, LibX11Suffix END];
+
+   The first example highlights the basic translation process from a C
+header file to an Oberon-2 module, but be aware that the translation
+patterns shown are far from exhaustive.  The Oberon-2 counterparts to
+the base C types in the header are taken from the standard module
+`C.Mod', which also provides two often used character array types.
+
+     From C.Mod:
+     char* => TYPE charPtr1d* = POINTER TO ARRAY OF char;
+     char** => TYPE charPtr2d* = POINTER TO ARRAY OF charPtr1d;
+     
+     typedef unsigned long XID;
+     => TYPE XID* = C.longint;
+     
+     #define None 0L
+     => CONST None* = 0;
+     
+     #define NoEventMask  0L
+     #define KeyPressMask (1L<<0)
+     => CONST NoEventMask* = {};
+     => CONST KeyPressMask* = {0};
+     
+     #define Bool int
+     => TYPE Bool* = C.int;
+     
+     typedef struct {
+             int depth;       /* this depth (Z) of the depth */
+             int nvisuals;    /* number of Visual types at this depth */
+             Visual *visuals; /* list of visuals possible at this depth */
+     } Depth;
+     => TYPE
+       DepthPtr* = POINTER TO Depth;
+       Depth* = RECORD
+         depth*: C.int;       (* this depth (Z) of the depth *)
+         nvisuals*: C.int;    (* number of Visual types at this depth *)
+         visuals*: VisualPtr; (* list of visuals possible at this depth *)
+       END;
+     
+     extern XFontStruct *XLoadQueryFont(
+         Display* display, _Xconst char* name);
+     => PROCEDURE XLoadQueryFont* (
+         display: DisplayPtr; name: ARRAY OF C.char): XFontStructPtr;
+     
+     extern char *XFetchBytes(
+         Display* display, int* nbytes_return);
+     => PROCEDURE XFetchBytes* (
+         display: DisplayPtr; VAR nbytes_return: C.int): C.charPtr1d;
+     
+     extern Status XGetAtomNames(
+         Display* dpy, Atom* atoms, int count, char** names_return);
+     => PROCEDURE XGetAtomNames* (
+         dpy: DisplayPtr; VAR atoms: ARRAY OF Atom;
+         count: C.int; VAR names_return: C.charPtr2d): Status;
+
+   Most of this kind of interface conversion is fairly straightforward.
+The most challenging aspect is the handling of pointer types in
+parameter lists.  A C pointer argument can be translated into a number
+of things: an Oberon-2 pointer type, a variable parameter of the
+pointer's base type, an open array parameter, or an array pointer.  The
+decision is made depending on the use of the argument in question.  We
+can only give rough guidelines here.
+
+   Take, for example, the C function definition
+
+     void f(int *a) {...};
+
+The formal parameter `a' could be either an IN/OUT or an OUT argument,
+which translates to
+
+     PROCEDURE f* (VAR a: C.int) ...                      (1)
+
+Or, it could be an array parameter, or an array pointer.  In that case,
+it translates to one of the following alternatives:
+
+     PROCEDURE f* (VAR a: ARRAY OF C.int) ...             (2)
+     PROCEDURE f* (a: POINTER TO ARRAY OF C.int) ...      (3)
+     PROCEDURE f* (a: ARRAY OF C.int) ...                 (4)
+
+The choice depends on how the function `f' accesses the argument `a',
+and on whether values passed to this argument are mostly taken from
+variables or from the heap.  If `*a' is used as simple integer
+variable, it translates to (1).  But if `a' refers to an integer array,
+variant (2) is used, and if it is an integer array stored exclusively
+on the heap, number (3) might be used.  If the array argument passed to
+`f' is not modified by the function, it can be passed as a value array
+like in (4); in this case, the C declaration typically adds the prefix
+`const' to the parameter.
+
+   Now, consider a pointer argument of a structured based type `T':
+
+     void f(T *a) {...};
+
+which offers one additional translation variant:
+
+     PROCEDURE f* (a: POINTER TO T) ...
+
+Again, whether a pointer value or the variable parameter is used
+depends on the primary source of the argument.  If it is taken
+exclusively from heap objects, the pointer value is more convenient.
+Otherwise, it has to be defined as variable parameter of type `T'.
+
+   Note that the Oberon-2 declarations shown above are not completely
+accurate in that it is not possible to use a `POINTER' type constructor
+in a formal parameter list.  Instead, such types have to be declared
+beforehand and their name used in the parameter list.
+
+
+File: OOCref.info,  Node: FOREIGN Modules,  Next: Large Arrays of Constants,  Prev: INTERFACE Modules,  Up: Interfacing to C Code
+
+FOREIGN Modules
+---------------
+
+   A "foreign module" describes the interface of a standard Oberon-2
+module implemented in a non-standard way, say, in assembler or C.  By
+default, all declarations are assumed to comply to standard Oberon-2
+semantics.  All types defined in such a module behave exactly like
+standard Oberon-2 types, and all the normal operations are applicable
+to objects declared in a foreign module.  The user cannot distinguish a
+foreign module from a normal Oberon-2 module that has been implemented
+in the conventional way.
+
+   Care must be taken when integrating the implementation of a foreign
+module with the compiler's run-time system.  This is typically done by
+writing an empty Oberon-2 module with the desired interface, compiling
+it to C code, and then editing the resulting files.
+
+   As a recommended guide, the following steps should be used when
+writing foreign modules:
+
+  1. Write an empty module `Foo.Mod' with all exported declarations.
+
+  2. Compile it.
+
+  3. Copy the generated file `Foo.c' to a suitable place, and check
+     that the copied file is the one actually used by the compiler, for
+     example, by invoking `oowhereis Foo.c'.
+
+  4. In `Foo.c', replace the line `#include "Foo.d"' with the contents
+     of the file `Foo.d'.
+
+  5. Modify the module header of `Foo.Mod' to include the proper
+     `FOREIGN' directive, and remove all procedure bodies (including the
+     procedures' `END' parts).  For a module `Foo', the header should
+     look like this:
+
+          MODULE Foo [FOREIGN "C"; LINK FILE "Foo.c" END];
+
+     The command `oocn --filter --mod2foreign Foo.Mod' performs the
+     required changes automatically and writes them into the file
+     `Foo.txt' (*note oocn options::.).
+
+  6. Fill in all the empty functions in `Foo.c'.  Note that all type
+     declarations in function headers should use the `#defines' from
+     `__StdTypes.h' (i.e., `CHAR', `BOOLEAN', `SHORTINT', etc.).
+
+   For examples of foreign modules, refer to the implementation of the
+library modules `Signal', `PosixFileDesc', or `Files'.
+
+
+File: OOCref.info,  Node: Large Arrays of Constants,  Next: Limitations of oo2c,  Prev: FOREIGN Modules,  Up: OO2C
+
+Large Arrays of Constants
+=========================
+
+   Some algorithms need large arrays of constant values that cannot be
+computed by the program itself.  Examples of this are the tables used
+to approximate mathematical functions, or the table of hexadecimal
+digits of `pi' used by the Blowfish encryption algorithm.  Because such
+tables are an integral part of these algorithms, it is not acceptable
+to simply read them from external files.
+
+   In Oberon-2, there is basically only one way to create these tables.
+That is, declare an array variable and write a huge list of assignments
+to fill the table with the desired values.  The problem with this
+approach is that it is highly inefficient.  It usually takes a long
+time for OOC to compile such a list of assignments, and the generated
+code is a highly redundant C file that is translated into a large
+object file.
+
+   While it is pointless to undertake any major effort to remedy the
+former problem (large tables of constants are too infrequent to make it
+worthwhile), it is possible to enhance the code generator to deal with
+the latter.  Therefore, `oo2c' has been extended to detect certain
+kinds of constant tables and translate them to array definitions with
+initialization parts.  However, there are some restrictions:
+
+  1. This mechanism only works for global array variables.
+
+  2. The code to fill the array has to be placed in the module body,
+     preferably at its very beginning.
+
+  3. The code cannot be part of an conditional or loop statement; due
+     to the peculiarities of OOC's intermediate code representation
+     this also implies that it cannot be placed after an `ASSERT' or
+     `HALT'.
+
+  4. Any assignment placed after code that might affect the variable is
+     ignored, for example, after a procedure call with unknown
+     side-effects.  To be safe, all assignments should be placed at the
+     very beginning of the module body.
+
+  5. There is a fixed upper limit on the number of constant entries
+     (currently this is one million elements).
+
+  6. This mechanism cannot initialize an array of strings; this case is
+     translated into a sequence of string assignments as usual.
+
+   An example of this is the module Blowfish(1).  In the module body,
+it initializes a two-dimensional array of `LONGINT's with over a
+thousand elements.  All of these assignments are removed by the backend
+from the code file `Blowfish.c'.  Instead, they appear as part of the
+definition of the array variable in `Blowfish.d', reducing the size of
+the object file by a significant amount.
+
+   ---------- Footnotes ----------
+
+   (1) To avoid problems with the export legislation of some countries,
+the encryption module is distributed as a separate package `bfcrypt'
+
+
+File: OOCref.info,  Node: Limitations of oo2c,  Next: Emacs Mode,  Prev: Large Arrays of Constants,  Up: OO2C
+
+Limitations of oo2c
+===================
+
+   Because the implementation of `oo2c' is a pre-compiler translating
+to a high-level language, some run-time checks are only partial
+supported, or are not supported at all.  For the complete list of
+run-time checks see *Note Options and Pragmas::.
+
+`RealOverflowCheck'
+     `oo2c' only detects an overflow when using `SHORT()' to convert a
+     `LONGREAL' value to `REAL'.  Other overflows might trigger a
+     floating-point exception signal (`SIGFPE') and dump core, or might
+     go by unnoticed, depending on the system.
+
+`OverflowCheck'
+     `oo2c' does not support any overflow checks for integers.
+
+`StackCheck'
+     `oo2c' cannot detect an overflow of the program stack.  If array
+     parameters are managed on a separate stack (*note oo2c C
+     options::.), enabling this run-time check makes it possible for
+     the program to detect an overflow of the auxiliary stack.
+
+   The error reporting of the math modules `LowReal', `LowLReal',
+`RealMath', and `LRealMath' is not implemented as described in this
+reference manual.  This is a problem of the math modules, not of the
+manual.  There is no practical reason why the math modules cannot
+adhere to the specifications; but due to lack of time, correct error
+reporting has not been implemented yet.
+
+
+File: OOCref.info,  Node: Emacs Mode,  Next: o2-mode installation,  Prev: Limitations of oo2c,  Up: OO2C
+
+Emacs Mode
+==========
+
+   `oo2c' comes with a Oberon-2 major mode for the Free Software
+Foundation's GNU Emacs, which helps manage Oberon-2 source code.  It
+offers various keyboard shortcuts to insert skeletons for Oberon-2
+constructs, locate Oberon-2 files and declarations, compile modules,
+and to display error messages.  It can make the task of writing an
+Oberon-2 program considerably easier.
+
+   All configuration commands mentioned in the subsequent sections are
+also listed in the file `o2-default.el'.  In the distribution archive,
+it resides in the `src/tools/emacs' directory.  After installation, it
+can be found in the same directory as the file `oberon2.el'.
+
+* Menu:
+
+* o2-mode installation::        Integrating the new package with Emacs.
+* o2-mode functions::           Functions provided by Oberon-2 Mode
+* o2-mode hints::               Tips and tricks to improve things further.
+
+
+File: OOCref.info,  Node: o2-mode installation,  Next: o2-mode functions,  Prev: Emacs Mode,  Up: Emacs Mode
+
+Installing the Oberon-2 Package
+-------------------------------
+
+   To use the Oberon-2 emacs major-mode, add the following lines to
+your Emacs initialization file (`~/.emacs'):
+
+     ;; set load-path to incorporate directory with oberon2.el
+     (setq load-path (cons "/usr/local/lib/oo2c" load-path))
+     ;; auto load oberon2.el if oberon-2-mode is called
+     (autoload 'oberon-2-mode "oberon2" "The Oberon-2 major mode." t)
+     ;; set oberon-2-mode as major mode for all files ending in ".Mod"
+     (setq auto-mode-alist
+             (cons '("\\.Mod$" . oberon-2-mode) auto-mode-alist))
+
+   The file `oberon2.el' is installed during installation of OOC, and so
+it may reside in another location than the path given above; modify the
+`load-path' setting accordingly.  If you are using Emacs version 19.22
+or older, replace `"oberon2"' with `"oberon2_18"' in the line
+`(autoload ...)'.  The package `oberon2.el' works only with the
+`compile.el' package of Emacs 19.28 (or above, I hope).  Note that
+`oberon2_18.el' is an older version of the package, and is no longer
+maintained; it does not support all the features of the current version.
+
+   If you have write permissions to system directories, a simple way to
+install the Oberon-2 mode for all users on the system is to copy
+`oberon2.el' into one of the directories of Emacs's load path (e.g.,
+`/usr/lib/emacs/site-lisp').  (To get the list of searched directories
+on your system, type `C-h v load-path' in Emacs.)  Then, add the above
+commands for `autoload' and `auto-mode-alist' to the file `default.el'.
+If no default file exists, you can create one somewhere in Emacs's
+load path, say, the same directory you used for `oberon2.el'.  You
+could also consider adding the contents of file `o2-default.el' to
+`default.el'; among other things, it contains the `autoload' commands
+given above.  Assuming that the permissions of both files are correct,
+all users on the system should have access to the Oberon-2 mode without
+needing to change any personal initialization files.
+
+
+File: OOCref.info,  Node: o2-mode functions,  Next: o2-mode hints,  Prev: o2-mode installation,  Up: Emacs Mode
+
+Functions of the Oberon-2 Mode
+------------------------------
+
+   The keyboard shortcuts listed below are available for every buffer in
+Oberon-2 mode.  This list is also available online by pressing `C-h m'
+in such a buffer.
+
+   Indentation:
+
+`RET'
+     Make a newline, but indent like the previous line.
+
+`TAB'
+     Serves two functions:
+       1. At or before the first non-whitespace character of a line,
+          indent `o2-indent' spaces.  With a numeric prefix, indent
+          region.
+
+       2. Within a line, identifier completion.  This is `TAB'
+          completion as known from any shell, using the hippie-expand
+          heuristics.
+
+`DEL'
+     Convert tabs to spaces while moving backward.
+
+`C-c TAB'
+     Add/remove indentation level(s) to region [deprecated, use `TAB'].
+
+   The variable `o2-ident' determines how many spaces are inserted per
+indentation level (the default is 2).
+
+   Inserting Oberon-2 constructs:
+
+`C-c C-c'
+     Comment region.
+
+`C-c C-v'
+     Uncomment text around point.
+
+`C-c m'
+     `MODULE' outline.
+
+`C-c p'
+     `PROCEDURE' outline.
+
+`C-c t'
+     Type-bound `PROCEDURE' outline.
+
+`C-c C-t'
+     Redefinition of type-bound `PROCEDURE'.
+
+`C-c i'
+     `IF' ... `THEN' statement.
+
+`C-c C-e'
+     Insert `ELSIF'.
+
+`C-c c'
+     `CASE' statement.
+
+`C-c C-w'
+     `WITH' statement.
+
+`C-c e'
+     Insert `ELSE'.
+
+`C-c b'
+     Insert a `|'.
+
+`C-c f'
+     `FOR' statement.
+
+`C-c w'
+     `WHILE' statement.
+
+`C-c r'
+     `REPEAT' ... `UNTIL' statement.
+
+`C-c l'
+     `LOOP' statement.
+
+`C-c C-r'
+     `RECORD' constructor.
+
+`C-c h'
+     Comment with various information about the module.
+
+   Move by procedure headings:
+
+`C-c C-n'
+     Move to next procedure.
+
+`C-c C-p'
+     Move to previous procedure.
+
+`C-c C-u'
+     Move to procedure in which the present one is nested.
+
+`M-C-h'
+     Put mark at end of procedure, and point at the beginning.
+
+   Functions to hide procedure bodies and declarations:
+
+`C-c C-h'
+     Hide whole procedure.
+
+`C-c C-s'
+     Show whole procedure again.
+
+`C-c C-l'
+     Hide bodies of all local procedures.
+
+`M-x o2-hide-proc'
+     Hide local declarations and the procedure body.
+
+`M-x o2-show-proc'
+     Show local declarations and body again.
+
+`M-x o2-hide-all'
+     Hide all of buffer except procedure headings.
+
+`M-x o2-show-all'
+     Make all text in the buffer visible again.
+
+   Managing source code:
+
+`C-c C-f'
+     Find file for a given module name.
+
+`C-c 4 f'
+     Like `C-c C-f', but display in another window.
+
+`C-c 5 f'
+     Like `C-c C-f', but display in another frame.
+
+`C-c C-d'
+     Generate and display the definition of a module.
+
+`C-c 4 d'
+     Like `C-c C-d', but display in another window.
+
+`C-c 5 d'
+     Like `C-c C-d', but display in another frame.
+
+`C-c .'
+     Display (same window) the definition of an identifier.
+
+`C-c 4 .'
+     Display (other window) the definition of an identifier.
+
+`C-c 5 .'
+     Display (other frame) the definition of an identifier.
+
+`C-c /'
+     Display, and blink to, declaration of identifier under cursor.
+
+`C-c ,'
+     Display (same window) a procedure bound to a given type.
+
+`C-c 4 ,'
+     Display (other window) a procedure bound to a given type.
+
+`C-c 5 ,'
+     Display (other frame) a procedure bound to a given type.
+
+`C-c u'
+     Step through all uses of a declaration with `C-c ''.  All the
+above functions accept a module's alias name (as declared in the
+current buffers `IMPORT' list) instead of the real module name.  For
+further information on `C-c .' or `C-c ,' use `C-h k'.
+
+   Any of the functions that display files in another window or frame
+do not change the selected window if the `C-u' prefix is set.  For
+example, `C-u C-c 4 .' displays the source of the definition of the
+given identifier in another window, but the current window stays
+selected and point stays at the current position.
+
+   `S-mouse-3' (i.e., shift with right mouse button), similar to `C-c
+/', invokes `C-u C-c 4 .' with the qualified identifier under the mouse
+cursor as argument and blink to the found position.
+
+   Compiling:
+
+`M-c'
+     Compile current buffer.
+
+`C-u M-c'
+     Prompt for compile command and compile current buffer.
+
+`M-C-c'
+     Run a make on a module.
+
+`C-c ''
+     Display the next error.
+
+`C-c g'
+     Prompt for module and error position, goto position.
+
+   Also, please note the following:
+
+   * Searches are case sensitive.
+
+   * Both the `DEL' key and the `backspace' key automatically convert
+     tabs to spaces as they step back.
+
+   * In o2-mode, the `TAB' key does not insert any new tab characters,
+     but instead, inserts `o2-indent' spaces or provides identifier
+     completion.
+
+   * `M-;' indents or create a comment on the current line at column 41
+     (default).
+
+   * Since GNU Emacs 19.29, the Oberon-2 menu can also be invoked with
+     `C-mouse-3' (i.e., control with right mouse button).
+
+
+File: OOCref.info,  Node: o2-mode hints,  Prev: o2-mode functions,  Up: Emacs Mode
+
+Additional Tips&Tricks
+----------------------
+
+   Add `(setq o2-cwd (expand-file-name "dir"))' to `~/.emacs' if you
+want Emacs to execute `oo2c', `oob', and so forth in the directory
+`dir', regardless of the working directory the editor was started from.
+
+   Typically, the most often used function is the one that places the
+cursor at the next error position after a compile.  This is bound to
+the 2-key sequence `C-c '' (or `C-c `').  To bind this function to a
+single key, say `F8', add one of the following lines to `~/.emacs':
+
+        (global-set-key [f8] 'o2-next-error)
+
+which works under `X' and recent (>=19) versions of Emacs, or
+
+        (global-set-key "[19~" 'o2-next-error)
+
+for text terminals and older versions of Emacs (replace the cryptic
+string `[19~' by the one that Emacs produces when pressing `C-q F8').
+
+   If you are working with an X color display, you might try to add the
+following piece of code to your `~/.emacs' file (for version 19+).  It
+enables the `Font Lock' minor mode for Oberon-2 buffers, colorizing
+procedure headers, keywords, comments, pragmas, and strings:
+
+     (add-hook 'oberon-2-mode-hook
+     	  (lambda ()
+     	    ;(o2-font-lock-hilit-colors)
+     	    (turn-on-font-lock)))
+     (setq font-lock-maximum-decoration t)
+
+In case you prefer the color scheme of the `hilit19' package, you
+should uncomment the function inside the lambda clause above.  Note that
+this will change the colors for all buffers with `Font Lock' enabled,
+though.  `Font Lock' supports different levels of fontification, with
+rendering of higher levels taking more time to display.  The value `t'
+selects maximum (and slowest) decoration.
+
+   As another option it is possible to enable a pull-down index menu for
+comfortable navigation in a source module.  The index lists all record,
+procedure, and type-bound procedure declarations of the module.
+Selecting a menu item will move the cursor to the place of the
+declaration.  This command enables this feature, adding a "Index"
+pull-down menu to the left of the "Oberon-2" menu:
+
+     (add-hook 'oberon-2-mode-hook
+               (lambda ()
+                 (imenu-add-to-menubar "Index")))
+
+   Other possible additions to `~/.emacs' are the commands listed below.
+They put compilation shells into special frames instead of splitting
+the current frame.  The special frames are of height 10 and placed in
+the upper right corner of the display; they use a smaller font, menu
+and scroll bars are disabled, and the frame raises itself to the
+foreground when the mouse cursor enters it and lowers itself when left
+by the mouse cursor.  *Please note*: This only works with Emacs
+versions 19.31 and higher.  These settings are included in file
+`o2-default.el'
+
+     (if window-system
+         (let ((o2-frame-params
+                '((height . 10)
+                  (unsplittable . t) (menu-bar-lines . 0)
+                  (left . (- 0)) (top . 0) (user-position . t)
+                  (font . "5x7") (width . 60) (auto-raise . t)
+                  (vertical-scroll-bars . nil) (auto-lower . t)
+                  (name . "o2-compilation"))))
+           (setq special-display-regexps
+                 `(("^\\*o2-compile.*\\*$" . ,o2-frame-params)
+                   ("^\\*o2-make.*\\*$" . ,o2-frame-params)))))
+
+
+File: OOCref.info,  Node: Syntax of Text Tokens,  Next: SYSTEM,  Prev: OO2C,  Up: Top
+
+Syntax of Text Tokens
+*********************
+
+   This section describes the accepted syntax for text tokens used by
+the various modules within the OOC library.  These definitions apply to
+read operations on text, and to modules like *Note IntStr::, *Note
+RealStr::, and *Note LRealStr::, which convert between string values
+and numeric representation.
+
+   These may also apply to write operations for text, but there are
+some cases (like `writer.WriteString' in *Note Class Writer
+(TextRider)::) that do not strictly adhere to these definitions.  Also
+note that internal representation of strings is different from text
+representation of strings.
+
+   An "identifier", sometimes referred to as a "name", has the form
+
+       letter {letter | decimal_digit}
+
+   (Note that an underscore `_' is not considered to be part of an
+identifier, nor is a selector `.')
+
+   A "string" has the form
+
+       """ {non_control_char} """ |
+       "'" {non_control_char} "'".
+
+   where a "non-control char" is any character with an ordinal value
+greater than or equal to a space character (i.e., `non_control_char >=
+20X').
+
+   A "signed whole number" (used to represent an integer value) has the
+form
+
+       ["+" | "-"] decimal_digit {decimal_digit}.
+
+   An "unsigned hexadecimal number" (used to represent an integer value)
+has the form
+
+       ["+" | "-"] decimal_digit {hex_digit}.
+
+   where a "hex digit" is one of `0..9' or `A..F'. (Note that
+lower-case letters, `a..f', are not valid hex digits.)
+
+   A "signed fixed-point real number" has the form
+
+       ["+" | "-"] decimal_digit {decimal_digit} ["." {decimal_digit}].
+
+   A "signed floating-point real number" has the form
+
+       ["+" | "-"] decimal_digit {decimal_digit} ["." {decimal_digit}]
+                   ("E" | "e") ["+" | "-"] decimal_digit {decimal_digit}.
+
+   A "set constructor" has the form
+
+       "{" [set_element {"," set_element}] "}".
+
+   where a "set element" has the form
+
+       set_value [".." set_value].
+
+   with "set value" being an integer number in the range `0..MAX(SET)'.
+
+
+File: OOCref.info,  Node: SYSTEM,  Next: OOC Error Messages,  Prev: Syntax of Text Tokens,  Up: Top
+
+SYSTEM module
+*************
+
+* Menu:
 

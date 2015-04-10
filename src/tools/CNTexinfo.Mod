@@ -1,4 +1,4 @@
-(* 	$Id: CNTexinfo.Mod,v 1.4 1999/11/22 21:18:42 ooc-devel Exp $	 *)
+(* 	$Id: CNTexinfo.Mod,v 1.8 2000/01/02 15:08:43 ooc-devel Exp $	 *)
 MODULE CNTexinfo;
 (*  A parser of embedded Texinfo comments.
     Copyright (C) 1999  Michael van Acken
@@ -42,7 +42,7 @@ to the module, you must do the following:
      to deal with the new command.
 
 The following commands are on the "to do" list and should be included in
-to "final" version: @enumerate, @table, @example, @format, @quotation.
+to "final" version: @enumerate, @format, @quotation.
 *)
 
 CONST
@@ -98,13 +98,15 @@ CONST
               a space.  Braces are not used.  *)
   class4Low* = class3High+1;
   cmdEnd* = class4Low+0;
-  cmdItem* = class4Low+1;
-  cmdItemize* = class4Low+2;
+  cmdExample*= class4Low+1;
+  cmdItem* = class4Low+2;
+  cmdItemize* = class4Low+3;
 (*  cmdItemX* = class4Low+X;*)
-  cmdNoIndent* = class4Low+3;
-  cmdPreCond* = class4Low+4;
-  cmdPostCond* = class4Low+5;
-  class4High* = cmdPostCond;
+  cmdNoIndent* = class4Low+4;
+  cmdPreCond* = class4Low+5;
+  cmdPostCond* = class4Low+6;
+  cmdTable* = class4Low+7;
+  class4High* = cmdTable;
   
   (* miscellaneous commands that do not start with @, but nevertheless
      have an effect on the output *)
@@ -260,7 +262,7 @@ PROCEDURE Tokenize (sym: S.TextSymbol): Texinfo;
   VAR
     noerr: BOOLEAN;
     pos, i, currLine, currLinePos, currLineTab, currColumn, len: LONGINT;
-    inLineCommand: BOOLEAN;
+    inLineCommand, tableCommand: BOOLEAN;
     textPos, textLine, textColumn: LONGINT;
     str: S.String;
     seqHead, seqTail: TextElement;
@@ -333,7 +335,7 @@ Out.String ("</ORIGINAL_STRING>"); Out.Ln;*)
 
         pos := 0;
         IF LookingAtEOL (origStr, from-1) THEN
-          (* `from' is pointing to the beginning of a line; strip any leading
+(*OBSOLETE          (* `from' is pointing to the beginning of a line; strip any leading
              whitespace from the string, and update the variables `textPos',
              `textLine', and `textColumn' to point to the first non-whitespace
              character in the string; if the string has only whitespace
@@ -352,7 +354,7 @@ Out.String ("</ORIGINAL_STRING>"); Out.Ln;*)
               END
             END;
             INC (textPos); INC (pos)
-          END;
+          END;*)
           delta := pos
         ELSE
           delta := 0
@@ -365,9 +367,9 @@ Out.String ("</ORIGINAL_STRING>"); Out.Ln;*)
           lastNonWS := pos-1;
           WHILE ~LookingAtEOL (str, pos) DO
             str[pos-delta] := str[pos];
-            IF (str[pos] > " ") THEN
+(*OBSOLETE            IF (str[pos] > " ") THEN*)
               lastNonWS := pos;
-            END;
+(*OBSOLETE            END;*)
             INC (pos)
           END;
           IF (lastNonWS >= 0) & (str[lastNonWS] = "@") THEN
@@ -391,9 +393,9 @@ Out.String ("</ORIGINAL_STRING>"); Out.Ln;*)
             END;
             
             (* discard any non-eol whitespace *)
-            WHILE (str[pos] <= " ") & ~LookingAtEOL (str, pos) DO
+(*OBSOLETE            WHILE (str[pos] <= " ") & ~LookingAtEOL (str, pos) DO
               INC (pos); INC (delta)
-            END
+            END*)
           END
         END;
         str[pos-delta] := 0X;
@@ -402,7 +404,7 @@ Out.String ("</ORIGINAL_STRING>"); Out.Ln;*)
 Out.String (str^);
 Out.String ("</OUTPUT_STRING>"); Out.Ln;*)
         
-        (* now that the hard word is done, scan through the simplified string,
+        (* now that the hard work is done, scan through the simplified string,
            looking for paragraph separator and em-dash token *)
         pos := 0; start := 0;
         WHILE (str[pos] # 0X) DO
@@ -479,7 +481,7 @@ Out.String ("</OUTPUT_STRING>"); Out.Ln;*)
   
   BEGIN
     noerr := TRUE; seqHead := NIL; seqTail := NIL;
-    pos := 0; inLineCommand := FALSE;
+    pos := 0; inLineCommand := FALSE; tableCommand := FALSE;
     str := Decoration.Remove (sym, decoration);
 
     currLine := sym. line; currLinePos := -sym. column; currLineTab := 0;
@@ -539,7 +541,13 @@ Out.String ("</OUTPUT_STRING>"); Out.Ln;*)
               INC (pos, 2)               (* skip "{}" *)
             END
           | class3Low..class3High:       (* need argument list *)
-            IF (str[pos] # "{") THEN
+            IF tableCommand THEN
+              IF (str[pos] = "{") THEN
+                Error (pos, "Don't use braces after item format", "", "")
+              END;
+              Append (NewCommand (i, pos+sym. pos, currLine, 
+                                  pos-currLinePos+currLineTab))
+            ELSIF (str[pos] # "{") THEN
               Error (pos, "Require argument list after command @",
                      cmdList[i]. name, "")
             ELSE
@@ -558,7 +566,8 @@ Out.String ("</OUTPUT_STRING>"); Out.Ln;*)
               INC (pos)
             END;
             inLineCommand := TRUE
-          END
+          END;
+          tableCommand := (i = cmdTable)
         END;
         MarkStartOfText
         
@@ -657,13 +666,20 @@ PROCEDURE WriteElements (list, end: TextElement);
     BEGIN
       WITH te: Block DO  (* no code for List ... *)
         IF (te. start = NIL) THEN
-          Out.String ("<p>")
+          Out.String ("<p")
         ELSE
           Out.String ("<block");
           Out.String (" name='");
           Out.String (cmdList[te. start. cmdId]. name);
-          Out.String ("'>")
+          Out.String ("'")
         END;
+        IF te. padBefore THEN
+          Out.String (" pad_before='yes'")
+        END;
+        IF te. padAfter THEN
+          Out.String (" pad_after='yes'")
+        END;
+        Out.String (">");
         IF (te. lineArgs # NIL) THEN
           Out.String ("<line_args>");
           WriteElements (te. lineArgs, NIL);
@@ -732,6 +748,7 @@ PROCEDURE NormalizeList (block: Block; list: TextElement);
     VAR
       s, ns: S.String;
       i, delta, dotExt: LONGINT;
+      last: TextElement;
 
     PROCEDURE StripHeadWS (elem: TextElement);
       VAR
@@ -786,6 +803,11 @@ PROCEDURE NormalizeList (block: Block; list: TextElement);
 
     BEGIN
       WITH te: Block DO
+        IF (te. start = NIL) OR (te. start. cmdId # cmdExample) THEN
+          NormalizeList (te, te. lineArgs);
+          NormalizeList (te, te. content)
+        END;
+        
         IF (te. start = NIL) THEN      (* paragraph *)
           StripHeadWS (te. content);
           StripTailWS (Last (te. content))
@@ -794,13 +816,20 @@ PROCEDURE NormalizeList (block: Block; list: TextElement);
             (* insert empty line between two items of a list *)
             te. prevElement(Block). padAfter := TRUE
           END;
+          
+          (* remove padding after last element of item *)
+          last := Last (te. content);
+          IF (last # NIL) THEN
+            last(Block). padAfter := FALSE
+          END;
+          
           IF (te. content = NIL) THEN
             Append (te. content, EmptyParagraph())
+          END;
+          IF (te. lineArgs # NIL) THEN
+            StripTailWS (Last (te. lineArgs))
           END
-        END;
-
-        NormalizeList (te, te. lineArgs);
-        NormalizeList (te, te. content)
+        END
       | te: MarkedText DO
         NormalizeList (block, te. content);
 
@@ -866,6 +895,51 @@ PROCEDURE NormalizeList (block: Block; list: TextElement);
     END
   END NormalizeList;
 
+PROCEDURE FixExamples (list: TextElement);
+  VAR
+    ptr: TextElement;
+  
+  PROCEDURE ReplaceParagraphSep (list: TextElement);
+    VAR
+      ptr: TextElement;
+    BEGIN
+      ptr := list;
+      WHILE (ptr # NIL) DO
+        WITH ptr: Block DO
+          ReplaceParagraphSep (ptr. content)
+        | ptr: Token DO
+          IF (ptr. cmdId = cmdParagraphSep) THEN
+            ptr. cmdId := cmdTextFragment;
+            NEW (ptr. string, 2);
+            ptr. string[0] := CharClass.eol;
+            ptr. string[1] := 0X
+          END
+        END;
+        ptr := ptr. nextElement
+      END
+    END ReplaceParagraphSep;
+  
+  BEGIN
+    ptr := list;
+    WHILE (ptr # NIL) DO
+      WITH ptr: Block DO
+        IF (ptr. start. cmdId = cmdExample) THEN
+          IF (ptr. content IS Token) &
+             (ptr. content(Token). cmdId = cmdTextFragment) &
+             (ptr. content(Token). string[0] = CharClass.eol)THEN
+            (* remove newline character after example command *)
+            Strings.Delete (ptr. content(Token). string^, 0, 1)
+          END;
+          ReplaceParagraphSep (ptr. content)
+        ELSE
+          FixExamples (ptr. content)
+        END
+      ELSE  (* ignore anything that isn't a block *)
+      END;
+      ptr := ptr. nextElement
+    END
+  END FixExamples;
+  
 PROCEDURE CreateParagraphs (VAR list: TextElement);
 (* Inspects all text elements, collecting sequences of inline elements into
    paragraphs.  Text fragments that only contain whitspace are discarded.  *)
@@ -956,7 +1030,9 @@ PROCEDURE CreateParagraphs (VAR list: TextElement);
     WHILE (ptr # NIL) DO
       next := ptr. nextElement;
       WITH ptr: Block DO
-        CreateParagraphs (ptr. content)
+        IF (ptr. start. cmdId # cmdExample) THEN
+          CreateParagraphs (ptr. content)
+        END
       | ptr: Token DO
         IF (ptr. cmdId = cmdTextFragment) & AllWhitespace (ptr. string^) THEN
           Remove (list, ptr)
@@ -1041,7 +1117,7 @@ END;
 Out.Ln;*)
     END GetToken;
   
-  PROCEDURE ParseBlock (start: Token): Block;
+  PROCEDURE ParseBlock (start: Token; itemHasArgs: BOOLEAN): Block;
     VAR 
       block: Block;
       dummy: BOOLEAN;
@@ -1192,7 +1268,12 @@ Out.Ln;*)
             Append (block. lineArgs, token);
             GetToken
           | class3Low..class3High:
-            Append (block. lineArgs, ParseMarkedText (token))
+            IF (start. cmdId = cmdTable) THEN
+              Append (block. lineArgs, token);
+              GetToken
+            ELSE
+              Append (block. lineArgs, ParseMarkedText (token))
+            END
           ELSE
             Error (token. pos, "This command cannot be used here", "", "");
             GetToken
@@ -1225,11 +1306,26 @@ Out.Ln;*)
         END
       END StripWSFromEnd;
     
+    PROCEDURE RemoveTrailingNL (block: Block; VAR list: TextElement);
+      VAR
+        last: TextElement;
+      BEGIN
+        IF (list # NIL) THEN
+          last := list;
+          WHILE (last. nextElement # NIL) DO
+            last := last. nextElement
+          END;
+          IF (last IS Token) & (last(Token). cmdId = cmdParagraphSep) THEN
+            block. padAfter := TRUE;
+            Remove (list, last)
+          END
+        END;
+      END RemoveTrailingNL;
+
     PROCEDURE CheckEndOfBlock (block: Block; start: Token);
       VAR
         endToken: Token;
         endBlock: Block;
-        last: TextElement;
       
       PROCEDURE Match (VAR text, pattern: ARRAY OF CHAR): BOOLEAN;
       (* Returns TRUE iff `pattern' is a prefix of `text', and the rest of
@@ -1261,16 +1357,7 @@ Out.Ln;*)
           endToken := token;
           ParseLineArgs (endBlock, endToken);
           
-          IF (endBlock. lineArgs # NIL) THEN
-            last := endBlock. lineArgs;
-            WHILE (last. nextElement # NIL) DO
-              last := last. nextElement
-            END;
-            IF (last IS Token) & (last(Token). cmdId = cmdParagraphSep) THEN
-              block. padAfter := TRUE;
-              Remove (endBlock. lineArgs, last)
-            END
-          END;
+          RemoveTrailingNL (block, endBlock. lineArgs);
           
           IF (endBlock. lineArgs = NIL) OR
              (endBlock. lineArgs. nextElement # NIL) OR
@@ -1286,8 +1373,13 @@ Out.Ln;*)
     PROCEDURE BlockCommand (id: LONGINT): BOOLEAN;
       BEGIN
         RETURN (id = cmdItemize) OR (id = cmdPreCond) OR (id = cmdPostCond) OR
-               (id = cmdNoIndent)
+               (id = cmdNoIndent) OR (id = cmdExample) OR (id = cmdTable)
       END BlockCommand;
+    
+    PROCEDURE ListCommand (id: LONGINT): BOOLEAN;
+      BEGIN
+        RETURN (id = cmdItemize) OR (id = cmdTable)
+      END ListCommand;
     
     PROCEDURE StripParagraphSep (block: Block): Block;
     (* Remove any trailing paragraph separators from the contents of the
@@ -1336,7 +1428,7 @@ Out.Ln;*)
       ELSE
         ParseLineArgs (block, start);
         
-        (* check arguments on the line that starts the block; if we are
+        (* check arguments on the line that starts the block; if we aren't
            within an itemize, move any arguments into the item block *)
         CASE start. cmdId OF
         | cmdNoIndent:
@@ -1344,6 +1436,23 @@ Out.Ln;*)
         | cmdItemize:
           dummy := FALSE;
           StripWSFromEnd (block. lineArgs, dummy)
+        | cmdTable:
+          IF (block. lineArgs = NIL) OR
+             ~(block. lineArgs IS Token) OR
+             (block. lineArgs(Token). cmdId < class3Low) OR
+             (block. lineArgs(Token). cmdId > class3High) THEN
+            Error (block. start. pos, "Table command requires argument for item format", "", "");
+            GetToken
+          END;
+          dummy := FALSE;
+          StripWSFromEnd (block. lineArgs, dummy)
+        | cmdItem:
+          IF itemHasArgs THEN
+            dummy := FALSE;
+            StripWSFromEnd (block. lineArgs, dummy)
+          ELSE
+            MoveElements (block. content, block. lineArgs)
+          END
         ELSE
           MoveElements (block. content, block. lineArgs)
         END
@@ -1371,14 +1480,14 @@ Out.Ln;*)
             RETURN block
           END
         ELSIF (token. cmdId = cmdItem) THEN
-          IF (start. cmdId # cmdItemize) THEN
+          IF ~ListCommand (start. cmdId) THEN
             Error (token. pos, "Item outside list command", "", "")
           END;
-          Append (block. content, ParseBlock (token))
+          Append (block. content, ParseBlock (token, start. cmdId = cmdTable))
         ELSIF (class3Low <= token. cmdId) & (token. cmdId <= class3High) THEN
           Append (block. content, ParseMarkedText (token))
         ELSIF BlockCommand (token. cmdId) THEN
-          Append (block. content, ParseBlock (token))
+          Append (block. content, ParseBlock (token, FALSE))
         ELSIF (class4Low <= token. cmdId) & (token. cmdId <= class4High) THEN
           Error (token. pos, "Invalid line command @", 
                  cmdList[token. cmdId]. name, "");
@@ -1396,12 +1505,13 @@ Out.Ln;*)
     IF (texinfo # NIL) THEN  (* no error reported by tokenizer *) 
       noerr := TRUE;
       GetToken;
-      block := ParseBlock (NIL);
+      block := ParseBlock (NIL, FALSE);
       IF noerr THEN
         texinfo. content := block. content;
+        FixExamples (texinfo. content);
         CreateParagraphs (texinfo. content);
         NormalizeList (NIL, texinfo. content)
-(*        ;WriteTexinfo (texinfo)*)
+(*        ;WriteTexinfo (texinfo);*)
       ELSE
         texinfo := NIL
       END
@@ -1544,10 +1654,12 @@ BEGIN
   Register (cmdVar, "var");
   (* class 4 *)
   Register (cmdEnd, "end");
+  Register (cmdExample, "example");
   Register (cmdItem, "item");
   Register (cmdItemize, "itemize");
 (*  Register (cmdItemX, "itemx");*)
   Register (cmdNoIndent, "noindent");
   Register (cmdPreCond, "precond");
   Register (cmdPostCond, "postcond");
+  Register (cmdTable, "table");
 END CNTexinfo.

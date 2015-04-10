@@ -167,9 +167,10 @@ static const struct {
 static const struct {
   int length;
   void* pad;
-  const void* tbprocs[1];
-} _tb3 = {1, NULL, {
-  (void*)Msg__MsgListDesc_Append
+  const void* tbprocs[2];
+} _tb3 = {2, NULL, {
+  (void*)Msg__MsgListDesc_Append, 
+  (void*)Msg__MsgListDesc_AppendList
 }};
 struct _TD Msg__MsgListDesc_td = {
   NULL,

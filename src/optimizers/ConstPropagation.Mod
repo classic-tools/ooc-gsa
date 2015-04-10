@@ -913,6 +913,9 @@ PROCEDURE LatticeOfGuard (guard: D.Guard): Lattice;
     IF (guard. opcode = Opc.guardGreg) THEN
       RETURN guard. info(Lattice);
       
+    ELSIF (opndLattice = unreachableLattice) THEN
+      RETURN unreachableLattice;
+      
     ELSIF (opndLattice. state > stateConst) THEN
       IF (guard. info(Lattice). state < opndLattice. state) THEN
         RETURN guard. info(Lattice);
@@ -1050,20 +1053,23 @@ PROCEDURE ConstPropagation* (greg: D.Region);
         IF assertion THEN ASSERT (instr. info # unclassifiedLattice); END;
         nextInstr := instr. nextInstr;
         instrLattice := instr. info(Lattice);
-        WITH instr: D.Merge DO
-          ReplaceByConstants (instr);
-          IF (instr. info(Lattice). state = stateConst) THEN
-            ReplaceGatesByArgument (instr);
-          END;
-        | instr: D.Region DO
-          ReplaceByConstants (instr);
-        ELSE (* no region *)
-          IF (instrLattice. state = stateConst) THEN
-            (* instruction evalutates to a constant, so replace all it´s uses by the corresponding constant. *)
-            instr. ReplaceUses (instrLattice. const);
-            EXCL (instr. flags, D.instrNotDead);
-(*            D.Delete (instr); ... *)
-            IF countElim THEN INC (counter); END; 
+        IF (instrLattice = unreachableLattice) THEN
+          instr.Delete ();
+        ELSE
+          WITH instr: D.Merge DO
+            ReplaceByConstants (instr);
+            IF (instr. info(Lattice). state = stateConst) THEN
+              ReplaceGatesByArgument (instr);
+            END;
+          | instr: D.Region DO
+            ReplaceByConstants (instr);
+          ELSE (* no region *)
+            IF (instrLattice. state = stateConst) THEN
+              (* instruction evalutates to a constant, so replace all it´s uses by the corresponding constant. *)
+              instr. ReplaceUses (instrLattice. const);
+              instr.Delete ();
+              IF countElim THEN INC (counter); END; 
+            END;
           END;
         END;
         instr := nextInstr;

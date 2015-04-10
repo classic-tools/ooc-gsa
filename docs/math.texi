@@ -52,6 +52,8 @@ Krieger Publishing Company, June 1978
 * Mathematical Functions::      Mathematical functions on @code{REAL}
                                   and @code{LONGREAL} values.   
 * Arbitrary Precision Integers:: Arbitrary precision integer operations.
+* Arbitrary Precision Real Numbers:: Arbitrary precision operations on
+                                  real numbers.
 * Complex Numbers::             Mathematical functions for types
                                   @code{COMPLEX} and @code{LONGCOMPLEX}.
 * Random Numbers::              Psuedo-random number generators.
@@ -532,7 +534,7 @@ exceptional execution state because of the raising of the corresponding
 @code{FALSE}.
 @end deffn
 
-@node Arbitrary Precision Integers, Complex Numbers, Mathematical Functions, Mathematics
+@node Arbitrary Precision Integers, Arbitrary Precision Real Numbers, Mathematical Functions, Mathematics
 @section Arbitrary Precision Integers
 @pindex Integers
 @cindex integers, arbitrary precision
@@ -540,7 +542,7 @@ exceptional execution state because of the raising of the corresponding
 
 Very often, a program requires numbers with a greater range or accuracy than
 exists with the built-in Oberon-2 integer types.  Hence, the module
-@code{Integers} provides facilities for @dfn{arbitrary precision} integer
+@file{Integers} provides facilities for @dfn{arbitrary precision} integer
 operations.
 
 For further information on how these kinds of facilites may be implemented,
@@ -874,7 +876,7 @@ s:=Integers.Digits10Of(n);
 @end smallexample
 
 The following operations are used to convert between strings and
-@code{Integers}:
+@code{Integer}s:
       
 @deffn Procedure ConvertFromString @code{(@var{s}: ARRAY OF CHAR; VAR @var{x}: Integer)}
 This procedure converts @var{s} to an @code{Integer} value, which is
@@ -923,3 +925,415 @@ Writes the value of @var{x} to a channel using writer @var{w}.
 Retrieves a stored @code{Integer} value from a channel using reader @var{r},
 and assigns it to @var{x}.
 @end deffn
+
+
+@node Arbitrary Precision Real Numbers, Complex Numbers, Arbitrary Precision Integers, Mathematics
+@section Arbitrary Precision Real Numbers
+@pindex Reals
+@cindex reals, arbitrary precision
+@cindex arbitrary precision real numbers
+
+Module @file{Reals} provides facilities for arbitrary precision floating
+point operations.  Real numbers are represented by type @code{Real}.
+    
+These facilities are based on a FORTRAN library (MPFUN) created by David
+H. Bailey.  For more information, see
+@format    
+@url{http://www.nersc.gov/~dhb/}
+@end format
+
+or contact @email{mp-request@@nas.nasa.gov}.
+
+ 
+@subheading Numeric Precision-setting Constants
+
+@defvr {Constant} maxDigits
+Initial precision level in digits.
+@end defvr
+
+@defvr {Constant} outDigits
+Initial output precision level in digits.
+@end defvr
+
+@defvr {Constant} log10eps
+The initial multiprecision ``epsilon'' level.
+@end defvr
+
+@defvr {Constant} maxMant
+Maximum mantissa precision in (machine) words.
+@end defvr
+
+@defvr {Constant} maxExp
+Maximum exponent precision. 
+@end defvr
+
+
+@subheading Types
+
+@deftp {Data type} Real = POINTER TO RealDesc
+Instances of this type are used to represent arbitrary precision floating
+point numbers.
+@end deftp
+
+
+@subheading Variables
+
+@defvr {Variable} err: INTEGER
+@end defvr
+
+@defvr {Read-only Variable} curMant: INTEGER
+Current mantissa precision in (machine) words.
+@end defvr
+
+@defvr {Read-only Variable} sigDigs: INTEGER
+@end defvr
+
+@defvr {Read-only Variable} eps: Real
+Current multiprecision ``epsilon'' level.
+@end defvr
+
+@defvr {Read-only Variable} ln2: Real
+An approximation of the value of the natural logarithm of @samp{2}.
+@end defvr
+
+@defvr {Read-only Variable} pi: Real
+An approximation of the mathematical constant @dfn{pi}.
+@end defvr
+
+@defvr {Read-only Variable} ln10: Real
+An approximation of the value of the natural logarithm of @samp{10}.
+@end defvr
+
+
+@subheading Procedures
+
+The following operations are used to create initial instances of @code{Real}
+and convert @code{Real}s to standard numeric types.
+
+@deffn Function Long @code{(@var{x}: LONGREAL): Real}
+This function returns an instance of @code{Real} whose value is @var{x}.
+@end deffn
+
+@deffn Function Copy @code{(@var{a}: Real): Real}
+This function returns a new instance of @code{Real} that has the same value
+as @var{a}.
+@end deffn
+
+
+The following operations are used to convert between strings and
+@code{Reals}:
+
+@deffn Function ToReal @code{(@var{str}: ARRAY OF CHAR): Real}
+This procedure converts @var{str} to a @code{Real} value and returns the
+result.  
+
+The numeric representation of @var{str} must be of the format
+
+@smallexample
+number = ["+" | "-"] @{decimal_digit@} ["." @{decimal_digit@}] [scale]
+
+where  scale = ("E" | "D") ["+" | "-"] decimal_digit 
+               @{decimal_digit@}
+and    decimal_digit = "0".."9" | " "
+@end smallexample
+
+Thus the following is a valid input:
+
+@smallexample
+"1.23456 12938 23456 E + 200"
+@end smallexample
+
+@strong{Please note:} This real number definition is backwardly compatible
+with the Oberon-2 real string, but it has been extended to allow splitting
+of very large numbers into more readable segments by inserting spaces.
+@end deffn
+
+@deffn Procedure ToString @code{(@var{a}: Real; VAR @var{str}: ARRAY OF CHAR; @var{n}: LONGINT)}
+This procedure converts @var{a} to a string value in scientific notation
+with @var{n} significant places.  The result it assigned to @var{str}.  Note
+that the length of @var{str} should be at least @samp{@var{n}+15}
+characters.
+@end deffn
+
+@deffn Function short @code{(@var{q}: Real): LONGREAL}
+This function returns the value of @var{q} converted to a @code{LONGREAL}
+value.  If the result cannot be represented as a @code{LONGREAL} because the
+value of @var{q} is either too large or too small, this function returns
+either @code{MIN(LONGREAL)} or @code{MAX(LONGREAL)}.
+@end deffn
+
+@deffn Function entier @code{(@var{q}: Real): Real}
+This function returns an instance of @code{Real} whose value is the largest
+integer not greater than @var{q}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR n: Reals.Real;
+
+n:=entier(Reals.Long(3.6));  (* ENTIER(3.6) *)
+   @result{} n = 3.0E+0
+
+n:=entier(Reals.Long(-3.6));  (* ENTIER(-3.6) *)
+   @result{} n = -4.0E+0
+@end smallexample
+
+@deffn Function fraction @code{(@var{q}: Real): Real}
+This function returns the fractional part of @var{q}.
+@end deffn
+
+@deffn Function add @code{(@var{z1}, @var{z2}: Real): Real}
+This function returns the sum of @var{z1} and @var{z2} (i.e., @code{z1+z2}).
+@end deffn
+
+@deffn Function sub @code{(@var{z1}, @var{z2}: Real): Real}
+This function returns the difference of @var{z1} and @var{z2} (i.e.,
+@code{z1-z2}).
+@end deffn
+
+@deffn Function mul @code{(@var{z1}, @var{z2}: Real): Real}
+This function returns the product of @var{z1} and @var{z2} (i.e.,
+@code{z1*z2}).
+@end deffn
+
+@deffn Function div @code{(@var{z1}, @var{z2}: Real): Real}
+This function returns the quotient of @var{z1} divided by @var{z2} (i.e.,
+@code{z1/z2}).
+
+@strong{Pre-condition}: @var{z2} is not zero.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR m, n, s: Reals.Real;
+
+m:=Reals.ToReal("0.123456789012345678901234567890123456790");
+   @result{} m = 1.234567890123456789012345678E-1
+
+n:=Reals.ToReal("123456789012345678901234567890123456789");
+   @result{} n = 1.234567890123456789012345678E+38
+
+s:=Reals.add(n, m);
+   @result{} s = 1.234567890123456789012345678E+38
+
+s:=Reals.sub(n, m);
+   @result{} s = 1.234567890123456789012345678E+38
+
+s:=Reals.div(n, m);
+   @result{} s = 1.0E+39
+
+s:=Reals.mul(n, m);
+   @result{} s = 1.524157875323883675049535156E+37
+
+
+s:=Reals.div(Reals.Long(1), Reals.Long(3));  (* 1/3 *)
+   @result{} s = 3.333333333333333333333333333E-1
+
+n:=Reals.add(s, s);  (* 1/3+1/3 *)
+   @result{} n = 6.666666666666666666666666666E-1
+
+s:=Reals.div(Reals.Long(1), Reals.Long(3));  (* 1/3 *)
+   @result{} s = 3.333333333333333333333333333E-1
+
+n:=Reals.mul(s, s);  (* 1/3*1/3 *) 
+   @result{} n =1.111111111111111111111111111E-1
+
+s:=Reals.div(Reals.Long(1), Reals.Long(3));  (* 1/3 *)
+   @result{} s = 3.333333333333333333333333333E-1
+
+n:=Reals.mul(s, Reals.Long(3));  (* 1/3*3 *)
+   @result{} n = 1.0E+0
+@end smallexample
+
+
+@deffn Function abs @code{(@var{z}: Real): Real}
+This function returns the absolute value of @var{z}.
+@end deffn
+
+@deffn Function cmp @code{(@var{a}, @var{b}: Real): LONGINT}
+This function compares the values of @var{a} and @var{b} and gives the
+following result:
+
+@format
+  If @code{a > b}, return @code{1}
+  If @code{a = b}, return @code{0}
+  If @code{a < b}, return @code{-1}
+@end format
+
+Note that this operation is faster than merely subtracting @var{a} and
+@var{b} and examining the sign of the result.
+@end deffn
+
+@deffn Function power @code{(@var{x}, @var{exp}: Real): Real}
+This function returns the value of @var{x} raised to the power @var{exp}.
+
+@strong{Pre-condition}: @var{exp} is greater than zero.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR n: Reals.Real;
+
+n:=Reals.power(Reals.Long(2.0), Reals.Long(64));  (* 2^64 *)
+   @result{} n = 1.8446744073709551616E+19
+@end smallexample
+
+@deffn Function root @code{(@var{z}: Real; @var{n}: LONGINT): Real}
+This function returns the value of the @var{n}th root of @var{z}. 
+
+@strong{Pre-condition}: @var{z} is non-negative.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR n: Reals.Real;
+
+n:=Reals.root(Reals.Long(-8), 3);  (* -8^(-1/3) *)
+   @result{} n = -2.0E+0
+
+n:=Reals.root(Reals.power(Reals.Long(2), Reals.Long(64)), 64);
+   @result{} n = 2.0E+0    (* (2^64)^(-1/64) *)
+@end smallexample
+
+@deffn Function sqrt @code{(@var{z}: Real): Real}
+This function returns the principal square root of @var{z}.  The value of
+the result is in the range @code{[-pi/2, pi/2]}.
+
+@strong{Pre-condition}: @var{x} is non-negative.
+@end deffn
+
+@deffn Function exp @code{(@var{z}: Real): Real}
+This function returns the complex exponential of @var{z} (the mathematical
+constant @code{e} raised to the power of @var{z}).
+@end deffn
+
+@deffn Function ln @code{(@var{z}: Real): Real}
+This function returns the principal value of the natural logarithm of
+@var{z}.  
+
+@strong{Pre-condition}: @var{z} is positive.
+@end deffn
+
+@deffn Function log @code{(@var{z}, @var{base}: Real): Real}
+This function returns the principal value of the base @var{base} logarithm
+of @var{z}.
+
+@strong{Pre-condition}: @var{z} is positive.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR n: Reals.Real;
+
+n:=Reals.log(Reals.eps, Reals.Long(10));  (* log10(eps) *)
+   @result{} n = -4.9E+2
+@end smallexample
+
+@deffn Function sin @code{(@var{z}: Real): Real}
+This function returns the sine of @var{z}.
+@end deffn
+
+@deffn Function cos @code{(@var{z}: Real): Real}
+This function returns the cosine of @var{z}.
+@end deffn
+
+@deffn Procedure sincos @code{(@var{z}: Real; VAR @var{sin}, @var{cos}: Real)}
+This function returns both the sine and cosine of @var{z}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR m, n: Reals.Real;
+
+Reals.sincos(pi, m, n);
+   @result{} m = 0.0E+0  (* Sin(pi) *)
+   @result{} n =-1.0E+0  (* Cos(pi) *)
+
+Reals.sincos(div(pi, Reals.Long(8)), m, n);  
+   @result{} m = 3.82683432365089771728459984E-1   (* Sin(pi/8) *)
+   @result{} n = 9.238795325112867561281831893E-1  (* Cos(pi/8) *)
+
+Reals.sincos(Reals.Long(1), m, n);
+   @result{} m = 8.414709848078965066525023216E-1  (* Sin(1) *)
+   @result{} n = 5.403023058681397174009366074E-1  (* Cos(1) *)
+@end smallexample
+
+@deffn Function tan @code{(@var{z}: Real): Real}
+This function returns tangent of @var{z}.  
+
+@strong{Pre-condition}: @var{z} is not an odd multiple of @code{pi/2}.
+@end deffn
+
+@deffn Function arcsin @code{(@var{z}: Real): Real}
+This function returns the arcsine of @var{z}.  The result is in the range
+@code{[-pi/2, pi/2]}.
+
+@strong{Pre-condition}: the absolute value of @var{z} is less than or equal
+to one.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR n: Reals.Real;
+
+n:=Reals.arcsin(Reals.sin(Reals.Long(1)));  (* arcsin(sin(1)) *)
+   @result{} n = 1.0E+0
+@end smallexample
+
+@deffn Function arccos @code{(@var{z}: Real): Real}
+This function returns the arccosine of @var{z}.  The result is in the range
+@code{[0, pi]}.  
+
+@strong{Pre-condition}: the absolute value of @var{z} is less than or equal
+to one.
+@end deffn
+
+@deffn Function arctan @code{(@var{z}: Real): Real}
+This function returns the arctangent of @var{z}.  The result is in the range
+@code{[-pi/2, pi/2]}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR n: Reals.Real;
+
+n:=Reals.mul(Reals.Long(4), Reals.arctan(Reals.Long(1)));
+   (* 4*arctan(1) *)
+   @result{} n = 3.141592653589793238462643383E+0
+@end smallexample
+
+@deffn Function arctan2 @code{(@var{xn}, @var{xd}: Real): Real}
+This function returns the arctangent of @code{@var{xn}/@var{xd}}.  The signs
+of the two arguments are taken into account when determining quadrant
+information.  The result is in the range @code{[-pi, pi]}.
+@end deffn
+
+@deffn Procedure sinhcosh @code{(@var{z}: Real; VAR @var{sinh}, @var{cosh}: Real)}
+This function returns both the hyberbolic sine and cosine of @var{z}.
+@end deffn
+
+@deffn Function sinh @code{(@var{z}: Real): Real}
+This function returns the hyperbolic sine of @var{z}.
+@end deffn
+
+@deffn Function cosh @code{(@var{z}: Real): Real}
+This function returns the hyperbolic cosine of @var{z}.
+@end deffn
+
+@deffn Function tanh @code{(@var{z}: Real): Real}
+This function returns the hyperbolic tangent of @var{z}.
+@end deffn
+
+@deffn Procedure SetWords @code{(@var{words}: INTEGER)}
+This procedure sets the value of the current mantissa precision in (machine)
+words (i.e., sets the value of @code{curMant}).
+@end deffn
+

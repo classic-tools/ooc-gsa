@@ -65,8 +65,9 @@ static struct _MD ParseExpr_md = {
 };
 
 /* local strings */
-static const unsigned char _c3[] = "XX";
-static const unsigned char _c2[] = "\077\077\077";
+static const unsigned char _c4[] = "XX";
+static const unsigned char _c3[] = "\077\077\077";
+static const unsigned char _c2[] = "Set";
 static const unsigned char _c1[] = "Integer";
 static const unsigned char _c0[] = "Boolean";
 

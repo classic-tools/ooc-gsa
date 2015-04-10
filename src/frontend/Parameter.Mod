@@ -1,4 +1,4 @@
-(* 	$Id: Parameter.Mod,v 1.20 1999/11/06 15:33:30 ooc-devel Exp $	 *)
+(* 	$Id: Parameter.Mod,v 1.21 2000/01/09 17:50:57 ooc-devel Exp $	 *)
 MODULE Parameter;
 (*  Parses configuration files and commmand lines.
     Copyright (C) 1995-1999  Michael van Acken
@@ -1157,7 +1157,7 @@ PROCEDURE ParseCmdLine* (optionsStartWithDash, multSingleChar, enableDashDash: B
       ELSIF enableDashDash & (currArg = "--") THEN  (* end of options *)
         restArg := i+1
       ELSIF multSingleChar & (currArg[0] = "-") & (currArg[1] # "-") THEN
-        (* interpyret argument as multiple single character options without 
+        (* interpret argument as multiple single character options without 
            any following parameters *)
         msg := "-?";
         j := 1;

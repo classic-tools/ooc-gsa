@@ -4,11 +4,11 @@ the input file OOCref.texinfo.
    This file documents the Optimizing Oberon-2 Compiler (OOC) and its
 library.
 
-   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
-Library Reference Manual', for Version 1.4.5 or later of oo2c.
+   This is Edition 0.10 DRAFT, last updated 29 February 2000, of `The
+OOC Library Reference Manual', for Version 1.5.1 or later of oo2c.
 
-   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
-1999 Michael van Acken
+   Copyright (C) 1997-2000 Eric Nikitin Part II Copyright (C) 1998-2000
+Michael van Acken
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -28,6 +28,595 @@ entitled "GNU General Public License" must be approved for accuracy by
 the Foundation.
 
 
+File: OOCref.info,  Node: Class Writer (TextRider),  Next: Class Scanner (TextRider),  Prev: Class Reader (TextRider),  Up: TextRider
+
+Class Writer (TextRider)
+........................
+
+ - Class: Writer = POINTER TO WriterDesc
+     This class provides facilities for writing various types of text.
+     Note that this type does not inherit properties from any basic
+     writer type; rather it uses the basic writer type associated with
+     the channel it is attached to.
+
+    Field: opt-: `SET'
+          The current write options setting for the writer.  See *Note
+          Summary of TextRider Constants:: for possible option values.
+
+    Field: res-: `Msg.Msg'
+          This field indicates the status of the last write operation
+          (e.g., `WriteBytes', `WriteInt', `SetPos', etc.).
+
+          Error codes are highly dependent on the channel being written
+          to (and therefore on the basic riders provided for that
+          channel), so you must look at the result codes for the basic
+          writer that is associated with that particular channel (e.g.,
+          `Files.Writer' error codes).  See the various channel types
+          for details of these error codes (i.e., *Note Files::, *Note
+          StdChannels::, or *Note ProgramArgs::).
+
+          If `res#done', use either `res.GetLText()' or `res.GetText()'
+          to get a plain text error description corresponding to the
+          error code.
+
+    Field: base-: `Channel.Channel'
+          This field refers to the channel the writer is connected to.
+
+   The following methods can be used to check the status of a writer
+or, in some cases, change its state.  Some methods are fully described
+in the abstract writer section (*note Abstract Class Writer::.), so
+only brief descriptions of those are given here.
+
+Method: `(W: Writer)' ClearError
+     Clears error conditions on the writer W, re-enabling further write
+     operations.
+
+Method: `(W: Writer)' Pos `() : LONGINT'
+     Returns the current writing position associated with the writer
+     `w' in channel `W.base'.
+
+Method: `(W: Writer)' SetEol `(MARKER: ARRAY OF CHAR; MARKERLEN: INTEGER)'
+     This method sets the end-of-line marker; that is, what
+     character(s) is used to mark the end of a line.  If the passed
+     string MARKER does not fit into the field `eol', then `W.res.code'
+     is set to `invalidFormat'.  The empty marker is permitted.  The
+     default value for a newly created writer is `CharClass.systemEol'.
+
+     *Pre-condition*: All of the following apply:
+       1. `w.res = done', and
+
+       2. `0 <= markerLen < LEN (marker)', and
+
+       3. `markerLen <= maxLengthEol'.
+
+Method: `(W: Writer)' SetOpts `(OPTS: SET)'
+     This method is used to set the writer options `W.opt'.  See *Note
+     Summary of TextRider Constants:: for possible option values.
+
+     *Example:*
+
+          w.SetOpts({TextRider.noBuffering});
+             => output is not buffered.
+          w.SetOpts(TextRider.defWriterOptions);
+             => writer options set to default values.
+
+Method: `(W: Writer)' SetPos `(NEWPOS: LONGINT)'
+     Sets the writing position to NEWPOS.
+
+   The following writer methods are used to write values in text format
+to the underlying channel.  In some situations, it is possible for only
+part of the value to be actually written.
+
+Method: `(W: Writer)' WriteBool `(BOOL: BOOLEAN)'
+     Writes the value of BOOL as text.  That is, either `TRUE' or
+     `FALSE'.
+
+Method: `(W: Writer)' WriteChar `(CH: CHAR)'
+     Writes a single character value CH.
+
+     *Example:*
+
+          w.WriteChar("A");
+             => writes one character = "A"
+
+Method: `(W: Writer)' WriteHex `(LINT: LONGINT; D: LONGINT)'
+     Writes the value of LINT as an unsigned hexadecimal number with a
+     minimum field width of D.  Leading zeros are written if the value
+     of LINT requires less than D places.  If D is less than or equal
+     to zero, field width is 8.
+
+     *Example:*
+
+          w.WriteHex(127, 3);
+             => writes "07F"
+          w.WriteHex(127, 0);
+             => writes "0000007F"
+          w.WriteHex(-128, 0);
+             => writes "FFFFFF80"
+
+Method: `(W: Writer)' WriteInt `(INT: INTEGER; N: LONGINT)'
+     Writes the value of INT as a decimal number with a minimum field
+     width of N.  Leading spaces are written if the value of INT
+     requires less than N places.  A sign is written only for negative
+     values.
+
+     *Example:*
+
+          w.WriteInt(54321, 0);
+             => writes "54321"
+          w.WriteInt(54321, 10);
+             => writes "     54321"
+
+Method: `(W: Writer)' WriteLInt `(LINT: LONGINT; N: LONGINT)'
+     This method provides the same facility as `WriteInt', except that
+     it deals with `LONGINT' values.
+
+Method: `(W: Writer)' WriteSInt `(SINT: SHORTINT; N: LONGINT)'
+     This method provides the same facility as `WriteInt', except that
+     it deals with `SHORTINT' values.
+
+Method: `(W: Writer)' WriteReal `(REAL: REAL; N, K: LONGINT)'
+     Writes the value of REAL as a floating-point number with a minimum
+     field width of N.
+
+     If the value of K is greater than 0, that number of significant
+     digits is included.  Otherwise, an implementation-defined number
+     of significant digits is included.  The decimal point is not
+     included if there are no significant digits in the fractional part.
+
+     The number is scaled with one digit in the whole number part.  A
+     sign is included only for negative values.
+
+     *Example:*
+
+          w.WriteReal(3923009, 0, 0);
+             => writes "3.923009E+6"
+          w.WriteReal(3923009, 0, 1);
+             => writes "4E+6"
+          w.WriteReal(3923009, 0, 4);
+             => writes "3.923E+6"
+          w.WriteReal(3923009, 10, 1);
+             => writes "      4E+6"
+          
+          w.WriteReal(-39.23009, 12, 2);
+             => writes "     -3.9E+1"
+          w.WriteReal(-39.23009, 1, 5);
+             => writes "-3.9230E+1"
+          
+          w.WriteReal(0.0003923009, 6, 1);
+             => writes "  4E-4"
+
+Method: `(W: Writer)' WriteLReal `(LREAL: LONGREAL; N, K: LONGINT)'
+     This method provides the same facility as `WriteReal', except that
+     it deals with `LONGREAL' values.
+
+Method: `(W: Writer)' WriteRealEng `(REAL: REAL; N, K: LONGINT)'
+     Writes the value of REAL as a floating-point number with a minimum
+     field width of N.
+
+     If the value of K is greater than 0, that number of significant
+     digits is included.  Otherwise, an implementation-defined number
+     of significant digits is included.  The decimal point is not
+     included if there are no significant digits in the fractional part.
+
+     The number is scaled with one to three digits in the whole number
+     part and with an exponent that is a multiple of three.  A sign is
+     included only for negative values.
+
+     *Example:*
+
+          w.WriteRealEng(39.23009, 0, 1);
+             => writes "40"
+          w.WriteRealEng(39.23009, 5, 2);
+             => writes "   39"
+          w.WriteRealEng(39.23009, 10, 5);
+             => writes "    39.230"
+          
+          w.WriteRealEng(-3923009, 13, 1);
+             => writes "        -4E+6"
+          w.WriteRealEng(-3923009, 7, 3);
+             => writes " -3.92E+6"
+          w.WriteRealEng(-3923009, 0, 6);
+             => writes "-3.92301E+6"
+          
+          w.WriteRealEng(0.0003923009, 1, 1);
+             => writes "400E-6"
+          w.WriteRealEng(0.0003923009, 4, 2);
+             => writes "  390E-6"
+          w.WriteRealEng(0.0003923009, 16, 5);
+             => writes "       392.30E-6"
+
+Method: `(W: Writer)' WriteLRealEng `(LREAL: LONGREAL; N, K: LONGINT)'
+     This method provides the same facility as `WriteRealEng', except
+     that it deals with `LONGREAL' values.
+
+Method: `(W: Writer)' WriteRealFix `(REAL: REAL; N, K: LONGINT)'
+     Writes the value of REAL as a fixed-point number with a minimum
+     field width of N.
+
+     The value is rounded to the given value of K relative to the
+     decimal point.  The decimal point is suppressed if K is less than
+     0.
+
+     The number will have at least one digit in the whole number part.
+     A sign is included only for negative values.
+
+     *Example:*
+
+          w.WriteRealFix(3923009, 0, -5);
+             => writes "3920000"  (* rounded to the
+                                  ten-thousands place *)
+          w.WriteRealFix(3923009, 0, 4);
+             => writes "3923009.0000"
+          
+          w.WriteRealFix(3923.5, 0, -1);
+             => writes "3924" (* rounded to the "ones" place *)
+          w.WriteRealFix(3923.5, 0, 0);
+             => writes "3924." (* same as above,
+                                  but writes a decimal point *)
+          
+          w.WriteRealFix(-39.23009, 10, 1);
+             => writes "     -39.2"
+          w.WriteRealFix(-39.23009, 20, 4);
+             => writes "            -39.2301"
+          
+          w.WriteRealFix(0.0003923009, 5, 1);
+             => writes "  0.0"
+          w.WriteRealFix(0.0003923009, 11, 4);
+             => writes "     0.0004"
+
+Method: `(W: Writer)' WriteLRealFix `(LREAL: LONGREAL; N, K: LONGINT)'
+     This method provides the same facility as `WriteRealFix', except
+     that it deals with `LONGREAL' values.
+
+Method: `(W: Writer)' WriteSet `(S: SET)'
+     Writes the value of S as an Oberon-2 set constructor, including
+     curly braces, commas, and range indicators ("`..'") where
+     appropriate.
+
+     *Example:*
+
+          w.WriteSet({});
+             => writes "{}"
+          w.WriteSet({1,6,10});
+             => writes "{1, 6, 10}"
+          w.WriteSet({0, 1, 2, 3, 4, 5});
+             => writes "{0..5}"
+          w.WriteSet({0, 2, 3, 4, 8});
+             => writes "{0, 2..4, 8}"
+          w.WriteSet({0, 2..7, 8});
+             => writes "{0, 2..8}"
+          w.WriteSet({0, 2, 4, 6} + {1, 3, 5, 7});
+             => writes "{0..7}"
+
+Method: `(W: Writer)' WriteString `(S: ARRAY OF CHAR)'
+     Writes a string value up to, but not including, the terminating
+     `0X' character.  The behaviour of this method is undefined if S is
+     an unterminated character array.
+
+     *Please note:* `ReadString' and `WriteString' *are not* symmetric.
+     That is, `WriteString' does not enclose the written string in
+     quote marks; only the actual character values contained in S are
+     written.
+
+Method: `(W: Writer)' WriteLn
+     Writes an end-of-line marker (i.e., a "newline").  The default
+     value for a newly created writer is `CharClass.systemEol' (see
+     `SetEol' above).
+
+
+File: OOCref.info,  Node: Class Scanner (TextRider),  Next: Connecting TextRiders,  Prev: Class Writer (TextRider),  Up: TextRider
+
+Class Scanner (TextRider)
+.........................
+
+   A "text scanner" is a special type of reader, which is used to parse
+text for different kinds of tokens.  Integers, reals, strings,
+identifiers, set constructors, the boolean tokens `TRUE' and `FALSE',
+and other special symbols are all tokens recognized by this kind of
+scanner.
+
+   These tokens are scanned sequentially, converted to an appropriate
+type, and then returned in one of the scanner's fields.  The scanner's
+`type' field is then used to determine the type of token which has been
+scanned.
+
+   Along with some typical reader methods, such as `SetPos', the primary
+method of a scanner is `Scan', which simply scans the next token based
+on the scanner's current options setting.  A typical use of a scanner
+might look similar the following program fragment:
+
+   *Example:*
+
+     VAR s: TextRider.Scanner;
+         f: Files.File;
+         res: Files.Result;
+     
+       f := Files.Old("Sample.txt", {Files.read}, res);
+       s := TextRider.ConnectScanner(f);
+     
+       s.Scan;
+       WHILE s.type # TextRider.error DO
+          IF s.type = TextRider.string THEN
+             ... (* Process string tokens *)
+          ELSIF s.type = TextRider.ident THEN
+             ... (* Process identifier tokens *)
+          ELSIF s.type = TextRider.int THEN
+             ... (* Process integer tokens *)
+          ELSIF ...
+             ... (* Process other token types *)
+          END;
+          s.Scan;
+       END;
+     
+       Out.String("Total lines scanned=");
+       Out.LongInt(s.lines, 0); Out.Ln;
+
+ - Data type: String
+     A string type of pre-defined length for use within a scanner.
+     Note that because this type is of finite length, a scanner is
+     limited in the length of string it can scan.
+
+     *Please note:* `LEN()' can be used on a variable of type `String'
+     to determine the maximum size that can be held by a scanner string.
+
+ - Class: Scanner = POINTER TO ScannerDesc
+     This class provides facilities for scanning sequences of
+     characters from a channel and parsing those characters into
+     various tokens.  The tokens a scanner can recognize are defined by
+     the constants provided for its `type' field (*Note Summary of
+     TextRider Constants::).
+
+     Note that a scanner will not continue to read (via calls to
+     `Scan') if it has scanned an invalid token or an error occurs;
+     `ClearError' must be called explicitly before scanning can
+     continue.  The difference is that `invalid' means that the token
+     could not be interpreted; a sequence of characters was read, but
+     could not be interpreted as a valid token.  An `error' occurs when
+     there is a problem with the underlying `Reader'; so, `error' is
+     used to determine when you have reached end-of-text.
+
+    Field: base-: `Channel.Channel'
+          This field refers to the channel the scanner is connected to.
+
+    Field: lines-: `LONGINT'
+          Total number of lines (i.e., end-of-line characters) that
+          have been scanned.  This number is updated by `Scan'.
+
+    Field: opt-: `SET'
+          The current read options setting for the scanner.  See *Note
+          Summary of TextRider Constants:: for possible option values.
+
+    Field: pos-: `LONGINT'
+          Starting position of the most recently scanned token.  Note
+          that this is *not* the same as the value returned by the
+          `Pos()' method.
+
+          This value may be useful when an `invalid' token is scanned,
+          as it will point to the start of the `invalid' token (whereas
+          `Pos()' would be positioned *after* the invalid token).  You
+          could, for example, reset the scanner options and re-position
+          the scanner back at the invalid token to attempt a re-scan.
+
+    Field: res-: `Msg.Msg'
+          This field indicates the status of the last read operation
+          (e.g., `Scan', `SetPos', etc.).
+
+          If `res#done', use either `res.GetLText()' or `res.GetText()'
+          to get a plain text error description corresponding to the
+          error code.
+
+    Field: type-: `INTEGER'
+          The type of the token that has been most recently scanned.
+          The constants `bool', `char', `error', `int', `invalid',
+          `line', `ident', `real', `set', `string', `tab', and
+          `undefined' are possible values for `type'.  See also the
+          related output fields listed below.
+
+     The following are the output fields within a scanner.  Before the
+     first call to the `Scan' method, the values of these fields are
+     undefined.  After each successive call to `Scan', `type' is set
+     and the matching output field contains the value of the scanned
+     token.  The value of output fields not corresponding to `type' are
+     undefined.
+
+    Field: bool-: `BOOLEAN'
+          This field will contain a valid value only if the
+          `interpretBools' option is set and one of the tokens `TRUE'
+          or `FALSE' is scanned.
+
+    Field: char-: `CHAR'
+          Contains a value if `type' is `char', `line', or `tab'.
+
+    Field: int-: `LONGINT'
+          Contains a value if `type' is `int'.
+
+          *Please note:* Valid integers are in either signed decimal or
+          unsigned hexadecimal formats (hexadecimal tokens *must* be
+          terminated with an "`H'" character).
+
+    Field: real-: `LONGREAL'
+          Contains a value if `type' is `real'.
+
+    Field: set-: SET;
+          Contains a value if `type' is `set'.
+
+    Field: string-: String;
+          Contains a value if `type' is `string' or `ident'.
+
+   The following scanner methods are equivalent to the corresponding
+reader methods described in *Note Class Reader (TextRider)::, so only
+brief descriptions are given here.
+
+     *Please note:* Normally when scanning text, a program will monitor
+     a scanner's `type' field and check for `invalid' tokens and the
+     occurance of `error'.  The `res.code' needs to be checked only to
+     find out error details (and then, possibly, the `ClearError'
+     method can be used to clear the error).
+
+     *Example:*
+
+          VAR s: TextRider.Scanner;
+              f: Files.File;
+              res: Files.Result;
+              str: ARRAY 256 OF CHAR;
+          
+          f := Files.Old("Sample.txt", {Files.read}, res);
+          s := TextRider.ConnectScanner(f);
+          
+          f.Close;
+          s.Scan;
+             => s.type = error
+          s.res.GetText(str);
+             => str = "File has been closed"
+
+Method: `(S: Scanner)' Available `() : LONGINT'
+     Returns the number of bytes available for the next scanning
+     operation.
+
+Method: `(S: Scanner)' ClearError
+     Clears error conditions on the scanner S, re-enabling further
+     operations on S.
+
+Method: `(S: Scanner)' Pos `(): LONGINT'
+     Returns the current reading position associated with the scanner S
+     in channel `S.base'.  Note that the value returned by this method
+     is different from the position indicated by the scanner's `pos'
+     field.
+
+Method: `(S: Scanner)' SetEol `(MARKER: ARRAY OF CHAR; MARKERLEN: INTEGER)'
+     This method sets the end-of-line marker; it provides the same
+     facility as `Reader.SetEol'.  A marker length `markerLen=-1'
+     enables auto detection of the end-of-line convention used by the
+     channel.
+
+Method: `(S: Scanner)' SetOpts `(OPTS: SET)'
+     This method is used to set the scanner options `S.opt'.  See *Note
+     Summary of TextRider Constants:: for possible option values.
+
+     *Example:*
+
+          s.SetOpts({TextRider.returnCtrlChars,
+                  TextRider.useSignedNumbers});
+             => s.opt = {returnCtrlChars, useSignedNumbers}
+          s.SetOpts(s.opt + {TextRider.interpretBools});
+             => s.opt = {interpretBools, returnCtrlChars,
+                  useSignedNumbers}
+          s.SetOpts(TextRider.defScannerOptions);
+             => scanner options set to default values.
+
+Method: `(S: Scanner)' SetPos `(NEWPOS: LONGINT)'
+     Sets the current scanning position to NEWPOS.
+
+Method: `(S: Scanner)' Scan
+     This method skips whitespace, and then scans for the next token as
+     specified by the scanning options.  Based on the type of token
+     scanned, `S.type' is set and the matching output field is assigned
+     a value.
+
+     If the end of the valid text is reached, `S.type' is set to
+     `error'.  (Note that `error' is set when the last available valid
+     token is read, not necessarily by a `readAfterEnd' condition.)
+
+     Valid tokens are described as follows:
+
+    `bool'
+          If `interpretBools' is set as a scanner option, the text
+          tokens `TRUE' or `FALSE' are read as `bool'.  (Otherwise,
+          these tokens are read as type `ident'.)
+
+    `char'
+          Normally, any printable characters other than a letter or
+          number and any non-printable control character.  However,
+          scanner options will affect what a scanner interprets to be a
+          `char':
+
+             * If `interpretSets' is not set, elements of a set
+               constructor, "`{'", "`}'", "`,'", are read as `char'
+               (and the associated integer constants are read as
+               separate tokens).
+
+             * If `interpretStrings' is not set, quote characters are
+               read as `char' (and string contents are then read as
+               separate tokens).
+
+             * If `useSignedNumbers' is not set, "`+'" and "`-'" are
+               read as `char'.  (Otherwise, they are always considered
+               part of a number.)
+
+    `int'
+          Any Oberon-2 integer constant.  (Note that hexadecimal
+          numbers must be unsigned and be terminated with an "`H'".
+          Also, lower-case letters, `a..f', are not valid hex digits.)
+
+    `line'
+          If `returnCtrlChars' is set, an end-of-line character is read
+          as `S.type = line'.  Otherwise, it is counted as whitespace.
+
+    `ident'
+          Any Oberon-2 identifier.  (Note that "`_'" is not considered
+          as part of an identifier, nor is a selector "`.'".)
+
+    `real'
+          Any Oberon-2 real number constant.
+
+    `set'
+          Any Oberon-2 set constructor.
+
+    `string'
+          Any Oberon-2 string constant.
+
+    `tab'
+          If `returnCtrlChars' is set, a tab character is read as
+          `S.type = tab'.  Otherwise, it is counted as whitespace.
+
+
+File: OOCref.info,  Node: Connecting TextRiders,  Next: Summary of TextRider Constants,  Prev: Class Scanner (TextRider),  Up: TextRider
+
+Connecting TextRiders to Channels
+.................................
+
+   The following procedures are provided for creating instances of
+`TextRider' objects and connecting them to a channel.  If the channel
+being passed as an argument to any of these functions has a value of
+`NIL', behavior is undefined.
+
+   Also, for any of these functions, the returned rider is positioned
+at the beginning of the channel for positionable channels and at the
+current position for non-positionable channels.
+
+ - Function: ConnectReader `(CH: Channel.Channel): Reader'
+     This function creates a new reader and attaches it to the channel
+     CH.  `CH.res' is set to `done' on success and the new reader is
+     returned.  Otherwise, it returns `NIL' and `CH.res.code' is set to
+     indicate the error cause.
+
+ - Function: ConnectWriter `(CH: Channel.Channel): Writer'
+     This function creates a new writer and attaches it to the channel
+     CH.  `CH.res' is set to `done' on success and the new writer is
+     returned.  Otherwise, it returns `NIL' and `CH.res.code' is set to
+     indicate the error cause.
+
+ - Function: ConnectScanner `(CH: Channel.Channel): Scanner'
+     This function creates a new scanner and attaches it to the channel
+     CH.  `CH.res' is set to `done' on success and the new scanner is
+     returned.  Otherwise, it returns `NIL' and `CH.res.code' is set to
+     indicate the error cause.
+
+   *Example:*
+
+     VAR
+       r: TextRider.Reader;
+       f: Files.File;
+       res: Files.Result;
+     
+       f := Files.Old("test.dat", {Files.read}, res);
+       IF (res # Files.done) THEN (* error processing *) END;
+     
+       r := TextRider.ConnectReader(f);
+       IF (r = NIL) THEN (* error processing *) END;
+
+
 File: OOCref.info,  Node: Summary of TextRider Constants,  Prev: Connecting TextRiders,  Up: TextRider
 
 Summary of TextRider Constants
@@ -41,10 +630,13 @@ Summary of TextRider Constants
 reading to or writing from, such as *Note Files::, *Note StdChannels::,
 or *Note ProgramArgs::.
 
-   The following are possible return values for `Res()' methods:
+   The following constant applies to the `res' field, and may be
+compared to it.  (i.e., `rider.res = done' or `rider.res # done'.)
 
  - Constant: done
      This indicates successful completion of the last operation.
+
+   The following are possible values for `res.code':
 
  - Constant: invalidFormat
      Indicates that the text at the current reading (or scanning)
@@ -343,19 +935,19 @@ current position for non-positionable channels.
  - Function: ConnectReader `(CH: Channel.Channel): Reader'
      This function creates a new reader and attaches it to the channel
      CH.  `CH.res' is set to `done' on success and the new reader is
-     returned.  Otherwise, it returns `NIL' and `CH.res' is set to
+     returned.  Otherwise, it returns `NIL' and `CH.res.code' is set to
      indicate the error cause.
 
  - Function: ConnectWriter `(CH: Channel.Channel): Writer'
      This function creates a new writer and attaches it to the channel
      CH.  `CH.res' is set to `done' on success and the new writer is
-     returned.  Otherwise, it returns `NIL' and `CH.res' is set to
+     returned.  Otherwise, it returns `NIL' and `CH.res.code' is set to
      indicate the error cause.
 
  - Function: ConnectScanner `(CH: Channel.Channel): Scanner'
      This function creates a new scanner and attaches it to the channel
      CH.  `CH.res' is set to `done' on success and the new scanner is
-     returned.  Otherwise, it returns `NIL' and `CH.res' is set to
+     returned.  Otherwise, it returns `NIL' and `CH.res.code' is set to
      indicate the error cause.
 
 
@@ -372,10 +964,13 @@ Summary of UnicodeRider Constants
 reading to or writing from, such as *Note Files::, *Note StdChannels::,
 or *Note ProgramArgs::.
 
-   The following are possible return values for `Res()' methods:
+   The following constant applies to the `res' field, and may be
+compared to it.  (i.e., `rider.res = done' or `rider.res # done'.)
 
  - Constant: done
      This indicates successful completion of the last operation.
+
+   The following are possible values for `res.code':
 
  - Constant: invalidFormat
      Indicates that the text at the current reading (or scanning)
@@ -545,13 +1140,13 @@ screen (note that no error checking is done):
      VAR r: BinaryRider.Reader;
          f: Files.File;
          ch: CHAR;
-         res: INTEGER;
+         res: Files.Result;
      
        f := Files.Old("Sample.txt", {Files.read}, res);
        r := BinaryRider.ConnectReader(f);
      
        r.ReadChar(ch);
-       WHILE r.Res()=Files.done DO
+       WHILE r.res=Files.done DO
           Out.Char(ch);
           r.ReadChar(ch);
        END;
@@ -579,739 +1174,4 @@ screen (note that no error checking is done):
                                  writers to channels.
 * Summary of BinaryRider Constants:: Summarized list of constants in module
                                  BinaryRider.
-
-
-File: OOCref.info,  Node: Class Reader (BinaryRider),  Next: Class Writer (BinaryRider),  Up: BinaryRider
-
-Class Reader (BinaryRider)
-..........................
-
- - Class: Reader = POINTER TO ReaderDesc
-     This class provides facilities for reading various types of data
-     in binary format.  Note that this type does not inherit properties
-     from any basic reader type; rather it uses the basic reader type
-     associated with the channel it is attached to.
-
-          *Please note*: Many of the methods for `BinaryRider.Reader'
-          perform typical `Reader' operations.  Rather than duplicate
-          descriptions of those methods here, a reference to the
-          abstract reader type is provided instead.
-
-    Field: byteOrder-: `SHORTINT'
-          The current endian (byte order) setting for the reader.
-
-    Field: base-: `Channel.Channel'
-          This field refers to the channel the reader is connected to.
-
-   The following methods are all fully described in the section on
-abstract readers (*note Abstract Class Reader::.), so only brief
-descriptions are given here.
-
-Method: `(R: Reader)' Available `() : LONGINT'
-     Returns the number of bytes available for the next reading
-     operation.
-
-Method: `(R: Reader)' ClearError
-     Clears error conditions on the reader R, re-enabling further read
-     operations.
-
-Method: `(R: Reader)' ErrorDescr `(VAR DESCR: ARRAY OF CHAR)'
-     Retrieves a descriptive error message string stating the reason
-     why one of the previous operations failed.
-
-Method: `(R: Reader)' Pos `() : LONGINT'
-     Returns the current reading position associated with the reader R
-     in channel `R.base'.
-
-Method: `(R: Reader)' Res `() : INTEGER'
-     This method returns the status of the last read operation.  Note
-     that unlike some other reader types, `Res()' is a method rather
-     than a field; but otherwise, it performs equivalently.
-
-     Error codes are highly dependent on the channel being read, and
-     therefore on the basic riders provided by that channel, so you
-     must look at the result codes for a particular channel's reader
-     type.
-
-     Use method `ErrorDescr' to get a plain text error description of
-     this error code.
-
-Method: `(R: Reader)' SetByteOrder `(ORDER: SHORTINT)'
-     Sets `byteOrder' in reader R to ORDER.  This affects the
-     interpretation of byte values for applicable read operations.
-
-     *Pre-condition*: ORDER is one of `nativeEndian', `littleEndian',
-     or `bigEndian'.
-
-     *Example:*
-
-          VAR rBig, rLittle, r: BinaryRider.Reader;
-              f: Files.File;
-          
-          f := Files.Old("test.dat", {Files.read}, res);
-          
-          r := BinaryRider.ConnectReader(f);
-             => r reads from f using the default byte order
-                  (i.e., little endian)
-          
-          rBig := BinaryRider.ConnectReader(f);
-          rBig.SetByteOrder(BinaryRider.bigEndian);
-             => rBig reads from f using big endian byte order
-          
-          rLittle := BinaryRider.ConnectReader(f);
-          rLittle.SetByteOrder(BinaryRider.littleEndian);
-             => rLittle reads from f using little endian byte order
-
-Method: `(R: Reader)' SetPos `(NEWPOS: LONGINT)'
-     Sets the reading position to NEWPOS.
-
-   The following methods read a value of the given type from the current
-position of the Reader.  If the value is invalid for its type,
-`Reader.Res()' returns `invalidFormat'.
-
-   Otherwise, if there aren't enough bytes to satisfy the request,
-`Reader.Res()' returns `readAfterEnd'.
-
-Method: `(R: Reader)' ReadBool `(VAR BOOL: BOOLEAN)'
-     Reads in a single byte and interprets it as a `BOOLEAN' value.
-     Zero values are read as `FALSE' and non-zero values are read as
-     `TRUE'.
-
-     *Example:*
-
-          VAR bool: BOOLEAN;
-          
-          r.ReadBool(bool);
-             => if byte read = 0, then bool = FALSE;
-                  otherwise, bool = TRUE
-
-Method: `(R: Reader)' ReadBytes `(VAR X: ARRAY OF SYSTEM.BYTE;  START, N: LONGINT)'
-     Read N bytes from the channel `R.base' according to the native
-     machine byte order.  That is, `ReadBytes' is not affected by calls
-     to `SetByteOrder'.  Thus this method is equivalent to any basic
-     rider `Reader.ReadBytes' method (*note Abstract Class Reader::.)
-
-     *Example:*
-
-          VAR byteArr: ARRAY 256 OF CHAR;
-          
-          r.ReadBytes(byteArr, 0, 16);
-             => reads the next 16 bytes from r.base
-                  into byteArr[0..15]
-          
-          r.ReadBytes(byteArr, 16, 100);
-             => reads the next 100 bytes from r.base
-                  into byteArr[16..115]
-
-Method: `(R: Reader)' ReadChar `(VAR CH: CHAR)'
-     Reads in a single character value and places it in CH.
-
-     *Please note*: OOC assumes that `SIZE(SYSTEM.BYTE) = SIZE(CHAR)'.
-
-     *Example:*
-
-          VAR ch: CHAR;
-          
-          r.ReadChar(ch);
-             => reads one byte and assigns it to ch
-
-Method: `(R: Reader)' ReadLChar `(VAR CH: LONGCHAR)'
-     Reads in a single (long) character value and places it in CH.
-     `SIZE(LONGCHAR)' bytes are read and interpreted based on the
-     current byte order setting for reader R (see `SetByteOrder').
-
-Method: `(R: Reader)' ReadInt `(VAR INT: INTEGER)'
-     Reads in an `INTEGER' value.  `SIZE(INTEGER)' bytes are read and
-     interpreted based on the current byte order setting for reader R
-     (see `SetByteOrder').
-
-Method: `(R: Reader)' ReadLInt `(VAR LINT: LONGINT)'
-     Reads in a `LONGINT' value.  `SIZE(LONGINT)' bytes are read and
-     interpreted based on the current byte order setting for reader R.
-
-Method: `(R: Reader)' ReadLReal `(VAR LREAL: LONGREAL)'
-     Reads in a `LONGREAL' value.  `SIZE(LONGREAL)' bytes are read and
-     interpreted based on the current byte order setting for reader R.
-
-Method: `(R: Reader)' ReadNum `(VAR NUM: LONGINT)'
-     Reads an integer value in a compressed and portable format.  This
-     format is the same no matter what the `byteOrder' setting.
-     Therefore, `ReadNum' is not affected by calls to `SetByteOrder'.
-
-Method: `(R: Reader)' ReadReal `(VAR REAL: REAL)'
-     Reads in a `REAL' value.  `SIZE(REAL)' bytes are read and
-     interpreted based on the current byte order setting for reader R.
-
-Method: `(R: Reader)' ReadSet `(VAR S: SET)'
-     Reads in a `SET' value.  `SIZE(SET)' bytes are read and
-     interpreted based on the current byte order setting for reader R.
-
-Method: `(R: Reader)' ReadSInt `(VAR SINT: SHORTINT)'
-     Reads in a `SHORTINT' value.
-
-     *Please note*: OOC assumes that `SIZE(SYSTEM.BYTE) =
-     SIZE(SHORTINT)' so that the current byte order setting for reader R
-     (see `SetByteOrder') does not matter for calls to `ReadSInt'.
-
-Method: `(R: Reader)' ReadString `(VAR S: ARRAY OF CHAR)'
-     Reads in a sequence of characters until either the string
-     terminator `0X' is encountered, there are no more characters
-     available in the channel, or the string S is full.  S is always
-     terminated with `0X'.
-
-     *Example:*
-
-          VAR str: ARRAY 256 OF CHAR;
-          
-          r.ReadString(str);
-             => reads up to 256 characters, stops when encounters 0X
-
-Method: `(R: Reader)' ReadLString `(VAR S: ARRAY OF LONGCHAR)'
-     Reads in a sequence of (long) characters until either the string
-     terminator `0X' is encountered, there are no more characters
-     available in the channel, or the string S is full.  S is always
-     terminated with `0X'.  For each character, `SIZE(LONGCHAR)' bytes
-     are read and interpreted based on the current byte order setting
-     for reader R (see `SetByteOrder').
-
-
-File: OOCref.info,  Node: Class Writer (BinaryRider),  Next: Connecting BinaryRiders,  Prev: Class Reader (BinaryRider),  Up: BinaryRider
-
-Class Writer (BinaryRider)
-..........................
-
- - Class: Writer = POINTER TO WriterDesc
-     This class provides facilities for writing various types of data
-     in binary format.  Note that this type does not inherit properties
-     from any basic writer type; rather it uses the basic writer type
-     associated with the channel it is attached to.
-
-          *Please note*: Many of the methods for `BinaryRider.Writer'
-          perform typical `Writer' operations.  Rather than duplicate
-          descriptions of those methods here, a reference to the
-          abstract writer type is provided instead.
-
-    Field: base-: `Channel.Channel'
-          This field refers to the channel the writer is connected to.
-
-    Field: byteOrder-: `SHORTINT'
-          The current endian (byte order) setting for the writer.
-
-   The following methods are all fully described in the section on
-abstract writers (*note Abstract Class Writer::.), so only brief
-descriptions are given here.
-
-Method: `(W: Writer)' ClearError
-     Clears error conditions on the writer W, re-enabling further write
-     operations.
-
-Method: `(W: Writer)' ErrorDescr `(VAR DESCR: ARRAY OF CHAR)'
-     Retrieves a descriptive error message string stating the reason
-     why one of the previous operations failed.
-
-Method: `(W: Writer)' Pos `() : LONGINT'
-     Returns the current writing position associated with the writer
-     `w' in channel `W.base'.
-
-Method: `(W: Writer)' Res `() : INTEGER'
-     This method returns the status of the last write operation.  Note
-     that unlike some other writer types, `Res()' is a method rather
-     than a field; but otherwise, it performs equivalently.
-
-     Error codes are highly dependent on the channel being written to
-     (and therefore on the basic riders provided for that channel), so
-     you must look at the result codes for the basic writer that is
-     associated with that particular channel.
-
-     Use `ErrorDescr' to get a plain text error description of this
-     error code.
-
-Method: `(W: Writer)' SetPos `(NEWPOS: LONGINT)'
-     Sets the writing position to NEWPOS.
-
-   The following writer methods are used to write values to the
-underlying channel.  In some situations, it is possible for only part
-of the value to be written.
-
-Method: `(W: Writer)' WriteBytes `(VAR X: ARRAY OF SYSTEM.BYTE;  START, N: LONGINT)'
-     Write N bytes to the channel `W.base' according to the native
-     machine byte order (i.e., `WriteBytes' is not affected by calls to
-     `SetByteOrder').  Thus this method is equivalent to any basic rider
-     `Writer.WriteBytes' method (*note Abstract Class Writer::.)
-
-     *Example:*
-
-          VAR byteArr: ARRAY 256 OF CHAR;
-          
-          w.WriteBytes(byteArr, 0, 16);
-             => writes the values of byteArr[0..15]
-                  to the current writing position of w
-          
-          w.WriteBytes(byteArr, 16, 100);
-             => writes the values of byteArr[16..115]
-                  to the current writing position of w
-
-Method: `(W: Writer)' WriteBool `(BOOL: BOOLEAN)'
-     Writes a `BOOLEAN' value as a single byte.  `FALSE' is written as
-     `0' and `TRUE' is written as 1.
-
-     *Example:*
-
-          w.WriteBool(TRUE);
-             => writes one byte = 01H
-          
-          w.WriteBool(FALSE);
-             => writes one byte = 00H
-
-Method: `(W: Writer)' WriteChar `(CH: CHAR)'
-     Writes the character value CH as a single byte.
-
-     *Please note*: OOC assumes that `SIZE(SYSTEM.BYTE) = SIZE(CHAR)'.
-
-     *Example:*
-
-          VAR ch: CHAR:
-          
-          w.WriteChar("A");
-             => writes one byte = "A"
-          
-          ch := 41X;
-          w.WriteChar(ch);
-             => writes one byte = 41X (i.e., "A" in ASCII)
-
-Method: `(W: Writer)' WriteLChar `(CH: LONGCHAR)'
-     Writes the (long) character value CH as `SIZE(LONGCHAR)' bytes
-     based on the current byte order setting for writer W (see
-     `SetByteOrder').
-
-Method: `(W: Writer)' WriteString `(S: ARRAY OF CHAR)'
-     Writes the string value of S (recall that a string is a character
-     array containing `0X' as an embedded terminator).  The terminating
-     `0X' is also written.
-
-     *Example:*
-
-          VAR str: ARRAY 256 OF CHAR;
-          
-          w.WriteString("abcdefg");
-             => writes a total of 8 characters including 0X
-          
-          str := "hijkl";
-          w.WriteString(str);
-             => writes a total of 6 characters including 0X
-
-Method: `(W: Writer)' WriteLString `(S: ARRAY OF LONGCHAR)'
-     Writes the string value of S including the terminating `0X'
-     character.  Each character is written as `SIZE(LONGCHAR)' bytes
-     based on the current byte order setting for writer W (see
-     `SetByteOrder').
-
-Method: `(W: Writer)' WriteSInt `(SINT: SHORTINT)'
-     Writes a `SHORTINT' value.
-
-     *Please note*: OOC assumes that `SIZE(SYSTEM.BYTE) =
-     SIZE(SHORTINT)' so that the current byte order setting for writer W
-     (see `SetByteOrder') does not matter for calls to `WriteSInt'.
-
-Method: `(W: Writer)' WriteInt `(INT: INTEGER)'
-     Writes an `INTEGER' value.  `SIZE(INTEGER)' bytes are written
-     based on the current byte order setting for writer W (see
-     `SetByteOrder').
-
-Method: `(W: Writer)' WriteLInt `(LINT: LONGINT)'
-     Writes a `LONGINT' value.  `SIZE(LONGINT)' bytes are written based
-     on the current byte order setting for writer W.
-
-Method: `(W: Writer)' WriteNum `(LINT: LONGINT)'
-     Write an integer value in a compressed and portable format.  This
-     format is the same no matter what the `byteOrder' setting.
-     Therefore, `WriteNum' is not affected by calls to `SetByteOrder'.
-
-Method: `(W: Writer)' WriteReal `(REAL: REAL)'
-     Writes a `REAL' value.  `SIZE(REAL)' bytes are written based on
-     the current byte order setting for writer W.
-
-Method: `(VAR W: Writer)' WriteLReal `(VAR LREAL: LONGREAL)'
-     Writes a `LONGREAL' value.  `SIZE(LONGREAL)' bytes are written
-     based on the current byte order setting for writer W.
-
-Method: `(VAR W: Writer)' WriteSet `(VAR S: SET)'
-     Writes a `SET' value.  `SIZE(SET)' bytes are written based on the
-     current byte order setting for writer W.
-
-Method: `(VAR W: Writer)' SetByteOrder `(VAR ORDER: SHORTINT)'
-     Sets `byteOrder' in writer W to ORDER.  This affects the
-     interpretation of byte values for applicable write operations.
-
-     *Pre-condition*: ORDER is one of `nativeEndian', `littleEndian',
-     or `bigEndian'.
-
-     *Example:*
-
-          VAR wBig, wLittle, w: BinaryRider.Writer;
-              f: Files.File;
-          
-          f := Files.Old("test.dat", {Files.write}, res);
-          
-          w := BinaryRider.ConnectWriter(f);
-             => w writes to f using native byte order
-          
-          wBig := BinaryRider.ConnectWriter(f);
-          wBig.SetByteOrder(BinaryRider.bigEndian);
-             => wBig writes to f using big endian byte order
-          
-          wLittle := BinaryRider.ConnectWriter(f);
-          wLittle.SetByteOrder(BinaryRider.littleEndian);
-             => wLittle writes to f using little endian byte order
-
-
-File: OOCref.info,  Node: Connecting BinaryRiders,  Next: Summary of BinaryRider Constants,  Prev: Class Writer (BinaryRider),  Up: BinaryRider
-
-Connecting BinaryRiders to Channels
-...................................
-
-   Functions are provided by module BinaryRider to connect readers and
-writers to open channels.  If the channel being passed as an argument
-to either of these functions has a value of `NIL', behavior is
-undefined.
-
-   Also, for either of these functions, the returned rider is
-positioned at the beginning of the channel for positionable channels
-and at the current position for non-positionable channels.
-
- - Function: ConnectReader `(VAR CH: Channel.Channel): Reader'
-     This function creates a new reader and attaches it to the channel
-     CH.  `CH.res' is set to `done' on success and the new reader is
-     returned.  Otherwise, it returns `NIL' and `CH.res' is set to
-     indicate the error cause.
-
- - Function: ConnectWriter `(VAR CH: Channel.Channel): Writer'
-     This function creates a new writer and attaches it to the channel
-     CH.  `CH.res' is set to `done' on success and the new writer is
-     returned.  Otherwise, it returns `NIL' and `CH.res' is set to
-     indicate the error cause.
-
-   *Example:*
-
-     VAR
-       f: Files.File;
-       r: BinaryRider.Reader;
-       res: INTEGER;
-     
-       f := Files.Old("test.dat", {Files.read, Files.write}, res);
-       IF (res # Files.done) THEN (* error processing *) END;
-     
-       r := BinaryRider.ConnectReader(f);
-       IF (r = NIL) THEN (* error processing *) END;
-
-
-File: OOCref.info,  Node: Summary of BinaryRider Constants,  Prev: Connecting BinaryRiders,  Up: BinaryRider
-
-Summary of BinaryRider Constants
-................................
-
-   For other constant values that may be applicable when using module
-BinaryRider, see the specific channel implementation that you are
-reading to or writing from.
-
-   The following are possible return values for `Res()' methods:
-
- - Constant: done
-     This indicates successful completion of the last operation.
-
- - Constant: invalidFormat
-     Indicates that the data at the current reading position is not
-     properly formatted as the requested type.
-
- - Constant: readAfterEnd
-     A read operation has tried to access a byte beyond the end of the
-     channel.  This means that there weren't enough bytes available or
-     the read operation started at (or after) the end.
-
-   The following are possible endian (byte order) settings:
-
- - Constant: nativeEndian
-     Use the host machine's byte order.
-
- - Constant: littleEndian
-     Read/write least significant byte first.
-
- - Constant: bigEndian
-     Read/write most significant byte first.
-
-
-File: OOCref.info,  Node: Standard I/O,  Prev: Standard Mappers,  Up: I/O Subsystem
-
-Standard I/O
-============
-
-   Modules `In', `Out', and `Err' provide simple interfaces to the
-standard channels (*note StdChannels::.) These modules can be used to
-read from predefined input (typically the keyboard) and write to
-predefined output (typically the computer screen) locations.
-
-   Historically, the various Oberon systems/ compilers have furnished
-modules called `In' and `Out', which were intended primarily as aids for
-learning the Oberon(-2) programming language.  These modules were often
-over-simplified to such a degree that they were of limited use beyond
-the initial learning stage.  The intention was that, after learning the
-language, a programmer would learn other, more sophisticated methods for
-I/O.
-
-   Although the modules `In', `Out', and `Err' in the OOC library are
-simple enough to be used by novices, they are not nearly as limited as
-the corresponding modules from the original Oberon system.  Hence, they
-are still useful to programmers well beyond the beginning stages.
-
-   These modules give simplified facilities similar to module TextRider
-applied to the standard channels; they allow reading and writing of
-data as text.  If these prove to be insufficient for your needs, then
-modules TextRider or BinaryRider may be used instead (*note Standard
-Mappers::.)
-
-* Menu:
-
-* In::                          Simple interface to standard input.
-* Out::                         Simple interface to standard output.
-* Err::                         Simple interface to standard error channel.
-
-
-File: OOCref.info,  Node: In,  Next: Out,  Up: Standard I/O
-
-Module In
----------
-
-   Module `In' provides a set of basic read operations for text.  It is
-initially set to read from the standard input channel
-`StdChannels.stdin' (*note StdChannels::.), but this may be changed with
-the `SetReader' procedure.
-
-   Each of the procedures in this module is designed to interpret a
-specific type of text token.  That is, `Char' will read in a single
-`CHAR' value, `Int' will read in an `INTEGER' value, and so forth.  For
-exact syntax of each of these tokens see *Note Syntax of Text Tokens::.
-
-   The following program fragment gives an example of how you could
-read input a single line at a time (input stops after reading a blank
-line):
-
-     VAR str: ARRAY 256 OF CHAR;
-     
-       In.Line(str);
-       WHILE In.Done() & (str # "") DO
-          (* process each line *)
-          In.Line(str);
-       END;
-
- - Read-only Variable: reader
-     The reader used for all read operations in module `In'.  The type
-     of `reader' is `TextRider.Reader', and it is initialized to refer
-     to a text reader connected to the channel `StdChannels.stdin'.
-
-     The `SetReader' procedure may be used to change this to refer to
-     another `TextRider.Reader'.
-
- - Function: Done `(): BOOLEAN'
-     This function returns `FALSE' after an unsuccessful read operation.
-     This may be caused by attempting to read improperly formatted text
-     (e.g., attempting to read non-numeric text using `Int'), or if the
-     underlying reader has encountered an error.  Further reading is
-     not possible until the error is cleared using the `ClearError'
-     procedure.
-
- - Procedure: ClearError
-     Clears error conditions, re-enabling further read operations.
-
- - Procedure: SetReader `(R: TextRider.Reader)'
-     This procedure is used to change the reader used by all read
-     operations in module `In'.  Refer to *Note TextRider:: for details
-     on how to open other readers.  If R=NIL, the reader is set to read
-     from `StdChannels.stdin'.
-
-   All of the following read operations require that `Done()' =>
-`TRUE'; that is, they will not read anything else after an unsuccessful
-read operation has occured.  Further reading cannot take place until the
-error is cleared using `ClearError'.
-
-   Most of these read operations skip leading whitespace (i.e., spaces,
-tabs, end-of-line characters, etc.) before reading a token; the only
-procedures that do not skip whitespace are `Char' and `Line'.
-
-   A read error will occur, not only for improperly formatted text, but
-for numbers (i.e., reading using `Int', `Real', and so forth) and set
-elements that have values out of range of the target type.  For example,
-attempting to read `999999999999999999' using `Int' will give `Done()'
-=> `FALSE'.
-
-   An error will also occur for procedures that read into an `ARRAY'
-`OF' `CHAR', when the array is not large enough to hold the entire
-input.
-
- - Procedure: Bool `(VAR BOOL: BOOLEAN)'
-     Reads in the text `TRUE' or `FALSE'; any other text results in an
-     error.  When an error occurs, the value of BOOL is undefined.
-
- - Procedure: Char `(VAR CH: CHAR)'
-     Reads in a single character.
-
- - Procedure: Hex `(VAR LINT: LONGINT)'
-     Reads in text in the form of an unsigned hexadecimal number.  The
-     first character must be a decimal digit (i.e., `0..9') and
-     subsequent characters must be valid hexadecimal digits (i.e.,
-     `0..9' or `A..F').  The value read must be in the valid range for a
-     `LONGINT'.
-
-     Upon encountering an error, the value of LINT is undefined.
-
-     *Please note:* Because `LONGINT' values are signed, hex numbers in
-     the range `80000000H..FFFFFFFFH' are interpreted as negative
-     `LONGINT' values.
-
- - Procedure: Identifier `(VAR S: ARRAY OF CHAR)'
-     Reads an Oberon-2 style identifier.  The first character must be a
-     letter, which is followed by any sequence of letters and digits.
-     An error will occur if S is not large enough to hold the entire
-     input.
-
-     Upon encountering an error, the value of S is undefined.
-     *Example:*
-
-          (* Input is as follows:
-          myIdentifier 3isBad
-          *)
-          
-          VAR str: ARRAY 256 OF CHAR;
-          
-          In.Identifier(str)
-             => Done() = TRUE, str = "myIdentifier"
-          In.Identifier(str)
-             => Done() = FALSE, str = undefined
-
- - Procedure: Int `(VAR INT: INTEGER)'
-     Reads in text in the form of a signed whole number.  The first
-     character must be a digit, a "`+'" sign, or a "`-'" sign.  The
-     value read must be in the valid range for an `INTEGER'.
-
-     Upon encountering an error, the value of INT is undefined.
-
-     *Example:*
-
-          (* Input is as follows:
-          12345
-          999999999999999
-          forty-two
-          *)
-          
-          VAR intVar: INTEGER;
-          
-          In.Int(intVar);
-             => Done() = TRUE, intVar = 12345
-          In.Int(intVar);
-             => Done() = FALSE, intVar = undefined
-          In.ClearError;
-          In.Int(intVar); (* attempting to read `forty-two' *)
-             => Done() = FALSE, intVar = undefined
-                  (* reading position is still at the `f' in
-                     `forty-two' *)
-
- - Procedure: LongInt `(VAR LINT: LONGINT)'
-     This procedure provides the same facility as `Int', except that it
-     deals with `LONGINT' values.
-
- - Procedure: ShortInt `(VAR INT: SHORTINT)'
-     This procedure provides the same facility as `Int', except that it
-     deals with `SHORTINT' values.
-
- - Procedure: Line `(VAR S: ARRAY OF CHAR)'
-     Reads text until an end-of-line character is encountered.  The
-     end-of-line character is discarded and S is always terminated with
-     `0X'.  An error will occur if S is not large enough to hold the
-     entire input.
-
-     Upon encountering an error, the value of S is undefined.
-
-     *Please note:* This procedure returns an empty string if already at
-     at the end-of-line.
-
- - Procedure: String `(VAR S: ARRAY OF CHAR)'
-     Reads in any text enclosed in single (`'') or double (`"') quote
-     marks.  The opening quote must be the same as the closing quote
-     and must not occur within the string.  Reading will continue until
-     the terminating quote mark is encountered, an invalid character is
-     read (end-of-line is always considered invalid), or there are no
-     more characters available to be read.  S is always terminated with
-     `0X'.
-
-     Unquoted strings or strings with no terminating quote mark result
-     in an error.  An error will also occur if S is not large enough to
-     hold the entire input.
-
-     Upon encountering an error, the value of S is undefined.
-
-     *Example:*
-
-          (* Input is as follows:
-          "A well-formed string"
-          "No end quote
-          *)
-          
-          VAR str: ARRAY 256 OF CHAR;
-          
-          In.String(str);
-             => Done() = TRUE, str = "A well-formed string"
-          In.String(str);
-             => Done() = FALSE, str = undefined
-                  (* reading position is now at the end of this line *)
-
- - Procedure: Real `(VAR REAL: REAL)'
-     Reads in text in the form of a signed fixed or floating-point
-     number.  The first character must be a digit, a "`+'" sign, or a
-     "`-'" sign.  The value read must be in the valid range for a
-     `REAL'.
-
-     Upon encountering an error, the value of REAL is undefined.
-
-     *Example:*
-
-          (* Input is as follows:
-          3.1415
-          +54321E+30
-          2.34E+56
-          *)
-          
-          VAR realVar: REAL;
-          
-          In.Real(realVar);
-             => Done() = TRUE, realVar = 3.141500
-          In.Real(realVar);
-             => Done() = TRUE, realVar = 5.432100E+34
-          In.Real(realVar);
-             => Done() = FALSE, realVar = undefined
-                  (* value is out of range for REAL *)
-
- - Procedure: LongReal `(VAR LREAL: LONGREAL)'
-     This procedure provides the same facility as `Real', except that it
-     deals with `LONGREAL' values.
-
- - Procedure: Set `(VAR S: SET)'
-     Reads in text in the form of a set constructor.  The values of set
-     elements must be in the range `0..MAX(SET)'.
-
-     Upon encountering an error, the value of S is undefined.
-
-     *Example:*
-
-          (* Input is as follows:
-          {0, 1, 2, 3, 4, 5}
-          {6, 7, 1024}
-          *)
-          
-          VAR setVar: SET;
-          
-          In.Set(setVar);
-             => Done() = TRUE, setVar = {0..5}
-          In.Set(setVar);
-             => Done() = FALSE, setVar = undefined
-                  (* reading position is now at the `}' after
-                     the `1024' *)
 

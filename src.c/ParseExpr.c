@@ -425,27 +425,32 @@ void ParseExpr__CheckType(Data__Struct type, signed char expected, int pos) {
   i0 = (int)type + 20;
   i0 = *(signed char*)i0;
   i0 = i0 == 0;
-  if (i0) goto l3;
+  if (i0) goto l4;
   i0 = SymbolTable__TypeInGroup((Data__Struct)(int)type, (signed char)expected);
-  if (i0) goto l3;
+  if (i0) goto l4;
   i1 = _abs(expected);
-  if (!(i1<=0 || (i1>=2 && i1<=31) || i1>=33)) goto l0;
+  if (!(i1<=0 || (i1>=2 && i1<=31) || (i1>=33 && i1<=36) || i1>=38)) goto l0;
   i1 = 1;
-  goto l2;
+  goto l3;
 l0:
   if (!(i1==1)) goto l1;
   (void)memcpy((void*) (int)class_, (const void*) (int)_c0, 8);
   i1 = 0;
-  goto l2;
+  goto l3;
 l1:
   if (!(i1==32)) goto l2;
   (void)memcpy((void*) (int)class_, (const void*) (int)_c1, 8);
   i1 = 0;
+  goto l3;
 l2:
-  if (i1) goto l3;
+  if (!(i1==37)) goto l3;
+  (void)memcpy((void*) (int)class_, (const void*) (int)_c2, 4);
+  i1 = 0;
+l3:
+  if (i1) goto l4;
   SymbolTable__TypeName((unsigned char*)(int)ins, 256, (Data__Struct)(int)type);
   Error__ErrIns2((int)pos, (short int)234, (const unsigned char*)(int)class_, 16, (const unsigned char*)(int)ins, 256);
-l3:
+l4:
   ;
 }
 
@@ -550,7 +555,7 @@ l8:
   i1 = *(int*)(int)x;
   Error__Err((int)i1, (short int)197);
   i1 = *(int*)(int)x;
-  i1 = (int)SymbolTable__NewObject((const unsigned char*)(int)_c2, 4, (signed char)3, (int)i1);
+  i1 = (int)SymbolTable__NewObject((const unsigned char*)(int)_c3, 4, (signed char)3, (int)i1);
   *(void**)i2 = (void*)i1;
   i2 = (int)*(void**)i2;
   i0 = i2 + 40;
@@ -2089,7 +2094,7 @@ l6:
   i4 = (int)*(void**)i1;
   i4 += 24;
   i2 = *(int*)i4;
-  (void)memcpy((void*) (int)s, (const void*) (int)_c3, 3);
+  (void)memcpy((void*) (int)s, (const void*) (int)_c4, 3);
   i4 = (int)s + 3;
   *(unsigned char*)i4 = 0;
   i7 = i2 == 0;
@@ -2142,76 +2147,45 @@ signed char ParseExpr__CheckOperandType(Attributes__Item *x, _Type x__tag, unsig
   i1 += 28;
   i1 = *(signed char*)i1;
   i1 = i1 == 2;
-  if (i1) goto l10;
+  if (i1) goto l4;
 l0:
-  i2 = (legalTypes & ((unsigned int)1 << 0)) != 0;
-  if (!(i2)) goto l1;
   i2 = (int)x + 8;
-  i2 = (int)*(void**)i2;
-  i2 = SymbolTable__TypeInGroup((Data__Struct)i2, (signed char)0);
-  if (!(i2)) goto l1;
-  i0 = 0;
+  i1 = (int)*(void**)i2;
+  i0 = i1 + 20;
+  i3 = *(signed char*)i0;
+  i0 = (legalTypes & ((unsigned int)1 << i3)) != 0;
+  if (i0) goto l3;
+  i3 = (legalTypeGroups & ((unsigned int)1 << 0)) != 0;
+  if (!(i3)) goto l1;
+  i1 = SymbolTable__TypeInGroup((Data__Struct)i1, (signed char)32);
+  if (!(i1)) goto l1;
+  i3 = 32;
   goto l3;
 l1:
-  i1 = (int)x + 8;
-  i0 = 0;
+  i3 = 32;
 l2:
-  i0++;
-  i2 = i0 > 31;
-  if (i2) goto l3;
-  i2 = (legalTypes & ((unsigned int)1 << i0)) != 0;
-  if (!(i2)) goto l2;
-  i2 = (int)*(void**)i1;
-  i2 = SymbolTable__TypeInGroup((Data__Struct)i2, (signed char)i0);
-  if (!(i2)) goto l2;
-l3:
-  i2 = i0 > 31;
-  if (!(i2)) goto l4;
-  i1 = legalTypeGroups != 0x0U;
-  if (i1) goto l5;
-l4:
-  i3 = i0;
-  goto l9;
-l5:
-  i1 = i0 <= 63;
-  if (!(i1)) goto l6;
-  i2 = i0 + -32;
-  i2 = (legalTypeGroups & ((unsigned int)1 << i2)) != 0;
-  if (!(i2)) goto l7;
-  i2 = (int)x + 8;
-  i2 = (int)*(void**)i2;
-  i2 = SymbolTable__TypeInGroup((Data__Struct)i2, (signed char)i0);
-  if (!(i2)) goto l7;
-l6:
-  i3 = i0;
-  goto l9;
-l7:
-  i2 = (int)x + 8;
-  i3 = i0;
-l8:
   i3++;
   i1 = i3 > 63;
-  if (i1) goto l9;
+  if (i1) goto l3;
   i1 = i3 + -32;
   i1 = (legalTypeGroups & ((unsigned int)1 << i1)) != 0;
-  if (!(i1)) goto l8;
+  if (!(i1)) goto l2;
   i1 = (int)*(void**)i2;
   i1 = SymbolTable__TypeInGroup((Data__Struct)i1, (signed char)i3);
-  if (!(i1)) goto l8;
-l9:
-  i2 = i3 > 63;
-  if (!(i2)) goto l11;
-  i1 = (int)x + 8;
-  i1 = (int)*(void**)i1;
-  i2 = *(int*)(int)x;
-  SymbolTable__ErrT1((int)i2, (short int)231, (Data__Struct)i1);
+  if (!(i1)) goto l2;
+l3:
+  i1 = i3 > 63;
+  if (!(i1)) goto l5;
+  i2 = (int)*(void**)i2;
+  i1 = *(int*)(int)x;
+  SymbolTable__ErrT1((int)i1, (short int)231, (Data__Struct)i2);
   i3 = -1;
-  goto l11;
-l10:
+  goto l5;
+l4:
   i1 = *(int*)(int)x;
   Error__Err((int)i1, (short int)232);
   i3 = -1;
-l11:
+l5:
   return (signed char)i3;
 }
 
@@ -3481,9 +3455,9 @@ Data__Const ParseExpr__SimpleExpr_Concat(Data__Const x, Data__Const y) {
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i8 < 0) _invalid_length(i8, _P(70991));
+    if(i8 < 0) _invalid_length(i8, _P(70942));
     _mem = GC_malloc_atomic(i8*1+8);
-    if (!_mem) _new_failed(_P(70967));
+    if (!_mem) _new_failed(_P(70918));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i8;
@@ -3601,60 +3575,70 @@ l8:
 }
 
 void ParseExpr__Expr(Data__Region region, Attributes__Item *x, _Type x__tag) {
-  register int i0, i1, i2;
+  register int i0, i1, i2, i3;
   Data__Instruction tempCopy;
   Attributes__Item y;
   ParseExpr__SimpleExpr((Data__Region)(int)region, (Attributes__Item *)(int)x, x__tag);
-  i1 = Scanner__sym;
-  i0 = i1 < 9;
-  if (i0) goto l5;
-  i0 = i1 > 16;
-  if (i0) goto l5;
-  i0 = Scanner__currSymPos;
+  i2 = Scanner__sym;
+  i0 = i2 < 9;
+  if (i0) goto l6;
+  i1 = i2 > 16;
+  if (i1) goto l6;
+  i1 = Scanner__currSymPos;
   Scanner__GetSym();
-  i2 = (int)ParseExpr__InsertTempCopy((Data__Region)(int)region, (Attributes__Item *)(int)x, x__tag);
+  i0 = (int)ParseExpr__InsertTempCopy((Data__Region)(int)region, (Attributes__Item *)(int)x, x__tag);
   ParseExpr__SimpleExpr((Data__Region)(int)region, (Attributes__Item *)(int)&y, &Attributes__Item_td.td);
-  tempCopy = (void*)i2;
+  tempCopy = (void*)i0;
   ParseExpr__QueryTempCopy((Attributes__Item *)(int)x, x__tag, (Data__Instruction *)(int)&tempCopy, (signed char)1);
-  if (!(i1<=8 || i1>=17)) goto l0;
-  i0 = 1;
-  goto l4;
+  if (!(i2<=8 || i2>=17)) goto l0;
+  i2 = 1;
+  goto l5;
 l0:
-  if (!((i1>=9 && i1<=10))) goto l1;
-  i2 = i1 + 22;
-  ParseExpr__EvalDyadicOp((Data__Region)(int)region, (Attributes__Item *)(int)x, x__tag, (Attributes__Item *)(int)&y, &Attributes__Item_td.td, (short int)i2, (int)i0, (unsigned int)0x130002U, (unsigned int)0x30F4U);
-  i0 = 0;
-  goto l4;
+  if (!((i2>=9 && i2<=10))) goto l1;
+  i0 = i2 + 22;
+  ParseExpr__EvalDyadicOp((Data__Region)(int)region, (Attributes__Item *)(int)x, x__tag, (Attributes__Item *)(int)&y, &Attributes__Item_td.td, (short int)i0, (int)i1, (unsigned int)0x130002U, (unsigned int)0x30F4U);
+  i2 = 0;
+  goto l5;
 l1:
-  if (!((i1>=11 && i1<=14))) goto l2;
-  i2 = i1 + 22;
-  ParseExpr__EvalDyadicOp((Data__Region)(int)region, (Attributes__Item *)(int)x, x__tag, (Attributes__Item *)(int)&y, &Attributes__Item_td.td, (short int)i2, (int)i0, (unsigned int)0x0U, (unsigned int)0xD4U);
-  i0 = 0;
-  goto l4;
+  if (!((i2>=11 && i2<=14))) goto l2;
+  i0 = i2 + 22;
+  ParseExpr__EvalDyadicOp((Data__Region)(int)region, (Attributes__Item *)(int)x, x__tag, (Attributes__Item *)(int)&y, &Attributes__Item_td.td, (short int)i0, (int)i1, (unsigned int)0x0U, (unsigned int)0xD4U);
+  i2 = 0;
+  goto l5;
 l2:
-  if (!(i1==15)) goto l3;
-  i1 = (int)&y + 8;
-  i1 = (int)*(void**)i1;
-  i2 = i1 + 20;
-  i2 = *(signed char*)i2;
-  ParseExpr__BoundSetElement((Data__Region)(int)region, (signed char)i2, (Attributes__Item *)(int)x, x__tag);
-  i2 = Data__OperatorSubclass((Data__Struct)i1, (signed char)0);
-  i1 = (int)Data__struct + 4;
-  i2 += 464;
-  i1 = (int)*(void**)i1;
-  i1 = (int)Attributes__DyadicOp((Data__Region)(int)region, (short int)i2, (Data__Struct)i1, (Attributes__Item *)(int)&y, &Attributes__Item_td.td, (Attributes__Item *)(int)x, x__tag, (int)i0);
-  ParseExpr__EvalInstr((Attributes__Item *)(int)x, x__tag, (Data__Instruction)i1);
-  i0 = 0;
-  goto l4;
+  if (!(i2==15)) goto l4;
+  i0 = (int)&y + 8;
+  i3 = (int)*(void**)i0;
+  i2 = SymbolTable__TypeInGroup((Data__Struct)i3, (signed char)37);
+  if (i2) goto l3;
+  i2 = *(int*)(int)&y;
+  ParseExpr__CheckType((Data__Struct)i3, (signed char)37, (int)i2);
+  i3 = (int)Data__struct + 56;
+  i3 = (int)*(void**)i3;
+  i3 = (int)Data__GetSetConst((unsigned int)0x0U, (Data__Struct)i3);
+  Attributes__CreateItem((Attributes__Item *)(int)&y, &Attributes__Item_td.td, (Data__Usable)i3, (int)i2);
 l3:
-  if (!(i1==16)) goto l4;
-  ParseExpr__TypeTest((Data__Region)(int)region, (const Attributes__Item *)(int)x, (const Attributes__Item *)(int)&y, (unsigned char)0, (int)i0, (Attributes__Item *)(int)x, x__tag);
-  i0 = 0;
+  i3 = (int)*(void**)i0;
+  i0 = i3 + 20;
+  i0 = *(signed char*)i0;
+  ParseExpr__BoundSetElement((Data__Region)(int)region, (signed char)i0, (Attributes__Item *)(int)x, x__tag);
+  i3 = Data__OperatorSubclass((Data__Struct)i3, (signed char)0);
+  i0 = (int)Data__struct + 4;
+  i3 += 464;
+  i0 = (int)*(void**)i0;
+  i0 = (int)Attributes__DyadicOp((Data__Region)(int)region, (short int)i3, (Data__Struct)i0, (Attributes__Item *)(int)&y, &Attributes__Item_td.td, (Attributes__Item *)(int)x, x__tag, (int)i1);
+  ParseExpr__EvalInstr((Attributes__Item *)(int)x, x__tag, (Data__Instruction)i0);
+  i2 = 0;
+  goto l5;
 l4:
-  if (i0) goto l5;
-  i0 = (int)x + 41;
-  *(unsigned char*)i0 = 0;
+  if (!(i2==16)) goto l5;
+  ParseExpr__TypeTest((Data__Region)(int)region, (const Attributes__Item *)(int)x, (const Attributes__Item *)(int)&y, (unsigned char)0, (int)i1, (Attributes__Item *)(int)x, x__tag);
+  i2 = 0;
 l5:
+  if (i2) goto l6;
+  i2 = (int)x + 41;
+  *(unsigned char*)i2 = 0;
+l6:
   ;
 }
 

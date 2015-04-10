@@ -4,11 +4,11 @@ the input file OOCref.texinfo.
    This file documents the Optimizing Oberon-2 Compiler (OOC) and its
 library.
 
-   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
-Library Reference Manual', for Version 1.4.5 or later of oo2c.
+   This is Edition 0.10 DRAFT, last updated 29 February 2000, of `The
+OOC Library Reference Manual', for Version 1.5.1 or later of oo2c.
 
-   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
-1999 Michael van Acken
+   Copyright (C) 1997-2000 Eric Nikitin Part II Copyright (C) 1998-2000
+Michael van Acken
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -26,6 +26,1105 @@ manual into another language, under the above conditions for modified
 versions, except that the text of the translation of the section
 entitled "GNU General Public License" must be approved for accuracy by
 the Foundation.
+
+
+File: OOCref.info,  Node: Mathematical Functions,  Next: Arbitrary Precision Integers,  Prev: Low-level Numeric Properties,  Up: Mathematics
+
+Mathematical Functions
+======================
+
+   The modules `RealMath' and `LRealMath' provide facilities for common
+mathematical functions and constants for `REAL' and `LONGREAL' numeric
+types.
+
+   *Please note:* The angle in all trigonometric functions is measured
+in radians.
+
+   The following useful mathematical constants are provided:
+
+ - Constant: pi
+     An implementation-defined approximation to the mathematical
+     constant "pi".
+
+ - Constant: exp1
+     An implementation-defined approximation to the mathematical
+     constant "e".
+
+   *Please note:* Due to the approximations involved, `sin(pi)' might
+not exactly equal zero.  Similarly, `exp1' might not exactly equal
+`exp(1)'.
+
+   The following are mathematical functions provided in either
+`RealMath' (for `REAL') or `LRealMath' (for `LONGREAL'):
+
+ - Function: sqrt `(X: REAL): REAL'
+
+ - Function: sqrt `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the positive square root
+     of X.  If X is negative, an exception is raised.
+
+ - Function: exp `(X: REAL): REAL'
+
+ - Function: exp `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the mathematical
+     constant `e' raised to the power of X.
+
+ - Function: ln `(X: REAL): REAL'
+
+ - Function: ln `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the natural logarithm of
+     X.  If X is zero or negative, an exception is raised.
+
+ - Function: sin `(X: REAL): REAL'
+
+ - Function: sin `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the sine of X for all
+     values of X.
+
+ - Function: cos `(X: REAL): REAL'
+
+ - Function: cos `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the cosine of X for all
+     values of X.
+
+ - Function: tan `(X: REAL): REAL'
+
+ - Function: tan `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the tangent of X.  If X
+     is an odd multiple of `pi/2', an exception is raised.
+
+ - Function: arcsin `(X: REAL): REAL'
+
+ - Function: arcsin `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the arcsine of X.  The
+     result will be in the range `[-pi/2, pi/2]'.  If the absolute
+     value of X is greater than one, an exception is raised.
+
+ - Function: arccos `(X: REAL): REAL'
+
+ - Function: arccos `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the arccosine of X.  The
+     result will be in the range `[0, pi]'.  If the absolute value of X
+     is greater than one, an exception is raised.
+
+ - Function: arctan `(X: REAL): REAL'
+
+ - Function: arctan `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the arctangent of X for
+     all values of X.  The result will be in the range `[-pi/2, pi/2]'.
+
+ - Function: power `(BASE, EXPONENT: REAL): REAL'
+
+ - Function: power `(BASE, EXPONENT: LONGREAL): LONGREAL'
+     This function returns an approximation to the value of BASE raised
+     to the power EXPONENT.  If BASE is zero or negative, an exception
+     is raised.
+
+     *Please note:* This function is mathematically equivalent to
+     `exp(EXPONENT * ln(BASE))', but may be computed differently.
+
+ - Function: round `(X: REAL): LONGINT'
+
+ - Function: round `(X: LONGREAL): LONGINT'
+     This function returns the nearest integer to the value of X.  If
+     the mathematical result is not within the range of the type
+     `LONGINT', an exception occurs and may be raised.
+
+     *Please note:* If the value of X is midway between two integer
+     values, the result is an implementation-defined selection of one
+     of the two possible values.
+
+ - Function: IsRMathException `(): BOOLEAN'
+     This function returns `TRUE' if the current process is in the
+     exceptional execution state because of the raising of the
+     corresponding `RealMath' or `LRealMath' exception; otherwise, it
+     returns `FALSE'.
+
+
+File: OOCref.info,  Node: Arbitrary Precision Integers,  Next: Arbitrary Precision Real Numbers,  Prev: Mathematical Functions,  Up: Mathematics
+
+Arbitrary Precision Integers
+============================
+
+   Very often, a program requires numbers with a greater range or
+accuracy than exists with the built-in Oberon-2 integer types.  Hence,
+the module `Integers' provides facilities for "arbitrary precision"
+integer operations.
+
+   For further information on how these kinds of facilites may be
+implemented, consult the following reference:
+
+`The Art Of Computer Programming:
+Volume 2, Seminumerical Algorithms, Second Edition'
+Donald E. Knuth
+Addison-Wesley Publishing Co., January 1981
+
+ - Data type: Integer = POINTER TO IntegerDesc
+     Instances of this type are used to represent arbitrary precision
+     integers.
+
+   The following operations are used to create initial instances of
+`Integer' and convert `Integer's to standard numeric types.
+
+ - Function: Entier `(X: LONGREAL): Integer'
+     This function returns an instance of `Integer' whose value is the
+     largest integer not greater than X.
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+     
+     n:=Integers.Entier(1.0D20);
+        => n = 100000000000000000000
+     
+     n:=Integers.Entier(1111111111.5D0);
+        => n = 1111111111
+     
+     n:=Integers.Entier(0.0);
+        => n = 0
+
+ - Function: Float `(X: Integer): LONGREAL'
+     This function returns an approximation to the value of X converted
+     to a `LONGREAL'.  If the result cannot be represented as a
+     `LONGREAL' because the value of X is either too large or too
+     small, this function returns either `MIN(LONGREAL)' or
+     `MAX(LONGREAL)'.
+
+ - Function: Long `(X: LONGINT): Integer'
+     This function returns an instance of `Integer' whose value is X.
+
+ - Function: Short `(X: Integer): LONGINT'
+     This function returns the value of X converted to a `LONGINT'.  If
+     the result cannot be represented as a `LONGINT' because the value
+     of X is either too large or too small, this function returns either
+     `MIN(LONGINT)' or `MAX(LONGINT)'.
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+         s: LONGINT;
+         f: LONGREAL;
+     
+     n:=Integers.Long(1234);
+     s:=Integers.Short(n);
+        => s = 1234
+     f:=Integers.Float(n);
+        => f = 1.23400000000000E+3
+     
+     n:=Integers.Long(80000000H);
+     s:=Integers.Short(n);
+        => s = -2147483648
+     f:=Integers.Float(n);
+        => f = -2.14748364800000E+9
+     
+     n:=Integers.Long(7FFFFFFFH);
+     s:=Integers.Short(n);
+        => s = 2147483647
+     f:=Integers.Float(n);
+        => f = 2.14748364700000E+9
+
+   The following are common mathematical operations, which operate on
+`Integer's:
+
+ - Function: Abs `(X: Integer): Integer'
+     This function returns the absolute value of X.
+
+ - Function: Odd `(X: Integer): BOOLEAN'
+     This function returns `TRUE' if X is an odd number, and `FALSE' if
+     it is even.
+
+ - Function: Compare `(X, Y: Integer): LONGINT'
+     This function compares the values of X and Y and gives the
+     following result:
+
+       If `x > y', return `1'
+       If `x = y', return `0'
+       If `x < y', return `-1'
+
+ - Function: Difference `(X, Y: Integer): Integer'
+     This function returns the difference of X and Y (i.e., `x-y').
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+     
+     n:=Integers.Difference(Integers.Long(2000000), Integers.Long(999));
+        => n = 1999001
+     
+     n:=Integers.Difference(Integers.Long(999), Integers.Long(-2000000));
+        => n = -2000999
+     
+     n:=Integers.Difference(Integers.Long(-999), Integers.Long(999));
+        => n = -1998
+     
+     n:=Integers.Difference(Integers.Long(-2000000), Integers.Long(-999));
+        => n = -1999001
+
+ - Function: Sum `(X, Y: Integer): Integer'
+     This function returns the sum of X and Y (i.e., `x+y').
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+     
+     n:=Integers.Sum(Integers.Long(999), Integers.Long(2000000));
+        => n = 2000999
+     
+     n:=Integers.Sum(Integers.Long(999), Integers.Long(-2000000));
+        => n = -1999001
+     
+     n:=Integers.Sum(Integers.Long(-999), Integers.Long(999));
+        => n = 0
+     
+     n:=Integers.Sum(Integers.Long(-2000000), Integers.Long(-999));
+        => n = -2000999
+
+ - Function: Product `(X, Y: Integer): Integer'
+     This function returns the product of X and Y (i.e., `x*y').
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+     
+     n:=Integers.Product(Integers.Long(100000000), Integers.Long(100000000));
+        => n = 10000000000000000
+     
+     n:=Integers.Product(Integers.Long(71234), Integers.Long(66000));
+        => n = 4701444000
+
+ - Function: Quotient `(X, Y: Integer): Integer'
+     This function returns the quotient of X divided by Y (i.e., `x DIV
+     y').
+
+     *Pre-condition*: Y is not zero.
+
+ - Function: Remainder `(X, Y: Integer): Integer'
+     This function returns the remainder of X divided by Y (i.e., `x
+     MOD y').
+
+     *Pre-condition*: Y is not zero.
+
+   *Example:*
+
+     VAR m, n: Integers.Integer;
+     
+     n:=Integers.Quotient(Integers.Long(2000000000), Integers.Long(1234));
+     m:=Integers.Remainder(Integers.Long(2000000000), Integers.Long(1234));
+        => n = 1620745, m = 670
+     
+     n:=Integers.Quotient(Integers.Long(2000000000), Integers.Long(123456));
+     m:=Integers.Remainder(Integers.Long(2000000000), Integers.Long(123456));
+        => n = 16200, m = 12800
+
+ - Procedure: QuoRem `(X, Y: Integer; VAR QUO, REM: Integer)'
+     This procedure calculates both the quotient and remainder of X
+     divided by Y.
+
+     *Pre-condition*: Y is not zero.
+
+   *Example:*
+
+     VAR m, n: Integers.Integer;
+     
+     Integers.QuoRem(Integers.Long(2000000000), Integers.Long(1234), n, m);
+        => n = 1620745, m = 670
+     
+     Integers.QuoRem(Integers.Long(2000000000), Integers.Long(123456), n, m);
+        => n = 16200, m = 12800
+
+ - Function: GCD `(X, Y: Integer): Integer'
+     This function returns the greatest common divisor of X and Y.
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+     
+     n:=Integers.GCD(Integers.Long(40902), Integers.Long(24140));
+        => n = 34
+     
+     n:=Integers.GCD(Integers.Long(27182818), Integers.Long(10000000));
+        => n = 2
+     
+     n:=Integers.GCD(Integers.Long(2940), Integers.Long(238));
+        => n = 14
+
+ - Function: Power `(X: Integer; EXP: LONGINT): Integer'
+     This function returns the value of X raised to the power EXP.
+
+     *Pre-condition*: EXP is greater than zero.
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+     
+     n:=Integers.Power(Integers.Long(2940), 2);
+        => n = 8643600
+     
+     n:=Integers.Power(Integers.Long(2), 33);
+        => n = 8589934592
+     
+     n:=Integers.Power(Integers.Long(10), 9);
+        => n = 1000000000
+     
+     n:=Integers.Power(Integers.Long(2), 100);
+        => n = 1267650600228229401496703205376
+
+ - Function: Sign `(X: Integer): SHORTINT'
+     This function returns the sign of X as follows:
+
+       If `x > 0', return `1'
+       If `x = 0', return `0'
+       If `x < 0', return `-1'
+
+ - Function: Factorial `(X: LONGINT): Integer'
+     This function returns X factorial (i.e.,
+     `x!=x(x-1)(x-2)...(2)(1)').
+
+     *Pre-condition*: X is not negative.
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+     
+     n:=Integers.Factorial(13);
+        => n = 6227020800
+     
+     n:=Integers.Factorial(20);
+        => n = 2432902008176640000
+
+   The following operations are used to extract pieces of `Integers':
+
+ - Function: ThisDigit10 `(X: Integer; EXP10: LONGINT): CHAR'
+     This function returns a single character, which represents the
+     digit in X located at position EXP10.  Note that the right most
+     digit (i.e., the "ones" place) has position zero.
+
+     *Pre-condition*: EXP10 is not negative.
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+         c: CHAR;
+     
+     Integers.ConvertFromString("1267650600228229401496703205376", n);
+     
+     c:=Integers.ThisDigit10(n, 0);
+        => c = "6"
+     
+     c:=Integers.ThisDigit10(n, 10);
+        => c = "9"
+     
+     c:=Integers.ThisDigit10(n, 30);
+        => c = "1"
+
+ - Function: Digits10Of `(X: Integer): LONGINT'
+     This function returns the value of the last ten digits of X (i.e.,
+     it returns `x MOD 1000000000').
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+         s: LONGINT;
+     
+     Integers.ConvertFromString("1267650600228229401496703205376", n);
+     
+     s:=Integers.Digits10Of(n);
+        => s = 703205376
+
+   The following operations are used to convert between strings and
+`Integer's:
+
+ - Procedure: ConvertFromString `(S: ARRAY OF CHAR; VAR X: Integer)'
+     This procedure converts S to an `Integer' value, which is assigned
+     to X.  Leading spaces and tab characters in S are skipped.
+
+     *Pre-condition*: S is in the form of a signed whole number (*note
+     Syntax of Text Tokens::.)
+
+ - Procedure: ConvertToString `(X: Integer; VAR S: ARRAY OF CHAR)'
+     This procedure converts X to a string value, which is assigned to
+     S.
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+         str: ARRAY 1024 OF CHAR;
+     
+     Integers.ConvertFromString("1234567890", n);
+        => n = 1234567890
+     Integers.ConvertToString(n, str);
+        => str = "1234567890"
+     
+     Integers.ConvertFromString("  -9999999999", n);
+        => n = -9999999999
+     Integers.ConvertToString(n, str);
+        => str = "-9999999999"
+     
+     Integers.ConvertFromString(" 12345678901234567890123456789", n);
+        => n = 12345678901234567890123456789
+     Integers.ConvertToString(n, str);
+        => str = "12345678901234567890123456789"
+
+   The following operations can be used to internalize and externalize
+`Integers' (i.e., read from and write to channels):
+
+ - Procedure: Externalize `(VAR W: BinaryRider.Writer; X: Integer)'
+     Writes the value of X to a channel using writer W.
+
+ - Procedure: Internalize `(VAR R: BinaryRider.Reader; VAR X: Integer)'
+     Retrieves a stored `Integer' value from a channel using reader R,
+     and assigns it to X.
+
+
+File: OOCref.info,  Node: Arbitrary Precision Real Numbers,  Next: Complex Numbers,  Prev: Arbitrary Precision Integers,  Up: Mathematics
+
+Arbitrary Precision Real Numbers
+================================
+
+   Module `Reals' provides facilities for arbitrary precision floating
+point operations.  Real numbers are represented by type `Real'.
+
+   These facilities are based on a FORTRAN library (MPFUN) created by
+David H. Bailey.  For more information, see
+`http://www.nersc.gov/~dhb/'
+
+   or contact <mp-request@nas.nasa.gov>.
+
+Numeric Precision-setting Constants
+-----------------------------------
+
+ - Constant: maxDigits
+     Initial precision level in digits.
+
+ - Constant: outDigits
+     Initial output precision level in digits.
+
+ - Constant: log10eps
+     The initial multiprecision "epsilon" level.
+
+ - Constant: maxMant
+     Maximum mantissa precision in (machine) words.
+
+ - Constant: maxExp
+     Maximum exponent precision.
+
+Types
+-----
+
+ - Data type: Real = POINTER TO RealDesc
+     Instances of this type are used to represent arbitrary precision
+     floating point numbers.
+
+Variables
+---------
+
+ - Variable: err: INTEGER
+
+ - Read-only Variable: curMant: INTEGER
+     Current mantissa precision in (machine) words.
+
+ - Read-only Variable: sigDigs: INTEGER
+
+ - Read-only Variable: eps: Real
+     Current multiprecision "epsilon" level.
+
+ - Read-only Variable: ln2: Real
+     An approximation of the value of the natural logarithm of `2'.
+
+ - Read-only Variable: pi: Real
+     An approximation of the mathematical constant "pi".
+
+ - Read-only Variable: ln10: Real
+     An approximation of the value of the natural logarithm of `10'.
+
+Procedures
+----------
+
+   The following operations are used to create initial instances of
+`Real' and convert `Real's to standard numeric types.
+
+ - Function: Long `(X: LONGREAL): Real'
+     This function returns an instance of `Real' whose value is X.
+
+ - Function: Copy `(A: Real): Real'
+     This function returns a new instance of `Real' that has the same
+     value as A.
+
+   The following operations are used to convert between strings and
+`Reals':
+
+ - Function: ToReal `(STR: ARRAY OF CHAR): Real'
+     This procedure converts STR to a `Real' value and returns the
+     result.
+
+     The numeric representation of STR must be of the format
+
+          number = ["+" | "-"] {decimal_digit} ["." {decimal_digit}] [scale]
+          
+          where  scale = ("E" | "D") ["+" | "-"] decimal_digit
+                         {decimal_digit}
+          and    decimal_digit = "0".."9" | " "
+
+     Thus the following is a valid input:
+
+          "1.23456 12938 23456 E + 200"
+
+     *Please note:* This real number definition is backwardly compatible
+     with the Oberon-2 real string, but it has been extended to allow
+     splitting of very large numbers into more readable segments by
+     inserting spaces.
+
+ - Procedure: ToString `(A: Real; VAR STR: ARRAY OF CHAR; N: LONGINT)'
+     This procedure converts A to a string value in scientific notation
+     with N significant places.  The result it assigned to STR.  Note
+     that the length of STR should be at least `N+15' characters.
+
+ - Function: short `(Q: Real): LONGREAL'
+     This function returns the value of Q converted to a `LONGREAL'
+     value.  If the result cannot be represented as a `LONGREAL'
+     because the value of Q is either too large or too small, this
+     function returns either `MIN(LONGREAL)' or `MAX(LONGREAL)'.
+
+ - Function: entier `(Q: Real): Real'
+     This function returns an instance of `Real' whose value is the
+     largest integer not greater than Q.
+
+   *Example:*
+
+     VAR n: Reals.Real;
+     
+     n:=entier(Reals.Long(3.6));  (* ENTIER(3.6) *)
+        => n = 3.0E+0
+     
+     n:=entier(Reals.Long(-3.6));  (* ENTIER(-3.6) *)
+        => n = -4.0E+0
+
+ - Function: fraction `(Q: Real): Real'
+     This function returns the fractional part of Q.
+
+ - Function: add `(Z1, Z2: Real): Real'
+     This function returns the sum of Z1 and Z2 (i.e., `z1+z2').
+
+ - Function: sub `(Z1, Z2: Real): Real'
+     This function returns the difference of Z1 and Z2 (i.e., `z1-z2').
+
+ - Function: mul `(Z1, Z2: Real): Real'
+     This function returns the product of Z1 and Z2 (i.e., `z1*z2').
+
+ - Function: div `(Z1, Z2: Real): Real'
+     This function returns the quotient of Z1 divided by Z2 (i.e.,
+     `z1/z2').
+
+     *Pre-condition*: Z2 is not zero.
+
+   *Example:*
+
+     VAR m, n, s: Reals.Real;
+     
+     m:=Reals.ToReal("0.123456789012345678901234567890123456790");
+        => m = 1.234567890123456789012345678E-1
+     
+     n:=Reals.ToReal("123456789012345678901234567890123456789");
+        => n = 1.234567890123456789012345678E+38
+     
+     s:=Reals.add(n, m);
+        => s = 1.234567890123456789012345678E+38
+     
+     s:=Reals.sub(n, m);
+        => s = 1.234567890123456789012345678E+38
+     
+     s:=Reals.div(n, m);
+        => s = 1.0E+39
+     
+     s:=Reals.mul(n, m);
+        => s = 1.524157875323883675049535156E+37
+     
+     
+     s:=Reals.div(Reals.Long(1), Reals.Long(3));  (* 1/3 *)
+        => s = 3.333333333333333333333333333E-1
+     
+     n:=Reals.add(s, s);  (* 1/3+1/3 *)
+        => n = 6.666666666666666666666666666E-1
+     
+     s:=Reals.div(Reals.Long(1), Reals.Long(3));  (* 1/3 *)
+        => s = 3.333333333333333333333333333E-1
+     
+     n:=Reals.mul(s, s);  (* 1/3*1/3 *)
+        => n =1.111111111111111111111111111E-1
+     
+     s:=Reals.div(Reals.Long(1), Reals.Long(3));  (* 1/3 *)
+        => s = 3.333333333333333333333333333E-1
+     
+     n:=Reals.mul(s, Reals.Long(3));  (* 1/3*3 *)
+        => n = 1.0E+0
+
+ - Function: abs `(Z: Real): Real'
+     This function returns the absolute value of Z.
+
+ - Function: cmp `(A, B: Real): LONGINT'
+     This function compares the values of A and B and gives the
+     following result:
+
+       If `a > b', return `1'
+       If `a = b', return `0'
+       If `a < b', return `-1'
+
+     Note that this operation is faster than merely subtracting A and B
+     and examining the sign of the result.
+
+ - Function: power `(X, EXP: Real): Real'
+     This function returns the value of X raised to the power EXP.
+
+     *Pre-condition*: EXP is greater than zero.
+
+   *Example:*
+
+     VAR n: Reals.Real;
+     
+     n:=Reals.power(Reals.Long(2.0), Reals.Long(64));  (* 2^64 *)
+        => n = 1.8446744073709551616E+19
+
+ - Function: root `(Z: Real; N: LONGINT): Real'
+     This function returns the value of the Nth root of Z.
+
+     *Pre-condition*: Z is non-negative.
+
+   *Example:*
+
+     VAR n: Reals.Real;
+     
+     n:=Reals.root(Reals.Long(-8), 3);  (* -8^(-1/3) *)
+        => n = -2.0E+0
+     
+     n:=Reals.root(Reals.power(Reals.Long(2), Reals.Long(64)), 64);
+        => n = 2.0E+0    (* (2^64)^(-1/64) *)
+
+ - Function: sqrt `(Z: Real): Real'
+     This function returns the principal square root of Z.  The value of
+     the result is in the range `[-pi/2, pi/2]'.
+
+     *Pre-condition*: X is non-negative.
+
+ - Function: exp `(Z: Real): Real'
+     This function returns the complex exponential of Z (the
+     mathematical constant `e' raised to the power of Z).
+
+ - Function: ln `(Z: Real): Real'
+     This function returns the principal value of the natural logarithm
+     of Z.
+
+     *Pre-condition*: Z is positive.
+
+ - Function: log `(Z, BASE: Real): Real'
+     This function returns the principal value of the base BASE
+     logarithm of Z.
+
+     *Pre-condition*: Z is positive.
+
+   *Example:*
+
+     VAR n: Reals.Real;
+     
+     n:=Reals.log(Reals.eps, Reals.Long(10));  (* log10(eps) *)
+        => n = -4.9E+2
+
+ - Function: sin `(Z: Real): Real'
+     This function returns the sine of Z.
+
+ - Function: cos `(Z: Real): Real'
+     This function returns the cosine of Z.
+
+ - Procedure: sincos `(Z: Real; VAR SIN, COS: Real)'
+     This function returns both the sine and cosine of Z.
+
+   *Example:*
+
+     VAR m, n: Reals.Real;
+     
+     Reals.sincos(pi, m, n);
+        => m = 0.0E+0  (* Sin(pi) *)
+        => n =-1.0E+0  (* Cos(pi) *)
+     
+     Reals.sincos(div(pi, Reals.Long(8)), m, n);
+        => m = 3.82683432365089771728459984E-1   (* Sin(pi/8) *)
+        => n = 9.238795325112867561281831893E-1  (* Cos(pi/8) *)
+     
+     Reals.sincos(Reals.Long(1), m, n);
+        => m = 8.414709848078965066525023216E-1  (* Sin(1) *)
+        => n = 5.403023058681397174009366074E-1  (* Cos(1) *)
+
+ - Function: tan `(Z: Real): Real'
+     This function returns tangent of Z.
+
+     *Pre-condition*: Z is not an odd multiple of `pi/2'.
+
+ - Function: arcsin `(Z: Real): Real'
+     This function returns the arcsine of Z.  The result is in the range
+     `[-pi/2, pi/2]'.
+
+     *Pre-condition*: the absolute value of Z is less than or equal to
+     one.
+
+   *Example:*
+
+     VAR n: Reals.Real;
+     
+     n:=Reals.arcsin(Reals.sin(Reals.Long(1)));  (* arcsin(sin(1)) *)
+        => n = 1.0E+0
+
+ - Function: arccos `(Z: Real): Real'
+     This function returns the arccosine of Z.  The result is in the
+     range `[0, pi]'.
+
+     *Pre-condition*: the absolute value of Z is less than or equal to
+     one.
+
+ - Function: arctan `(Z: Real): Real'
+     This function returns the arctangent of Z.  The result is in the
+     range `[-pi/2, pi/2]'.
+
+   *Example:*
+
+     VAR n: Reals.Real;
+     
+     n:=Reals.mul(Reals.Long(4), Reals.arctan(Reals.Long(1)));
+        (* 4*arctan(1) *)
+        => n = 3.141592653589793238462643383E+0
+
+ - Function: arctan2 `(XN, XD: Real): Real'
+     This function returns the arctangent of `XN/XD'.  The signs of the
+     two arguments are taken into account when determining quadrant
+     information.  The result is in the range `[-pi, pi]'.
+
+ - Procedure: sinhcosh `(Z: Real; VAR SINH, COSH: Real)'
+     This function returns both the hyberbolic sine and cosine of Z.
+
+ - Function: sinh `(Z: Real): Real'
+     This function returns the hyperbolic sine of Z.
+
+ - Function: cosh `(Z: Real): Real'
+     This function returns the hyperbolic cosine of Z.
+
+ - Function: tanh `(Z: Real): Real'
+     This function returns the hyperbolic tangent of Z.
+
+ - Procedure: SetWords `(WORDS: INTEGER)'
+     This procedure sets the value of the current mantissa precision in
+     (machine) words (i.e., sets the value of `curMant').
+
+
+File: OOCref.info,  Node: Complex Numbers,  Next: Random Numbers,  Prev: Arbitrary Precision Real Numbers,  Up: Mathematics
+
+Complex Numbers
+===============
+
+   The modules `ComplexMath' and `LComplexMath' provide facilities for
+complex numbers, which includes common mathematical functions for types
+`COMPLEX' and `LONGCOMPLEX'.
+
+   Instances of the following two classes are used to represent complex
+numbers:
+
+ - Data type: COMPLEX = POINTER TO COMPLEXDesc
+     The *real* and *imaginary* parts of this type are represented as
+     type `REAL'
+
+ - Data type: LONGCOMPLEX = POINTER TO LONGCOMPLEXDesc
+     The *real* and *imaginary* parts of this type are represented as
+     type `LONGREAL'
+
+   *Please note:* To create initial instances of `COMPLEX' and
+`LONGCOMPLEX', you must use the corresponding `CMPLX()' function.
+
+   The following are instances of the corresponding complex number
+type.  They are provided for convenience and have values that represent
+the specified complex number:
+
+ - Read-only Variable: i
+     The value of `i' is initialized to `CMPLX (0.0, 1.0)'.
+
+ - Read-only Variable: one
+     The value of `one' is initialized to `CMPLX (1.0, 0.0)'.
+
+ - Read-only Variable: zero
+     The value of `zero' is initialized to `CMPLX (0.0, 0.0)'.
+
+   The following functions are provided in either `ComplexMath' (for
+`COMPLEX') or
+`LComplexMath' (for `LONGCOMPLEX'):
+
+ - Function: CMPLX `(R, I: REAL): COMPLEX'
+
+ - Function: CMPLX `(R, I: LONGREAL): LONGCOMPLEX'
+     This function returns an instance of the corresponding complex
+     number type whose real part has a value of R and imaginary part
+     has a value of I.
+
+ - Function: Copy `(Z: COMPLEX): COMPLEX'
+
+ - Function: Copy `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns a copy of Z.
+
+     *Please note:* This function provides the only reliable way to
+     assign complex number values.  If `a' and `b' are complex numbers,
+     *do not* use `a := b'.
+
+ - Function: RealPart `(Z: COMPLEX): REAL'
+
+ - Function: RealPart `(Z: LONGCOMPLEX): LONGREAL'
+     This function returns the real part of the complex number Z.
+
+ - Function: ImagPart `(Z: COMPLEX): REAL'
+
+ - Function: ImagPart `(Z: LONGCOMPLEX): LONGREAL'
+     This function returns the imaginary part of the complex number Z.
+
+ - Function: add `(Z1, Z2: COMPLEX): COMPLEX'
+
+ - Function: add `(Z1, Z2: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns the value of Z1 added to Z2.
+
+ - Function: sub `(Z1, Z2: COMPLEX): COMPLEX'
+
+ - Function: sub `(Z1, Z2: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns the value of Z2 subtracted from Z1.
+
+ - Function: mul `(Z1, Z2: COMPLEX): COMPLEX'
+
+ - Function: mul `(Z1, Z2: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns the value of Z1 multiplied by Z2.
+
+ - Function: div `(Z1, Z2: COMPLEX): COMPLEX'
+
+ - Function: div `(Z1, Z2: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns the value of Z1 divided by Z2.
+
+ - Function: abs `(Z: COMPLEX): REAL'
+
+ - Function: abs `(Z: LONGCOMPLEX): LONGREAL'
+     This function returns an approximation to the length (also known
+     as the absolute value, or modulus) of Z.
+
+     *Please note:* An overflow exception may be raised in this
+     computation, even when the complex number itself is well defined.
+
+ - Function: arg `(Z: COMPLEX): REAL'
+
+ - Function: arg `(Z: LONGCOMPLEX): LONGREAL'
+     This function returns an approximation to the angle that Z
+     subtends to the positive real axis in the complex plane.  The
+     result will be in radians in the range `[-pi, pi]'.  If the
+     modulus (`abs(X)') of Z is zero, an exception is raised.
+
+ - Function: conj `(Z: COMPLEX): COMPLEX'
+
+ - Function: conj `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the complex conjugate of
+     Z.
+
+ - Function: power `(BASE: COMPLEX; EXPONENT: REAL): COMPLEX'
+
+ - Function: power `(BASE: LONGCOMPLEX; EXPONENT: LONGREAL):
+          LONGCOMPLEX'
+     This function returns an approximation to the value of the number
+     BASE raised to the power EXPONENT.
+
+ - Function: sqrt `(Z: COMPLEX): COMPLEX'
+
+ - Function: sqrt `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the principal square
+     root of Z.
+
+     *Please note:* The result is the complex number with an `arg()' of
+     half the value of the `arg()' of z, and whose `abs()' is the
+     positive square root of the `abs()' of Z.
+
+ - Function: exp `(Z: COMPLEX): COMPLEX'
+
+ - Function: exp `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the mathematical
+     constant `e' raised to the power of Z.
+
+ - Function: ln `(Z: COMPLEX): COMPLEX'
+
+ - Function: ln `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the principal value of
+     the natural logarithm of Z.
+
+ - Function: sin `(Z: COMPLEX): COMPLEX'
+
+ - Function: sin `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the complex sine of Z.
+
+ - Function: cos `(Z: COMPLEX): COMPLEX'
+
+ - Function: cos `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the complex cosine of Z.
+
+ - Function: tan `(Z: COMPLEX): COMPLEX'
+
+ - Function: tan `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the complex tangent of Z.
+     If Z is an odd multiple of `pi/2', an exception is raised.
+
+ - Function: arcsin `(Z: COMPLEX): COMPLEX'
+
+ - Function: arcsin `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the principal value of
+     the complex arcsine of Z.
+
+ - Function: arccos `(Z: COMPLEX): COMPLEX'
+
+ - Function: arccos `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the complex arccosine of
+     Z.
+
+ - Function: arctan `(Z: COMPLEX): COMPLEX'
+
+ - Function: arctan `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the complex arctangent
+     of Z.
+
+ - Function: polarToComplex `(ABS, ARG: REAL): COMPLEX'
+
+ - Function: polarToComplex `(ABS, ARG: LONGREAL): LONGCOMPLEX'
+     This function returns an approximation to the complex number with
+     the specified polar coordinates.  The result will have a length of
+     ABS and angle of ARG).
+
+ - Function: scalarMult `(SCALAR: REAL; Z: COMPLEX): COMPLEX'
+
+ - Function: scalarMult `(SCALAR: LONGREAL; Z: LONGCOMPLEX):
+          LONGCOMPLEX'
+     This function returns an approximation to the scalar product of
+     SCALAR with Z.
+
+ - Function: IsCMathException `(): BOOLEAN'
+     This function returns `TRUE' if the current process is in the
+     exceptional execution state because of the raising of the
+     corresponding `ComplexMath' or `LComplexMath' exception;
+     otherwise, it returns `FALSE'.
+
+
+File: OOCref.info,  Node: Random Numbers,  Prev: Complex Numbers,  Up: Mathematics
+
+Random Numbers
+==============
+
+   "Random number" generating routines, like those provided in module
+`RandomNumbers', are more correctly called "pseudo-random number
+generators" because they have only the appearance of randomness, and
+actually exhibit a specific, repeatable pattern.  However, the generated
+sequence of numbers should pass certain statistical tests *as if* it
+were a truly random sequence.
+
+   The algorithm implemented by `RandomNumbers' is "good" in the sense
+that it passes many of these statistical tests, but it is not
+necessarily useful in all cases.  A different algorithm might be better
+suited to a particular application simply because the inherent
+structure of the generated number sequence better satisfies the
+application's required properties.
+
+   Because of the deterministic quality of random number generators,
+the user is required to specify an initial value, or "seed".  Sequences
+generated using the same seed (and the same algorithm) will always
+produce the same results.  To get a different sequence, simply use a
+different seed.  A common way to generate different seeds is to
+initialize using the system's clock time.  (This is not done directly
+within `RandomNumbers' because then it is not possible to reproduce
+results, which could cause difficulties during, say, testing and
+debugging.)
+
+   Also note that sequences *will* repeat themselves eventually.  In
+this case, a sequence will start to repeat after, at most, `modulo-1'
+elements, and possibly much sooner than that.
+
+   A complete discussion of random number generating algorithms is
+beyond the scope of this manual.  For more information about the
+algorithm used in this module, and other random number generators,
+consult the following references:
+
+`Random number generators: good ones are hard to find'
+S.K. Park and K.W. Miller
+Communications of the ACM, Vol. 31, No. 10, October 1988, pp. 1192-1201
+
+`The Art Of Computer Programming:
+Volume 2, Seminumerical Algorithms, Second Edition'
+Donald E. Knuth
+Addison-Wesley Publishing Co., January 1981
+
+ - Constant: modulo
+     The determing parameter of the linear congruential generator being
+     used by `RandomNumbers'.
+
+ - Procedure: GetSeed `(VAR SEED: LONGINT)'
+     This procedure gets the seed value currently in use by routines in
+     module `RandomNumbers'.
+
+ - Procedure: PutSeed `(SEED: LONGINT)'
+     This procedure sets SEED as the new seed value for routines in
+     `RandomNumbers'.  Any value for SEED is allowed, but all values
+     will be mapped into the range `[1..modulo-1]'.
+
+ - Function: RND `(RANGE: LONGINT): LONGINT'
+     This function calculates a new "random" number.  RANGE has to be in
+     the range `[1..modulo-1]', and the result is a number in the
+     interval `[0, RANGE-1]'.
+
+ - Function: Random `(): REAL'
+     This function calculates a new "random" number.  The result is a
+     number in the interval `[0, 1)'.
+
+   *Example:*
+
+     VAR l: LONGINT;
+         r: REAL;
+     
+     RandomNumbers.PutSeed(314159);
+     
+     l := RandomNumbers.RND(100);
+        => l = 19
+     l := RandomNumbers.RND(10000);
+        => l = 5610
+     l := RandomNumbers.RND(9999999);
+        => l = 6158792
+     l := RandomNumbers.RND(365);
+        => l = 54
+     
+     RandomNumbers.GetSeed(l);
+        => l = 143441039
+     
+     r := RandomNumbers.Random();
+        => r = 0.6225381
+     r := RandomNumbers.Random();
+        => r = 0.9990177
+     r := RandomNumbers.Random();
+        => r = 0.4895853
+     r := RandomNumbers.Random();
+        => r = 0.4605866
+     
+     RandomNumbers.GetSeed(l);
+        => l = 989102265
+
+
+File: OOCref.info,  Node: Date and Time,  Next: Oakwood Compliant Modules,  Prev: Mathematics,  Up: Top
+
+Date and Time
+*************
+
+   This chapter describes the facilities for manipulating dates and
+times, including getting and setting the date and time, and conversions
+between formats.
+
+* Menu:
+
+* Time::                        Manipulation of time stamps and time
+                                 intervals.
+* JulianDay::                   Convert between day/month/year and
+                                 Modified Julian Days.
+* SysClock::                    Reading and setting the system clock.
+* Calendar::                    Conversion between calender dates, time
+                                 stamps, and date/time string formats.
 
 
 File: OOCref.info,  Node: Time,  Next: JulianDay,  Up: Date and Time
@@ -270,1113 +1369,4 @@ Method: `(VAR A: TimeStamp)' Cmp `(B: TimeStamp): SHORTINT'
      result := ts2.Cmp(ts1);
         => result = 1
              (* == ts2 > ts1  i.e., ts2 occurs after ts1 *)
-
-
-File: OOCref.info,  Node: JulianDay,  Next: SysClock,  Prev: Time,  Up: Date and Time
-
-Module JulianDay
-================
-
-   The module `JulianDay' provides facilities for convertion between
-day/ month/ year and various forms of Julian Days.  Julian Days are a
-standard convention used for describing dates with the least possible
-ambiguity.
-
-   The "Julian Day Number" (JDN) is a whole number representing the
-number of consecutive days since noon 1 January 4713 B.C. (this is
-Julian Day 0).
-
-   The "Julian Date" (JD) is an extension of Julian Day Number, which
-includes a fractional part representing the elapsed fraction of a day
-since the preceding noon.
-
-   The "Modified Julian Day" (MJD) begins instead at midnight (in
-keeping with more standard conventions) 17 November 1858.  This allows
-the first two digits of the Julian Day to be removed; that is, this
-date is Julian Day 2400000.  So,
-
-     MJD = JD - 2400000.5
-
-   The "Modified Julian Date" is the Julian Date minus 2400000.5.
-
-   The "Truncated Julian Day" (TJD) is the Modified Julian Day
-truncated to four digits.  When TJD first came into use, its origin
-date (i.e., "epoch") was at midnight 24 May 1968 (i.e., JDN 2440000).
-However, it "recycled" at midnight 10 October 1995 (i.e., JDN 2450000),
-so currently
-
-     TJD = MJD - 50000
-
-     *Please note:* The various Julian Days are integer values and are
-     distinct from Julian Dates, which are real number values.  You
-     should keep this in mind when using the facilities in module
-     `JulianDay'.
-
-   Several constants are provided for use in Julian Day and Date
-calculations:
-
- - Constant: startMJD
-     Zero basis (i.e, "epoch") for modified Julian Day expressed as a
-     Julian Date.  (This number will be `2400000.5D0'.)
-
- - Constant: startTJD
-     Zero basis (i.e, "epoch") for Truncated Julian Day.
-
-   The following is provided to test for use of the Gregorian calendar:
-
-     The "Gregorian Calendar" is the calendar system now in general use
-     throughout the world.  It was adopted because the *Julian Calendar*
-     (used in the Roman empire and then by the Roman Catholic Church)
-     accumulated an error of one day every 128 years (thus it is
-     currently 13 days behind the Gregorian Calendar).
-
-     The Gregorian Calendar (first prescribed in 1582 by Pope Gregory
-     XIII) adjusts the Julian year to the astronomical year by dropping
-     three leap years every 400 years.  That is, at the end of each
-     century, there is no leap year, except in the years 1600, 2000,
-     2400, and so forth.
-
- - Read-only Variable: UseGregorian
-     A boolean value that is `TRUE' when the Gregorian Calendar is being
-     used by module `JulianDay'.  See also the procedure
-     `SetGregorianStart'.
-
-   Conversion facilities are provided as follows:
-
- - Function: DateToJD `(DAY, MONTH: SHORTINT; YEAR: INTEGER): LONGREAL'
-     This function returns the Julian Date for the given DAY, MONTH,
-     and YEAR at 0000 UTC (midnight).  Any date with a positive year is
-     valid.  The returned value is the number of days since noon 1
-     January 4713 B.C.  (Note that the result will always have a
-     fractional part equal to `.5'.)
-
- - Procedure: JDToDate `(JD: LONGREAL; VAR DAY, MONTH: SHORTINT; VAR
-          YEAR: INTEGER)'
-     This procedure converts a Julian Date JD to a date given by the
-     DAY, MONTH, and YEAR.
-
-   Algorithms for `DateToJD' and `JDToDate' by William H. Jefferys
-(with some modifications) at
-
-   `http://quasar.as.utexas.edu/BillInfo/JulianDatesG.html'
-
-   *Example:*
-
-     VAR date: LONGREAL;
-         day, month: SHORTINT;
-         year: INTEGER;
-     
-     date := JulianDay.DateToJD(10, 10, 1995);
-        => date = 2450000.5
-     JulianDay.JDToDate(date, day, month, year);
-        => day = 10, month = 10, year = 1995
-     
-     date := JulianDay.DateToJD(17, 11, 1858);
-        => date = 2400000.5
-     JulianDay.JDToDate(date, day, month, year);
-        => day = 17, month = 11, year = 1858
-
- - Function: DateToDays `(DAY, MONTH: SHORTINT; YEAR: INTEGER): LONGINT'
-     This function returns the Modified Julian Day for the given DAY,
-     MONTH, and YEAR at 0000 UTC (midnight).  Any date with a positive
-     year is valid.  The returned value is the number of days since
-     midnight 17 November 1858.
-
- - Procedure: DaysToDate `(JD: LONGINT; VAR DAY, MONTH: SHORTINT; VAR
-          YEAR: INTEGER)'
-     This procedure converts a Modified Julian Day JD to a date given by
-     the DAY, MONTH, and YEAR.
-
-   *Example:*
-
-     VAR days: LONGINT;
-         day, month: SHORTINT;
-         year: INTEGER;
-     
-     days := JulianDay.DateToDays(10, 10, 1995);
-        => days = 50000
-     JulianDay.DaysToDate(days, day, month, year);
-        => day = 10, month = 10, year = 1995
-     
-     days := JulianDay.DateToDays(17, 11, 1858);
-        => days = 0
-     JulianDay.DaysToDate(days, day, month, year);
-        => day = 17, month = 11, year = 1858
-     
-     days := JulianDay.DateToDays(8, 4, 1513);
-        => days = -126222
-     JulianDay.DaysToDate(days, day, month, year);
-        => day = 8, month = 4, year = 1513
-
- - Function: DateToTJD `(DAY, MONTH: SHORTINT; YEAR: INTEGER): LONGINT'
-     This function returns the Truncated Julian Day for the given DAY,
-     MONTH, and YEAR at 0000 UTC (midnight).  Any date with a positive
-     year is valid.  The returned value is the number of days since
-     midnight 10 October 1995.
-
- - Procedure: TJDToDate `(JD: LONGINT; VAR DAY, MONTH: SHORTINT; VAR
-          YEAR: INTEGER)'
-     This procedure converts a Truncated Julian Day JD to a date given
-     by the DAY, MONTH, and YEAR.
-
-   *Example:*
-
-     VAR days: LONGINT;
-         day, month: SHORTINT;
-         year: INTEGER;
-     
-     days := JulianDay.DateToTJD(10, 10, 1995);
-        => days = 0
-     JulianDay.TJDToDate(days, day, month, year);
-        => day = 10, month = 10, year = 1995
-     
-     days := JulianDay.DateToTJD(25, 12, 1997);
-        => days = 807
-     JulianDay.TJDToDate(days, day, month, year);
-        => day = 25, month = 12, year = 1997
-     
-     days := JulianDay.DateToTJD(17, 11, 1858);
-        => days = -50000
-     JulianDay.TJDToDate(days, day, month, year);
-        => day = 17, month = 11, year = 1858
-
- - Procedure: SetGregorianStart `(DAY, MONTH: SHORTINT; YEAR: INTEGER)'
-     Sets the start date when the Gregorian Calendar was first used
-     where the date in DAY, MONTH, and YEAR according to the Julian
-     Calendar.
-
-     The default date used is `3 Sep 1752' (when the Gregorian Calendar
-     was adopted in England).  (At that time, the Julian Calendar was
-     11 days behind the Gregorian Calendar.  And so, `3 Sep 1752'
-     according to the Julian Calendar is `14 Sep 1752' according the
-     the Gregorian Calendar.)
-
-   *Example:*
-
-     VAR date: LONGREAL;
-         day, month: SHORTINT;
-         year: INTEGER;
-     
-     date := JulianDay.DateToJD(2, 9, 1752);
-        => date = 2361220.5
-     
-     JulianDay.SetGregorianStart(15, 10, 1582);
-        (* move start date to before `3 Sep 1752' *)
-     
-     JulianDay.JDToDate(date, day, month, year);
-        => day = 13, month = 9, year = 1752
-        (* When Gregorian start date occurs at an earlier date,
-           Julian Calendar date `2 Sep 1752' is corrected to
-           the Gregorian date `13 Sep 1752'.
-        *)
-
-
-File: OOCref.info,  Node: SysClock,  Next: Calendar,  Prev: JulianDay,  Up: Date and Time
-
-Module SysClock
-===============
-
-   Module `SysClock' provides facilities for accessing a system clock
-that records the date and time of day.  This includes a `DateTime' type,
-which represents a system-independent time format.  Note that the module
-`Calendar' provides additional operations for `DateTime'.
-
-   *Please note:*
-   * No provision is made for leap seconds.
-
-   * The field `summerTimeFlag' is present for information only.  `UTC'
-     can always be obtained by subtracting the `zone' (time zone) value
-     from the time data, regardless of the value of the
-     `summerTimeFlag'.  However, its presence does allow a program to
-     know whether or not the date and time data represents standard
-     time for that location, or "summer time".  A program could
-     therefore be written to change the system clock to summer time
-     automatically on a certain date, provided it had not already been
-     changed.
-
-   The following constants are defined:
-
- - Constant: maxSecondParts
-     Accuracy of measure for "parts of a second" (`fractions') (Most
-     systems have just millisecond accuracy: `maxSecondParts = 999'.)
-
- - Constant: zoneMin
-     Used as a minimum range limit for time zone (`zone') in minutes.
-
- - Constant: zoneMax
-     Used as a maximum range limit for time zone (`zone') in minutes.
-
-   The following constants are used as possible time zone values for
-`zone':
-
- - Constant: localTime
-     Indicates that time zone is inactive and time is local.
-
- - Constant: unknownZone
-     Indicates that time zone is unknown.
-
-   The following constants are used as possible daylight savings mode
-values for
-`summerTimeFlag':
-
- - Constant: unknown
-     Indicates that current daylight savings status is unknown.
-
- - Constant: inactive
-     Indicates that daylight savings adjustments are not in effect.
-
- - Constant: active
-     Indicates that daylight savings adjustments are being used.
-
- - Record: DateTime
-     This type represents an instant in time using a combination of
-     fields for date and time information.  The fields are defined as
-     follows:
-
-    Field: year: `INTEGER'
-          A positive value representing a four digit year.
-
-    Field: month: `SHORTINT'
-          A value in the range `1..12'.
-
-    Field: day: `SHORTINT'
-          A value in the range `1..31'.
-
-    Field: hour: `SHORTINT'
-          A value in the range `0..23'.
-
-    Field: minute: `SHORTINT'
-          A value in the range `0..59'.
-
-    Field: second: `SHORTINT'
-          A value in the range `0..59'.
-
-    Field: fractions: `INTEGER'
-          A value in the range `0..`maxSecondParts'' representing parts
-          of a second in milliseconds.
-
-    Field: zone: `INTEGER'
-          A value in the range ``zoneMin'..`zoneMax''.  This represents
-          a time zone differential factor, which is the number of
-          minutes to add to local time to obtain UTC or is set to
-          `localTime' when time zones are inactive.
-
-          *Please note:* `-780..720' is the typical range for `zone'.
-
-    Field: summerTimeFlag: `SHORTINT'
-          This value represents the current status of daylight savings
-          mode.  Interpretation of this flag depends on local usage.
-          However, the constants `unknown', `active', and `inactive'
-          are provided as possible values.
-
-   The following procedures are provided in module `SysClock':
-
- - Function: CanGetClock `(): BOOLEAN'
-     This function returns `TRUE' if there is a system clock, which the
-     program is permitted to read.  Otherwise, it returns `FALSE'.
-
- - Function: CanSetClock `(): BOOLEAN'
-     This function returns `TRUE' if there is a system clock, which the
-     program is permitted to set.  Otherwise, it returns `FALSE'.
-
- - Function: IsValidDateTime `(D: DateTime): BOOLEAN'
-     This function returns `TRUE' if the value of D represents a valid
-     date and time.  Otherwise, it returns `FALSE'.
-
- - Procedure: GetClock `(VAR USERDATA: DateTime)'
-     This procedure assigns the system date and time to the fields of
-     USERDATA (i.e., USERDATA is set to local time).
-
-     If an error occurs, USERDATA is set to `1 Jan 1970'.
-
- - Procedure: SetClock `(USERDATA: DateTime)'
-     This procedure sets the system clock to the date and time
-     specified by USERDATA.  If the program cannot set the system
-     clock, a call of `SetClock' has no effect.
-
-     The behavior of `SetClock' is undefined if USERDATA represents a
-     invalid date and time.
-
- - Procedure: MakeLocalTime `(VAR C: DateTime)'
-     This procedure sets the daylight savings mode `summerTimeFlag' and
-     time zone `zone' for calendar date C.  This assumes that C
-     describes a valid local time.  The previous values of
-     `summerTimeFlag' and `zone' are ignored and are overwritten by a
-     call to `MakeLocalTime'.
-
-     *Please note:*
-       1. On most Unix systems the time zone information is only
-          available for dates falling approximately within 1 Jan 1902
-          to 31 Dec 2037.  Outside this range the field `zone' will be
-          set to the unspecified `localTime' value , and
-          `summerTimeFlag' will be set to `unknown'.
-
-       2. The time zone information might not be fully accurate for
-          past (and future) years that apply different Daylight Savings
-          Time (DST) rules than the current year.  Usually, the current
-          set of rules is used for all years between 1902 and 2037.
-
-       3. With DST there is one hour in the year that happens twice:
-          the hour after which the clock is turned back for a full
-          hour.  It is undefined which time zone will be selected for
-          dates refering to this hour; that is, whether DST or normal
-          time zone will be chosen.
-
-
-File: OOCref.info,  Node: Calendar,  Prev: SysClock,  Up: Date and Time
-
-Module Calendar
-===============
-
-   Module `Calendar' provides facilities for manipulation of dates and
-times.  These facilities include procedures to convert between
-`SysClock.DateTime' and `Time.TimeStamp', as well as conversions
-between `DateTime' and various string formats.
-
-   The following constants are defined for the days of the week:
-
- - Constant: sunday
-
- - Constant: monday
-
- - Constant: tuesday
-
- - Constant: wednesday
-
- - Constant: thursday
-
- - Constant: friday
-
- - Constant: saturday
-
-   And the following constants are defined for the months of the year:
-
- - Constant: january
-
- - Constant: february
-
- - Constant: march
-
- - Constant: april
-
- - Constant: may
-
- - Constant: june
-
- - Constant: july
-
- - Constant: august
-
- - Constant: september
-
- - Constant: october
-
- - Constant: november
-
- - Constant: december
-
-   The following procedures are used to initialize instances of
-`DateTime':
-
- - Procedure: SetLocalTime `(VAR C: SysClock.DateTime; D, M: SHORTINT;
-          Y: INTEGER; H, MIN, S: SHORTINT)'
-     This procedure initializes the calendar C with the local date from
-     D days, M months, Y years; and the local time from H hours, MIN
-     minutes, and S seconds.  These values must be in the valid ranges
-     for each field:
-
-    `year'
-          `Y > 0'.
-
-    `month'
-          M in the range `1..12'.
-
-    `day'
-          D in the range `1..31'.
-
-    `hour'
-          H in the range `0..23'.
-
-    `minute'
-          MIN in the range `0..59'.
-
-    `second'
-          S in the range `0..59'.
-
-     The other fields of C are set as follows:
-
-        * `fractions' is set to `0'.
-
-        * `zone' is set to the number of minutes needed to add to local
-          time to obtain UTC.
-
-        * `summerTimeFlag' is set to one of `active', `inactive', or
-          `unknown'.
-
-     *Please note:* `SetLocalTime' utilizes `SysClock.MakeLocalTime' to
-     obtain time zone and daylight savings mode information.  All
-     restrictions on `MakeLocalTime' also apply to `SetLocalTime'.
-
-   *Example:*
-
-     VAR
-       c: SysClock.DateTime;
-     
-     Calendar.SetLocalTime(c, 31, 12, 1997, 15, 30, 00);
-        => c = Wednesday, 31 Dec 1997, 15:30:00.0
-
- - Procedure: SetUTC `(VAR C: SysClock.DateTime; D, M: SHORTINT; Y:
-          INTEGER; H, MIN, S: SHORTINT)'
-     This procedure initializes the calendar C exactly like
-     `SetLocalTime' except for the following differences:
-
-        * `C.zone' is always set to `0'.
-
-        * `C.summerTimeFlag' is always set to `inactive'.
-
-   The following procedures are used to convert between
-`SysClock.DateTime' and `Time.TimeStamp':
-
- - Procedure: GetTimeStamp `(VAR C: SysClock.DateTime; S:
-          Time.TimeStamp)'
-     This procedure sets the calendar C from the time stamp S based on
-     local time (i.e., `C.zone' and `C.summerTimeFlag' are set as in
-     `SetLocalTime').
-
-   *Example:*
-
-     VAR
-       c: SysClock.DateTime;
-       ts: Time.TimeStamp;
-     
-     Time.InitTimeStamp(ts, 50000, 43200000);
-             (* == noon 10 October 1995 UTC *)
-     Calendar.GetTimeStamp(c, ts);
-        => c = Tuesday, 10 Oct 1995, 08:00:00
-        => c.zone = 240
-             (* i.e., local time is 4 hours behind UTC *)
-
- - Procedure: SetTimeStamp `(C: SysClock.DateTime; VAR T: T.TimeStamp)'
-     This procedure converts the calendar date `c' to a time stamp T.
-
-   The following functions provide useful information about a particular
-`DateTime' value:
-
- - Function: DayOfWeek `(C: SysClock.DateTime): SHORTINT'
-     This function returns the day of the week of C as one of the
-     constant values
-     `sunday..saturday'.
-
- - Function: IsLeapYear `(C: SysClock.DateTime): BOOLEAN'
-     This function returns `TRUE' if C occurs within a leap year.
-     Otherwise, it returns `FALSE'.
-
- - Function: DaysPerMonth `(C: SysClock.DateTime): SHORTINT'
-     This function returns the total number of days in the month of C
-     (i.e., one of `28', `29', `30', or `31').  Leap years are taken
-     into account.
-
- - Function: WeekNumber `(C: SysClock.DateTime; STARTDAY: SHORTINT):
-          INTEGER'
-     This function returns the week number of C based on each week
-     beginning on STARTDAY.  The value of STARTDAY is one of the
-     constant values
-     `sunday..saturday'.  The first week of a month is recognized as
-     having 4 or more days in that month where each week begins on
-     STARTDAY.
-
- - Function: DayOfYear `(C: SysClock.DateTime): INTEGER'
-     This function returns the day of the year of C in the range
-     `1..366'.  For instance, January first for any year returns `1'.
-
-   *Example:*
-
-     VAR
-       c: SysClock.DateTime;
-       day, week, dayOfYear, daysInMon: INTEGER;
-     
-     Calendar.SetLocalTime(c, 31, 12, 1996, 12, 00, 00);
-        => c = Tuesday, 31 Dec 1996, 12:00:00
-     day := Calendar.DayOfWeek(c);
-        => day = Calendar.tuesday
-     week := Calendar.WeekNumber(c, Calendar.sunday);
-        => week = 1
-     dayOfYear := Calendar.DayOfYear(c);
-        => dayOfYear = 366
-     IF Calendar.IsLeapYear(c) THEN ...
-        => TRUE
-     
-     Calendar.SetLocalTime(c, 31, 12, 1997, 15, 30, 00);
-        => c = Wednesday, 31 Dec 1997, 15:30:00
-     day := Calendar.DayOfWeek(c);
-        => day = Calendar.wednesday
-     week := Calendar.WeekNumber(c, Calendar.sunday);
-        => week = 53
-     dayOfYear := Calendar.DayOfYear(c);
-        => dayOfYear = 365
-     IF Calendar.IsLeapYear(c) THEN ...
-        => FALSE
-     
-     Calendar.SetLocalTime(c, 1, 2, 1996, 00, 00, 00);
-        => c = Thursday, 1 Feb 1996, 00:00:00
-     IF Calendar.IsLeapYear(c) THEN ...
-        => TRUE
-     daysInMon := Calendar.DaysPerMonth(c);
-        => daysInMon = 29
-     
-     Calendar.SetLocalTime(c, 1, 2, 1997, 00, 00, 00);
-        => c = Saturday, 1 Feb 1997, 00:00:00
-     IF Calendar.IsLeapYear(c) THEN ...
-        => FALSE
-     daysInMon := Calendar.DaysPerMonth(c);
-        => daysInMon = 28
-
-   The following procedures are used to convert between
-`SysClock.DateTime' and time-formatted strings:
-
- - Procedure: TimeToStr `(VAR C: SysClock.DateTime; PATTERN: ARRAY OF
-          CHAR; VAR DATESTR: ARRAY OF CHAR)'
-     This procedure converts C to a string DATESTR using the format
-     template PATTERN.  Allowable conversion specifiers for PATTERN are
-     specialized for printing the date and time components of C
-     according to the locale currently specified for time conversion
-     (*note Locales::.).
-
-     Normal characters appearing in PATTERN are copied verbatim to the
-     output string DATESTR; this can include multibyte character
-     sequences.  Conversion specifiers are introduced by a `%'
-     character, and are replaced in the output string as follows:
-
-    `%a'
-          The abbreviated weekday name according to the current locale.
-
-    `%A'
-          The full weekday name according to the current locale.
-
-    `%b'
-          The abbreviated month name according to the current locale.
-
-    `%B'
-          The full month name according to the current locale.
-
-    `%c'
-          The preferred date and time representation for the current
-          locale.
-
-    `%d'
-          The day of the month as a decimal number (in the range `01'
-          to `31').
-
-    `%D'
-          The day of the month as above, but with no leading zero.
-
-    `%H'
-          The hour as a decimal number, using a 24-hour clock (in the
-          range `00' to `23').
-
-    `%I'
-          The hour as a decimal number, using a 12-hour clock (in the
-          range `01' to `12').
-
-    `%i'
-          The hour as a decimal number, using a 12-hour clock, but with
-          no leading zero.
-
-    `%j'
-          The day of the year as a decimal number (in the range `001'
-          to `366').
-
-    `%m'
-          The month as a decimal number (in the range `01' to `12').
-
-    `%M'
-          The minute as a decimal number.
-
-    `%p'
-          One of `AM' or `PM', according to the given time value; or
-          the corresponding strings for the current locale.
-
-    `%S'
-          The second as a decimal number.
-
-    `%U'
-          The week number of the current year as a decimal number,
-          starting with the first Sunday as the first day of the first
-          week.
-
-    `%W'
-          The week number of the current year as a decimal number,
-          starting with the first Monday as the first day of the first
-          week.
-
-    `%w'
-          The day of the week as a decimal number, Sunday being `0'.
-
-    `%x'
-          The preferred date representation for the current locale, but
-          without the time.
-
-    `%X'
-          The preferred time representation for the current locale, but
-          with no date.
-
-    `%y'
-          The year as a decimal number, but without a century (in the
-          range `00' to `99').
-
-    `%Y'
-          The year as a decimal number, including the century.
-
-    `%Z'
-          The time zone or name or abbreviation (empty if the time zone
-          cannot be determined).
-
-    `%%'
-          A literal `%' character.
-
-   *Example:*
-
-     VAR
-       c: SysClock.DateTime;
-       str: ARRAY 256 OF CHAR;
-     
-     (* c initialized to Wednesday, 25 Dec 1996, 15:30:00 *)
-     
-     Calendar.TimeToStr(c, "%A, %D %b %Y, %H:%M:%S", str);
-        => str = "Wednesday, 25 Dec 1996, 15:30:00"
-     Calendar.TimeToStr(c, "%a, %d/%m/%y, %H:%M:%S %Z", str);
-        => str = "Wed, 25/12/96, 15:30:00 UTC-0500"
-     Calendar.TimeToStr(c, "%A, %D %B %Y, %I:%M:%S %p", str);
-        => str = "Wednesday, 25 December 1996, 03:30:00 PM"
-     Calendar.TimeToStr(c, "%b %D, %Y is %A and the %jth day.", str);
-        => str = "Dec 25, 1996 is Wednesday and the 360th day."
-
- - Function: StrToTime `(VAR C: SysClock.DateTime; DATESTR: ARRAY OF
-          CHAR; PATTERN: ARRAY OF CHAR): BOOLEAN'
-     This function converts the string DATESTR into a calendar C using
-     the format template PATTERN.  Allowable conversion specifiers for
-     PATTERN the same as in the `TimeToStr' procedure.  However, only
-     date and time components are used in the conversion; any other
-     information, such as the day of the week and the week number, are
-     ignored.
-
-     For names appearing in DATESTR, upper and lower-case distinctions
-     are ignored.
-
-     Unspecified time or date components are set to the lower-bound
-     value for that component (after adjustment for the current time
-     zone): For example, incomplete times will assume the zero time for
-     missing time elements; and missing date elements will assume the
-     corresponding date element from the reference date `1 Jan 1970'.
-
-     If DATESTR is successfully parsed into a valid calendar date
-     according to the PATTERN, `StrToTime' returns `TRUE'.  Otherwise,
-     it returns `FALSE'.
-
-   *Example:*
-
-     VAR
-       c: SysClock.DateTime;
-     
-     IF Calendar.StrToTime(c, "Sunday, Oct 12, 1995", "%A, %b %D, %Y") THEN
-        => TRUE, c = Thursday, 12 Oct 1995, 00:00:00
-             (* Note that day of week is ignored,
-                and correct value assigned to c *)
-     
-     IF Calendar.StrToTime(c, "jul 4, 1776", "%b %D, %Y") THEN
-        => TRUE, c = Thursday, 4 Jul 1776, 00:00:00
-     
-     IF Calendar.StrToTime(c, "3:30 pm, 25 December 96",
-                           "%i:%M %p, %D %B %y") THEN
-        => TRUE, c = Wednesday, 25 Dec 1996, 15:30:00
-     
-     IF Calendar.StrToTime(c, "1963 14:15:30", "%Y %H:%M:%S") THEN
-        => TRUE, c = Tuesday, 1 Jan 1963, 14:15:30
-     
-     IF Calendar.StrToTime(c, "05/30/97", "%m/%d/%y") THEN
-        => TRUE, c = Friday, 30 May 1997, 00:00:00
-     
-     IF Calendar.StrToTime(c, "31 Feb 1997", "%D %b %Y") THEN
-        => FALSE, c = undefined
-
-
-File: OOCref.info,  Node: Oakwood Compliant Modules,  Next: Exception Handling,  Prev: Date and Time,  Up: Top
-
-Oakwood Compliant Modules
-*************************
-
-   In order to support `the Oakwood Guildlines', OOC provides a set of
-basic library modules that comply with the Oakwood specification.  (Note
-that all Oakwood modules may not be available.)  All Oakwood compliant
-modules begin with the prefix "Oak".
-
-* Menu:
-
-* OakStrings::                  String manipulation.
-* OakFiles::                    File access.
-* OakIn::                       Basic functions for formatted input.
-* OakOut::                      Basic functions for formatted output.
-* OakMath and OakMathL::        Mathematical functions for `REAL'.
-                                  and `LONGREAL'.
-
-
-File: OOCref.info,  Node: OakStrings,  Next: OakFiles,  Up: Oakwood Compliant Modules
-
-Module OakStrings
-=================
-
-   Module Strings provides a set of operations on strings (i.e., on
-string constants and character arrays, both of which contain the
-character `0X' as a terminator).  All positions in strings start at `0'.
-
-   (`The Oakwood Guildlines' remark that string assignments and string
-comparisons are already supported by the language Oberon-2.)
-
-Procedures
-----------
-
- - Function: Length `(S: ARRAY OF CHAR): INTEGER'
-     Returns the number of characters in S up to and excluding the first
-     `0X'.
-
- - Procedure: Insert `(SRC: ARRAY OF CHAR; POS: INTEGER; VAR DST: ARRAY
-          OF CHAR)'
-     Inserts the string SRC into the string DST at position POS
-     (`0<=POS<=Length(DST)').  If `POS=Length(DST)', SRC is appended to
-     DST.  If the size of DST is not large enough to hold the result of
-     the operation, the result is truncated so that DST is always
-     terminated with a `0X'.
-
- - Procedure: Append `(S: ARRAY OF CHAR; VAR DST: ARRAY OF CHAR)'
-     Has the same effect as `Insert(S, Length(DST), DST)'.
-
- - Procedure: Delete `(VAR S: ARRAY OF CHAR; POS, N: INTEGER)'
-     Deletes N characters from S starting at position POS
-     (`0<=POS<=Length(S)').  If `N>Length(S)-POS', the new length of S
-     is POS.
-
- - Procedure: Replace `(SRC: ARRAY OF CHAR; POS: INTEGER; VAR DST:
-          ARRAY OF CHAR)'
-     Has the same effect as `Delete(DST, POS, Length(SRC))' followed by
-     `Insert(SRC, POS, DST)'.
-
- - Procedure: Extract `(SRC: ARRAY OF CHAR; POS, N: INTEGER; VAR DST:
-          ARRAY OF CHAR)'
-     Extracts a substring DST with N characters from position POS
-     (`0<=POS<= Length(SRC)') in SRC.  If `N>Length(SRC)-POS', DST is
-     only the part of SRC from POS to the end of SRC, i.e.
-     `Length(src)-1'.  If the size of DST is not large enough to hold
-     the result of the operation, the result is truncated so that DST
-     is always terminated with a `0X'.
-
- - Function: Pos `(PAT, S: ARRAY OF CHAR; POS: INTEGER): INTEGER'
-     Returns the position of the first occurrence of PAT in S.
-     Searching starts at position POS.  If PAT is not found, `-1' is
-     returned.
-
- - Procedure: Cap `(VAR S: ARRAY OF CHAR)'
-     Replaces each lower case letter within S by its upper case
-     equivalent.
-
-
-File: OOCref.info,  Node: OakFiles,  Next: OakIn,  Prev: OakStrings,  Up: Oakwood Compliant Modules
-
-Module OakFiles
-===============
-
-   Module `OakFiles' provides operations on files and the file
-directory.
-
-   `The Oakwood Guildlines' define the type `File' as representing a
-stream of bytes ususally stored on an external medium.  A `File' has a
-certain length as well as the date and time of its last modification.
-
-   A "file directory" is a mapping from file names to files.  A file
-that is not registered in the directory is considered temporary.
-
-   The type `Rider' holds a read/write position in a file (positions
-start with 0).  There may be multiple riders set to the same file.  The
-field `eof' is set to `TRUE' if an attempt was made to read beyond the
-end of the file.  The field `res' reports the success of `ReadBytes'
-and `WriteBytes' operations.  Writing data overwrites old data at the
-rider position.  When data is written beyond the end of the file, the
-file length increases.
-
-Operations for Unformatted Input and Output
--------------------------------------------
-
-   In general, all operations must use the following format for external
-representation:
-
-   * "Little endian" representation (i.e., the least significant byte
-     of a word is the one with the lowest address on the file).
-
-   * Numbers: `SHORTINT' 1 byte, `INTEGER' 2 bytes, `LONGINT' 4 bytes
-
-   * Sets: 4 bytes, element 0 is the least significant bit
-
-   * Booleans: single byte with `FALSE' = 0, `TRUE' = 1
-
-   * Reals: IEEE standard; `REAL' 4 bytes, `LONGREAL' 8 bytes
-
-   * Strings: with terminating `0X'
-
-   *Example:*
-
-       VAR f: Files.File; r: Files.Rider; ch: CHAR;
-
-   Reading from an existing file:
-       f := Files.Old ("xxx");
-       IF f # NIL THEN
-         Files.Set (r, f, 0);
-         Files.Read (r, ch);
-         WHILE ~ r.eof DO
-           Files.Read (r, ch)
-         END
-       END
-
-   Writing to a new file yyy:
-       f := Files.New ("yyy");
-       Files.Set (r, f, 0);
-       Files.WriteInt (r, 8);
-       Files.WriteString (r, " bytes");
-       Files.Register (f)
-
-     *Please note:* This module implements virtual file descriptors;
-     that is, an unlimited number of files can be open at the same
-     time.  These files share the limited number of file descriptors
-     provided by the operating system.
-
-Remarks
--------
-
-   `The Oakwood Guildlines' provide the following specifications:
-
-   `WriteNum' and `ReadNum', should use the following encoding
-algorithms for conversion to and from external format:
-
-     PROCEDURE WriteNum (VAR r: Rider; x: LONGINT);
-     BEGIN
-        WHILE (x < - 64) OR (x > 63) DO
-            Write(r, CHR(x MOD 128 + 128)); x := x DIV 128
-        END;
-        Write(r, CHR(x MOD 128))
-     END WriteNum;
-     
-     PROCEDURE ReadNum (VAR r: Rider; VAR x: LONGINT);
-        VAR s: SHORTINT; ch: CHAR; n: LONGINT;
-     BEGIN
-        s := 0; n := 0;
-        Read(r, ch);
-        WHILE ORD(ch) >= 128 DO
-           INC(n, ASH(ORD(ch) - 128, s) );
-           INC(s, 7);
-           Read(r, ch)
-        END;
-        x := n + ASH(ORD(ch) MOD 64 - ORD(ch) DIV 64 * 64, s)
-     END ReadNum;
-
-   The reason for the specification of the file name in the operation
-`New' is to allow allocation of the file on the correct medium from the
-beginning (if the operating system supports multiple media).
-
-   The operations `Read', `Write', `ReadBytes' and `WriteBytes' require
-the existence of a type `SYSTEM.BYTE' with the following
-characteristics:
-
-   * If a formal parameter is of type `SYSTEM.BYTE', the corresponding
-     actual parameter may be of type `CHAR', `SHORTINT', or
-     `SYSTEM.BYTE'.
-
-   * If a formal variable parameter is of type `ARRAY OF SYSTEM.BYTE',
-     the corresponding actual parameter may be of any type.  Note that
-     this feature is dangerous and inherently unportable.  Its use
-     should therefore be restricted to system-level modules.
-
-Types
------
-
- - Data type: File = POINTER TO FileDesc
-
- - Record: FileDesc = RECORD
-
- - Record: Rider = RECORD
-    Field: eof-: `BOOLEAN'
-          Set to `TRUE' if an attempt was made to read beyond the end
-          of the file.
-
-    Field: res-: `INTEGER'
-          See `ReadBytes' and `WriteBytes' below for possible values of
-          `res'.
-
-Operations on Files and the File Directory
-------------------------------------------
-
- - Function: Old `(NAME: ARRAY OF CHAR): File'
-     `Old(NAME)' searches for the NAME in the directory and returns the
-     corresponding file.  If the NAME is not found, it returns `NIL'.
-
- - Function: New `(NAME: ARRAY OF CHAR): File'
-     `New(NAME)' creates and returns a new file.  The NAME is
-     remembered for the later use of the operation `Register'.  The
-     file is only entered into the directory when `Register' is called.
-
- - Procedure: Register `(F: File)'
-     `Register(F)' enters the file F into the directory together with
-     the name provided in the operation `New' that created F.  The file
-     buffers are written back.  Any existing mapping of this name to
-     another file is overwritten.
-
- - Procedure: Close `(VAR F: File)'
-     `Close(F)' writes back the file buffers of F.  The file is still
-     accessible by its handle F and the riders positioned on it.  If a
-     file is not modified, it is not necessary to close it.
-
-          *Please note:* The above holds only for
-          `permanentClose=FALSE'.  Otherwise, the buffers are flushed
-          and the file handle is deallocated (and F is set to `NIL');
-          at this time, all riders on this file become invalid.  This
-          behaviour, and the variable `permanentClose', are not part of
-          `The Oakwood Guidelines'.
-
- - Procedure: Purge `(F: File)'
-     `Purge(F)' resets the length of file F to `0'.
-
- - Procedure: Delete `(NAME: ARRAY OF CHAR; VAR RES: INTEGER)'
-     `Delete(NAME, RES)' removes the directory entry for the file
-     `name' without deleting the file.  If `res=0' the file has been
-     successfully deleted.  If there are variables referring to the file
-     while `Delete' is called, they can still be used.
-
- - Procedure: Rename `(OLD, NEW: ARRAY OF CHAR; VAR RES: INTEGER)'
-     `Rename(OLD, NEW, RES)' renames the directory entry OLD to NEW.
-     If `res=0', the file has been successfully renamed.  If there are
-     variables referring to the file while `Rename' is called, they can
-     still be used.
-
- - Function: Length `(F: File): LONGINT'
-     `Length(F)' returns the number of bytes in file F.
-
- - Procedure: GetDate `(F: File; VAR T, D: LONGINT)'
-     `GetDate(F, T, D)' returns the time T and date D of the last
-     modification of file F.
-
-     The encoding is as follows:
-          hour = t DIV 4096;
-          minute = t DIV 64 MOD 64;
-          second = t MOD 64;
-          
-          year = d DIV 512;
-          month = d DIV 32 MOD 16;
-          day = d MOD 32.
-
-Operations on Riders
---------------------
-
- - Procedure: Set `(VAR R: Rider; F: File; POS: LONGINT)'
-     `Set(R, F, POS)' sets the rider R to position POS in file F.  The
-     field `r.eof' is set to FALSE.  The operation requires that `0 <=
-     pos <= Length(F)'.
-
- - Function: Pos `(VAR R: Rider): LONGINT'
-     `Pos(R)' returns the position of the rider R.
-
- - Function: Base `(VAR R: Rider): File'
-     `Base(R)' returns the file to which the rider R has been set.
-
-Reading
-.......
-
- - Procedure: Read `(VAR R: Rider; VAR X: SYSTEM.BYTE)'
-     `Read(R, X)' reads the next byte X from rider R and advances R
-     accordingly.
-
- - Procedure: ReadInt `(VAR R: Rider; VAR I: INTEGER)'
-     `ReadInt(R, I)' reads a integer number I from rider R and advances
-     R accordingly.
-
- - Procedure: ReadLInt `(VAR R: Rider; VAR I: LONGINT)'
-     `ReadLInt(R, I)' reads a long integer number I from rider R and
-     advances R accordingly.
-
- - Procedure: ReadReal `(VAR R: Rider; VAR X: REAL)'
-     `ReadReal(R, X)' reads a real number X from rider R and advances R
-     accordingly.
-
- - Procedure: ReadLReal `(VAR R: Rider; VAR X: LONGREAL)'
-     `ReadLReal(R, X)' reads a long real number X from rider R and
-     advances R accordingly.
-
- - Procedure: ReadNum `(VAR R: Rider; VAR I: LONGINT)'
-     `ReadNum(R, I' reads an integer number I from rider R and advances
-     R accordingly.  The number I is compactly encoded (see the
-     "Remarks" section above).
-
- - Procedure: ReadString `(VAR R: Rider; VAR S: ARRAY OF CHAR)'
-     `ReadString(R, S)' reads a sequence of characters (including the
-     terminating `0X') from rider R and returns it in `s'.  The rider
-     is advanced accordingly.  The actual parameter corresponding to S
-     must be long enough to hold the character sequence plus the
-     terminating `0X'.
-
- - Procedure: ReadSet `(VAR R: Rider; VAR S: SET)'
-     `ReadSet(R, S)' reads a set S from rider R and advances R
-     accordingly.
-
- - Procedure: ReadBool `(VAR R: Rider; VAR B: BOOLEAN)'
-     `ReadBool(R, B)' reads a Boolean value B from rider R and advances
-     R accordingly.
-
- - Procedure: ReadBytes `(VAR R: Rider; VAR BUF: ARRAY OF SYSTEM.BYTE;
-          N: LONGINT)'
-     `ReadBytes(R, BUF, N)' reads N bytes into buffer BUF starting at
-     the rider position R.  The rider is advanced accordingly.  If less
-     than N bytes could be read, `R.res' contains the number of
-     requested but unread bytes.
-
-Writing
-.......
-
- - Procedure: Write `(VAR R: Rider; X: SYSTEM.BYTE)'
-     `Write(R, X)' writes the byte X to rider R and advances R
-     accordingly.
-
- - Procedure: WriteInt `(VAR R: Rider; I: INTEGER)'
-     `WriteInt(R, I)' writes the integer number I to rider R and
-     advances R accordingly.
-
- - Procedure: WriteLInt `(VAR R: Rider; I: LONGINT)'
-     `WriteLInt(R, I)' writes the long integer number I to rider R and
-     advances R accordingly.
-
- - Procedure: WriteReal `(VAR R: Rider; X: REAL)'
-     `WriteReal(R, X)' writes the real number X to rider R and advances
-     R accordingly.
-
- - Procedure: WriteLReal `(VAR R: Rider; X: LONGREAL)'
-     `WriteLReal(R, X)' write the long real number X to rider R and
-     advance R accordingly.
-
- - Procedure: WriteNum `(VAR R: Rider; I: LONGINT)'
-     `WriteNum(R, I)' writes the integer number I to rider R and
-     advances R accordingly.  The number I is compactly encoded (see
-     the "Remarks" section above).
-
- - Procedure: WriteString `(VAR R: Rider; S: ARRAY OF CHAR)'
-     `WriteString(R, S)' writes the sequence of characters S (including
-     the terminating `0X') to rider R and advances R accordingly.
-
- - Procedure: WriteSet `(VAR R: Rider; S: SET)'
-     `WriteSet(R, S)' writes the set S to rider R and advances R
-     accordingly.
-
- - Procedure: WriteBool `(VAR R: Rider; B: BOOLEAN)'
-     `WriteBool(R, B)' writes the Boolean value B to rider R and
-     advances R accordingly.
-
- - Procedure: WriteBytes `(VAR R: Rider; VAR BUF: ARRAY OF SYSTEM.BYTE;
-          N: LONGINT)'
-     `WriteBytes(R, BUF, N)' writes the first N bytes from buf to rider
-     R and advances R accordingly.  `R.res' contains the number of
-     bytes that could not be written (e.g., due to a disk full error).
 

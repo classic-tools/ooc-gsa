@@ -13,6 +13,7 @@ entire I/O Subsystem of the OOC library revolves around these two concepts.
 * Input/Output Overview::       An introduction to the basic concepts of
                                  I/O in the OOC library.  
 * Channels::                    Details of the various channel modules.  
+* Messages::                    Framework for Messages.
 * Standard Mappers::            Descriptions of the standard mapper types.  
 * Standard I/O::                Simple interfaces to standard input, output
                                  and error channels.  
@@ -120,7 +121,7 @@ uninterpreted sequence of bytes.  But mappers may also provide more
 sophisticated read/write operations; for instance, @dfn{scanners} are
 mappers that can distinguish between different types of data within a
 particular format, and then read in that data based on the type.
-@xref{TextRider} and @xref{BinaryRider} for descriptions of the simplest
+@xref{TextRider}, and @xref{BinaryRider}, for descriptions of the simplest
 mappers.
 
 @quotation

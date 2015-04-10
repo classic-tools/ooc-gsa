@@ -246,10 +246,11 @@ struct _TD TextRider__ErrorContextDesc_td = {
 };
 
 /* local strings */
-static const unsigned char _c5[] = "OOC:Core:TextRider";
-static const unsigned char _c4[] = "..";
-static const unsigned char _c3[] = ", ";
-static const unsigned char _c2[] = "FALSE";
-static const unsigned char _c1[] = "TRUE";
-static const unsigned char _c0[] = "Number exceeded limits or string was too long";
+static const unsigned char _c6[] = "OOC:Core:TextRider";
+static const unsigned char _c5[] = "..";
+static const unsigned char _c4[] = ", ";
+static const unsigned char _c3[] = "FALSE";
+static const unsigned char _c2[] = "TRUE";
+static const unsigned char _c1[] = "Number exceeded limits or string was too long";
+static const unsigned char _c0[] = "";
 

@@ -10,9 +10,9 @@
 @set xref-automatic-section-title
 @c @smallbook
 
-@set EDITION 0.09 DRAFT
-@set VERSION 1.4.5
-@set UPDATED 9 July 1999
+@set EDITION 0.10 DRAFT
+@set VERSION 1.5.1
+@set UPDATED 29 February 2000
 @set ISBN N/A
 
 @ifinfo
@@ -21,8 +21,8 @@ This file documents the Optimizing Oberon-2 Compiler (OOC) and its library.
 This is Edition @value{EDITION}, last updated @value{UPDATED}, of @cite{The
 OOC Library Reference Manual}, for Version @value{VERSION} or later of oo2c.
 
-Copyright (C) 1997-1999 Eric Nikitin
-Part II Copyright (C) 1998, 1999 Michael van Acken
+Copyright (C) 1997-2000 Eric Nikitin
+Part II Copyright (C) 1998-2000 Michael van Acken
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -50,7 +50,6 @@ Foundation.
 @end ifinfo
 
 @iftex
-@comment @afourpaper 
 @shorttitlepage The OOC Reference Manual
 @end iftex
 @titlepage
@@ -72,8 +71,8 @@ Foundation.
 @page
 @vskip 0pt plus 1filll
 @format
-Copyright @copyright{} 1997-1999 Eric Nikitin
-Part II Copyright @copyright{} 1998, 1999 Michael van Acken
+Copyright @copyright{} 1997-2000 Eric Nikitin
+Part II Copyright @copyright{} 1998-2000 Michael van Acken
 @end format
 @sp 2
 @comment "Published by" info would go here 
@@ -197,6 +196,7 @@ I/O Subsystem
 * Input/Output Overview::       An introduction to the basic concepts of
                                  I/O in the OOC library.
 * Channels::                    Details of the various channel modules.
+* Messages::                    Framework for Messages.
 * Standard Mappers::            Descriptions of the standard mapper types.
 * Standard I/O::                Simple interfaces to standard input, output
                                  and error channels.
@@ -222,8 +222,6 @@ Channel
 * Abstract Class Channel::      Elements of abtract channel types.  
 * Abstract Class Reader::       Elements of abstract reader types.  
 * Abstract Class Writer::       Elements of abstract writer types.  
-* Channel Procedures::          Free-standing procedures in module 
-                                 Channel.  
 * Summary of Channel Constants::Summarized list of constants in module
                                  Channel.  
 
@@ -439,6 +437,7 @@ Emacs Mode
 @include real2str.texi
 @include io.texi
 @include channel.texi
+@include messages.texi
 @include mappers.texi
 @include stdio.texi
 @include math.texi

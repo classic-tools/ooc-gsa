@@ -356,6 +356,15 @@ produce side-effects.
 If set to @samp{TRUE}, variables and memory blocks are automatically
 initialized to zero.  The default is @samp{FALSE}.
 
+@item PoisonHeap
+An integer value that defines the byte pattern, which is used to intialize
+memory taken from the heap by @code{NEW} or @code{SYSTEM.NEW}.  If negative,
+the allocated objects are either left in an undefined state, or filled with
+zero bytes, depending on the value of @samp{Initialize}.  If non-negative,
+the bytes of the allocated memory block are set to @samp{PoisonHeap MOD
+256}.  This pragma variable should be set at the beginning of the module,
+and not be changed afterwards.  The default is @samp{-1}.
+
 @item Warnings
 @cindex Warnings
 Tells the compiler whether to generate warnings.  The default is

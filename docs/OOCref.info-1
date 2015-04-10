@@ -4,11 +4,11 @@ the input file OOCref.texinfo.
    This file documents the Optimizing Oberon-2 Compiler (OOC) and its
 library.
 
-   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
-Library Reference Manual', for Version 1.4.5 or later of oo2c.
+   This is Edition 0.10 DRAFT, last updated 29 February 2000, of `The
+OOC Library Reference Manual', for Version 1.5.1 or later of oo2c.
 
-   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
-1999 Michael van Acken
+   Copyright (C) 1997-2000 Eric Nikitin Part II Copyright (C) 1998-2000
+Michael van Acken
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -33,8 +33,8 @@ File: OOCref.info,  Node: Top,  Next: Introduction,  Prev: (dir),  Up: (dir)
 Main Menu
 *********
 
-   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
-Reference Manual', for Version 1.4.5 or later of oo2c.
+   This is Edition 0.10 DRAFT, last updated 29 February 2000, of `The
+OOC Reference Manual', for Version 1.5.1 or later of oo2c.
 
 * Menu:
 
@@ -129,6 +129,7 @@ I/O Subsystem
 * Input/Output Overview::       An introduction to the basic concepts of
                                  I/O in the OOC library.
 * Channels::                    Details of the various channel modules.
+* Messages::                    Framework for Messages.
 * Standard Mappers::            Descriptions of the standard mapper types.
 * Standard I/O::                Simple interfaces to standard input, output
                                  and error channels.
@@ -154,8 +155,6 @@ Channel
 * Abstract Class Channel::      Elements of abtract channel types.
 * Abstract Class Reader::       Elements of abstract reader types.
 * Abstract Class Writer::       Elements of abstract writer types.
-* Channel Procedures::          Free-standing procedures in module
-                                 Channel.
 * Summary of Channel Constants::Summarized list of constants in module
                                  Channel.
 
@@ -593,8 +592,8 @@ are used for such classification of values of the type `CHAR'.  All
 procedures accept a single argument of type `CHAR' and return a
 `BOOLEAN' result.
 
-   Recall that Oberon-2 is defined so that characters are ordered the
-in the same manner as defined by ASCII.  Specifically, all the digits
+   Recall that Oberon-2 is defined so that characters are ordered in
+the same manner as defined by ASCII.  Specifically, all the digits
 precede all the upper-case letters, and all the upper-case letters
 precede all the lower-case letters.  This assumption is carried over
 into module CharClass.  Also, note that CharClass uses constants

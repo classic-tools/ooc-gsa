@@ -1,4 +1,4 @@
-(*	$Id: TextRider.Mod,v 1.27 1999/11/14 17:56:17 ooc-devel Exp $	*)
+(*	$Id: TextRider.Mod,v 1.28 1999/12/15 12:20:39 ooc-devel Exp $	*)
 MODULE TextRider [OOC_EXTENSIONS];
 
 (*
@@ -175,9 +175,12 @@ PROCEDURE (context: ErrorContext) GetTemplate* (msg: Msg.Msg; VAR templ: Msg.LSt
     CASE msg. code OF
     | valueOutOfRange: str := "Number exceeded limits or string was too long"
     ELSE
+      str := "";
       context. GetTemplate^ (msg, templ)
     END;
-    COPY (str, templ)
+    IF (str # "") THEN
+      COPY (str, templ)
+    END
   END GetTemplate;
 
 

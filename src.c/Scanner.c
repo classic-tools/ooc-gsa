@@ -980,14 +980,17 @@ l14:
   evalText = (unsigned char)i7;
   evalText = (unsigned char)i7;
   Scanner__ParsePragma_CheckForIf((unsigned char)1, &evalText);
+  i5 = (int)Scanner__condStack;
+  i2 = i5 + 10;
+  *(unsigned char*)i2 = 1;
   Scanner__GetSym();
-  i2 = (int)Scanner__condStack;
-  i5 = i2 + 8;
-  i5 = *(unsigned char*)i5;
-  if (i5) goto l15;
-  i2 += 9;
+  i5 = (int)Scanner__condStack;
+  i2 = i5 + 8;
   i2 = *(unsigned char*)i2;
   if (i2) goto l15;
+  i5 += 9;
+  i5 = *(unsigned char*)i5;
+  if (i5) goto l15;
   i2 = 1;
   goto l16;
 l15:
@@ -1261,9 +1264,9 @@ l0:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i0 < 0) _invalid_length(i0, _P(25157));
+    if(i0 < 0) _invalid_length(i0, _P(25199));
     _mem = GC_malloc_atomic(i0*1+8);
-    if (!_mem) _new_failed(_P(25147));
+    if (!_mem) _new_failed(_P(25189));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i0;
@@ -2247,7 +2250,7 @@ Scanner__ConditionStack Scanner__SaveScanPos_Copy(Scanner__ConditionStack cond) 
   {
     char *_mem, *_var;
     _mem = GC_malloc(12+8);
-    if (!_mem) _new_failed(_P(38069));
+    if (!_mem) _new_failed(_P(38111));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Scanner__ConditionStackDesc_td.td;
     i1 = (int)_var;
@@ -2366,9 +2369,9 @@ l1:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i0 < 0) _invalid_length(i0, _P(41193));
+    if(i0 < 0) _invalid_length(i0, _P(41235));
     _mem = GC_malloc_atomic(i0*1+8);
-    if (!_mem) _new_failed(_P(41149));
+    if (!_mem) _new_failed(_P(41191));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i0;
@@ -2415,9 +2418,9 @@ l7:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i3 < 0) _invalid_length(i3, _P(41805));
+    if(i3 < 0) _invalid_length(i3, _P(41847));
     _mem = GC_malloc_atomic(i3*1+8);
-    if (!_mem) _new_failed(_P(41795));
+    if (!_mem) _new_failed(_P(41837));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i3;
@@ -2579,7 +2582,7 @@ void Scanner_init(void) {
     char *_mem, *_var;
     int* _dim_ptr;
     _mem = GC_malloc_atomic(112*1+8);
-    if (!_mem) _new_failed(_P(43809));
+    if (!_mem) _new_failed(_P(43851));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 112;
@@ -2589,7 +2592,7 @@ void Scanner_init(void) {
     char *_mem, *_var;
     int* _dim_ptr;
     _mem = GC_malloc_atomic(1020*4+8);
-    if (!_mem) _new_failed(_P(43884));
+    if (!_mem) _new_failed(_P(43926));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 1020;

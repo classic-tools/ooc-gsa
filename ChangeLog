@@ -1,6 +1,108 @@
 Note: Directory parts of files mentioned here refer to the
       OOC source tree, not the shrunk oo2c distribution.
 
+2000-03-01  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod: Bumped version to 14:0:2
+
+	* lib/Msg.Mod:
+	New method PROCEDURE (l: MsgList) AppendList* (source: MsgList)
+
+	* frontend/Scanner.Mod (ParsePragma):
+	Multiple ELSEs in a pragma IF did not trigger an error
+	message.
+
+2000-02-27  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (Expr):
+	No type check was done for the right side of an `IN' operator.
+
+	(CheckOperandType): The test of `legalTypes' was completely bogus.
+	This broke type checking for the boolean operations &, OR, and ~.
+
+2000-02-04  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (AssignmentCompatible):
+	Oops.  No error is reported if the assigned
+	expression is a type name?!
+
+2000-01-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/IntConv.Mod (FormatInt):
+	The value -2147483649 was not reported as out of range.
+
+2000-01-13  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod: Bumped version to 13:0:1
+
+	* optimizers/ConstPropagation.Mod:
+	Patch by Juergen to get rid of a problem with freakish "evaluate once"
+	loops.
+
+2000-01-09  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/ProgramArgs.Mod (ReadByte):
+	When reading after the last argument, return error code
+	`readAfterEnd' instead of `outOfRange'.
+
+2000-01-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNDecoration.Mod (Remove):
+	Remove global indentation from text before passing it on the
+	Texinfo parser.  Otherwise, an example section will add its own
+	indentation to the indentation of the comment.
+
+	* tools/CNTexi2HTML.Mod (Convert):
+	Quote HTML meta characters "&", "<", and ">" in text
+	fragments.
+
+2000-01-02  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNTextBuffer.Mod (FormatBlockHTML):
+	Similar to `FormatBlock', but does formatting for
+	"pre" formatted HTML text.
+
+	* tools/CNTexinfo.Mod: Fixed padding after table items.
+
+1999-12-29  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNTexi2Text.Mod, tools/CNTexi2HTML.Mod, tools/CNTexinfo.Mod:
+	Added command @table.
+
+	* lib/Msg.Mod (GetLText):
+	If an attribute reference like `${foo}' appears more than
+	once in the template string, then replace _all_ occurences of the
+	reference with the replacement text for `foo', instead of just the
+	first.
+
+1999-12-27  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNTexi2HTML.Mod, tools/CNTexi2Text.Mod, tools/CNTexinfo.Mod:
+	Added command @example
+
+1999-12-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/TextRider.Mod (ErrorContext.GetTemplate):
+	Inherited templates were clobbered with an
+	undefined value.
+
+1999-12-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/oocn.Mod, tools/CNFilter.Mod:
+	Renamed option --strip-mident to --strip-mp-ident
+
+1999-12-05  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/oocn.Mod:
+	Disable `parseTexinfo' for operations that do not depend on the
+	content of comments.
+
+	* lib/Msg.Mod (GetStringPtr, GetLStringPtr):
+	Convenience functions.  They take a
+	string value, and return a heap object with a copy of this value.
+	Typically used to create arguments for `SetStringAttrib' or
+	`SetLStringAttrib'.
+
 1999-11-29  Michael van Acken  <acken@informatik.uni-kl.de>
 
 	* tools/CNText.Mod, tools/CNHTML.Mod:

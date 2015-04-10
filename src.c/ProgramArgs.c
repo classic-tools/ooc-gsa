@@ -218,7 +218,7 @@ l4:
   *(int*)i5 = i6;
   goto l6;
 l5:
-  i0 = (int)ProgramArgs__GetError((int)4);
+  i0 = (int)ProgramArgs__GetError((int)5);
   *(void**)i5 = (void*)i0;
 l6:
   ;
@@ -321,7 +321,7 @@ l0:
   {
     char *_mem, *_var;
     _mem = GC_malloc(24+8);
-    if (!_mem) _new_failed(_P(10173));
+    if (!_mem) _new_failed(_P(10175));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ProgramArgs__ReaderDesc_td.td;
     i2 = (int)_var;
@@ -368,7 +368,7 @@ void ProgramArgs_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(8+8);
-    if (!_mem) _new_failed(_P(10837));
+    if (!_mem) _new_failed(_P(10839));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ProgramArgs__ChannelDesc_td.td;
     i0 = (int)_var;
@@ -376,7 +376,7 @@ void ProgramArgs_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(4+8);
-    if (!_mem) _new_failed(_P(10754));
+    if (!_mem) _new_failed(_P(10756));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ProgramArgs__ErrorContextDesc_td.td;
     i1 = (int)_var;

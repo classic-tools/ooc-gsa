@@ -1,7 +1,7 @@
-(* 	$Id: CNTexi2Text.Mod,v 1.2 1999/11/22 21:18:21 ooc-devel Exp $	 *)
+(* 	$Id: CNTexi2Text.Mod,v 1.5 2000/01/02 15:10:15 ooc-devel Exp $	 *)
 MODULE CNTexi2Text;
 (*  Converts Texinfo text to plain ASCII file, similar to makeinfo.
-    Copyright (C) 1999  Michael van Acken
+    Copyright (C) 1999, 2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -32,7 +32,7 @@ VAR
 PROCEDURE Convert* (texinfo: Texinfo.Texinfo; 
                     indent, scrWidth, indentFirst: LONGINT): S.String;
 (* Formats the Texinfo description in `texinfo', for a screen with of
-   `scrWidth`, using an indentation of `indent'.  The first line of a
+   `scrWidth', using an indentation of `indent'.  The first line of a
    paragraph is indented additional `indentFirst' spaces.  *)
   VAR
     b: TextBuffer.Buffer;
@@ -57,70 +57,79 @@ PROCEDURE Convert* (texinfo: Texinfo.Texinfo;
       len: LONGINT;
       item: Texinfo.TextElement;
       
-    PROCEDURE ConvertInline (list: Texinfo.TextElement);
+    PROCEDURE ^ConvertInline (list: Texinfo.TextElement; noFormat: BOOLEAN);
+
+    PROCEDURE ConvertElement (cmdId: LONGINT; list: Texinfo.TextElement;
+                              noFormat: BOOLEAN);
+      VAR
+        h: LONGINT;
+      BEGIN
+        CASE cmdId OF
+        | Texinfo.cmdArg, Texinfo.cmdAsis:
+          ConvertInline (list, noFormat)
+        | Texinfo.cmdCite, Texinfo.cmdCode, Texinfo.cmdKbd, 
+          Texinfo.cmdSamp, 
+          Texinfo.cmdOberonModule, Texinfo.cmdOberonConst,
+          Texinfo.cmdOberonProc, Texinfo.cmdOberonType, 
+          Texinfo.cmdOberonVar, Texinfo.cmdOberonField:
+          currBlock. Append ("`");
+          ConvertInline (list, noFormat);
+          currBlock. Append ("'")
+        | Texinfo.cmdDfn:
+          currBlock. Append ('"');
+          ConvertInline (list, noFormat);
+          currBlock. Append ('"')
+        | Texinfo.cmdEmail:
+          IF (list. nextElement = NIL) THEN (* one argument *)
+            currBlock. Append ("<");
+            ConvertInline (list(Texinfo.MarkedText). content, noFormat);
+            currBlock. Append (">")
+          ELSE                       (* two arguments *)
+            ConvertInline (list. nextElement, noFormat);
+            currBlock. Append (" <");
+            ConvertInline (list(Texinfo.MarkedText). content, noFormat);
+            currBlock. Append (">")
+          END
+        | Texinfo.cmdEmph:
+          currBlock. Append ("_");
+          ConvertInline (list, noFormat);
+          currBlock. Append ("_")
+        | Texinfo.cmdStrong:
+          currBlock. Append ("*");
+          ConvertInline (list, noFormat);
+          currBlock. Append ("*")
+        | Texinfo.cmdVar, Texinfo.cmdOberonParam:
+          h := currBlock. len;
+          ConvertInline (list, noFormat);
+          currBlock. Capitalize (h, currBlock. len)
+        | Texinfo.cmdUref:
+          IF (list. nextElement = NIL) THEN (* one argument *)
+            currBlock. Append ("`");
+            ConvertInline (list(Texinfo.MarkedText). content, noFormat);
+            currBlock. Append ("'")
+          ELSIF (list. nextElement. nextElement = NIL) THEN
+            ConvertInline (list. nextElement, noFormat);
+            currBlock. Append (" (");
+            ConvertInline (list(Texinfo.MarkedText). content, noFormat);
+            currBlock. Append (")")
+          ELSE                       (* three argument form *)
+            ConvertInline (list. nextElement. nextElement, noFormat)
+          END
+        | Texinfo.cmdUrl:
+          currBlock. Append ("<");
+          ConvertInline (list, noFormat);
+          currBlock. Append (">")
+        END
+      END ConvertElement;
+
+    PROCEDURE ConvertInline (list: Texinfo.TextElement; noFormat: BOOLEAN);
       VAR
         ptr: Texinfo.TextElement;
-        h: LONGINT;
       BEGIN
         ptr := list;
         WHILE (ptr # NIL) DO
           WITH ptr: Texinfo.MarkedText DO
-            CASE ptr. cmdId OF
-            | Texinfo.cmdArg, Texinfo.cmdAsis:
-              ConvertInline (ptr. content)
-            | Texinfo.cmdCite, Texinfo.cmdCode, Texinfo.cmdKbd, 
-              Texinfo.cmdSamp, 
-              Texinfo.cmdOberonModule, Texinfo.cmdOberonConst,
-              Texinfo.cmdOberonProc, Texinfo.cmdOberonType, 
-              Texinfo.cmdOberonVar, Texinfo.cmdOberonField:
-              currBlock. Append ("`");
-              ConvertInline (ptr. content);
-              currBlock. Append ("'")
-            | Texinfo.cmdDfn:
-              currBlock. Append ('"');
-              ConvertInline (ptr. content);
-              currBlock. Append ('"')
-            | Texinfo.cmdEmail:
-              IF (ptr. content. nextElement = NIL) THEN (* one argument *)
-                currBlock. Append ("<");
-                ConvertInline (ptr. content(Texinfo.MarkedText). content);
-                currBlock. Append (">")
-              ELSE                       (* two arguments *)
-                ConvertInline (ptr. content. nextElement);
-                currBlock. Append (" <");
-                ConvertInline (ptr. content(Texinfo.MarkedText). content);
-                currBlock. Append (">")
-              END
-            | Texinfo.cmdEmph:
-              currBlock. Append ("_");
-              ConvertInline (ptr. content);
-              currBlock. Append ("_")
-            | Texinfo.cmdStrong:
-              currBlock. Append ("*");
-              ConvertInline (ptr. content);
-              currBlock. Append ("*")
-            | Texinfo.cmdVar, Texinfo.cmdOberonParam:
-              h := currBlock. len;
-              ConvertInline (ptr. content);
-              currBlock. Capitalize (h, currBlock. len)
-            | Texinfo.cmdUref:
-              IF (ptr. content. nextElement = NIL) THEN (* one argument *)
-                currBlock. Append ("`");
-                ConvertInline (ptr. content(Texinfo.MarkedText). content);
-                currBlock. Append ("'")
-              ELSIF (ptr. content. nextElement. nextElement = NIL) THEN
-                ConvertInline (ptr. content. nextElement);
-                currBlock. Append (" (");
-                ConvertInline (ptr. content(Texinfo.MarkedText). content);
-                currBlock. Append (")")
-              ELSE                       (* three argument form *)
-                ConvertInline (ptr. content. nextElement. nextElement)
-              END
-            | Texinfo.cmdUrl:
-              currBlock. Append ("<");
-              ConvertInline (ptr. content);
-              currBlock. Append (">")
-            END
+            ConvertElement (ptr. cmdId, ptr. content, noFormat)
           | ptr: Texinfo.Token DO
             CASE ptr. cmdId OF
             | Texinfo.class1Low..Texinfo.class2High:
@@ -128,7 +137,11 @@ PROCEDURE Convert* (texinfo: Texinfo.Texinfo;
             | Texinfo.cmdEmDash:
               currBlock. Append ("--")
             | Texinfo.cmdTextFragment:
-              currBlock. AppendNoLB (ptr. string^)
+              IF noFormat THEN
+                currBlock. Append (ptr. string^)
+              ELSE
+                currBlock. AppendNoLB (ptr. string^)
+              END
             END
           END;
           ptr := ptr. nextElement
@@ -163,7 +176,7 @@ PROCEDURE Convert* (texinfo: Texinfo.Texinfo;
           RETURN 2
         ELSE
           start := currBlock. len;
-          ConvertInline (prefix);
+          ConvertInline (prefix, FALSE);
           currBlock. Append (" ");
           RETURN currBlock. len-start
         END
@@ -172,11 +185,11 @@ PROCEDURE Convert* (texinfo: Texinfo.Texinfo;
     BEGIN
       IF block. padBefore THEN b. AppendEOL END;
       IF (block. start = NIL) THEN
-        ConvertInline (block. content);
+        ConvertInline (block. content, FALSE);
         IF IsNoIndent (block. prevElement) & (offsetFirst > 0) THEN
-          TextBuffer.FormatBlock (b, currBlock, indent, scrWidth, 0)
+          TextBuffer.FormatBlock(b, currBlock, indent, scrWidth, 0)
         ELSE
-          TextBuffer.FormatBlock (b, currBlock, indent, scrWidth, offsetFirst)
+          TextBuffer.FormatBlock(b, currBlock, indent, scrWidth, offsetFirst)
         END;
         currBlock. Clear
       ELSE
@@ -203,8 +216,31 @@ PROCEDURE Convert* (texinfo: Texinfo.Texinfo;
             
             item := item. nextElement
           END
+        | Texinfo.cmdTable:
+          item := FirstItem (block. content);
+          ConvertList (block. content, item, indent, 0);
+          
+          WHILE (item # NIL) DO
+            IF item(Texinfo.Block). padBefore THEN b. AppendEOL END;
+            IF (block. lineArgs(Texinfo.Token). cmdId = Texinfo.cmdAsis) THEN
+              ConvertInline (item(Texinfo.Block). lineArgs, FALSE);
+            ELSE
+              ConvertElement (block. lineArgs(Texinfo.Token). cmdId,
+                              item(Texinfo.Block). lineArgs, FALSE)
+            END;
+            TextBuffer.FormatBlock(b, currBlock, indent, scrWidth, 0);
+            currBlock. Clear;
+            ConvertList (item(Texinfo.Block). content, 
+                         NIL, indent+5, 0);
+            IF item(Texinfo.Block). padAfter THEN b. AppendEOL END;
+            item := item. nextElement
+          END
         | Texinfo.cmdNoIndent:
           (* ignore *)
+        | Texinfo.cmdExample:
+          ConvertInline (block. content, TRUE);
+          TextBuffer.IndentBlock (b, currBlock, indent+5, block. nextElement # NIL);
+          currBlock. Clear
         | Texinfo.cmdPreCond:
           b. AppendSpaces (indent);
           b. Append ("*Pre-condition*: ");
@@ -223,7 +259,7 @@ PROCEDURE Convert* (texinfo: Texinfo.Texinfo;
     currBlock := TextBuffer.New();
     
     ConvertList (texinfo. content, NIL, indent, indentFirst);
-        
+    
     RETURN b. str
   END Convert;
 

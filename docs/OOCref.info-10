@@ -4,11 +4,11 @@ the input file OOCref.texinfo.
    This file documents the Optimizing Oberon-2 Compiler (OOC) and its
 library.
 
-   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
-Library Reference Manual', for Version 1.4.5 or later of oo2c.
+   This is Edition 0.10 DRAFT, last updated 29 February 2000, of `The
+OOC Library Reference Manual', for Version 1.5.1 or later of oo2c.
 
-   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
-1999 Michael van Acken
+   Copyright (C) 1997-2000 Eric Nikitin Part II Copyright (C) 1998-2000
+Michael van Acken
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -26,6 +26,1103 @@ manual into another language, under the above conditions for modified
 versions, except that the text of the translation of the section
 entitled "GNU General Public License" must be approved for accuracy by
 the Foundation.
+
+
+File: OOCref.info,  Node: Exception,  Next: Signal,  Up: Exception Handling
+
+Module Exception
+================
+
+   The primary use of this module is to provide error handling and to
+allow programmer control over both system and language (`HALT' and
+`ASSERT') exception handling.  The programmer may define handlers,
+which can be used in place of those defined by the implementation.
+
+   There are two states of program execution: normal and exceptional.  A
+program remains in the normal execution state until an exception is
+raised by a call to `RAISE', `HALT', or `ASSERT', or after a failed
+run-time check.  After that, the program remains in the exceptional
+execution state until `ACKNOWLEDGE' or `RETRY' is called.
+
+   An exception affects the control flow of a program; raising an
+exception implies transfer of control to some sort of handler, even
+across procedure invocations.  An "exception handler" is a statement
+sequence that is executed when an exception occurs.  In OOC, an
+exception handler is set up as part of an execution context.  Both
+normal and exceptional execution blocks can be set up within the same
+procedure, or exceptions can be allowed to propogate up the call stack
+and handled by a calling procedure.  A execution context, and exception
+handler, is typically set up like
+
+     Exception.PUSHCONTEXT (e);
+     IF (e = NIL) THEN
+       (* normal execution *)
+     ELSE  (* an exception was raised *)
+       (* handle the exception raised during normal execution *)
+     END;
+     Exception.POPCONTEXT;
+
+     *Please note:* Wherever the word "thread" appears below, it should
+     be read as "program" for the moment.  Multi-threading isn't
+     supported yet.
+
+* Menu:
+
+* Exception Facilities::        Exception sources and associated operations.
+* Restrictions on PUSHCONTEXT:: Restrictions and cautions when setting
+                                 exception contexts.
+* Predefined Exception Sources::Exception sources defined in module
+                                 `Exception'.
+* Runtime Exception Numbers::   Exception numbers associated with source
+                                 `runtime'.
+* Exception Examples::          Several detailed examples using `Exception'.
+
+
+File: OOCref.info,  Node: Exception Facilities,  Next: Restrictions on PUSHCONTEXT,  Up: Exception
+
+Exception Facilities
+--------------------
+
+   The facilities provided by module `Exception' allow the user to raise
+exceptions and query the current execution state (normal or
+exceptional).  Exceptions are identified uniquely by a pair (`Source',
+`Number').
+
+   The programmer is responsible for managing the stack of exception
+handlers; this is because Oberon-2 does not provide direct language
+support for exceptions, and therefore exception handling in OOC is done
+through a library module.  The stack is manipulated primarily through
+the procedures `PUSHCONTEXT' and `POPCONTEXT'.  The only other action
+that changes the stack is raising an exception while the program is an
+exceptional execution state; this pops the topmost context (that was
+responsible for the exception) from the stack before moving control to
+the then topmost execution context.  Raising an exception in the state
+of normal execution does *not* change the stack.
+
+ - Data type: Number = LONGINT
+     Values of this type are used to distinguish between different
+     exceptions from the same source.
+
+ - Data type: Source = POINTER TO SourceDesc
+     Values of this type are used to identify the source of exceptions
+     raised; that is, a `Source' is defined and allocated to establish
+     a particular set of exceptions.
+
+ - Procedure: PUSHCONTEXT `(VAR SOURCE: Source)'
+     This procedure pushes the current execution context onto the
+     exception handler stack and sets SOURCE to `NIL'; if the context
+     is later reactivated by raising an exception, SOURCE is set to the
+     exception's source (*note Exception Examples::.).  At most one
+     context can be pushed per procedure at a time.  During a single
+     procedure evaluation, two successive calls to `PUSHCONTEXT'
+     without a `POPCONTEXT' in between are not allowed and result in
+     undefined program behaviour.
+
+     *Please note:* When the context is activated again (by raising an
+     exception), the value of non-global variables of enclosing
+     procedures that were modified after the initial call to
+     `PUSHCONTEXT' are undefined.
+
+ - Procedure: POPCONTEXT `'
+     This procedure removes the exception handler from the top of the
+     stack; if the stack is empty an exception is raised.  If the
+     program is in an exceptional execution state at the point where
+     `POPCONTEXT' is called, the exception is raised again, thereby
+     passing it along to the next higher exception handler.  During the
+     execution of a procedure, the dynamic number of calls to
+     `POPCONTEXT' has to balance the ones to `PUSHCONTEXT'.
+
+ - Procedure: RETRY `'
+     If the current thread is in the exceptional execution state, a
+     call to this procedure reactivates the context on top of the stack
+     of exception handlers, and resets the execution state to normal.
+     This looks as if the corresponding call of `PUSHCONTEXT' returns
+     again, with the parameter SOURCE set to `NIL'.  This allows the
+     "normal" part to be re-executed.  Be very careful when using this
+     because all local variables of the enclosing procedure(s) that
+     were modified after the initial call to `PUSHCONTEXT' are
+     undefined when activating the context again.
+
+     If the current thread is in the normal execution state, calling
+     `RETRY' raises an exception.
+
+ - Procedure: ACKNOWLEDGE `'
+     If the current thread is in the exceptional execution state, a
+     call to this procedure places it back in the state of normal
+     execution.  Calling this procedure indicates that an exception has
+     been handled without retrying the "normal" part.
+
+     If the current thread is in the normal execution state, calling
+     `ACKNOWLEDGE' raises an exception.
+
+ - Procedure: AllocateSource `(VAR NEWSOURCE: Source)'
+     This procedure allocates a unique value of type `Source'.  If an
+     unique value cannot be allocated, an exception is raised.
+
+ - Procedure: RAISE `(SOURCE: Source; NUMBER: Number; MESSAGE: ARRAY OF
+          CHAR)'
+     A call to this procedure associates the given values of SOURCE,
+     NUMBER, and MESSAGE with the current context and raises an
+     exception.  This means that the current thread switches into the
+     exceptional execution state and activates an execution context
+     from the stack of exception handlers.  If the program is in the
+     normal execution state at the time of the call to `RAISE', the
+     context on top of the stack is activated; if it was already in the
+     exceptional execution state, the stack is popped before activating
+     the context.  Activating the execution context looks as if the
+     corresponding call to `PUSHCONTEXT' returns a second time, except
+     this time returning with SOURCE (of `PUSHCONTEXT') set to SOURCE
+     (of `RAISE') (*note Exception Examples::.).
+
+     Using a value of `NIL' for SOURCE raises an exception.
+
+     The MESSAGE should have the format "`[<module>] <description>'";
+     it may be truncated by `RAISE' to an implementation-defined length.
+
+ - Function: CurrentNumber `(SOURCE: Source): Number'
+     If the current thread is in the exceptional execution state
+     because of the raising of an exception from SOURCE, this function
+     returns the corresponding number; otherwise, it raises an
+     exception.
+
+ - Procedure: GetMessage `(VAR TEXT: ARRAY OF CHAR)'
+     If the current thread is in the exceptional execution state, this
+     procedure returns the (possibly truncated) string associated with
+     the current context.  Otherwise, in normal execution state, it
+     returns the empty string.
+
+ - Function: IsExceptionalExecution `(): BOOLEAN'
+     If the current thread is in the exceptional execution state
+     because of the raising of an exception, this function returns
+     `TRUE'; otherwise, it returns `FALSE'.
+
+
+File: OOCref.info,  Node: Restrictions on PUSHCONTEXT,  Next: Predefined Exception Sources,  Prev: Exception Facilities,  Up: Exception
+
+Restrictions on PUSHCONTEXT
+---------------------------
+
+   There are a number of important restrictions on the use of
+`PUSHCONTEXT':
+
+  1. Within a procedure, at most one context can be active at a time
+     (i.e., contexts cannot be nested).  This allows for an efficient
+     implementation of the context stack without falling back on heap
+     objects.  If nested contexts are required, local procedures can be
+     used to set up a new exception context.
+
+  2. The state of all non-global variables that were modified after a
+     `PUSHCONTEXT' is undefined if the context is activated again by
+     raising an exception or calling `RETRY'.  The reason is that,
+     while the compiler ensures that the evaluation of a piece of code
+     delivers the correct results in the end, it does not ensure that
+     the state of an interrupted computation is correctly reflected by
+     the memory contents at the time of the interruption.
+
+  3. For exceptions that are not initiated by an explicit call to
+     `RAISE' (i.e., failed run-time checks and external signals), the
+     place where the exception was raised is undefined.  That is, the
+     programmer cannot be certain of the exact set of intructions that
+     were completed before the exception was raised.  The reason is
+     that a sequence of instructions as specified in the source code
+     may be evaluated in a different order or in an overlapped fashion
+     in the emitted machine code.
+
+  4. Every call to `PUSHCONTEXT' must have exactly one matching call to
+     `POPCONTEXT' within the same procedure, assuming that the program
+     parts in between are completed without raising an exception.
+
+     If a stack underflow occurs when `POPCONTEXT' is called, an
+     exception is raised.  If an execution context is left on the stack
+     that doesn't correspond to a valid procedure (i.e., a procedure
+     doing a `PUSHCONTEXT' returns without doing a matching
+     `POPCONTEXT'), activating the context by raising an exception
+     transfers the program into a completely undefined state.  Most
+     likely, the program abort due to a segmentation violation or a
+     comparable error, or the stack of execution contexts is rolled
+     back until a valid context is reached.  There is no way to check
+     for such a situation.  Any programmer should be aware that an
+     invalid context stack can cause considerable grief.
+
+
+File: OOCref.info,  Node: Predefined Exception Sources,  Next: Runtime Exception Numbers,  Prev: Restrictions on PUSHCONTEXT,  Up: Exception
+
+Predefined Exception Sources
+----------------------------
+
+   Several exception sources are predefined in module `Exception'.
+These are available for handling exceptions generated through Oberon-2
+language constructs and other run-time exceptions.
+
+ - Read-only Variable: halt: `Source'
+
+ - Read-only Variable: assert: `Source'
+     These two exception variables are associated to the standard
+     predefined procedures `HALT' and `ASSERT'; `HALT(n)' is equivalent
+     to `RAISE (halt, n, "")', and `ASSERT(FALSE, n)' to `RAISE
+     (assert, n, "")'.
+
+ - Read-only Variable: runtime: `Source'
+     This exception source is used to report failed run-time checks.
+
+
+File: OOCref.info,  Node: Runtime Exception Numbers,  Next: Exception Examples,  Prev: Predefined Exception Sources,  Up: Exception
+
+Runtime Exception Numbers
+-------------------------
+
+   The source `runtime' is used to report failed run-time checks, and
+the following exception numbers are associated with it.  These numbers
+signify the corresponding failed run-time checks, which are described
+fully in *Note Illegal Operations::.
+
+ - Constant: derefOfNIL
+     A dereference of `NIL' or type test on `NIL'.
+
+ - Constant: realDivByZero
+     Real division by zero.
+
+ - Constant: integerDivByZero
+     Integer division by zero.
+
+ - Constant: realOverflow
+     Real overflow (during either conversion or arithmetic operation).
+
+ - Constant: integerOverflow
+     Integer overflow (during either conversion or arithmetic
+     operation).
+
+ - Constant: illegalLength
+     `NEW' was called with a negative length for an open array pointer
+     type.
+
+ - Constant: outOfMemory
+     `NEW' could not allocate the requested memory.
+
+ - Constant: indexOutOfRange
+     Array index out of range.
+
+ - Constant: elementOutOfRange
+     Set element out of range.
+
+ - Constant: endOfFunction
+     The end of a function procedure is reached without encountering a
+     `RETURN' statement.
+
+ - Constant: noMatchingLabel
+     No matching label in `CASE' construct, and there is no `ELSE' part.
+
+ - Constant: noValidGuard
+     All guards of `WITH' failed, and there is no `ELSE' part.
+
+ - Constant: typeGuardFailed
+     Type guard failed.
+
+ - Constant: typeAssertFailed
+     The target of a record assignment does not have compatible type.
+
+ - Constant: stackOverflow
+     Stack overflow.
+
+
+File: OOCref.info,  Node: Exception Examples,  Prev: Runtime Exception Numbers,  Up: Exception
+
+Exception Examples
+------------------
+
+   Typically, one exception source is defined per module.  Exception
+numbers are then used to distinguish between the actual exceptions
+raised against that source.  Those exceptions can then be handled
+either within that module itself, as is generally the case in OOC
+Library modules that use `Exception', or the source and related
+constants can be exported and then handled externally.  Because
+exception sources `assert', `halt', and `runtime' are defined within
+`Exception', failed assertions, and so forth, can be handled just like
+any other exception.
+
+A Simple Example
+................
+
+   The following example is meant to show how to define and use an
+exception source.  Two instances are given where exceptions are raised
+against that source; note that the exception is handled in only one of
+these.
+
+     MODULE SimpleException;
+     
+     IMPORT  Exception, Err;
+     
+     CONST
+       genericException = 1;
+     
+     VAR  src: Exception.Source;
+     
+       PROCEDURE RaiseIt;
+       BEGIN
+         Exception.RAISE (src, genericException,
+                          "[SimpleException] An exception is raised")
+       END RaiseIt;
+     
+       PROCEDURE HandleIt;
+         VAR e: Exception.Source;
+       BEGIN
+         Exception.PUSHCONTEXT (e);
+         IF (e = NIL) THEN  (* normal execution *)
+           RaiseIt
+         ELSE  (* an exception was raised *)
+           Err.String ("Caught the exception."); Err.Ln;
+           Exception.ACKNOWLEDGE
+         END;
+         Exception.POPCONTEXT;
+       END HandleIt;
+     
+       PROCEDURE LetItGo;
+       BEGIN
+         RaiseIt
+       END LetItGo;
+     
+     BEGIN
+       Exception.AllocateSource (src);
+       HandleIt;
+       LetItGo;
+     END SimpleException.
+
+   The exception source `src' is allocated (and initialized) by the call
+to `AllocateSource' in the body of the module.  Procedure `RaiseIt'
+raises an exception against that source.
+
+   In procedure `HandleIt', an exception context is established, and
+then any exceptions that are raised in the scope of that context are
+handled.  Note the use of `ACKNOWLEDGE' to indicate the exception was
+handled, and `POPCONTEXT' to end the context and clean up after it.
+
+   In procedure `LetItGo', the raised exception is not handled, so the
+exception propagates up the call stack, and finding no enclosing context
+handler, finally terminates the program.  The output of this program
+should look something like
+
+     Caught the exception.
+     ##
+     ## Unhandled exception (#1):
+     ## [SimpleException] An exception is raised
+     ##
+
+Differentiating Exceptions
+..........................
+
+   To identify different exceptions, and provide different handling
+depending on the exception raised, both the exception `Source' and
+`Number' need to be considered.  The pair (`Source', `Number') uniquely
+identify the exception that has been raised.  For example,
+
+     MODULE MultiExcept;
+     
+     IMPORT
+       Exception, Out;
+     
+     CONST
+       genericException = 1;
+       zeroException = 2;
+       negativeException = 3;
+     
+     VAR
+       src: Exception.Source;
+     
+       PROCEDURE RaiseIt;
+       BEGIN
+         Exception.RAISE (src, genericException,
+                          "[MultiExcept] An exception is raised")
+       END RaiseIt;
+     
+       PROCEDURE Test (c: INTEGER);
+       BEGIN
+         Out.String ("Testing value="); Out.Int (c, 0); Out.Ln;
+         IF (c = 0) THEN
+           Exception.RAISE (src, zeroException,
+                            "[MultiExcept] Value is zero")
+         ELSIF (c < 0) THEN
+           Exception.RAISE (src, negativeException,
+                            "[MultiExcept] Value less than zero")
+         ELSE
+           RaiseIt
+         END;
+       END Test;
+     
+       PROCEDURE p (i: INTEGER);
+          VAR
+            e: Exception.Source;
+            str: ARRAY 256 OF CHAR;
+        BEGIN
+          Exception.PUSHCONTEXT (e);
+          IF (e = NIL) THEN
+            Test(i);
+          ELSE
+            IF (e = src) THEN (* identify the exception source *)
+              IF (Exception.CurrentNumber(e) = zeroException) THEN
+                Exception.GetMessage(str);
+                Out.String ("Caught exception: "); Out.String(str); Out.Ln;
+                Exception.ACKNOWLEDGE
+              ELSIF (Exception.CurrentNumber(e) = negativeException) THEN
+                Exception.GetMessage(str);
+                Out.String ("Caught exception: "); Out.String(str); Out.Ln;
+                Exception.ACKNOWLEDGE
+              END;
+            END;  (* Note: No ELSE part; *)
+          END;    (* all other exceptions are re-raised. *)
+          Exception.POPCONTEXT;
+        END p;
+     
+     BEGIN
+       Exception.AllocateSource (src);
+       p(-4);
+       p(0);
+       p(3);
+     END MultiExcept.
+
+   Exception numbers `genericException', `zeroException', and
+`negativeException' are defined for `src'.  In procedure `p', two of
+these exceptions are handled, and all other exceptions, including
+`genericException', are simply re-raised.  The output of this program
+looks like
+
+     Testing value=-4
+     Caught exception: [MultiExcept] Value less than zero
+     Testing value=0
+     Caught exception: [MultiExcept] Value is zero
+     Testing value=3
+     ##
+     ## Unhandled exception (#1):
+     ## [MultiExcept] An exception is raised
+     ##
+
+Assertions and Exceptions
+.........................
+
+   The previous two examples are somewhat contrived; you probably
+wouldn't use exceptions quite that way.  Those examples were meant to
+show how the exception mechanisms work, not necessarily how you would
+use them in a real situation.  So for this next set of examples, let us
+look at a more practical problem.  Consider the following module, which
+performs a typical programming task: reading from one file, processing
+the information, and writing the result out to another file.  Note
+that, in this version, no error checking is done.
+
+     MODULE FileFilter;
+     
+     IMPORT Files, TextRider;
+     
+       PROCEDURE Process(inFileName:  ARRAY OF CHAR;
+                         outFileName: ARRAY OF CHAR);
+         VAR r: TextRider.Reader;
+             w: TextRider.Writer;
+             fin, fout: Files.File;
+             res: INTEGER;
+       BEGIN
+         fin := Files.Old(inFileName, {Files.read}, res);
+         r := TextRider.ConnectReader(fin);
+     
+         fout := Files.New(outFileName, {Files.write}, res);
+         w := TextRider.ConnectWriter(fout);
+     
+         (* Process the files... *)
+     
+         fin.Close;
+         fout.Close;
+       END Process;
+     
+     BEGIN
+       Process("in.txt", "out.txt");
+     END FileFilter.
+
+   There are a number of places where things might go wrong.  For
+instance, suppose `in.txt' does not exist; running the program would
+result in the following output:
+
+     ##
+     ## Unhandled exception (#1) in module TextRider at pos 45930:
+     ## Dereference of NIL
+     ##
+
+     *Please note:* The exception is only raised if `TextRider' was
+     compiled with run-time checks enabled; they are disabled by
+     default.  In general, it is not a good idea to assume that library
+     modules raise "proper" exceptions when they are fed illegal
+     values.  For instance, nstead of a deref-of-nil exception, they
+     might cause the OS to signal a `SIGSEGV' (or something similar).
+     Some modules (everything implemented in C) cannot be forced to
+     handle run-time checks gracefully at all.
+
+   This exception occurs because `Files.Old' failed and returned a value
+of `NIL', and that value was passed to `ConnectReader'.  This situation
+should be checked for; Oberon-2 provides a predefined procedure
+`ASSERT' that could be used in this situation.  The following version
+adds error checking to the program:
+
+       PROCEDURE Process(inFileName:  ARRAY OF CHAR;
+                         outFileName: ARRAY OF CHAR);
+         VAR r: TextRider.Reader;
+             w: TextRider.Writer;
+             fin, fout: Files.File;
+             res: INTEGER;
+       BEGIN
+         fin := Files.Old(inFileName, {Files.read}, res);
+         ASSERT(res = Files.done);
+     
+         r := TextRider.ConnectReader(fin);
+         ASSERT(r # NIL);
+     
+         fout := Files.New(outFileName, {Files.write}, res);
+         ASSERT(res = Files.done);
+     
+         w := TextRider.ConnectWriter(fout);
+         ASSERT(w # NIL);
+     
+         (* Process the files... *)
+     
+         IF fin # NIL THEN fin.Close END;
+         IF fout # NIL THEN fout.Close END;
+       END Process;
+
+   Running this program under the same conditions (i.e., `in.txt' does
+not exist) produces the following result:
+
+     ##
+     ## Unhandled exception (#1) in module FileFilter2 at pos 299:
+     ## Assertion failed
+     ##
+
+   This is slightly better than the first version; at least the
+unhandled exception message now shows the relative location of the
+exception in the source text.  But, it would be even better, especially
+if this kind of file processing were done from an interactive program,
+if there were a way to recover from this situation.  The next version
+shows how failed assertions can be caught:
+
+       PROCEDURE Process(inFileName:  ARRAY OF CHAR;
+                         outFileName: ARRAY OF CHAR);
+         CONST
+             finError = 1; rError = 2; foutError = 3; wError = 4;
+         VAR r: TextRider.Reader;
+             w: TextRider.Writer;
+             fin, fout: Files.File;
+             res: INTEGER;
+             e: Exception.Source;
+       BEGIN
+         fin := NIL; fout := NIL;
+         Exception.PUSHCONTEXT (e);
+         IF (e = NIL) THEN
+           fin := Files.Old(inFileName, {Files.read}, res);
+           ASSERT(res = Files.done, finError);
+     
+           r := TextRider.ConnectReader(fin);
+           ASSERT(r # NIL, rError);
+     
+           fout := Files.New(outFileName, {Files.write}, res);
+           ASSERT(res = Files.done, foutError);
+     
+           w := TextRider.ConnectWriter(fout);
+           ASSERT(w # NIL, wError);
+     
+         (* Process the files... *)
+         ELSE
+           IF e = Exception.assert THEN
+             CASE Exception.CurrentNumber(e) OF
+               finError:
+                 (* ... *)
+                 Exception.ACKNOWLEDGE
+             | rError:
+                 (* ... *)
+                 Exception.ACKNOWLEDGE
+             | foutError:
+                 (* ... *)
+                 Exception.ACKNOWLEDGE
+             | wError:
+                 (* ... *)
+                 Exception.ACKNOWLEDGE
+             ELSE  (* exception is not acknowledged otherwise. *)
+             END;
+           END;  (* all other exceptions are re-raised. *)
+         END;
+         Exception.POPCONTEXT;
+     
+         IF fin # NIL THEN fin.Close END;
+         IF fout # NIL THEN fout.Close END;
+       END Process;
+
+   When an exception occurs (indicated by a failed assertion) special
+processing can be done based on the exception number: `finError',
+`rError', `foutError', or `wError'.  Note that the calls to `Close'
+occur outside of the exception context, so that the files can still be
+closed when an exception occurs (as long as they are not `NIL').  An
+else clause is included as part of the `CASE' to prevent a misleading
+`noMatchingLabel' exception.
+
+   This example shows how the exception mechanism can be used in
+conjunction with `ASSERT'.  If more fine-grained control is required,
+an exception source can be defined and calls to `RAISE' used in place of
+`ASSERT'.
+
+
+File: OOCref.info,  Node: Signal,  Prev: Exception,  Up: Exception Handling
+
+Module Signal
+=============
+
+   The module `Signal' provides the means to connect signals to the
+exception handling mechanism defined by module `Exception'.  A signal
+reports the occurrence of an exceptional event to an executing program;
+that is, a signal is an externally generated software interrupt.  The
+following are examples of events that can generate a signal: Program or
+operation errors, or external events such as alarms or job control
+events; one process can also send a signal to another process.
+
+   Full coverage of the use of signals is beyond the scope of this
+manual.  To learn more about signals, most books on the Unix operating
+system have sections describing signals.  Otherwise, `The GNU C Library
+Reference Manual' (available to download in various formats--say, as
+"info" files--or in print with ISBN 1-882114-53-1) is an excellent
+source of information on the use of signals.
+
+   Signals can also be set up to be handled independently of
+exceptions.  The procedure `SetHandler' is used to install a handler
+procedure for when a specific signal occurs.  The procedure `Raise' can
+be used to raise a particular signal, which is then handled in the same
+way as system generated signals (i.e., either an exception is raised or
+the signal's action is activated).
+
+   A signal's action can be set to `handlerException', which means that
+an occurance of the given signal raises an exception.  Unless specified
+otherwise, signals trigger their respective default actions.
+
+   A generic handler, which could be used to handle different kinds of
+signals, might look something like this:
+
+     PROCEDURE GenericHandler(sigNum: Signal.SigNumber);
+       VAR dummy: Signal.SigHandler;
+     BEGIN
+       Err.String("Handling signal="); Err.LongInt(sigNum, 0); Err.Ln;
+     
+       dummy := Signal.SetHandler(sigNum, GenericHandler);
+         (* sigNum's action might be reset by the system to
+          * `handlerDefault', so we explicitly reset our own
+          *  signal action here.  See note below.  *)
+     
+       IF sigNum = Signal.Map(Signal.sigint) THEN
+         (* Actions applicable to `sigint'. *)
+       ELSIF sigNum = Signal.Map(Signal.sigsegv) THEN
+         (* Actions applicable to `sigsegv'.
+          * HALT() would probably be good here. *)
+       ELSIF sigNum = ...
+         ...
+       ELSE
+         (* For other signals that have this procedure as their action,
+          * but are not handled by an ELSIF branch, reset the action
+          * as default, and raise it again. *)
+         dummy := Signal.SetHandler(sigNum, Signal.handlerDefault);
+         Signal.Raise(sigNum)
+       END;
+     END GenericHandler;
+
+     *Please note:* Resetting the signal's action to the current handler
+     is only necessary for System V systems.  For BSD or POSIX, the
+     current signal handler is kept.  Also note that with System V
+     there is a race condition: There is no guarantee that the signal
+     isn't raised again after the handler is cleared by the system, but
+     before the called handler has reinstalled itself.
+
+   This handler would be installed for various signals (probably in a
+module's BEGIN block) as follows:
+
+     oldHandler := Signal.SetHandler(Signal.Map(Signal.sigint),
+                                     GenericHandler);
+     oldHandler := Signal.SetHandler(Signal.Map(Signal.sigsegv),
+                                     GenericHandler);
+     ...
+
+Signal Facilities
+-----------------
+
+Constants
+.........
+
+   The following constants define symbolic names for signals.  Because
+signal numbers vary from system to system, the numbers below cannot be
+passed directly to a system call; a number has to be mapped to the
+system's numbering scheme first by the function `Map'.  Multiple names
+can be mapped to a single signal number; for example on most systems,
+the signals `sigiot' and `sigabrt' are aliases.  Not all signals are
+available on all systems.  If a signal is not defined for the current
+system, `Map' will return the value `unknownSignal'.
+
+*Program error signals:*
+
+ - Constant: sigfpe
+     Fatal arithmetic error.
+
+ - Constant: sigill
+     Illegal instruction.
+
+ - Constant: sigsegv
+     Segmentation violation.
+
+ - Constant: sigbus
+     Bus error.
+
+ - Constant: sigabrt
+     Program abortion.
+
+ - Constant: sigiot
+     I/O trap, usually just another name for sigabrt.
+
+ - Constant: sigtrap
+     Program breakpoint.
+
+ - Constant: sigemt
+     Emulator trap.
+
+ - Constant: sigsys
+     Bad system call.
+
+ - Constant: sigstkflt
+     Stack fault.
+
+*Termination signals:*
+
+ - Constant: sigterm
+     Generic way to cause program termination.
+
+ - Constant: sigint
+     Program interrupt (usually caused by `C-c').
+
+ - Constant: sigquit
+     Program interrupt (usually caused by `C-\').
+
+ - Constant: sigkill
+     Immediate program termination.
+
+ - Constant: sighup
+     "Hang-up" signal.
+
+*Alarm signals:*
+
+ - Constant: sigalrm
+     Typically indicates expiration of a timer.
+
+ - Constant: sigvtalrm
+     Virtual timerO.
+
+ - Constant: sigio
+     File descriptor is ready to perform input or output.
+
+ - Constant: sigurg
+     "Urgent" or out-of-band data arrived at socket.
+
+ - Constant: sigpoll
+     System V signal name, similar to sigio.
+
+*Job control signals:*
+
+ - Constant: sigchld
+     Child process terminates or stops.
+
+ - Constant: sigcld
+     Obsolete name for sigchld.
+
+ - Constant: sigcont
+     Continue process.
+
+ - Constant: sigstop
+     Stop process.
+
+ - Constant: sigtstp
+     Interactive stop signal.
+
+ - Constant: sigttin
+     Background process reads from terminal.
+
+ - Constant: sigttou
+     Background process writes to terminal.
+
+*Operation error signals:*
+
+ - Constant: sigpipe
+     Broken pipe.
+
+ - Constant: siglost
+     Resource lost.
+
+ - Constant: sigxcpu
+     CPU time limit exceeded.
+
+ - Constant: sigxfsz
+     File size limit exceeded.
+
+ - Constant: sigpwr
+     Power state indication.
+
+*Miscellaneous signals:*
+
+ - Constant: sigusr1
+     User defined signal 1.
+
+ - Constant: sigusr2
+     User defined signal 2.
+
+ - Constant: sigwinch
+     Window size change.
+
+ - Constant: siginfo
+     Information request.
+
+ - Constant: sigdil
+     ???
+
+*Other:*
+
+ - Constant: unknownSignal
+     Result of `Map' for invalid signal names.
+
+Types
+.....
+
+   The following types are declared in module `Signal':
+
+ - Data type: SigNumber
+     A system dependant integer type used to represent signal numbers.
+
+ - Procedure type: SigHandler = `PROCEDURE (SIGNUM: SigNumber)'
+     The procedure type used as the signature of a signal handler,
+     which is installed with the procedure `SetHandler'.  A procedure
+     variable of this type is activated upon the arrival of the signal,
+     and the system dependent signal number is passed to the SIGNUM
+     parameter.
+
+Variables
+.........
+
+   The following variables are defined for use with facilities provided
+in module `Signal':
+
+ - Read-only Variable: handlerDefault: SigHandler
+     Setting a signal's action to this handler specifies that the
+     signal should invoke the default action when raised.
+
+ - Read-only Variable: handlerIgnore: SigHandler
+     Setting a signal's action to this handler specifies that the
+     signal should be ignored.  Note that, the signals `sigkill' and
+     `sigstop' cannot be ignored.
+
+ - Read-only Variable: handlerError: SigHandler
+     The value of this variable is returned from from `SetHandler' to
+     indicate an error.
+
+ - Read-only Variable: handlerException: SigHandler
+     Setting a signal's action to this handler specifies that the
+     signal should raise an exception.  Upon arrival of the signal
+     `signum', the handler will install itself again as action for the
+     given signal number, and then activate `Exception.RAISE' with
+     `Signal.exception' as source, the message string `[Signal] Caught
+     signal number <signum>', and the system dependent value of
+     `signum' as exception number.
+
+     If the exception isn't handled by the user, the default exception
+     handler will print the usual message to `stderr', reset the
+     signal's handler to the default action, and raise the signal
+     again.  If the latter doesn't terminate the program, the default
+     handler will terminate the program like a failed run-time check.
+
+ - Read-only Variable: exception: Exception.Source
+     This is used as the exception source for signals that are set to
+     raise an exception via `handlerException'.
+
+Procedures
+..........
+
+   The following procedures are provided for setting signal handlers and
+raising signals:
+
+ - Function: Map `(SIGNUM: SigNumber): SigNumber'
+     Maps a signal name from the above list onto the system dependent
+     signal number associated with that name.  If the signal isn't
+     defined for the system, `unknownSignal' is returned.  More than
+     one signal may be mapped onto the same number.
+
+ - Function: SetHandler `(SIGNUM: SigNumber; ACTION: SigHandler):
+          SigHandler'
+     Installs the signal handler ACTION for the signal number SIGNUM.
+     The signal number must be mapped to the system's number scheme
+     first; that is, the names defined above can't be used directly,
+     but have to be passed through `Map' first.  The behaviour of this
+     procedure is undefined if the given number does not correspond to
+     a legal signal.
+
+     If the signal can be handled, the next occurence of the given
+     signal will activate the procedure in ACTION, passing the system
+     specific signal number via the procedure's SIGNUM parameter.
+     Calling this procedure with `ACTION = NIL' is equivalent to
+     calling it with `ACTION = handlerDefault'.  The system might, as
+     in the case of System V systems, reset the signal handler to the
+     default action before calling ACTION.  On other systems, notably
+     POSIX and BSD, the current action is kept.  So, it is generally a
+     good idea to explicitly set the signal handler again as part of
+     ACTION.
+
+     On success, the `SetHandler' function returns the action that was
+     previously in effect for the specified SIGNUM.  This value can be
+     saved and later restored by calling `SetHandler' again.
+
+     On failure, the value `handlerError' is returned.  Possible errors
+     are an invalid SIGNUM, or an attempt to ignore or provide a
+     handler for the signals `sigkill' or `sigstop'.
+
+          *Please note:* In `oo2c', this function is just a wrapper
+          around the C function `signal'.  For more details, check the
+          specification of this function (e.g., its man page or the
+          relevant chapter of libc info).
+
+ - Procedure: Raise `(SIGNUM: SigNumber)'
+     Raises a signal associated with SIGNUM for the current process.
+     See `SetHandler' for the restrictions regarding the values of
+     SIGNUM.
+
+   Initial actions for all signals within a program are usually either
+`handlerDefault' or `handlerIgnore'.  A check should be done when
+establishing new signal handlers to be sure that the original action
+was not `handlerIgnore'.
+
+   *Example:*
+
+     MODULE SigTest;
+     
+     IMPORT Signal, ...;
+     
+     VAR
+       oldHandler: Signal.SigHandler;
+     
+       PROCEDURE CleanUp(sigNum: Signal.SigNumber);
+       (* Set the handler back to default, clean up (e.g., close
+        * files), and then resend the signal.  *)
+       BEGIN
+         oldHandler := Signal.SetHandler(sigNum, Signal.handlerDefault);
+         (* Do the clean up stuff. *)
+         Signal.Raise(sigNum);
+       END CleanUp;
+     
+     BEGIN
+       oldHandler := Signal.SetHandler(Signal.Map(Signal.sigint), CleanUp);
+     
+       (* Check to make sure the signal was not set to be ignored.  *)
+       IF oldHandler = Signal.handlerIgnore THEN
+         oldHandler := Signal.SetHandler(Signal.Map(Signal.sigint),
+                                         Signal.handlerIgnore);
+       END;
+     
+       ...   (* Other program termination signals, like sighup and
+              * sigterm, might also be set to do the CleanUp action.
+              *)
+     END SigTest.
+
+   Certain signals might not occur when normal run-time checks are
+enabled.  For example, index checks are normally done when accessing
+array elements, so a segmentation violation should never occur because
+of accessing out-of-bounds array elements.  However, if these run-time
+checks are disabled, appropriate signal handlers can be set up to
+capture error conditions.
+
+   *Example:*
+
+     <* IndexCheck := FALSE *>
+     ...
+     
+     PROCEDURE PrintIt(sigNum: Signal.SigNumber);
+     BEGIN
+       oldHandler := Signal.SetHandler(sigNum, PrintIt);
+       Err.String("Resetting program and exiting...");  Err.Ln;
+       (* Cleanup stuff *)
+       HALT(1);
+     END PrintIt;
+     
+     ...
+     
+     oldHandler := Signal.SetHandler(Signal.Map(Signal.sigsegv), PrintIt);
+
+   It is often very difficult to recover from serious events that
+trigger signals.  This is why the exception handling module `Exception'
+has been tied into `Signal'; a program can be set up to handle the error
+via an exception handler.
+
+   *Example:*
+
+     MODULE SigExcept;
+     <* IndexCheck := FALSE *>
+     
+     IMPORT Signal, Exception, ...;
+     
+     VAR
+       oldHandler: Signal.SigHandler;
+     
+       PROCEDURE RunIt;
+         VAR
+             ...
+             e: Exception.Source;
+       BEGIN
+         Exception.PUSHCONTEXT (e);
+         IF (e = NIL) THEN
+           ...  (* Normal excecution part *)
+         ELSE
+           IF e = Signal.exception THEN
+             IF Exception.CurrentNumber(e) = Signal.Map(Signal.sigsegv) THEN
+                 ...
+                 Exception.ACKNOWLEDGE
+             ELSE
+             END
+           END
+         END
+         Exception.POPCONTEXT;
+       END RunIt;
+     
+     BEGIN
+       oldHandler := Signal.SetHandler(Signal.Map(Signal.sigsegv),
+                                       Signal.handlerException);
+       ...
+       RunIt
+     END SigExcept.
+
+
+File: OOCref.info,  Node: Localization,  Next: Language,  Prev: Exception Handling,  Up: Top
+
+Localization
+************
+
+* Menu:
+
+* Locales::                     Localization information based on the
+                                  Posix/C facilities.
+* LocStrings::                  Character and string localization
+                                  facilities.
+* LocNumConv::                  Localized number conversions.
+* LocNumStr::                   Convert numbers to/from strings using
+                                  locale information.
+* LocTextRider::                Localized text riders.
+* LocText::                     Text string localization facilities.
+
+
+File: OOCref.info,  Node: Locales,  Next: LocStrings,  Up: Localization
+
+Module Locales
+==============
+
+
+File: OOCref.info,  Node: LocStrings,  Next: LocNumConv,  Prev: Locales,  Up: Localization
+
+Module LocStrings
+=================
+
+
+File: OOCref.info,  Node: LocNumConv,  Next: LocNumStr,  Prev: LocStrings,  Up: Localization
+
+Module LocNumConv
+=================
 
 
 File: OOCref.info,  Node: LocNumStr,  Next: LocTextRider,  Prev: LocNumConv,  Up: Localization
@@ -78,1163 +1175,8 @@ language report.
 * Specifications::              Specifications beyond the language report.
 * Non-conformant Mode::         Deviations from the Language Report in
                                   "Non-conformant" Mode.
+* Multi-part Module Names::     Structured names for modules.
 * Additional Data Types::       Additional basic data types used by OOC.
 * Language Extensions::         Experimental extensions to the language.
 * Illegal Operations::          Illegal operations and their effects.
-
-
-File: OOCref.info,  Node: Specifications,  Next: Non-conformant Mode,  Prev: Language,  Up: Language
-
-Specifications
-==============
-
-Length limits of Identifiers and Strings
-----------------------------------------
-
-   OOC does not impose a limit on the length of identifiers or string
-literals.  The Oakwood guidelines suggest that a compiler should
-support at least 23 significant characters for identifiers, but there
-is no such suggestion for strings.  The pragma variables `IdentLength'
-and `StringLength' control the length of identifiers and string
-literals accepted by the compiler (*note Options and Pragmas::.).  Note
-that other compilers may impose arbitrary limits on identifiers and
-strings.
-
-Basic Types
------------
-
-   The basic types of OOC are defined as follows:
-
-     =============================================================
-     Name       Size in Bytes             MIN(T)            MAX(T)
-     -------------------------------------------------------------
-     BOOLEAN         1                      n/a                n/a
-     CHAR            1                       0X               0FFX
-     SHORTINT        1                     -128                127
-     INTEGER         2                   -32768              32767
-     LONGINT         4              -2147483648         2147483647
-     HUGEINT         8                    -2^63             2^63-1
-     REAL            4          -3.40282347E+38     3.40282347E+38
-     LONGREAL        8         -1.79769313D+308    1.79769313D+308
-     SET             4                        0                 31
-     -------------------------------------------------------------
-
-   The integer type `HUGEINT' is required to be implemented only by
-compilers for 64-bit target architectures; that is, for targets whose
-address size is 8 bytes.  `HUGEINT' is optional for all other
-implementations of OOC.
-
-   The size and extreme values of the real numeric types depend on the
-floating point representation used on the target system.  For the vast
-majority of modern systems, this will be based on the IEEE standard
-754-1985.  In this case, `REAL' is encoded as IEEE single precision
-number in 4 bytes, and `LONGREAL' as double precision number in 8
-bytes.  The numbers given in the table above assume IEEE representation
-for real numeric types.  Note that the extreme values as shown for
-`LONGREAL' are truncated; for the exact absolute value, refer to the
-constant `LowLReal.large'.
-
-Empty String
-------------
-
-   The string constant `""' and the character constant `0X' are
-interchangeable.  This implies that a string constant cannot contain
-the character `0X'.
-
-Array Types of Length Zero
---------------------------
-
-   Arrays of length zero are permitted, but the compiler will emit a
-warning if it detects such an array during compilation (unless warnings
-are disabled).
-
-   So, a declaration of the form `TYPE T=ARRAY 0 OF CHAR' is allowed,
-and variables of type `T' can be defined, but any attempt to access
-elements in the array will cause an `index out of range' error either
-during compilation (if detectable) or at run-time.  Similarly, open
-array instances of length zero can be created (by passing a length of
-zero to `NEW'), but, of course, no elements can be accessed.
-
-   Note that, in any case, specifying a negative length will trigger an
-error either during compilation or at program run-time.
-
-Extension Limit of Record Types
--------------------------------
-
-   OOC does not impose any limit on the number of levels a record type
-may be extended.  The Oakwood guidelines suggest that the number of
-levels of type extension should not be less than 8 levels, including
-the base type.
-
-Ordering Restrictions for Type-bound Procedures
------------------------------------------------
-
-   If an extended record type redefines a type-bound procedure, then the
-redefinition must appear *after* the base declaration in the source
-text.  The following example violates this rule:
-
-     TYPE
-       R0 = RECORD END;
-       R1 = RECORD (R0) END;
-     
-     PROCEDURE (VAR r: R1) P; END P;
-     PROCEDURE (VAR r: R0) P; END P;
-
-   In order to make this example legal, the order of declaration of the
-two procedures must be reversed.  Note that this problem can only arise
-if the record types, and their corresponding type-bound procedures, are
-defined in the same module.  This restriction is inherently present in
-many Oberon-2 compilers, although it is not stated in the language
-report.
-
-Large Hexadecimal Constants
----------------------------
-
-   Hexadecimal constants can be specified over the full *unsigned*
-range of the largest integer type.  A constant value greater than the
-maximum value of the largest *signed* integer type is mapped onto a
-negative value by interpreting it as an unsigned representation of an
-integer number.
-
-   For example, if the compiler does not support the `HUGEINT' type,
-hexadecimal constants in the range `08000000H..0FFFFFFFFH' are mapped
-into the range `MIN(LONGINT)..-1' by matching the bit pattern of the
-constant onto the negative value.  However, if `HUGEINT' constants are
-supported by the compiler, these values are mapped into the *positive*
-range `2^31..2^32-1'.  This means that the interpretation of such
-constants is compiler-dependent.  Without special precautions, modules
-using this constant representation are not portable to systems that
-support additional, larger integer types.
-
-   Note that the extended mapping of constant literals applies only to
-values given in hexadecimal format; a decimal integer constant will
-cause an overflow if it exceeds the maximum integer value.  Special
-handling of hexadecimal constants is not part of the language report,
-but is implemented in many Oberon-2 compilers, presumably to ease the
-implementation of low-level modules that need a convenient way to
-define bit pattern values of word size.
-
-Specification of `DIV' and `MOD'
---------------------------------
-
-   The results of integer division and modulus are defined as
-
-     x=(x DIV y)*y + x MOD y
-
-where `0 <= x MOD y < y' *or* `y < x MOD y <= 0'.
-
-   *Example:*
-
-     =================================
-       x    y       x DIV y   x MOD y
-     ---------------------------------
-       5    3          1         2
-       5   -3         -2        -1
-      -5    3         -2         1
-      -5   -3          1        -2
-     ---------------------------------
-
-   Note that with this definition the equation `x DIV y = ENTIER (x/y)'
-holds.
-
-Predefined Procedure `NEW'
---------------------------
-
-   There are two points of clarification regarding OOC's implementation
-of `NEW':
-
-   * Passing negative length values to the predefined procedure `NEW' is
-     illegal.  An exception is raised during any attempt to create an
-     open array with a negative length as one of its dimensions.  A
-     length of zero is permitted, but no read operations on such an
-     array are possible; note that, writing `NEW(a,0)' triggers a
-     compile-time warning (if warnings are enabled).
-
-   * `NEW(v)' or `NEW(v, ...)' always returns a non-`NIL' value in `v'.
-     If the program cannot obtain the required amount of memory, an
-     exception is raised.
-
-Predefined Procedures `HALT' and `ASSERT'
------------------------------------------
-
-   The statements `HALT(n)' and `ASSERT(FALSE, n)' are equivalent to
-the C function invocation `exit(n)' unless the raised exception is
-caught explicitly.  The value of `n' must be from the range `[0..255]'.
-The statement `ASSERT(FALSE)' is equivalent to `ASSERT(FALSE, 1)'.
-
-Predefined Procedure `SYSTEM.MOVE'
-----------------------------------
-
-   There are several points to consider when using `SYSTEM.MOVE':
-
-   * Calling `SYSTEM.MOVE' with a block size of zero will do nothing.
-
-   * The behaviour of `MOVE(src,dest,len)' is undefined when
-        * the block size `len' is negative, or
-
-        * the intersection of the ranges `[src..src+len-1]' and
-          `[dest..dest+len-1]' is not empty, or
-
-        * one of the memory regions `[src..src+len-1]' or
-          `[dest..dest+len-1]' is not wholly contained in a variable or
-          an allocated heap object.
-
-   Also note that, due to the way OOC represents source code internally,
-`SYSTEM.MOVE' should not be applied to local scalar variables of a
-procedure.  OOC will not recognize such a memory-level copy as a
-defining instruction of a variable.  The generated code would be valid,
-but it is possible that a warning will be emitted, stating that the
-variable is not defined before its use.
-
-
-File: OOCref.info,  Node: Non-conformant Mode,  Next: Additional Data Types,  Prev: Specifications,  Up: Language
-
-Non-conformant Mode
-===================
-
-   OOC has two, slightly different, modes of operation: conformant mode
-and non-conformant mode.  Conformant mode emulates the behaviour of ETH
-compilers, whereas non-conformant mode is generally closer to the
-language report.  The mode in use is determined by the boolean pragma
-variable `ConformantMode' (*note Options and Pragmas::.);
-non-conformant mode is the default setting.  The differences between
-both modes are described in the following sections.
-
-Implementation of `WITH'
-------------------------
-
-   In older ETH compilers, the implementation of the `WITH' statement is
-faulty.  If a guarded variable is a formal parameter, the formal
-parameter type is actually modified by the `WITH' statement; that is,
-the interface of the procedure is changed for any calls to it within
-the scope of the regional type guard.
-
-   *Example:*
-
-     MODULE TestWith;
-     
-     TYPE
-       R0 = RECORD END;       P0 = POINTER TO R0;
-       R1 = RECORD (R0) END;  P1 = POINTER TO R1;
-     
-     PROCEDURE Proc0 (VAR r: R0);
-       VAR r0: R0;
-       BEGIN
-         WITH r: R1 DO  Proc0 (r0)  END
-       END Proc0;
-     
-     PROCEDURE Proc1 (p: P0);
-       VAR p0: P0;
-       BEGIN
-         WITH p: P1 DO  Proc1 (p0)  END
-       END Proc1;
-     
-     END TestWith.
-
-   In conformant mode, the compiler warns that the formal parameter
-type is modified by a `WITH' statement, and two errors are issued: the
-argument of the first procedure call `Proc0 (r0)' is not compatible to
-a formal parameter of type `R1', and in the second call `Proc1 (p0)',
-the argument is not assignment compatible to type `P1'.  This example
-module is legal in non-conformant mode.
-
-Comparing Procedure Values
---------------------------
-
-   The language report specifies that a variable of pointer type cannot
-be compared with a procedure constant.  Appendix A states that, for an
-expression `p0 = p1' where `p0' and `p1' are procedure values, both
-operands have to have the same type.  However, the type rules imply
-that the type of any one procedure is distinct from all other types.
-
-   *Example:*
-
-     MODULE ProcCmp;
-     
-     VAR p0, p1: PROCEDURE; bool: BOOLEAN;
-     
-     PROCEDURE P; END P;
-     
-     BEGIN
-       p0 := P;
-       bool := (p0 = P)
-     END ProcCmp.
-
-   The assignment to `p0' is legal, but the comparison between the
-procedure variable and the procedure value is not.  Oberon-2 relaxes the
-type rules for assignments involving procedure types by requiring only
-structural equivalence rather than name equivalence.  It would be
-natural to extend this to comparisons of procedure values as well.
-Because omitting this extension is most likely an oversight by the
-language designers, OOC implements the less restrictive rule.  This
-means, that a comparison like in the example is legal in non-conformant
-mode, but will be marked as faulty in conformant mode.
-
-Specification of `INC' and `DEC'
---------------------------------
-
-   The report defines `INC(v, n)' to be functionally equivalent to `v
-:= v + n', and gives a similar definition for `DEC(v, n)'.  It does not
-specify any type rules for these predefined procedures.  ETH compilers
-implement the procedures in such a way that `INC(v, n)' is legal, if
-
-   * `n' is an integer constant included in the type of `v', or
-
-   * `n' is an expression or variable with the *same* type as `v'.
-
-   Because this implementation is questionable when compared with the
-language report, OOC applies a less restrictive rule in non-conformant
-mode; `INC(v, n)' and `DEC(v, n)' are valid if the type of `n' is
-included in that of `v', regardless of `n' being a constant value or
-not.  In conformant mode, the more restrictive interpretation of the ETH
-compilers is applied.
-
-Redefinition of Type-bound Procedures
--------------------------------------
-
-   The language report specifies that, when redefining a type-bound
-procedure, the formal parameters of the original procedure and the
-redefinition must *match*.  OOC enfores this rule in conformant mode.
-However, in non-conformant mode, the compiler applies a less
-restrictive rule that was first introduced by Oberon/F: If `P'' is a
-redefinition of the type-bound procedure `P', the formal parameters of
-`P' and `P'' must *match* with the exception of the function result of
-`P'', which may be an extension of the result of `P'.
-
-   *Example:*
-
-     MODULE Redef;
-     
-     TYPE
-       R0 = RECORD END;      P0 = POINTER TO R0;
-       R1 = RECORD (R0) END; P1 = POINTER TO R1;
-     
-     PROCEDURE (p: P0) Copy(): P0; ... END Copy;
-     PROCEDURE (p: P1) Copy(): P1; ... END Copy;
-     
-     END Redef.
-
-   In conformant mode, the compiler will complain that the formal
-parameters of the second procedure do not match the ones of the first.
-Conformant mode requires the result type of the second procedure to be
-`P0', whereas non-conformant mode allows the extended type `P1' as
-valid.
-
-   By allowing the less restrictive rule for return types, it is
-possible to design class hierachies distributed over several modules
-where an extended class can be used without direct knowledge of the
-base class.  An example of this is found in the module `Files': If
-adhering to the report, the type-bound procedures `NewReader' and
-`NewWriter' would need to return types imported from module `Channel'.
-Any module using these procedures would also need to import `Channel'
-to define variables to hold the result of these procedures.  With the
-relaxed redefinition rule, the procedures can return types from module
-`Files', and can therefore be used separately from the base module
-`Channel'.
-
-
-File: OOCref.info,  Node: Additional Data Types,  Next: Language Extensions,  Prev: Non-conformant Mode,  Up: Language
-
-Additional Data Types
-=====================
-
-   OOC provides several data types beyond the standard types of
-Oberon-2.  They are introduced to add Unicode support and to ease
-interfacing to foreign code and migration to 64-bit target
-architectures.
-
-LONGCHAR and Long Strings
--------------------------
-
-   In order to support the Unicode character set, OOC adds the type
-`LONGCHAR' and introduces the concept of long strings.  The "character
-types" are now `CHAR' and `LONGCHAR', and "string constants" can be
-either `String' or `LongString'.
-
-   The basic character types are as follows:
-
-`CHAR'
-     the characters of the ISO-Latin-1 (i.e., ISO-8859-1) character set
-     (0X..0FFX)
-
-`LONGCHAR'
-     the characters of the Unicode character set (0X..0FFFFX)
-
-   The character type `LONGCHAR' includes the values of type `CHAR'
-according to the following hierarchy:
-
-       LONGCHAR >= CHAR
-
-   Character constants are denoted by the ordinal number of the
-character in hexadecimal notation followed by the letter `X'.  The type
-of a character constant is the minimal type to which the constant value
-belongs.  (i.e., If the constant value is in the range `0X..0FFX', its
-type is `CHAR'; otherwise, it is `LONGCHAR'.)
-
-   String constants are sequences of characters enclosed in single (`'')
-or double (`"') quote marks; strings can also be represented using the
-string concatenation operator `+' and a combination of characters or
-string constants.  String constants that consist solely of characters
-in the range `0X..0FFX' are of type `String', all others are of type
-`LongString'.  For example, the following is of type `LongString':
-
-   *Example:*
-
-       CONST
-          aLongString = 0C0ACX + 0C6A9X + " " + 0C2E4X + 0D328X;
-
-   The string type `LongString' includes the values of type `String'
-according to the following hierarchy:
-
-         LongString => String
-
-   This means that a string constant composed of `CHAR' range values can
-be used in place of a constant string composed of `LONGCHAR' range
-values.  The expected implicit type conversion rules (similar to integer
-types) apply to character values and string constants, too; that is, it
-is possible to compare a `LongString' with a `String', or assign a
-`String' to an `ARRAY OF LONGCHAR' variable.  (`CHAR' and `Strings' are
-promoted to `LONGCHAR' and `LongString' when necessary.)
-
-   The following predeclared function procedures support these
-additional operations:
-
-     Name        Argument type        Result type  Function
-     CAP(x)      CHAR                 CHAR         if x is a letter,
-                 LONGCHAR             LONGCHAR     corresponding capital
-                                                   letter; otherwise,
-                                                   identity (see note below).
-     
-     LONG(x)     CHAR                 LONGCHAR     identity
-                 String               LongString   identity
-     
-     LONGCHR(x)  integer type         LONGCHAR     long character with
-                                                   ordinal value x
-     
-     ORD(x)      LONGCHAR             LONGINT      ordinal value of x
-     
-     SHORT(x)    LONGCHAR             CHAR         projection
-                 LongString           String       projection
-
-   *Please note*:
-
-   `CAP(x)' maps lower case letters in the ISO-Latin-1 range to the
-capital counterparts and produces identity for all other characters
-(meaning that most Unicode characters are mapped to identity).  There
-are two exceptions: `U+00DF' (LATIN SMALL LETTER SHARP S) whose
-uppercase version is the two letter sequence `SS', and `U+00FF' (LATIN
-SMALL LETTER Y WITH DIARESIS) whose capital version is outside the
-ISO-Latin-1 range (it has the code `U+0178'); these two characers are
-also mapped onto themselves.
-
-   `SHORT(x)', where `x' is of type `LONGCHAR', can result in overflow,
-which triggers a compilation or run-time error.  The result of an
-operation that causes an overflow, but is not detected as such, is
-undefined.
-
-   The predeclared procedure `COPY(x, v)' also supports `LongStrings':
-
-      Name            Argument type                 Function
-      COPY(x, v)      x: character array, string    v := x
-                      v: character array
-
-   Note that, `COPY(x, v)' is invalid if `x' is of type `ARRAY OF
-CHAR', and `v' is of type `LongString' or `ARRAY OF LONGCHAR'.
-
-Assignment Compatibility
-........................
-
-   Characters, string constants, and arrays of characters are assignment
-compatible as follows:
-
-   An expression `e' of type `Te' is `assignment compatible' with a
-variable `v' of type `Tv' if one of the following conditions hold:
-
-  a. `Tv' and `Te' are character types and `Tv' includes `Te';
-
-  b. `Tv' is an `ARRAY n OF LONGCHAR', `Te' is a string constant with
-     `m' characters, and `m' < `n';
-
-  c. `Tv' is an `ARRAY n OF CHAR', `Te' is a `String' with `m'
-     characters, and `m' < `n';
-
-Array Compatibility
-...................
-
-   String constants and arrays of characters are array compatible as
-follows:
-
-   An actual parameter `a' of type `Ta' is array compatible with a
-formal parameter `f' of type `Tf' if
-
-  a. `f' is a value parameter of type `ARRAY OF CHAR' and `a' is a
-     `String', or
-
-  b. `f' is a value parameter of type `ARRAY OF LONGCHAR' and `a' is a
-     string constant.
-
-Expression Compatibility
-........................
-
-   Character and string types are expression compatible as follows:
-
-     Operator        First operand   Second operand  Result type
-     = # < <= > >=   character type  character type  BOOLEAN
-                     string type     string type     BOOLEAN
-
-   *Please note*: Implicit type conversion rules apply to both character
-values and constant strings.  They do *not* apply to character arrays.
-
-Library support for LONGCHAR
-............................
-
-   The following modules provide support for `LONGCHAR' and
-`LongString':
-
-`BinaryRider'
-     Reading and writing of `LONGCHAR' and `LongString' as binary data.
-
-`Calendar'
-     Procedures TimeToLStr and LStrToTime.
-
-`LongStrings'
-     Similar to module `Strings'.
-
-`LongRider [ABSTRACT]'
-     Abstract text mapper classes for `LONGCHAR' and `LongString'.
-
-`UnicodeRider'
-     Concrete text mapper classes giving Unicode support.
-
-   Additional mapper classes, which are extended from TextRider and
-UnicodeRider, can be added to handle additional 8- and 16-bit encodings.
-These classes are used to map from another encoding (e.g., "KSC5601", a
-standard Korean character encoding) to Unicode or Latin-1 (as
-appropriate), and vice versa.  Here "encoding" means both the encoding
-of `n' bit values in byte streams *and* translation of character codes
-between the two standards.  (*Note Standard Mappers::.)
-
-Additional Set Types
---------------------
-
-   In addition to the standard set type `SET', module `SYSTEM' defines
-several other set types: `SET8', `SET16', `SET32',
-and--optionally--`SET64'.  The set type `SET64' is required to be
-implemented only by compilers for 64-bit target architectures.  Note
-that the type `SET32' is an alias for the standard type `SET'.
-
-     =============================================================
-     Name       Size in Bytes             MIN(T)            MAX(T)
-     -------------------------------------------------------------
-     SET8            1                        0                  7
-     SET16           2                        0                 15
-     SET32           4                        0                 31
-     SET64           8                        0                 63
-     -------------------------------------------------------------
-
-   To assign a value to a variable of one of these set types, prefix
-the set constructor with the type name.
-
-   *Example:*
-
-     set8  := SYSTEM.SET8{0..3};
-     set16 := SYSTEM.SET16{0, 8..x};
-
-   Operations for the additional set types are defined just like their
-counterparts for `SET'.  However, both sides of a dyadic operator must
-be of the same type.  That is, set operations such as intersection,
-union, and so on, are only permitted if both the left and right side
-are of the same set type.
-
-   The predefined procedures `EXCL', `INCL', and the membership test
-`IN' are applicable to all set types.  The predefined function `LONG'
-converts a set value to the identic value of the next larger set type
-(if available), whereas `SHORT' converts to the next smaller set (if
-available).  `SHORT' will remove all elements that are not included in
-the smaller type.
-
-   Variables of type `SET8' can be assigned to variables of type `BYTE'.
-If a formal variable parameter is of type `BYTE', then the corresponding
-actual parameter can be of type `SET8'.
-
-Data Types for 64-bit Machines
-------------------------------
-
-   The Oberon-2 language specification does not give fixed values for
-the size of its basic data types.  Any actual language implementation,
-in the form of a compiler, has to define the size of its types as fixed
-values.  Most modern Oberon-2 compilers use the type sizes listed in
-the table in *Note Specifications::.  However, problems arise when
-changing to a 64-bit target system.
-
-   Unfortunately, the pseudo module `SYSTEM' as defined in the language
-report uses an integer type, `LONGINT', to represent memory addresses.
-For a 64-bit machine a 64-bit integer type is required to represent
-addresses.  Defining `LONGINT' to be a 8 byte type on those machines
-introduces a number of problems:
-
-   * The size of data structures containing `LONGINT' grows, possibly
-     doubling the amount of memory required to store them.
-
-   * Modules reading or writing binary word data have to be rewritten
-     to further comply with established protocols.
-
-   * The interface definitions to external code have to be changed if
-     they used `LONGINT'.  Accordingly, all modules using these
-     interfaces also need to be rewritten.
-
-   Therefore, OOC introduces a new integer type called `HUGEINT', and
-leaves existing integer types unchanged.  Values of type `HUGEINT' are
-stored in 8 bytes, with a minimum value of `-2^63' and a maximum of
-`2^63-1'.  This extends the integer type inclusion hierachy at its
-upper end.  All integer operations also apply to `HUGEINT'.
-
-   The integer type `HUGEINT' is required to be implemented only by
-compilers for 64-bit target architectures; that is, for targets whose
-address size is 8 bytes.  `HUGEINT' is optional for all other
-implementations of OOC.  64-bit systems are also required to implement
-the set type `SYSTEM.SET64', which is of the same size as `HUGEINT'.
-
-Address Type
-------------
-
-   The pseudo module `SYSTEM' declares the type `ADDRESS'.  On 32-bit
-systems, it is an alias for `LONGINT', and on 64-bit machines, it is an
-alias for `HUGEINT'.  The following relation holds for all systems:
-
-     SIZE(SYSTEM.ADDRESS) = SIZE(POINTER) = SIZE(SYSTEM.PTR).
-
-   The predefined function `ADR' returns a value of type `ADDRESS'.
-Likewise, the type of the address arguments of `MOVE', `GET', `PUT',
-and `BIT' is `ADDRESS'.  Note that, for 32-bit systems, this
-corresponds to the language report because `ADDRESS' is an alias for
-`LONGINT' on these systems.
-
-
-File: OOCref.info,  Node: Language Extensions,  Next: Illegal Operations,  Prev: Additional Data Types,  Up: Language
-
-Experimental Language Extensions
-================================
-
-   Language extensions are implemented by OOC in the framework of system
-flags (*note System Flags::.).  Instead of extending the syntax of the
-language Oberon-2, additional flags are defined to specify non-standard
-attributes of data types and declarations.  To enable any OOC specific
-extensions for a module, the module must be declared with the
-`OOC_EXTENSIONS' flag:
-
-     MODULE Foo [OOC_EXTENSIONS];
-
-   To convert a module employing OOC specific extensions to standard
-Oberon-2, use the command `oocn --filter --strip-system-flags' (*note
-oocn options::.).
-
-* Menu:
-
-* ABSTRACT::                    Abstract classes and methods.
-* NO_COPY::                     Avoiding Local Copies of Value Parameters.
-
-
-File: OOCref.info,  Node: ABSTRACT,  Next: NO_COPY,  Up: Language Extensions
-
-Abstract Classes
-----------------
-
-   *Please note*: This section was contributed by Stewart Greenhill.
-
-   Abstract classes are an important technique for separating
-interfaces from their implementations.  Abstract classes allow the
-methods of a class to be defined without specifying an implementation
-of those methods.  An abstract class can never be instantiated because
-its behaviour is undefined.  Only concrete (non-abstract) extensions of
-an abstract class can be instantiated; these must define an
-implementation for each abstract method.
-
-   The Oberon-2 language lacks a mechanism for abstract classes, so
-typically, abstract classes are simulated using concrete types: `HALT'
-statements are used in the body of "abstract" methods, so that a
-run-time exception occurs if the class is accidentally instantiated and
-an abstract method is called.  This is not a safe solution to the
-problem.  To preserve the semantics of abstract classes, it is expected
-that the compiler will:
-
-  1. Allow the programmer to differentiate between abstract and concrete
-     classes in declarations.
-
-  2. Prohibit the instantiation of abstract classes.
-
-  3. Prohibit the calling of abstract methods.
-
-  4. Ensure that concrete classes implement all the required abstract
-     methods.
-
-   This section describes an extension to the OOC compiler that
-supports these essential features.  The extension does not change the
-Oberon-2 language itself, but instead uses the `ABSTRACT' flag to
-distinguish abstract classes and methods.  Compilers that do not
-recognise the flag should ignore it and compile the code as normal.
-Code that compiles correctly using the OOC abstract classes model
-should work correctly under other Oberon-2 compilers.
-
-   The following rules describe the semantics of abstract classes, as
-implemented by the compiler:
-
-  1. Any record type may be declared with the `ABSTRACT' flag.  Such
-     abstract records have the following properties:
-
-        * It is illegal to declare a variable, record field, or array
-          of an abstract type.
-
-        * `NEW(p)' is illegal, if `p' is a pointer variable whose base
-          type is abstract.
-
-        * It is legal to use an abstract type as the base type for
-          pointer and record declarations.
-
-        * An abstract type can be used for a parameter, receiver, or
-          result type of a procedure.
-
-  2. A procedure bound to an abstract record may be declared with the
-     `ABSTRACT' flag.  The body of such a procedure must be empty and
-     must not contain a `BEGIN' statement.
-
-  3. When a non-abstract record extends an abstract record, it *must*
-     implement each abstract method inherited from its base type.  The
-     compiler generates an error for each non-implemented abstract
-     procedure.
-
-  4. It is illegal to call an abstract method via a super call.
-
-  5. Any method marked `ABSTRACT' must have an export flag.
-
-   These rules ensure that non-implemented methods are never called,
-which ensures safety of the system.  OOC permits classes to be
-partially abstract, that is, to have a mixture of concrete and abstract
-methods.  OOC also permits concrete classes to have abstract
-extensions.  The following example illustrates some of the features of
-this mechanism:
-
-     MODULE Abstract [OOC_EXTENSIONS];
-     
-     TYPE
-       PtrA = POINTER TO A;
-       A* = RECORD [ABSTRACT] END;   (* abstract type *)
-     
-       PtrB = POINTER TO B;
-       B* = RECORD (A) END;          (* concrete extension of A *)
-     
-     VAR
-       vA: A;                       (* illegal! *)
-       pA: PtrA;
-       pB: PtrB;
-     
-     (* abstract definition of F *)
-     PROCEDURE (VAR v: A) [ABSTRACT] F*;
-       END F;
-     
-     (* implementation of F *)
-     PROCEDURE (VAR v: B) F*;
-       BEGIN
-       END F;
-     
-     BEGIN
-       NEW(pA);                      (* illegal! *)
-       NEW(pB);
-       pB.F;
-       pB.F^;                        (* illegal! *)
-       pA := pB;
-       pA.F;
-     END Abstract.
-
-   Another example of the use of abstract classes is the module
-`Channel' (*note Channel::.).  All record types and most of the methods
-defined in this module are declared abstract.
-
-
-File: OOCref.info,  Node: NO_COPY,  Prev: ABSTRACT,  Up: Language Extensions
-
-Avoiding Local Copies of Value Parameters
------------------------------------------
-
-   When invoking a procedure, local copies are created for all
-arguments that are passed to value parameters.  If the value parameter
-is a large array or an open array parameter, allocating storage for the
-variable and creating the copy can be expensive in both stack space and
-execution time.  During compile-time, OOC tries to detect situations
-where it can avoid the local copy and access the original variable
-instead.  The algorithm used cannot detect all situations where this is
-possible; it must conservatively choose in favor of a local copy if
-there is the slightest chance that omitting it would change the
-semantics of the procedure.  This can be overidden by the programmer by
-setting the flag `NO_COPY' for the value parameter in question.  The
-flag can be applied only to value parameters of structured type.
-
-   *Example:*
-
-     MODULE Out [OOC_EXTENSIONS];
-     
-     PROCEDURE String* (s[NO_COPY]: ARRAY OF CHAR);
-       BEGIN
-         writer. WriteString (s)
-       END String;
-     
-     END Out.
-
-   Because the procedure `Out.String' is just a wrapper for the
-channel's `WriteString' function, there is no need to create a local
-copy of any arguments passed to parameter `s'.
-
-   If used without care, the flag `NO_COPY' can create a parameter that
-is neither variable nor value.  It should be applied only in situations
-where
-
-   * the parameter is not modified during execution of the procedure,
-     and
-
-   * a variable passed to the parameter cannot be modified by other
-     means, like direct access or through another variable parameter.
-
-   An example for a situation where `NO_COPY' cannot be used is OOC's
-implementation of `Strings.Append'.  If the parameter `source' would be
-marked with `NO_COPY', the procedure would break for calls that use the
-same variable for both `source' and `destination'.
-
-
-File: OOCref.info,  Node: Illegal Operations,  Prev: Language Extensions,  Up: Language
-
-Illegal Operations
-==================
-
-   During the execution of a program, it is possible for an operation
-to be performed that is either illegal or that leaves the program in an
-undefined state.  This sort of operation is usually not intended by the
-programmer, and should therefore be brought to his attention.  For this
-reason, a typical Oberon-2 run-time system provides mechanisms to
-detect illegal or undefined operations and report them to the user.
-
-   For OOC, an invalid operation is signaled by the facilities defined
-in module `Exception' (*note Exception Handling::.).  If detected, such
-an operation will raise an exception of source `Exception.runtime' with
-an exception number from the list defined in `Exception'.  If the raised
-exception is not handled by the program, it will cause the run-time
-system to emit an appropriate error message and terminate the program.
-
-   The following is a list of exception numbers, which indicate
-run-time errors and are applicable to source `Exception.runtime':
-
-`derefOfNIL'
-     Indicates an attempt to dereference a pointer or procedure
-     variable that holds a value of `NIL'.  Such a dereference can
-     happen as a result of one of the following:
-
-        * during an explicit dereference operation `^' as part of a
-          designator
-
-        * when accessing a record field or an array element of a heap
-          object
-
-        * when applying a type test or a type guard
-
-        * when making a procedure call through a procedure variable.
-
-`indexOutOfRange'
-     The value used in an array designator's index selector is not in
-     the range `[0..len-1]', where `len' denotes the array's length.
-
-`elementOutOfRange'
-     Triggered if one of the set operations `IN', `INCL', or `EXCL' is
-     given an element value that is not a member of the set type being
-     used.  Note that an element of the standard set type `SET' has to
-     be in the range `0..31'.
-
-`realDivByZero'
-     Signaled when an operation `x / y' is performed when `y' is zero.
-
-`integerDivByZero'
-     Signaled when an operation `x DIV y' or `x MOD y' is performed
-     when `y' is zero.
-
-`realOverflow'
-     Raised whenever a real operation produces a value that cannot be
-     represented in the target type format.  *Please note*: It is
-     possible that floating point calculations are performed internally
-     with higher precision than the type of their arguments.  This
-     means that the overflow may occur only when attempting to write
-     the result back into a memory using the smaller type of the
-     arguments.  Also, as a note of warning, intermediate results of
-     operations may overflow unnoticed as long as the end result can be
-     stored in the required representation.
-
-`integerOverflow'
-     Signals that an integer operation has produced a result that
-     cannot be represented in the target type format.
-
-`endOfFunction'
-     Raised when the evaluation of a function procedure reaches the end
-     of the procedure without encountering a `RETURN' statement.
-
-`noMatchingLabel'
-     Raised if the selection value of a `CASE' does not match any label
-     of the listed branches and there is no `ELSE' part.
-
-`typeGuardFailed'
-     Raised when a type guard does not hold during evaluation of a
-     designator.  This means that the dynamic type of the guarded
-     variable differs from the type it is guarded against.  Note that
-     an `derefOfNil' exception is raised if the tested variable is a
-     pointer with a value of `NIL'.
-
-`typeAssertFailed'
-     A "type assertion" is an implicit type guard added for the left
-     side of assignments dealing with record values.  It ensures that
-     the dynamic type of the target is equal to its static type.  If
-     the types differ, an `typeAssertFailed' exception is raised.
-
-`noValidGuard'
-     Raised if none of the guards of a `WITH' statement is valid and
-     there is no `ELSE' part.
-
-`stackOverflow'
-     The data of procedure activations is stored in a special memory
-     area called the "stack".  If too much data is pushed onto the
-     stack, or too many procedures are active at the same time, the
-     stack overflows and program execution cannot continue; this raises
-     an `stackOverflow' exception.
-
-`illegalLength'
-     Raised if the predefined procedure `NEW' is invoked for an open
-     array pointer type with a negative value for one of the array's
-     lengths.  This run-time check cannot be disabled.
-
-`outOfMemory'
-     Raised if a call to `NEW' or `SYSTEM.NEW' failed because of
-     insufficient memory.  `NEW' guarantees that the pointer variable
-     will refer to a valid heap object after completion; if this fails,
-     an `outOfMemory' exception is raised.  This run-time check cannot
-     be disabled.
-
-   During compilation, each run-time check (except the checks performed
-for `NEW') can be enabled or disabled by a pragma variable.  If the
-corresponding pragma variable is set to `TRUE', appropriate code is
-generated to catch the class of errors in question.  If it is `FALSE',
-and such an error occurs at run-time, it might go by unnoticed, lead to
-unexpected program results, or even cause program termination in the
-form of a core dump.
-
-   The performance impact of run-time checks depends mostly on the
-target system.  Testing for an illegal operation might be done
-efficiently on one target architecture, but be very costly on another.
-Not all run-time checks are supported by all OOC compilers.  For
-example, `oo2c' does not support overflow checks for integer or real
-operations.
-
-   A special note should be made about operations on strings.  Recall
-that the Oberon-2 definition of a string is a character array that
-contains the character `0X' as a terminator.  Oberon-2 string operations
-(`COPY', `=', `#', `<', etc.) are undefined for unterminated character
-arrays.  Here OOC follows the Oakwood guidelines, and does not provide
-any checks to guard against such undefined operations.  For instance,
-if the source of a `COPY' operation is not terminated by a character
-`0X', the contents of the target array are undefined after completion.
-
-
-File: OOCref.info,  Node: Pragmas,  Next: OO2C,  Prev: Language,  Up: Top
-
-Pragmas
-*******
-
-   A "pragma" is a directive embedded in the source code of an Oberon-2
-module.  Although a pragma is not part of a module's declarations or
-executable code, it influences how the module is translated by the
-compiler.  Pragmas provide mechanisms for conditional compilation of
-pieces of source code, for embedding code generation directives into a
-module, and for selection of language features.
-
-   Pragmas are not defined as part of the programming language
-Oberon-2; they are an extension added to OOC.  Pragmas are embedded in
-the source code by special delimiters `<*' and `*>'.  Like comments,
-they are ignored by the parser, but they can change variables that
-control the compiler's behavior and they can "remove" text from a
-module's source code by excluding a piece of source text from the
-translation process.  Superficially, pragmas resemble preprocessor
-directives, as known from the programming language C, but they are much
-more restricted, and they are tightly integrated into the OOC compiler.
-
-* Menu:
-
-* Pragma Syntax::               Syntax of pragma statements.
-* Pragma Semantics::            Meaning of pragmas statements.
-* Predefined Pragma Variables:: Pragma variables predefined by OOC.
-
-
-File: OOCref.info,  Node: Pragma Syntax,  Next: Pragma Semantics,  Up: Pragmas
-
-Pragma Syntax
-=============
-
-   A "pragma statement" is either a variable definition, an assignment,
-a conditional statement, or a save/restore command.
-
-   A "pragma sequence" consists of zero or more pragma statements, which
-are separated by semicolons.
-
-   A "pragma" starts with a `<*', followed by a pragma sequence, and
-ends with a `*>'.
-
-   The full syntax for pragmas in EBNF is as follows:
-
-     Pragma        = "<*" PragmaSeq "*>".
-     PragmaSeq     = PragStatement {";" PragStatement}.
-     PragStatement = [Assignment | Definition | SaveRestore | Condition].
-     
-     Assignment    = ident ":=" Expr.
-     Definition    = "DEFINE" ident ":=" Expr.
-     SaveRestore   = "PUSH" | "POP".
-     
-     Condition     = IfPart {ElsifPart} [ElsePart] EndIfPart.
-     IfPart        = "IF" Expr "THEN" PragmaSeq.
-     ElsifPart     = "ELSIF" Expr "THEN" PragmaSeq.
-     ElsePart      = "ELSE" PragmaSeq.
-     EndIfPart     = "END".
-     
-     Expr          = SimpleExpr [Relation SimpleExpr].
-     Relation      = "=" | "#" | "<" | "<=" | ">" | ">=".
-     SimpleExpr    = Term {"OR" term}.
-     Term          = Factor {"&" Factor}.
-     Factor        = "TRUE" | "FALSE" | "(" Expr ")" | "~" Factor |
-                     string | integer | ident.
-
-   The symbols `ident', `string', and `integer' are defined like their
-Oberon-2 counterparts.  An underscore is permitted as part of an
-`ident' in place of a character.  No Oberon-2 keyword, nor the pragma
-keywords `TRUE', `FALSE', `PUSH', `POP', or `DEFINE' can be used as the
-name of a variable.
-
-   Any Oberon-2 string (including the empty string) and all integer
-numbers (including hexadecimal numbers) are valid values.  Character
-constants (like `20X') are equivalent to string constants of length 1
-(or length 0 in the case of `0X').  Hexadecimal constants are
-interpreted just like Oberon-2 constant literals.
-
-   *Example:*
-
-     <* DEFINE CpuType := "AMD" *>
-     
-     <* IF CpuType="AMD" THEN *>
-     IMPORT AMDPrimitives;
-     <* ELSIF CpuType="Motorola" THEN *>
-     IMPORT MotorolaPrimitives;
-     <* END *>
-
-   Here a variable `CpuType' is introduced and set to the value
-`"AMD"'.  The variable can then be used to switch between two code
-variants: The first variant is used if `CpuType' is set to `"AMD"', and
-the other is used if it is set to `"Motorola"'.  Neither of the
-variants is used if `CpuType' has any other value.
-
-
-File: OOCref.info,  Node: Pragma Semantics,  Next: Predefined Pragma Variables,  Prev: Pragma Syntax,  Up: Pragmas
-
-Pragma Semantics
-================
-
-   A pragma (the entire sequence of characters starting with `<*' and
-ending with `*>') can end with a pragma statement, or between the parts
-of a `Condition'.  The parts of a condition, and all other pragma
-statements, must be textually complete within a single pragma:
-
-     <* DEFINE CpuType := "AMD" *>        (* Legal *)
-     <* DEFINE CpuType := *> <* "AMD" *>  (* Illegal! *)
-     
-     <* IF b THEN *>                      (* Legal *)
-     <* IF b *> <* THEN *>                (* Illegal! *)
-
-   Also, note that
-   * A pragma sequence can be empty (e.g., the pragma `<* *>' is legal).
-
-   * Comments and extra whitespace in pragmas are skipped.
-
-   * Pragmas within comments are not recognized (i.e., pragmas can be
-     "commented out").
-
-   * Pragmas cannot be nested.
-
-Conditional Compilation
------------------------
-
-   Conditions are a special type of pragma statement; the parts of a
-condition can extend over several pragmas.  That is, conditions can be,
-and usually are, interspersed with plain Oberon-2 source text, and
-potentially additional pragmas as well.  This provides for "conditional
-compilation", which allows lines of source text to be skipped or
-eliminated by the compiler based on the evaluation of a boolean
-condition.
-
-   Pragma conditions assume the various forms of `IF' statements: they
-consist of an opening `IfPart', any number of `ElsifParts', an optional
-`ElsePart', and a terminating `EndIfPart'.  Nested condition statements
-are allowed.
-
-   If the `Expr' of the `IfPart' is true, the text that follows is
-fully interpreted until reaching the next corresponding `ElsifPart',
-`ElsePart', or `EndIfPart'; in this case, any remaining text (i.e., any
-`ElsifPart' and `ElsePart' clauses) is skipped until encountering the
-corresponding `EndIfPart'.  If the `Expr' of the `IfPart' is false, the
-text immediately following the `IfPart' is skipped.  If the next
-condition is an `ElsifPart', its `Expr' is tested, and so on.  If no
-condition holds, the text following the `ElsePart' is interpreted.
-
-   "Skipping" of text means that no interpretation is done except
-recognition of comments and condition statements.  That is, although
-the pragma syntax in the skipped text is checked, the meaning of the
-pragmas is not recognized.  This implies that type errors, or
-references to undefined variables, are ignored in skipped pragmas.
-
-   Note that a pragma sequence can appear as part of a condition:
-
-     <* IF Cpu = "Intel" THEN
-       DEFINE HaveManyRegisters := FALSE;
-       DEFINE InsertFunnyRandomBehaviour := TRUE
-     END *>
-
-   The parts of a condition may exist within a single pragma, or may
-extend across several pragmas.  Both of the following are legal:
-
-     <* IF b THEN END *>
-     <* IF b THEN *><* END *>
-
-Boolean Operators and Relations
--------------------------------
-
-   The Oberon-2 type rules apply to boolean operators and relations.
-The expressions in an `IfPart' and `ElsifPart' have to be of boolean
-type.
-
-   The boolean operators `&' and `OR' are evaluated like their Oberon-2
-counterparts: if evaluation of the left side is sufficient to know the
-result, the right side is not evaluated.  Expressions are always checked
-syntactically, even if they are not evaluated; this works exactly like
-pragmas that are skipped due to conditional compilation.
-
-Pragma Variables
-----------------
-
-   New pragma variables are defined by the definition statement `DEFINE
-var := value'.  The identifier `var' must not be already known, or an
-error message is produced.  That is, one cannot override existing
-variables that are predefined by the compiler, or were defined earlier.
-But once it is defined, the value can be changed with an assignment.
-The scope of a variable defined in a module extends from the point of
-its definition to the end of the module.
-
-PUSH and POP
-------------
-
-   The pragma statements `PUSH' and `POP' operate on a stack.  `PUSH'
-saves the current state of all pragma variables, both predefined and
-user-defined.  `POP' restores the values of saved variables as set by
-the corresponding `PUSH', and removes the associated states from the
-stack.  Variables introduced after the `PUSH' operation are not
-affected by this; a `POP' does *not* return variables to an undefined
-state.
 

@@ -142,9 +142,9 @@ used for such classification of values of the type @code{CHAR}.  All
 procedures accept a single argument of type @code{CHAR} and return a
 @code{BOOLEAN} result.
 
-Recall that Oberon-2 is defined so that characters are ordered the in the
-same manner as defined by ASCII.  Specifically, all the digits precede all
-the upper-case letters, and all the upper-case letters precede all the
+Recall that Oberon-2 is defined so that characters are ordered in the same
+manner as defined by ASCII.  Specifically, all the digits precede all the
+upper-case letters, and all the upper-case letters precede all the
 lower-case letters.  This assumption is carried over into module CharClass.
 Also, note that CharClass uses constants defined in module Ascii within many
 of its procedures (@pxref{Ascii})

@@ -37,7 +37,7 @@ clean", and compile the garbage collector again.
 * Linux: The garbage collector version 4.12 does not work on
 Linux/ix86 machines running glibc 2.  On such a system you should use
 4.13alpha1 or later.  The most recent version can be found at
-  http://reality.sgi.com/employees/boehm_mti/gc_source/
+  http://reality.sgi.com/boehm_mti/gc_source/
 
 * NetBSD/arm32: The unsual byte order used to store double precision
 floating point values is not detected correctly.  Before starting to

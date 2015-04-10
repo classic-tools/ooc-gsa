@@ -4,11 +4,11 @@ the input file OOCref.texinfo.
    This file documents the Optimizing Oberon-2 Compiler (OOC) and its
 library.
 
-   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
-Library Reference Manual', for Version 1.4.5 or later of oo2c.
+   This is Edition 0.10 DRAFT, last updated 29 February 2000, of `The
+OOC Library Reference Manual', for Version 1.5.1 or later of oo2c.
 
-   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
-1999 Michael van Acken
+   Copyright (C) 1997-2000 Eric Nikitin Part II Copyright (C) 1998-2000
+Michael van Acken
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -26,6 +26,742 @@ manual into another language, under the above conditions for modified
 versions, except that the text of the translation of the section
 entitled "GNU General Public License" must be approved for accuracy by
 the Foundation.
+
+
+File: OOCref.info,  Node: Class Reader (BinaryRider),  Next: Class Writer (BinaryRider),  Up: BinaryRider
+
+Class Reader (BinaryRider)
+..........................
+
+ - Class: Reader = POINTER TO ReaderDesc
+     This class provides facilities for reading various types of data
+     in binary format.  Note that this type does not inherit properties
+     from any basic reader type; rather it uses the basic reader type
+     associated with the channel it is attached to.
+
+          *Please note*: Many of the methods for `BinaryRider.Reader'
+          perform typical `Reader' operations.  Rather than duplicate
+          descriptions of those methods here, a reference to the
+          abstract reader type is provided instead.
+
+    Field: res-: `Msg.Msg'
+          This field indicates the status of the last read operation
+          (e.g., `ReadLine', `ReadInt', `SetPos', etc.).
+
+          Error codes (for `res.code') are highly dependent on the
+          channel being read, and therefore on the basic riders
+          provided by that channel, so you must look at the result
+          codes for a particular channel's reader type (e.g.,
+          `Files.Reader' error codes).  See the various channel types
+          for details of these error codes (i.e., *Note Files::, *Note
+          StdChannels::, or *Note ProgramArgs::).
+
+          If `res#done', use either `res.GetLText()' or `res.GetText()'
+          to get a plain text error description corresponding to the
+          error code.
+
+    Field: byteOrder-: `SHORTINT'
+          The current endian (byte order) setting for the reader.
+
+    Field: base-: `Channel.Channel'
+          This field refers to the channel the reader is connected to.
+
+   The following methods are all fully described in the section on
+abstract readers (*note Abstract Class Reader::.), so only brief
+descriptions are given here.
+
+Method: `(R: Reader)' Available `() : LONGINT'
+     Returns the number of bytes available for the next reading
+     operation.
+
+Method: `(R: Reader)' ClearError
+     Clears error conditions on the reader R, re-enabling further read
+     operations.
+
+Method: `(R: Reader)' Pos `() : LONGINT'
+     Returns the current reading position associated with the reader R
+     in channel `R.base'.
+
+Method: `(R: Reader)' SetByteOrder `(ORDER: SHORTINT)'
+     Sets `byteOrder' in reader R to ORDER.  This affects the
+     interpretation of byte values for applicable read operations.
+
+     *Pre-condition*: ORDER is one of `nativeEndian', `littleEndian',
+     or `bigEndian'.
+
+     *Example:*
+
+          VAR rBig, rLittle, r: BinaryRider.Reader;
+              f: Files.File;
+          
+          f := Files.Old("test.dat", {Files.read}, res);
+          
+          r := BinaryRider.ConnectReader(f);
+             => r reads from f using the default byte order
+                  (i.e., little endian)
+          
+          rBig := BinaryRider.ConnectReader(f);
+          rBig.SetByteOrder(BinaryRider.bigEndian);
+             => rBig reads from f using big endian byte order
+          
+          rLittle := BinaryRider.ConnectReader(f);
+          rLittle.SetByteOrder(BinaryRider.littleEndian);
+             => rLittle reads from f using little endian byte order
+
+Method: `(R: Reader)' SetPos `(NEWPOS: LONGINT)'
+     Sets the reading position to NEWPOS.
+
+   The following methods read a value of the given type from the current
+position of the Reader.  If the value is invalid for its type,
+`Reader.res.code' is set to `invalidFormat'.
+
+   Otherwise, if there aren't enough bytes to satisfy the request,
+`Reader.res.code' is set to `readAfterEnd'.
+
+Method: `(R: Reader)' ReadBool `(VAR BOOL: BOOLEAN)'
+     Reads in a single byte and interprets it as a `BOOLEAN' value.
+     Zero values are read as `FALSE' and non-zero values are read as
+     `TRUE'.
+
+     *Example:*
+
+          VAR bool: BOOLEAN;
+          
+          r.ReadBool(bool);
+             => if byte read = 0, then bool = FALSE;
+                  otherwise, bool = TRUE
+
+Method: `(R: Reader)' ReadBytes `(VAR X: ARRAY OF SYSTEM.BYTE;  START, N: LONGINT)'
+     Read N bytes from the channel `R.base' according to the native
+     machine byte order.  That is, `ReadBytes' is not affected by calls
+     to `SetByteOrder'.  Thus this method is equivalent to any basic
+     rider `Reader.ReadBytes' method (*note Abstract Class Reader::.)
+
+     *Example:*
+
+          VAR byteArr: ARRAY 256 OF CHAR;
+          
+          r.ReadBytes(byteArr, 0, 16);
+             => reads the next 16 bytes from r.base
+                  into byteArr[0..15]
+          
+          r.ReadBytes(byteArr, 16, 100);
+             => reads the next 100 bytes from r.base
+                  into byteArr[16..115]
+
+Method: `(R: Reader)' ReadChar `(VAR CH: CHAR)'
+     Reads in a single character value and places it in CH.
+
+     *Please note*: OOC assumes that `SIZE(SYSTEM.BYTE) = SIZE(CHAR)'.
+
+     *Example:*
+
+          VAR ch: CHAR;
+          
+          r.ReadChar(ch);
+             => reads one byte and assigns it to ch
+
+Method: `(R: Reader)' ReadLChar `(VAR CH: LONGCHAR)'
+     Reads in a single (long) character value and places it in CH.
+     `SIZE(LONGCHAR)' bytes are read and interpreted based on the
+     current byte order setting for reader R (see `SetByteOrder').
+
+Method: `(R: Reader)' ReadInt `(VAR INT: INTEGER)'
+     Reads in an `INTEGER' value.  `SIZE(INTEGER)' bytes are read and
+     interpreted based on the current byte order setting for reader R
+     (see `SetByteOrder').
+
+Method: `(R: Reader)' ReadLInt `(VAR LINT: LONGINT)'
+     Reads in a `LONGINT' value.  `SIZE(LONGINT)' bytes are read and
+     interpreted based on the current byte order setting for reader R.
+
+Method: `(R: Reader)' ReadLReal `(VAR LREAL: LONGREAL)'
+     Reads in a `LONGREAL' value.  `SIZE(LONGREAL)' bytes are read and
+     interpreted based on the current byte order setting for reader R.
+
+Method: `(R: Reader)' ReadNum `(VAR NUM: LONGINT)'
+     Reads an integer value in a compressed and portable format.  This
+     format is the same no matter what the `byteOrder' setting.
+     Therefore, `ReadNum' is not affected by calls to `SetByteOrder'.
+
+Method: `(R: Reader)' ReadReal `(VAR REAL: REAL)'
+     Reads in a `REAL' value.  `SIZE(REAL)' bytes are read and
+     interpreted based on the current byte order setting for reader R.
+
+Method: `(R: Reader)' ReadSet `(VAR S: SET)'
+     Reads in a `SET' value.  `SIZE(SET)' bytes are read and
+     interpreted based on the current byte order setting for reader R.
+
+Method: `(R: Reader)' ReadSInt `(VAR SINT: SHORTINT)'
+     Reads in a `SHORTINT' value.
+
+     *Please note*: OOC assumes that `SIZE(SYSTEM.BYTE) =
+     SIZE(SHORTINT)' so that the current byte order setting for reader R
+     (see `SetByteOrder') does not matter for calls to `ReadSInt'.
+
+Method: `(R: Reader)' ReadString `(VAR S: ARRAY OF CHAR)'
+     Reads in a sequence of characters until either the string
+     terminator `0X' is encountered, there are no more characters
+     available in the channel, or the string S is full.  S is always
+     terminated with `0X'.
+
+     *Example:*
+
+          VAR str: ARRAY 256 OF CHAR;
+          
+          r.ReadString(str);
+             => reads up to 256 characters, stops when encounters 0X
+
+Method: `(R: Reader)' ReadLString `(VAR S: ARRAY OF LONGCHAR)'
+     Reads in a sequence of (long) characters until either the string
+     terminator `0X' is encountered, there are no more characters
+     available in the channel, or the string S is full.  S is always
+     terminated with `0X'.  For each character, `SIZE(LONGCHAR)' bytes
+     are read and interpreted based on the current byte order setting
+     for reader R (see `SetByteOrder').
+
+
+File: OOCref.info,  Node: Class Writer (BinaryRider),  Next: Connecting BinaryRiders,  Prev: Class Reader (BinaryRider),  Up: BinaryRider
+
+Class Writer (BinaryRider)
+..........................
+
+ - Class: Writer = POINTER TO WriterDesc
+     This class provides facilities for writing various types of data
+     in binary format.  Note that this type does not inherit properties
+     from any basic writer type; rather it uses the basic writer type
+     associated with the channel it is attached to.
+
+          *Please note*: Many of the methods for `BinaryRider.Writer'
+          perform typical `Writer' operations.  Rather than duplicate
+          descriptions of those methods here, a reference to the
+          abstract writer type is provided instead.
+
+    Field: res-: `Msg.Msg'
+          This field indicates the status of the last write operation
+          (e.g., `WriteBytes', `WriteInt', `SetPos', etc.).
+
+          Error codes are highly dependent on the channel being written
+          to (and therefore on the basic riders provided for that
+          channel), so you must look at the result codes for the basic
+          writer that is associated with that particular channel (e.g.,
+          `Files.Writer' error codes).  See the various channel types
+          for details of these error codes (i.e., *Note Files::, *Note
+          StdChannels::, or *Note ProgramArgs::).
+
+          If `res#done', use either `res.GetLText()' or `res.GetText()'
+          to get a plain text error description corresponding to the
+          error code.
+
+    Field: base-: `Channel.Channel'
+          This field refers to the channel the writer is connected to.
+
+    Field: byteOrder-: `SHORTINT'
+          The current endian (byte order) setting for the writer.
+
+   The following methods are all fully described in the section on
+abstract writers (*note Abstract Class Writer::.), so only brief
+descriptions are given here.
+
+Method: `(W: Writer)' ClearError
+     Clears error conditions on the writer W, re-enabling further write
+     operations.
+
+Method: `(W: Writer)' Pos `() : LONGINT'
+     Returns the current writing position associated with the writer
+     `w' in channel `W.base'.
+
+Method: `(W: Writer)' SetPos `(NEWPOS: LONGINT)'
+     Sets the writing position to NEWPOS.
+
+   The following writer methods are used to write values to the
+underlying channel.  In some situations, it is possible for only part
+of the value to be written.
+
+Method: `(W: Writer)' WriteBytes `(VAR X: ARRAY OF SYSTEM.BYTE;  START, N: LONGINT)'
+     Write N bytes to the channel `W.base' according to the native
+     machine byte order (i.e., `WriteBytes' is not affected by calls to
+     `SetByteOrder').  Thus this method is equivalent to any basic rider
+     `Writer.WriteBytes' method (*note Abstract Class Writer::.)
+
+     *Example:*
+
+          VAR byteArr: ARRAY 256 OF CHAR;
+          
+          w.WriteBytes(byteArr, 0, 16);
+             => writes the values of byteArr[0..15]
+                  to the current writing position of w
+          
+          w.WriteBytes(byteArr, 16, 100);
+             => writes the values of byteArr[16..115]
+                  to the current writing position of w
+
+Method: `(W: Writer)' WriteBool `(BOOL: BOOLEAN)'
+     Writes a `BOOLEAN' value as a single byte.  `FALSE' is written as
+     `0' and `TRUE' is written as 1.
+
+     *Example:*
+
+          w.WriteBool(TRUE);
+             => writes one byte = 01H
+          
+          w.WriteBool(FALSE);
+             => writes one byte = 00H
+
+Method: `(W: Writer)' WriteChar `(CH: CHAR)'
+     Writes the character value CH as a single byte.
+
+     *Please note*: OOC assumes that `SIZE(SYSTEM.BYTE) = SIZE(CHAR)'.
+
+     *Example:*
+
+          VAR ch: CHAR:
+          
+          w.WriteChar("A");
+             => writes one byte = "A"
+          
+          ch := 41X;
+          w.WriteChar(ch);
+             => writes one byte = 41X (i.e., "A" in ASCII)
+
+Method: `(W: Writer)' WriteLChar `(CH: LONGCHAR)'
+     Writes the (long) character value CH as `SIZE(LONGCHAR)' bytes
+     based on the current byte order setting for writer W (see
+     `SetByteOrder').
+
+Method: `(W: Writer)' WriteString `(S: ARRAY OF CHAR)'
+     Writes the string value of S (recall that a string is a character
+     array containing `0X' as an embedded terminator).  The terminating
+     `0X' is also written.
+
+     *Example:*
+
+          VAR str: ARRAY 256 OF CHAR;
+          
+          w.WriteString("abcdefg");
+             => writes a total of 8 characters including 0X
+          
+          str := "hijkl";
+          w.WriteString(str);
+             => writes a total of 6 characters including 0X
+
+Method: `(W: Writer)' WriteLString `(S: ARRAY OF LONGCHAR)'
+     Writes the string value of S including the terminating `0X'
+     character.  Each character is written as `SIZE(LONGCHAR)' bytes
+     based on the current byte order setting for writer W (see
+     `SetByteOrder').
+
+Method: `(W: Writer)' WriteSInt `(SINT: SHORTINT)'
+     Writes a `SHORTINT' value.
+
+     *Please note*: OOC assumes that `SIZE(SYSTEM.BYTE) =
+     SIZE(SHORTINT)' so that the current byte order setting for writer W
+     (see `SetByteOrder') does not matter for calls to `WriteSInt'.
+
+Method: `(W: Writer)' WriteInt `(INT: INTEGER)'
+     Writes an `INTEGER' value.  `SIZE(INTEGER)' bytes are written
+     based on the current byte order setting for writer W (see
+     `SetByteOrder').
+
+Method: `(W: Writer)' WriteLInt `(LINT: LONGINT)'
+     Writes a `LONGINT' value.  `SIZE(LONGINT)' bytes are written based
+     on the current byte order setting for writer W.
+
+Method: `(W: Writer)' WriteNum `(LINT: LONGINT)'
+     Write an integer value in a compressed and portable format.  This
+     format is the same no matter what the `byteOrder' setting.
+     Therefore, `WriteNum' is not affected by calls to `SetByteOrder'.
+
+Method: `(W: Writer)' WriteReal `(REAL: REAL)'
+     Writes a `REAL' value.  `SIZE(REAL)' bytes are written based on
+     the current byte order setting for writer W.
+
+Method: `(VAR W: Writer)' WriteLReal `(VAR LREAL: LONGREAL)'
+     Writes a `LONGREAL' value.  `SIZE(LONGREAL)' bytes are written
+     based on the current byte order setting for writer W.
+
+Method: `(VAR W: Writer)' WriteSet `(VAR S: SET)'
+     Writes a `SET' value.  `SIZE(SET)' bytes are written based on the
+     current byte order setting for writer W.
+
+Method: `(VAR W: Writer)' SetByteOrder `(VAR ORDER: SHORTINT)'
+     Sets `byteOrder' in writer W to ORDER.  This affects the
+     interpretation of byte values for applicable write operations.
+
+     *Pre-condition*: ORDER is one of `nativeEndian', `littleEndian',
+     or `bigEndian'.
+
+     *Example:*
+
+          VAR wBig, wLittle, w: BinaryRider.Writer;
+              f: Files.File;
+          
+          f := Files.Old("test.dat", {Files.write}, res);
+          
+          w := BinaryRider.ConnectWriter(f);
+             => w writes to f using native byte order
+          
+          wBig := BinaryRider.ConnectWriter(f);
+          wBig.SetByteOrder(BinaryRider.bigEndian);
+             => wBig writes to f using big endian byte order
+          
+          wLittle := BinaryRider.ConnectWriter(f);
+          wLittle.SetByteOrder(BinaryRider.littleEndian);
+             => wLittle writes to f using little endian byte order
+
+
+File: OOCref.info,  Node: Connecting BinaryRiders,  Next: Summary of BinaryRider Constants,  Prev: Class Writer (BinaryRider),  Up: BinaryRider
+
+Connecting BinaryRiders to Channels
+...................................
+
+   Functions are provided by module BinaryRider to connect readers and
+writers to open channels.  If the channel being passed as an argument
+to either of these functions has a value of `NIL', behavior is
+undefined.
+
+   Also, for either of these functions, the returned rider is
+positioned at the beginning of the channel for positionable channels
+and at the current position for non-positionable channels.
+
+ - Function: ConnectReader `(VAR CH: Channel.Channel): Reader'
+     This function creates a new reader and attaches it to the channel
+     CH.  `CH.res' is set to `done' on success and the new reader is
+     returned.  Otherwise, it returns `NIL' and `CH.res.code' is set to
+     indicate the error cause.
+
+ - Function: ConnectWriter `(VAR CH: Channel.Channel): Writer'
+     This function creates a new writer and attaches it to the channel
+     CH.  `CH.res' is set to `done' on success and the new writer is
+     returned.  Otherwise, it returns `NIL' and `CH.res.code' is set to
+     indicate the error cause.
+
+   *Example:*
+
+     VAR
+       f: Files.File;
+       r: BinaryRider.Reader;
+       res: Files.Result;
+     
+       f := Files.Old("test.dat", {Files.read, Files.write}, res);
+       IF (res # Files.done) THEN (* error processing *) END;
+     
+       r := BinaryRider.ConnectReader(f);
+       IF (r = NIL) THEN (* error processing *) END;
+
+
+File: OOCref.info,  Node: Summary of BinaryRider Constants,  Prev: Connecting BinaryRiders,  Up: BinaryRider
+
+Summary of BinaryRider Constants
+................................
+
+   For other constant values that may be applicable when using module
+`BinaryRider', see the specific channel implementation that you are
+reading to or writing from.
+
+   The following constant applies to the `res' field, and may be
+compared to it.  (i.e., `rider.res = done' or `rider.res # done'.)
+
+ - Constant: done
+     This indicates successful completion of the last operation.
+
+   The following are possible values for `res.code':
+
+ - Constant: invalidFormat
+     Indicates that the data at the current reading position is not
+     properly formatted as the requested type.
+
+ - Constant: readAfterEnd
+     A read operation has tried to access a byte beyond the end of the
+     channel.  This means that there weren't enough bytes available or
+     the read operation started at (or after) the end.
+
+   The following are possible endian (byte order) settings:
+
+ - Constant: nativeEndian
+     Use the host machine's byte order.
+
+ - Constant: littleEndian
+     Read/write least significant byte first.
+
+ - Constant: bigEndian
+     Read/write most significant byte first.
+
+
+File: OOCref.info,  Node: Standard I/O,  Prev: Standard Mappers,  Up: I/O Subsystem
+
+Standard I/O
+============
+
+   Modules `In', `Out', and `Err' provide simple interfaces to the
+standard channels (*note StdChannels::.) These modules can be used to
+read from predefined input (typically the keyboard) and write to
+predefined output (typically the computer screen) locations.
+
+   Historically, the various Oberon systems/ compilers have furnished
+modules called `In' and `Out', which were intended primarily as aids for
+learning the Oberon(-2) programming language.  These modules were often
+over-simplified to such a degree that they were of limited use beyond
+the initial learning stage.  The intention was that, after learning the
+language, a programmer would learn other, more sophisticated methods for
+I/O.
+
+   Although the modules `In', `Out', and `Err' in the OOC library are
+simple enough to be used by novices, they are not nearly as limited as
+the corresponding modules from the original Oberon system.  Hence, they
+are still useful to programmers well beyond the beginning stages.
+
+   These modules give simplified facilities similar to module TextRider
+applied to the standard channels; they allow reading and writing of
+data as text.  If these prove to be insufficient for your needs, then
+modules TextRider or BinaryRider may be used instead (*note Standard
+Mappers::.)
+
+* Menu:
+
+* In::                          Simple interface to standard input.
+* Out::                         Simple interface to standard output.
+* Err::                         Simple interface to standard error channel.
+
+
+File: OOCref.info,  Node: In,  Next: Out,  Up: Standard I/O
+
+Module In
+---------
+
+   Module `In' provides a set of basic read operations for text.  It is
+initially set to read from the standard input channel
+`StdChannels.stdin' (*note StdChannels::.), but this may be changed with
+the `SetReader' procedure.
+
+   Each of the procedures in this module is designed to interpret a
+specific type of text token.  That is, `Char' will read in a single
+`CHAR' value, `Int' will read in an `INTEGER' value, and so forth.  For
+exact syntax of each of these tokens see *Note Syntax of Text Tokens::.
+
+   The following program fragment gives an example of how you could
+read input a single line at a time (input stops after reading a blank
+line):
+
+     VAR str: ARRAY 256 OF CHAR;
+     
+       In.Line(str);
+       WHILE In.Done() & (str # "") DO
+          (* process each line *)
+          In.Line(str);
+       END;
+
+ - Read-only Variable: reader
+     The reader used for all read operations in module `In'.  The type
+     of `reader' is `TextRider.Reader', and it is initialized to refer
+     to a text reader connected to the channel `StdChannels.stdin'.
+
+     The `SetReader' procedure may be used to change this to refer to
+     another `TextRider.Reader'.
+
+ - Function: Done `(): BOOLEAN'
+     This function returns `FALSE' after an unsuccessful read operation.
+     This may be caused by attempting to read improperly formatted text
+     (e.g., attempting to read non-numeric text using `Int'), or if the
+     underlying reader has encountered an error.  Further reading is
+     not possible until the error is cleared using the `ClearError'
+     procedure.
+
+ - Procedure: ClearError
+     Clears error conditions, re-enabling further read operations.
+
+ - Procedure: SetReader `(R: TextRider.Reader)'
+     This procedure is used to change the reader used by all read
+     operations in module `In'.  Refer to *Note TextRider:: for details
+     on how to open other readers.  If R=NIL, the reader is set to read
+     from `StdChannels.stdin'.
+
+   All of the following read operations require that `Done()' =>
+`TRUE'; that is, they will not read anything else after an unsuccessful
+read operation has occured.  Further reading cannot take place until the
+error is cleared using `ClearError'.
+
+   Most of these read operations skip leading whitespace (i.e., spaces,
+tabs, end-of-line characters, etc.) before reading a token; the only
+procedures that do not skip whitespace are `Char' and `Line'.
+
+   A read error will occur, not only for improperly formatted text, but
+for numbers (i.e., reading using `Int', `Real', and so forth) and set
+elements that have values out of range of the target type.  For example,
+attempting to read `999999999999999999' using `Int' will give `Done()'
+=> `FALSE'.
+
+   An error will also occur for procedures that read into an `ARRAY'
+`OF' `CHAR', when the array is not large enough to hold the entire
+input.
+
+ - Procedure: Bool `(VAR BOOL: BOOLEAN)'
+     Reads in the text `TRUE' or `FALSE'; any other text results in an
+     error.  When an error occurs, the value of BOOL is undefined.
+
+ - Procedure: Char `(VAR CH: CHAR)'
+     Reads in a single character.
+
+ - Procedure: Hex `(VAR LINT: LONGINT)'
+     Reads in text in the form of an unsigned hexadecimal number.  The
+     first character must be a decimal digit (i.e., `0..9') and
+     subsequent characters must be valid hexadecimal digits (i.e.,
+     `0..9' or `A..F').  The value read must be in the valid range for a
+     `LONGINT'.
+
+     Upon encountering an error, the value of LINT is undefined.
+
+     *Please note:* Because `LONGINT' values are signed, hex numbers in
+     the range `80000000H..FFFFFFFFH' are interpreted as negative
+     `LONGINT' values.
+
+ - Procedure: Identifier `(VAR S: ARRAY OF CHAR)'
+     Reads an Oberon-2 style identifier.  The first character must be a
+     letter, which is followed by any sequence of letters and digits.
+     An error will occur if S is not large enough to hold the entire
+     input.
+
+     Upon encountering an error, the value of S is undefined.
+     *Example:*
+
+          (* Input is as follows:
+          myIdentifier 3isBad
+          *)
+          
+          VAR str: ARRAY 256 OF CHAR;
+          
+          In.Identifier(str)
+             => Done() = TRUE, str = "myIdentifier"
+          In.Identifier(str)
+             => Done() = FALSE, str = undefined
+
+ - Procedure: Int `(VAR INT: INTEGER)'
+     Reads in text in the form of a signed whole number.  The first
+     character must be a digit, a "`+'" sign, or a "`-'" sign.  The
+     value read must be in the valid range for an `INTEGER'.
+
+     Upon encountering an error, the value of INT is undefined.
+
+     *Example:*
+
+          (* Input is as follows:
+          12345
+          999999999999999
+          forty-two
+          *)
+          
+          VAR intVar: INTEGER;
+          
+          In.Int(intVar);
+             => Done() = TRUE, intVar = 12345
+          In.Int(intVar);
+             => Done() = FALSE, intVar = undefined
+          In.ClearError;
+          In.Int(intVar); (* attempting to read `forty-two' *)
+             => Done() = FALSE, intVar = undefined
+                  (* reading position is still at the `f' in
+                     `forty-two' *)
+
+ - Procedure: LongInt `(VAR LINT: LONGINT)'
+     This procedure provides the same facility as `Int', except that it
+     deals with `LONGINT' values.
+
+ - Procedure: ShortInt `(VAR INT: SHORTINT)'
+     This procedure provides the same facility as `Int', except that it
+     deals with `SHORTINT' values.
+
+ - Procedure: Line `(VAR S: ARRAY OF CHAR)'
+     Reads text until an end-of-line character is encountered.  The
+     end-of-line character is discarded and S is always terminated with
+     `0X'.  An error will occur if S is not large enough to hold the
+     entire input.
+
+     Upon encountering an error, the value of S is undefined.
+
+     *Please note:* This procedure returns an empty string if already at
+     at the end-of-line.
+
+ - Procedure: String `(VAR S: ARRAY OF CHAR)'
+     Reads in any text enclosed in single (`'') or double (`"') quote
+     marks.  The opening quote must be the same as the closing quote
+     and must not occur within the string.  Reading will continue until
+     the terminating quote mark is encountered, an invalid character is
+     read (end-of-line is always considered invalid), or there are no
+     more characters available to be read.  S is always terminated with
+     `0X'.
+
+     Unquoted strings or strings with no terminating quote mark result
+     in an error.  An error will also occur if S is not large enough to
+     hold the entire input.
+
+     Upon encountering an error, the value of S is undefined.
+
+     *Example:*
+
+          (* Input is as follows:
+          "A well-formed string"
+          "No end quote
+          *)
+          
+          VAR str: ARRAY 256 OF CHAR;
+          
+          In.String(str);
+             => Done() = TRUE, str = "A well-formed string"
+          In.String(str);
+             => Done() = FALSE, str = undefined
+                  (* reading position is now at the end of this line *)
+
+ - Procedure: Real `(VAR REAL: REAL)'
+     Reads in text in the form of a signed fixed or floating-point
+     number.  The first character must be a digit, a "`+'" sign, or a
+     "`-'" sign.  The value read must be in the valid range for a
+     `REAL'.
+
+     Upon encountering an error, the value of REAL is undefined.
+
+     *Example:*
+
+          (* Input is as follows:
+          3.1415
+          +54321E+30
+          2.34E+56
+          *)
+          
+          VAR realVar: REAL;
+          
+          In.Real(realVar);
+             => Done() = TRUE, realVar = 3.141500
+          In.Real(realVar);
+             => Done() = TRUE, realVar = 5.432100E+34
+          In.Real(realVar);
+             => Done() = FALSE, realVar = undefined
+                  (* value is out of range for REAL *)
+
+ - Procedure: LongReal `(VAR LREAL: LONGREAL)'
+     This procedure provides the same facility as `Real', except that it
+     deals with `LONGREAL' values.
+
+ - Procedure: Set `(VAR S: SET)'
+     Reads in text in the form of a set constructor.  The values of set
+     elements must be in the range `0..MAX(SET)'.
+
+     Upon encountering an error, the value of S is undefined.
+
+     *Example:*
+
+          (* Input is as follows:
+          {0, 1, 2, 3, 4, 5}
+          {6, 7, 1024}
+          *)
+          
+          VAR setVar: SET;
+          
+          In.Set(setVar);
+             => Done() = TRUE, setVar = {0..5}
+          In.Set(setVar);
+             => Done() = FALSE, setVar = undefined
+                  (* reading position is now at the `}' after
+                     the `1024' *)
 
 
 File: OOCref.info,  Node: Out,  Next: Err,  Prev: In,  Up: Standard I/O
@@ -295,6 +1031,8 @@ Krieger Publishing Company, June 1978
 * Mathematical Functions::      Mathematical functions on `REAL'
                                   and `LONGREAL' values.
 * Arbitrary Precision Integers:: Arbitrary precision integer operations.
+* Arbitrary Precision Real Numbers:: Arbitrary precision operations on
+                                  real numbers.
 * Complex Numbers::             Mathematical functions for types
                                   `COMPLEX' and `LONGCOMPLEX'.
 * Random Numbers::              Psuedo-random number generators.
@@ -588,766 +1326,4 @@ for dynamically changing properties from these defaults.)
      exceptional execution state because of the raising of the
      corresponding `LowReal' or `LowLReal' exception; otherwise, it
      returns `FALSE'.
-
-
-File: OOCref.info,  Node: Mathematical Functions,  Next: Arbitrary Precision Integers,  Prev: Low-level Numeric Properties,  Up: Mathematics
-
-Mathematical Functions
-======================
-
-   The modules `RealMath' and `LRealMath' provide facilities for common
-mathematical functions and constants for `REAL' and `LONGREAL' numeric
-types.
-
-   *Please note:* The angle in all trigonometric functions is measured
-in radians.
-
-   The following useful mathematical constants are provided:
-
- - Constant: pi
-     An implementation-defined approximation to the mathematical
-     constant "pi".
-
- - Constant: exp1
-     An implementation-defined approximation to the mathematical
-     constant "e".
-
-   *Please note:* Due to the approximations involved, `sin(pi)' might
-not exactly equal zero.  Similarly, `exp1' might not exactly equal
-`exp(1)'.
-
-   The following are mathematical functions provided in either
-`RealMath' (for `REAL') or `LRealMath' (for `LONGREAL'):
-
- - Function: sqrt `(X: REAL): REAL'
-
- - Function: sqrt `(X: LONGREAL): LONGREAL'
-     This function returns an approximation to the positive square root
-     of X.  If X is negative, an exception is raised.
-
- - Function: exp `(X: REAL): REAL'
-
- - Function: exp `(X: LONGREAL): LONGREAL'
-     This function returns an approximation to the mathematical
-     constant `e' raised to the power of X.
-
- - Function: ln `(X: REAL): REAL'
-
- - Function: ln `(X: LONGREAL): LONGREAL'
-     This function returns an approximation to the natural logarithm of
-     X.  If X is zero or negative, an exception is raised.
-
- - Function: sin `(X: REAL): REAL'
-
- - Function: sin `(X: LONGREAL): LONGREAL'
-     This function returns an approximation to the sine of X for all
-     values of X.
-
- - Function: cos `(X: REAL): REAL'
-
- - Function: cos `(X: LONGREAL): LONGREAL'
-     This function returns an approximation to the cosine of X for all
-     values of X.
-
- - Function: tan `(X: REAL): REAL'
-
- - Function: tan `(X: LONGREAL): LONGREAL'
-     This function returns an approximation to the tangent of X.  If X
-     is an odd multiple of `pi/2', an exception is raised.
-
- - Function: arcsin `(X: REAL): REAL'
-
- - Function: arcsin `(X: LONGREAL): LONGREAL'
-     This function returns an approximation to the arcsine of X.  The
-     result will be in the range `[-pi/2, pi/2]'.  If the absolute
-     value of X is greater than one, an exception is raised.
-
- - Function: arccos `(X: REAL): REAL'
-
- - Function: arccos `(X: LONGREAL): LONGREAL'
-     This function returns an approximation to the arccosine of X.  The
-     result will be in the range `[0, pi]'.  If the absolute value of X
-     is greater than one, an exception is raised.
-
- - Function: arctan `(X: REAL): REAL'
-
- - Function: arctan `(X: LONGREAL): LONGREAL'
-     This function returns an approximation to the arctangent of X for
-     all values of X.  The result will be in the range `[-pi/2, pi/2]'.
-
- - Function: power `(BASE, EXPONENT: REAL): REAL'
-
- - Function: power `(BASE, EXPONENT: LONGREAL): LONGREAL'
-     This function returns an approximation to the value of BASE raised
-     to the power EXPONENT.  If BASE is zero or negative, an exception
-     is raised.
-
-     *Please note:* This function is mathematically equivalent to
-     `exp(EXPONENT * ln(BASE))', but may be computed differently.
-
- - Function: round `(X: REAL): LONGINT'
-
- - Function: round `(X: LONGREAL): LONGINT'
-     This function returns the nearest integer to the value of X.  If
-     the mathematical result is not within the range of the type
-     `LONGINT', an exception occurs and may be raised.
-
-     *Please note:* If the value of X is midway between two integer
-     values, the result is an implementation-defined selection of one
-     of the two possible values.
-
- - Function: IsRMathException `(): BOOLEAN'
-     This function returns `TRUE' if the current process is in the
-     exceptional execution state because of the raising of the
-     corresponding `RealMath' or `LRealMath' exception; otherwise, it
-     returns `FALSE'.
-
-
-File: OOCref.info,  Node: Arbitrary Precision Integers,  Next: Complex Numbers,  Prev: Mathematical Functions,  Up: Mathematics
-
-Arbitrary Precision Integers
-============================
-
-   Very often, a program requires numbers with a greater range or
-accuracy than exists with the built-in Oberon-2 integer types.  Hence,
-the module `Integers' provides facilities for "arbitrary precision"
-integer operations.
-
-   For further information on how these kinds of facilites may be
-implemented, consult the following reference:
-
-`The Art Of Computer Programming:
-Volume 2, Seminumerical Algorithms, Second Edition'
-Donald E. Knuth
-Addison-Wesley Publishing Co., January 1981
-
- - Data type: Integer = POINTER TO IntegerDesc
-     Instances of this type are used to represent arbitrary precision
-     integers.
-
-   The following operations are used to create initial instances of
-`Integer' and convert `Integer's to standard numeric types.
-
- - Function: Entier `(X: LONGREAL): Integer'
-     This function returns an instance of `Integer' whose value is the
-     largest integer not greater than X.
-
-   *Example:*
-
-     VAR n: Integers.Integer;
-     
-     n:=Integers.Entier(1.0D20);
-        => n = 100000000000000000000
-     
-     n:=Integers.Entier(1111111111.5D0);
-        => n = 1111111111
-     
-     n:=Integers.Entier(0.0);
-        => n = 0
-
- - Function: Float `(X: Integer): LONGREAL'
-     This function returns an approximation to the value of X converted
-     to a `LONGREAL'.  If the result cannot be represented as a
-     `LONGREAL' because the value of X is either too large or too
-     small, this function returns either `MIN(LONGREAL)' or
-     `MAX(LONGREAL)'.
-
- - Function: Long `(X: LONGINT): Integer'
-     This function returns an instance of `Integer' whose value is X.
-
- - Function: Short `(X: Integer): LONGINT'
-     This function returns the value of X converted to a `LONGINT'.  If
-     the result cannot be represented as a `LONGINT' because the value
-     of X is either too large or too small, this function returns either
-     `MIN(LONGINT)' or `MAX(LONGINT)'.
-
-   *Example:*
-
-     VAR n: Integers.Integer;
-         s: LONGINT;
-         f: LONGREAL;
-     
-     n:=Integers.Long(1234);
-     s:=Integers.Short(n);
-        => s = 1234
-     f:=Integers.Float(n);
-        => f = 1.23400000000000E+3
-     
-     n:=Integers.Long(80000000H);
-     s:=Integers.Short(n);
-        => s = -2147483648
-     f:=Integers.Float(n);
-        => f = -2.14748364800000E+9
-     
-     n:=Integers.Long(7FFFFFFFH);
-     s:=Integers.Short(n);
-        => s = 2147483647
-     f:=Integers.Float(n);
-        => f = 2.14748364700000E+9
-
-   The following are common mathematical operations, which operate on
-`Integer's:
-
- - Function: Abs `(X: Integer): Integer'
-     This function returns the absolute value of X.
-
- - Function: Odd `(X: Integer): BOOLEAN'
-     This function returns `TRUE' if X is an odd number, and `FALSE' if
-     it is even.
-
- - Function: Compare `(X, Y: Integer): LONGINT'
-     This function compares the values of X and Y and gives the
-     following result:
-
-       If `x > y', return `1'
-       If `x = y', return `0'
-       If `x < y', return `-1'
-
- - Function: Difference `(X, Y: Integer): Integer'
-     This function returns the difference of X and Y (i.e., `x-y').
-
-   *Example:*
-
-     VAR n: Integers.Integer;
-     
-     n:=Integers.Difference(Integers.Long(2000000), Integers.Long(999));
-        => n = 1999001
-     
-     n:=Integers.Difference(Integers.Long(999), Integers.Long(-2000000));
-        => n = -2000999
-     
-     n:=Integers.Difference(Integers.Long(-999), Integers.Long(999));
-        => n = -1998
-     
-     n:=Integers.Difference(Integers.Long(-2000000), Integers.Long(-999));
-        => n = -1999001
-
- - Function: Sum `(X, Y: Integer): Integer'
-     This function returns the sum of X and Y (i.e., `x+y').
-
-   *Example:*
-
-     VAR n: Integers.Integer;
-     
-     n:=Integers.Sum(Integers.Long(999), Integers.Long(2000000));
-        => n = 2000999
-     
-     n:=Integers.Sum(Integers.Long(999), Integers.Long(-2000000));
-        => n = -1999001
-     
-     n:=Integers.Sum(Integers.Long(-999), Integers.Long(999));
-        => n = 0
-     
-     n:=Integers.Sum(Integers.Long(-2000000), Integers.Long(-999));
-        => n = -2000999
-
- - Function: Product `(X, Y: Integer): Integer'
-     This function returns the product of X and Y (i.e., `x*y').
-
-   *Example:*
-
-     VAR n: Integers.Integer;
-     
-     n:=Integers.Product(Integers.Long(100000000), Integers.Long(100000000));
-        => n = 10000000000000000
-     
-     n:=Integers.Product(Integers.Long(71234), Integers.Long(66000));
-        => n = 4701444000
-
- - Function: Quotient `(X, Y: Integer): Integer'
-     This function returns the quotient of X divided by Y (i.e., `x DIV
-     y').
-
-     *Pre-condition*: Y is not zero.
-
- - Function: Remainder `(X, Y: Integer): Integer'
-     This function returns the remainder of X divided by Y (i.e., `x
-     MOD y').
-
-     *Pre-condition*: Y is not zero.
-
-   *Example:*
-
-     VAR m, n: Integers.Integer;
-     
-     n:=Integers.Quotient(Integers.Long(2000000000), Integers.Long(1234));
-     m:=Integers.Remainder(Integers.Long(2000000000), Integers.Long(1234));
-        => n = 1620745, m = 670
-     
-     n:=Integers.Quotient(Integers.Long(2000000000), Integers.Long(123456));
-     m:=Integers.Remainder(Integers.Long(2000000000), Integers.Long(123456));
-        => n = 16200, m = 12800
-
- - Procedure: QuoRem `(X, Y: Integer; VAR QUO, REM: Integer)'
-     This procedure calculates both the quotient and remainder of X
-     divided by Y.
-
-     *Pre-condition*: Y is not zero.
-
-   *Example:*
-
-     VAR m, n: Integers.Integer;
-     
-     Integers.QuoRem(Integers.Long(2000000000), Integers.Long(1234), n, m);
-        => n = 1620745, m = 670
-     
-     Integers.QuoRem(Integers.Long(2000000000), Integers.Long(123456), n, m);
-        => n = 16200, m = 12800
-
- - Function: GCD `(X, Y: Integer): Integer'
-     This function returns the greatest common divisor of X and Y.
-
-   *Example:*
-
-     VAR n: Integers.Integer;
-     
-     n:=Integers.GCD(Integers.Long(40902), Integers.Long(24140));
-        => n = 34
-     
-     n:=Integers.GCD(Integers.Long(27182818), Integers.Long(10000000));
-        => n = 2
-     
-     n:=Integers.GCD(Integers.Long(2940), Integers.Long(238));
-        => n = 14
-
- - Function: Power `(X: Integer; EXP: LONGINT): Integer'
-     This function returns the value of X raised to the power EXP.
-
-     *Pre-condition*: EXP is greater than zero.
-
-   *Example:*
-
-     VAR n: Integers.Integer;
-     
-     n:=Integers.Power(Integers.Long(2940), 2);
-        => n = 8643600
-     
-     n:=Integers.Power(Integers.Long(2), 33);
-        => n = 8589934592
-     
-     n:=Integers.Power(Integers.Long(10), 9);
-        => n = 1000000000
-     
-     n:=Integers.Power(Integers.Long(2), 100);
-        => n = 1267650600228229401496703205376
-
- - Function: Sign `(X: Integer): SHORTINT'
-     This function returns the sign of X as follows:
-
-       If `x > 0', return `1'
-       If `x = 0', return `0'
-       If `x < 0', return `-1'
-
- - Function: Factorial `(X: LONGINT): Integer'
-     This function returns X factorial (i.e.,
-     `x!=x(x-1)(x-2)...(2)(1)').
-
-     *Pre-condition*: X is not negative.
-
-   *Example:*
-
-     VAR n: Integers.Integer;
-     
-     n:=Integers.Factorial(13);
-        => n = 6227020800
-     
-     n:=Integers.Factorial(20);
-        => n = 2432902008176640000
-
-   The following operations are used to extract pieces of `Integers':
-
- - Function: ThisDigit10 `(X: Integer; EXP10: LONGINT): CHAR'
-     This function returns a single character, which represents the
-     digit in X located at position EXP10.  Note that the right most
-     digit (i.e., the "ones" place) has position zero.
-
-     *Pre-condition*: EXP10 is not negative.
-
-   *Example:*
-
-     VAR n: Integers.Integer;
-         c: CHAR;
-     
-     Integers.ConvertFromString("1267650600228229401496703205376", n);
-     
-     c:=Integers.ThisDigit10(n, 0);
-        => c = "6"
-     
-     c:=Integers.ThisDigit10(n, 10);
-        => c = "9"
-     
-     c:=Integers.ThisDigit10(n, 30);
-        => c = "1"
-
- - Function: Digits10Of `(X: Integer): LONGINT'
-     This function returns the value of the last ten digits of X (i.e.,
-     it returns `x MOD 1000000000').
-
-   *Example:*
-
-     VAR n: Integers.Integer;
-         s: LONGINT;
-     
-     Integers.ConvertFromString("1267650600228229401496703205376", n);
-     
-     s:=Integers.Digits10Of(n);
-        => s = 703205376
-
-   The following operations are used to convert between strings and
-`Integers':
-
- - Procedure: ConvertFromString `(S: ARRAY OF CHAR; VAR X: Integer)'
-     This procedure converts S to an `Integer' value, which is assigned
-     to X.  Leading spaces and tab characters in S are skipped.
-
-     *Pre-condition*: S is in the form of a signed whole number (*note
-     Syntax of Text Tokens::.)
-
- - Procedure: ConvertToString `(X: Integer; VAR S: ARRAY OF CHAR)'
-     This procedure converts X to a string value, which is assigned to
-     S.
-
-   *Example:*
-
-     VAR n: Integers.Integer;
-         str: ARRAY 1024 OF CHAR;
-     
-     Integers.ConvertFromString("1234567890", n);
-        => n = 1234567890
-     Integers.ConvertToString(n, str);
-        => str = "1234567890"
-     
-     Integers.ConvertFromString("  -9999999999", n);
-        => n = -9999999999
-     Integers.ConvertToString(n, str);
-        => str = "-9999999999"
-     
-     Integers.ConvertFromString(" 12345678901234567890123456789", n);
-        => n = 12345678901234567890123456789
-     Integers.ConvertToString(n, str);
-        => str = "12345678901234567890123456789"
-
-   The following operations can be used to internalize and externalize
-`Integers' (i.e., read from and write to channels):
-
- - Procedure: Externalize `(VAR W: BinaryRider.Writer; X: Integer)'
-     Writes the value of X to a channel using writer W.
-
- - Procedure: Internalize `(VAR R: BinaryRider.Reader; VAR X: Integer)'
-     Retrieves a stored `Integer' value from a channel using reader R,
-     and assigns it to X.
-
-
-File: OOCref.info,  Node: Complex Numbers,  Next: Random Numbers,  Prev: Arbitrary Precision Integers,  Up: Mathematics
-
-Complex Numbers
-===============
-
-   The modules `ComplexMath' and `LComplexMath' provide facilities for
-complex numbers, which includes common mathematical functions for types
-`COMPLEX' and `LONGCOMPLEX'.
-
-   Instances of the following two classes are used to represent complex
-numbers:
-
- - Data type: COMPLEX = POINTER TO COMPLEXDesc
-     The *real* and *imaginary* parts of this type are represented as
-     type `REAL'
-
- - Data type: LONGCOMPLEX = POINTER TO LONGCOMPLEXDesc
-     The *real* and *imaginary* parts of this type are represented as
-     type `LONGREAL'
-
-   *Please note:* To create initial instances of `COMPLEX' and
-`LONGCOMPLEX', you must use the corresponding `CMPLX()' function.
-
-   The following are instances of the corresponding complex number
-type.  They are provided for convenience and have values that represent
-the specified complex number:
-
- - Read-only Variable: i
-     The value of `i' is initialized to `CMPLX (0.0, 1.0)'.
-
- - Read-only Variable: one
-     The value of `one' is initialized to `CMPLX (1.0, 0.0)'.
-
- - Read-only Variable: zero
-     The value of `zero' is initialized to `CMPLX (0.0, 0.0)'.
-
-   The following functions are provided in either `ComplexMath' (for
-`COMPLEX') or
-`LComplexMath' (for `LONGCOMPLEX'):
-
- - Function: CMPLX `(R, I: REAL): COMPLEX'
-
- - Function: CMPLX `(R, I: LONGREAL): LONGCOMPLEX'
-     This function returns an instance of the corresponding complex
-     number type whose real part has a value of R and imaginary part
-     has a value of I.
-
- - Function: Copy `(Z: COMPLEX): COMPLEX'
-
- - Function: Copy `(Z: LONGCOMPLEX): LONGCOMPLEX'
-     This function returns a copy of Z.
-
-     *Please note:* This function provides the only reliable way to
-     assign complex number values.  If `a' and `b' are complex numbers,
-     *do not* use `a := b'.
-
- - Function: RealPart `(Z: COMPLEX): REAL'
-
- - Function: RealPart `(Z: LONGCOMPLEX): LONGREAL'
-     This function returns the real part of the complex number Z.
-
- - Function: ImagPart `(Z: COMPLEX): REAL'
-
- - Function: ImagPart `(Z: LONGCOMPLEX): LONGREAL'
-     This function returns the imaginary part of the complex number Z.
-
- - Function: add `(Z1, Z2: COMPLEX): COMPLEX'
-
- - Function: add `(Z1, Z2: LONGCOMPLEX): LONGCOMPLEX'
-     This function returns the value of Z1 added to Z2.
-
- - Function: sub `(Z1, Z2: COMPLEX): COMPLEX'
-
- - Function: sub `(Z1, Z2: LONGCOMPLEX): LONGCOMPLEX'
-     This function returns the value of Z2 subtracted from Z1.
-
- - Function: mul `(Z1, Z2: COMPLEX): COMPLEX'
-
- - Function: mul `(Z1, Z2: LONGCOMPLEX): LONGCOMPLEX'
-     This function returns the value of Z1 multiplied by Z2.
-
- - Function: div `(Z1, Z2: COMPLEX): COMPLEX'
-
- - Function: div `(Z1, Z2: LONGCOMPLEX): LONGCOMPLEX'
-     This function returns the value of Z1 divided by Z2.
-
- - Function: abs `(Z: COMPLEX): REAL'
-
- - Function: abs `(Z: LONGCOMPLEX): LONGREAL'
-     This function returns an approximation to the length (also known
-     as the absolute value, or modulus) of Z.
-
-     *Please note:* An overflow exception may be raised in this
-     computation, even when the complex number itself is well defined.
-
- - Function: arg `(Z: COMPLEX): REAL'
-
- - Function: arg `(Z: LONGCOMPLEX): LONGREAL'
-     This function returns an approximation to the angle that Z
-     subtends to the positive real axis in the complex plane.  The
-     result will be in radians in the range `[-pi, pi]'.  If the
-     modulus (`abs(X)') of Z is zero, an exception is raised.
-
- - Function: conj `(Z: COMPLEX): COMPLEX'
-
- - Function: conj `(Z: LONGCOMPLEX): LONGCOMPLEX'
-     This function returns an approximation to the complex conjugate of
-     Z.
-
- - Function: power `(BASE: COMPLEX; EXPONENT: REAL): COMPLEX'
-
- - Function: power `(BASE: LONGCOMPLEX; EXPONENT: LONGREAL):
-          LONGCOMPLEX'
-     This function returns an approximation to the value of the number
-     BASE raised to the power EXPONENT.
-
- - Function: sqrt `(Z: COMPLEX): COMPLEX'
-
- - Function: sqrt `(Z: LONGCOMPLEX): LONGCOMPLEX'
-     This function returns an approximation to the principal square
-     root of Z.
-
-     *Please note:* The result is the complex number with an `arg()' of
-     half the value of the `arg()' of z, and whose `abs()' is the
-     positive square root of the `abs()' of Z.
-
- - Function: exp `(Z: COMPLEX): COMPLEX'
-
- - Function: exp `(Z: LONGCOMPLEX): LONGCOMPLEX'
-     This function returns an approximation to the mathematical
-     constant `e' raised to the power of Z.
-
- - Function: ln `(Z: COMPLEX): COMPLEX'
-
- - Function: ln `(Z: LONGCOMPLEX): LONGCOMPLEX'
-     This function returns an approximation to the principal value of
-     the natural logarithm of Z.
-
- - Function: sin `(Z: COMPLEX): COMPLEX'
-
- - Function: sin `(Z: LONGCOMPLEX): LONGCOMPLEX'
-     This function returns an approximation to the complex sine of Z.
-
- - Function: cos `(Z: COMPLEX): COMPLEX'
-
- - Function: cos `(Z: LONGCOMPLEX): LONGCOMPLEX'
-     This function returns an approximation to the complex cosine of Z.
-
- - Function: tan `(Z: COMPLEX): COMPLEX'
-
- - Function: tan `(Z: LONGCOMPLEX): LONGCOMPLEX'
-     This function returns an approximation to the complex tangent of Z.
-     If Z is an odd multiple of `pi/2', an exception is raised.
-
- - Function: arcsin `(Z: COMPLEX): COMPLEX'
-
- - Function: arcsin `(Z: LONGCOMPLEX): LONGCOMPLEX'
-     This function returns an approximation to the principal value of
-     the complex arcsine of Z.
-
- - Function: arccos `(Z: COMPLEX): COMPLEX'
-
- - Function: arccos `(Z: LONGCOMPLEX): LONGCOMPLEX'
-     This function returns an approximation to the complex arccosine of
-     Z.
-
- - Function: arctan `(Z: COMPLEX): COMPLEX'
-
- - Function: arctan `(Z: LONGCOMPLEX): LONGCOMPLEX'
-     This function returns an approximation to the complex arctangent
-     of Z.
-
- - Function: polarToComplex `(ABS, ARG: REAL): COMPLEX'
-
- - Function: polarToComplex `(ABS, ARG: LONGREAL): LONGCOMPLEX'
-     This function returns an approximation to the complex number with
-     the specified polar coordinates.  The result will have a length of
-     ABS and angle of ARG).
-
- - Function: scalarMult `(SCALAR: REAL; Z: COMPLEX): COMPLEX'
-
- - Function: scalarMult `(SCALAR: LONGREAL; Z: LONGCOMPLEX):
-          LONGCOMPLEX'
-     This function returns an approximation to the scalar product of
-     SCALAR with Z.
-
- - Function: IsCMathException `(): BOOLEAN'
-     This function returns `TRUE' if the current process is in the
-     exceptional execution state because of the raising of the
-     corresponding `ComplexMath' or `LComplexMath' exception;
-     otherwise, it returns `FALSE'.
-
-
-File: OOCref.info,  Node: Random Numbers,  Prev: Complex Numbers,  Up: Mathematics
-
-Random Numbers
-==============
-
-   "Random number" generating routines, like those provided in module
-`RandomNumbers', are more correctly called "pseudo-random number
-generators" because they have only the appearance of randomness, and
-actually exhibit a specific, repeatable pattern.  However, the generated
-sequence of numbers should pass certain statistical tests *as if* it
-were a truly random sequence.
-
-   The algorithm implemented by `RandomNumbers' is "good" in the sense
-that it passes many of these statistical tests, but it is not
-necessarily useful in all cases.  A different algorithm might be better
-suited to a particular application simply because the inherent
-structure of the generated number sequence better satisfies the
-application's required properties.
-
-   Because of the deterministic quality of random number generators,
-the user is required to specify an initial value, or "seed".  Sequences
-generated using the same seed (and the same algorithm) will always
-produce the same results.  To get a different sequence, simply use a
-different seed.  A common way to generate different seeds is to
-initialize using the system's clock time.  (This is not done directly
-within `RandomNumbers' because then it is not possible to reproduce
-results, which could cause difficulties during, say, testing and
-debugging.)
-
-   Also note that sequences *will* repeat themselves eventually.  In
-this case, a sequence will start to repeat after, at most, `modulo-1'
-elements, and possibly much sooner than that.
-
-   A complete discussion of random number generating algorithms is
-beyond the scope of this manual.  For more information about the
-algorithm used in this module, and other random number generators,
-consult the following references:
-
-`Random number generators: good ones are hard to find'
-S.K. Park and K.W. Miller
-Communications of the ACM, Vol. 31, No. 10, October 1988, pp. 1192-1201
-
-`The Art Of Computer Programming:
-Volume 2, Seminumerical Algorithms, Second Edition'
-Donald E. Knuth
-Addison-Wesley Publishing Co., January 1981
-
- - Constant: modulo
-     The determing parameter of the linear congruential generator being
-     used by `RandomNumbers'.
-
- - Procedure: GetSeed `(VAR SEED: LONGINT)'
-     This procedure gets the seed value currently in use by routines in
-     module `RandomNumbers'.
-
- - Procedure: PutSeed `(SEED: LONGINT)'
-     This procedure sets SEED as the new seed value for routines in
-     `RandomNumbers'.  Any value for SEED is allowed, but all values
-     will be mapped into the range `[1..modulo-1]'.
-
- - Function: RND `(RANGE: LONGINT): LONGINT'
-     This function calculates a new "random" number.  RANGE has to be in
-     the range `[1..modulo-1]', and the result is a number in the
-     interval `[0, RANGE-1]'.
-
- - Function: Random `(): REAL'
-     This function calculates a new "random" number.  The result is a
-     number in the interval `[0, 1)'.
-
-   *Example:*
-
-     VAR l: LONGINT;
-         r: REAL;
-     
-     RandomNumbers.PutSeed(314159);
-     
-     l := RandomNumbers.RND(100);
-        => l = 19
-     l := RandomNumbers.RND(10000);
-        => l = 5610
-     l := RandomNumbers.RND(9999999);
-        => l = 6158792
-     l := RandomNumbers.RND(365);
-        => l = 54
-     
-     RandomNumbers.GetSeed(l);
-        => l = 143441039
-     
-     r := RandomNumbers.Random();
-        => r = 0.6225381
-     r := RandomNumbers.Random();
-        => r = 0.9990177
-     r := RandomNumbers.Random();
-        => r = 0.4895853
-     r := RandomNumbers.Random();
-        => r = 0.4605866
-     
-     RandomNumbers.GetSeed(l);
-        => l = 989102265
-
-
-File: OOCref.info,  Node: Date and Time,  Next: Oakwood Compliant Modules,  Prev: Mathematics,  Up: Top
-
-Date and Time
-*************
-
-   This chapter describes the facilities for manipulating dates and
-times, including getting and setting the date and time, and conversions
-between formats.
-
-* Menu:
-
-* Time::                        Manipulation of time stamps and time
-                                 intervals.
-* JulianDay::                   Convert between day/month/year and
-                                 Modified Julian Days.
-* SysClock::                    Reading and setting the system clock.
-* Calendar::                    Conversion between calender dates, time
-                                 stamps, and date/time string formats.
 

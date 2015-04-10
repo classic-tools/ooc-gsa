@@ -247,6 +247,12 @@ module uses any of the flags that are enabled by
 .BR OOC_EXTENSIONS ,
 applying this filter reduces the module to standard Oberon-2 code.
 .TP
+.B --strip-mp-ident
+Convert multi-part module names to simple identifiers.  The colon
+characters are removed from the name, and import statements without an
+alias declaration are rewritten to alias to the last part of the
+previous multi-part name.
+.TP
 .B --mod2foreign
 This code transformation is intended for advanced users, who want to
 write 

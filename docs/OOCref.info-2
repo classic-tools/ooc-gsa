@@ -4,11 +4,11 @@ the input file OOCref.texinfo.
    This file documents the Optimizing Oberon-2 Compiler (OOC) and its
 library.
 
-   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
-Library Reference Manual', for Version 1.4.5 or later of oo2c.
+   This is Edition 0.10 DRAFT, last updated 29 February 2000, of `The
+OOC Library Reference Manual', for Version 1.5.1 or later of oo2c.
 
-   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
-1999 Michael van Acken
+   Copyright (C) 1997-2000 Eric Nikitin Part II Copyright (C) 1998-2000
+Michael van Acken
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -994,6 +994,7 @@ concepts.
 * Input/Output Overview::       An introduction to the basic concepts of
                                  I/O in the OOC library.
 * Channels::                    Details of the various channel modules.
+* Messages::                    Framework for Messages.
 * Standard Mappers::            Descriptions of the standard mapper types.
 * Standard I/O::                Simple interfaces to standard input, output
                                  and error channels.
@@ -1108,7 +1109,7 @@ and an uninterpreted sequence of bytes.  But mappers may also provide
 more sophisticated read/write operations; for instance, "scanners" are
 mappers that can distinguish between different types of data within a
 particular format, and then read in that data based on the type.  *Note
-TextRider:: and *Note BinaryRider:: for descriptions of the simplest
+TextRider::, and *Note BinaryRider::, for descriptions of the simplest
 mappers.
 
      *Please note*: a basic rider is dependent on the implementation of
@@ -1172,7 +1173,7 @@ output operations can be performed on it.
      (if such limitations exist for that type).
 
 
-File: OOCref.info,  Node: Channels,  Next: Standard Mappers,  Prev: Input/Output Overview,  Up: I/O Subsystem
+File: OOCref.info,  Node: Channels,  Next: Messages,  Prev: Input/Output Overview,  Up: I/O Subsystem
 
 Channels
 ========
@@ -1209,8 +1210,8 @@ which are derived from them.
 
    Abstract classes `Reader' and `Writer' are the required basic rider
 types that must be declared for each channel.  Notice that these define
-only read/ write operations for sequences of bytes (*note Riders and
-Mappers::.)
+only read and write operations for sequences of bytes (*note Riders and
+Mappers::.).
 
    See the various concrete channel classes for more detail and
 examples of usage (like *Note Files::, *Note StdChannels::, or *Note
@@ -1222,8 +1223,6 @@ without any prior knowledge about channels.
 * Abstract Class Channel::      Elements of abtract channel types.
 * Abstract Class Reader::       Elements of abstract reader types.
 * Abstract Class Writer::       Elements of abstract writer types.
-* Channel Procedures::          Free-standing procedures in module
-                                 Channel.
 * Summary of Channel Constants::Summarized list of constants in module
                                  Channel.
 

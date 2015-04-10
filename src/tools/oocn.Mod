@@ -1,4 +1,4 @@
-(*	$Id: oocn.Mod,v 1.17 1999/11/14 18:16:50 ooc-devel Exp $	*)
+(*	$Id: oocn.Mod,v 1.19 1999/12/07 11:44:19 ooc-devel Exp $	*)
 MODULE oocn;
 (*  Main module of the OOC Code Navigator toolbox.
     Copyright (C) 1998, 1999  Michael van Acken
@@ -93,7 +93,7 @@ PROCEDURE WriteHelp;
     Out.String ("  --no-internal   Omit internal modules from the output of --modules."); Out.Ln;
     Out.String ("  --line-num      Prepend original line number to every line of output."); Out.Ln;
     Out.String ("  --strip-comments,--strip-doc-strings,--strip-pragmas,--strip-system-flags,"); Out.Ln;
-    Out.String ("  --strip-mident"); Out.Ln;
+    Out.String ("  --strip-mp-ident"); Out.Ln;
     Out.String ("                  Remove or rewrite tokens from the module's source text."); Out.Ln;
     Out.String ("  --mod2foreign, --foreign2mod"); Out.Ln;
     Out.String ("                  Convert module to FOREIGN and back (options for --filter)."); Out.Ln;
@@ -287,10 +287,10 @@ BEGIN
   ParamOptions.options. CmdLineOption ("--help,-h", "mode:=0");
   ParamOptions.options. CmdLineOption ("--html,-H", "mode:=1");
   ParamOptions.options. CmdLineOption ("--xref,-X", "mode:=2;closure:=TRUE");
-  ParamOptions.options. CmdLineOption ("--modules,-M", "mode:=3;closure:=TRUE");
-  ParamOptions.options. CmdLineOption ("--uses,-U", "mode:=4;declName:='$1';closure:=TRUE");
+  ParamOptions.options. CmdLineOption ("--modules,-M", "mode:=3;closure:=TRUE;parseTexinfo:=FALSE");
+  ParamOptions.options. CmdLineOption ("--uses,-U", "mode:=4;declName:='$1';closure:=TRUE;parseTexinfo:=FALSE");
 (*  ParamOptions.options. CmdLineOption ("--definition,-D", "mode:=5");*)
-  ParamOptions.options. CmdLineOption ("--filter,-F", "mode:=6");
+  ParamOptions.options. CmdLineOption ("--filter,-F", "mode:=6;parseTexinfo:=FALSE");
 
   modeDef := ParamOptions.CreateInteger ("modeDef", mdefText, mdefText, mdefTexi);
   ParamOptions.options. Add (modeDef);

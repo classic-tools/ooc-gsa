@@ -1800,7 +1800,7 @@ void Parameter_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(12+8);
-    if (!_mem) _new_failed(_P(41140));
+    if (!_mem) _new_failed(_P(41139));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Parameter__IncludeSectionDesc_td.td;
     i0 = (int)_var;

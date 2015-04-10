@@ -85,8 +85,8 @@ signed char IntConv__FormatInt(const unsigned char* str__ref, int str_0d) {
 l0:
   i11 = i12 == i4;
   if (i11) goto l19;
-  i9 = (int)str + i4;
-  i11 = *(unsigned char*)i9;
+  i11 = (int)str + i4;
+  i11 = *(unsigned char*)i11;
   i9 = (int)*(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i14;
   class_ = (signed char)i1;
   state = (void*)i14;
@@ -110,26 +110,37 @@ l1:
   goto l15;
 l2:
   if (!(class_==1)) goto l14;
-  i3 = i11 == 45;
-  if (i3) goto l12;
-  i9 = i11 == 43;
-  if (i9) goto l11;
+  i0 = i11 == 45;
+  if (i0) goto l12;
+  i10 = i11 == 43;
+  if (i10) goto l11;
   i11 -= 48;
   if (i5) goto l6;
-  i13 = i11 + (-2147483647-1);
-  _div(i13, i13, 10, int);
-  i13 = i6 < i13;
-  if (i13) goto l3;
+  i0 = i11 + (-2147483647-1);
+  _div(i10, i0, 10, int);
+  i9 = i6 > i10;
+  if (i9) goto l5;
+  i13 = i6 < i10;
+  if (i13) goto l4;
+  i9 = i6 != i10;
+  if (i9) goto l3;
+  _mod(i0, i0, 10, int);
+  i0 = i0 != 0;
+  if (i0) goto l4;
+l3:
   i9 = i6 * 10;
   i9 -= i11;
-  goto l4;
-l3:
-  i9 = i6;
+  i13 = 0;
+  goto l10;
 l4:
-  if (i13) goto l5;
+  i9 = i6;
+  i3 = 1;
+  i13 = 1;
   goto l10;
 l5:
-  i3 = 1;
+  i9 = i6 * 10;
+  i9 -= i11;
+  i13 = 0;
   goto l10;
 l6:
   i13 = 2147483647 - i11;
@@ -333,7 +344,7 @@ void IntConv_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc_atomic(4+8);
-    if (!_mem) _new_failed(_P(7930));
+    if (!_mem) _new_failed(_P(8225));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
     i0 = (int)_var;
@@ -341,7 +352,7 @@ void IntConv_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc_atomic(4+8);
-    if (!_mem) _new_failed(_P(7938));
+    if (!_mem) _new_failed(_P(8233));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
     i1 = (int)_var;
@@ -349,7 +360,7 @@ void IntConv_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc_atomic(4+8);
-    if (!_mem) _new_failed(_P(7946));
+    if (!_mem) _new_failed(_P(8241));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
     i2 = (int)_var;

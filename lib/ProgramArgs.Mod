@@ -1,7 +1,7 @@
-(*	$Id: ProgramArgs.Mod,v 1.8 1999/10/31 13:56:46 ooc-devel Exp $	*)
+(*	$Id: ProgramArgs.Mod,v 1.9 2000/01/09 17:48:54 ooc-devel Exp $	*)
 MODULE ProgramArgs;
 (*  Provides access to a program invokation's command line arguments.
-    Copyright (C) 1997-1999  Michael van Acken
+    Copyright (C) 1997-2000  Michael van Acken
 
     This module is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public License
@@ -191,7 +191,7 @@ PROCEDURE (r: Reader) ReadByte* (VAR x: SYSTEM.BYTE);
     IF (r. res = done) THEN
       IF r. base. open THEN
         IF (r. pos0 = PosixFileDescr.argc) THEN
-          r. res := GetError (outOfRange)
+          r. res := GetError (readAfterEnd)
         ELSIF (PosixFileDescr.argv[r. pos0][r. pos1] = 0X) THEN
           x := CharClass.eol;
           INC (r. pos0);

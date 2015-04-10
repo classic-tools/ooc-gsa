@@ -15,9 +15,9 @@ void Msg__InitContext(Msg__Context context, const Msg__String id__ref, int id_0d
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i0 < 0) _invalid_length(i0, _P(5796));
+    if(i0 < 0) _invalid_length(i0, _P(5803));
     _mem = GC_malloc_atomic(i0*1+8);
-    if (!_mem) _new_failed(_P(5759));
+    if (!_mem) _new_failed(_P(5766));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i0;
@@ -69,9 +69,9 @@ void Msg__InitAttribute(Msg__Attribute attr, const Msg__String name__ref, int na
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i1 < 0) _invalid_length(i1, _P(7715));
+    if(i1 < 0) _invalid_length(i1, _P(7722));
     _mem = GC_malloc_atomic(i1*1+8);
-    if (!_mem) _new_failed(_P(7677));
+    if (!_mem) _new_failed(_P(7684));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i1;
@@ -92,7 +92,7 @@ Msg__Msg Msg__New(Msg__Context context, int code) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(20+8);
-    if (!_mem) _new_failed(_P(8442));
+    if (!_mem) _new_failed(_P(8449));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__MsgDesc_td.td;
     i0 = (int)_var;
@@ -180,67 +180,80 @@ void Msg__MsgDesc_GetLText(Msg__Msg msg, Msg__LString text, int text_0d) {
   unsigned short int insert[16384];
   unsigned char num[48];
   short int pos;
-  i3 = (int)msg + 12;
-  i1 = (int)*(void**)i3;
+  i2 = (int)msg + 12;
+  i1 = (int)*(void**)i2;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[0];
   ((void(*)(Msg__Context, Msg__Msg, Msg__LString, int templ_0d))i0)((Msg__Context)i1, (Msg__Msg)(int)msg, (Msg__LString)(int)text, text_0d);
   i0 = (int)msg + 16;
-  i2 = (int)*(void**)i0;
-  i0 = i2 != 0;
+  i1 = (int)*(void**)i0;
+  i0 = i1 != 0;
   if (i0) goto l0;
-  goto l4;
+  goto l6;
 l0:
 l1:
-  i1 = i2 + 4;
-  i1 = (int)*(void**)i1;
-  _string_copy2l((int)attrName, i1, 131);
+  i0 = i1 + 4;
+  i0 = (int)*(void**)i0;
+  _string_copy2l((int)attrName, i0, 131);
   LongStrings__Insert((const unsigned short int*)(int)_c5, 3, (short int)0, (unsigned short int*)(int)attrName, 131);
   LongStrings__Append((const unsigned short int*)(int)_c4, 2, (unsigned short int*)(int)attrName, 131);
-  found = (unsigned char)i0;
-  pos = (short int)i4;
-  found = (unsigned char)i0;
-  pos = (short int)i4;
+  found = (unsigned char)i4;
+  pos = (short int)i3;
+  found = (unsigned char)i4;
+  pos = (short int)i3;
   LongStrings__FindNext((const unsigned short int*)(int)attrName, 131, (const unsigned short int*)(int)text, text_0d, (short int)0, (unsigned char *)(int)&found, (short int *)(int)&pos);
-  if (!(found)) goto l2;
-  i4 = LongStrings__Length((const unsigned short int*)(int)attrName, 131);
-  i0 = *(int*)(i2-4);
-  LongStrings__Delete((unsigned short int*)(int)text, text_0d, (short int)pos, (short int)i4);
-  i0 = (int)((_Type)i0)->tbprocs[0];
-  ((void(*)(Msg__Attribute, Msg__LString, int text_0d))i0)((Msg__Attribute)i2, (Msg__LString)(int)insert, 16384);
-  LongStrings__Insert((const unsigned short int*)(int)insert, 16384, (short int)pos, (unsigned short int*)(int)text, text_0d);
+  if (found) goto l2;
+  i4 = 0;
+  i3 = pos;
+  goto l5;
 l2:
-  i2 = (int)*(void**)i2;
-  i0 = i2 == 0;
-  if (i0) goto l3;
-  i4 = pos;
-  i0 = found;
-  goto l1;
+  i3 = *(int*)(i1-4);
+  i4 = (int)((_Type)i3)->tbprocs[0];
+  i3 = pos;
 l3:
-  i1 = found;
-  i0 = pos;
+  i0 = LongStrings__Length((const unsigned short int*)(int)attrName, 131);
+  LongStrings__Delete((unsigned short int*)(int)text, text_0d, (short int)i3, (short int)i0);
+  ((void(*)(Msg__Attribute, Msg__LString, int text_0d))i4)((Msg__Attribute)i1, (Msg__LString)(int)insert, 16384);
+  LongStrings__Insert((const unsigned short int*)(int)insert, 16384, (short int)i3, (unsigned short int*)(int)text, text_0d);
+  i0 = LongStrings__Length((const unsigned short int*)(int)insert, 16384);
+  i0 += i3;
+  found = (unsigned char)1;
+  pos = (short int)i3;
+  found = (unsigned char)1;
+  pos = (short int)i3;
+  LongStrings__FindNext((const unsigned short int*)(int)attrName, 131, (const unsigned short int*)(int)text, text_0d, (short int)i0, (unsigned char *)(int)&found, (short int *)(int)&pos);
+  if (!(found)) goto l4;
+  i3 = pos;
+  goto l3;
 l4:
-  found = (unsigned char)i1;
-  pos = (short int)i0;
-  found = (unsigned char)i1;
-  pos = (short int)i0;
-  LongStrings__FindNext((const unsigned short int*)(int)_c6, 15, (const unsigned short int*)(int)text, text_0d, (short int)0, (unsigned char *)(int)&found, (short int *)(int)&pos);
-  if (!(found)) goto l5;
-  LongStrings__Delete((unsigned short int*)(int)text, text_0d, (short int)pos, (short int)14);
-  i3 = (int)*(void**)i3;
-  i3 = (int)*(void**)i3;
-  _string_copy2l((int)insert, i3, 16384);
-  LongStrings__Insert((const unsigned short int*)(int)insert, 16384, (short int)pos, (unsigned short int*)(int)text, text_0d);
+  i4 = found;
+  i3 = pos;
 l5:
+  i1 = (int)*(void**)i1;
+  i0 = i1 != 0;
+  if (i0) goto l1;
+l6:
+  found = (unsigned char)i4;
+  pos = (short int)i3;
+  found = (unsigned char)i4;
+  pos = (short int)i3;
+  LongStrings__FindNext((const unsigned short int*)(int)_c6, 15, (const unsigned short int*)(int)text, text_0d, (short int)0, (unsigned char *)(int)&found, (short int *)(int)&pos);
+  if (!(found)) goto l7;
+  LongStrings__Delete((unsigned short int*)(int)text, text_0d, (short int)pos, (short int)14);
+  i2 = (int)*(void**)i2;
+  i2 = (int)*(void**)i2;
+  _string_copy2l((int)insert, i2, 16384);
+  LongStrings__Insert((const unsigned short int*)(int)insert, 16384, (short int)pos, (unsigned short int*)(int)text, text_0d);
+l7:
   LongStrings__FindNext((const unsigned short int*)(int)_c7, 12, (const unsigned short int*)(int)text, text_0d, (short int)0, (unsigned char *)(int)&found, (short int *)(int)&pos);
-  if (!(found)) goto l6;
+  if (!(found)) goto l8;
   i0 = (int)msg + 8;
   LongStrings__Delete((unsigned short int*)(int)text, text_0d, (short int)pos, (short int)11);
   i0 = *(int*)i0;
   IntStr__IntToStr((int)i0, (unsigned char*)(int)num, 48);
   _string_copy2l((int)insert, (int)num, 16384);
   LongStrings__Insert((const unsigned short int*)(int)insert, 16384, (short int)pos, (unsigned short int*)(int)text, text_0d);
-l6:
+l8:
   ;
 }
 
@@ -283,7 +296,7 @@ Msg__MsgList Msg__NewMsgList(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(12+8);
-    if (!_mem) _new_failed(_P(12435));
+    if (!_mem) _new_failed(_P(12565));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__MsgListDesc_td.td;
     i0 = (int)_var;
@@ -316,6 +329,34 @@ l1:
   *(int*)(int)l = i0;
 }
 
+void Msg__MsgListDesc_AppendList(Msg__MsgList l, Msg__MsgList source) {
+  register int i0, i1, i2, i3, i4;
+  i3 = *(int*)(int)source;
+  i0 = i3 == 0;
+  if (i0) goto l1;
+  i0 = *(int*)(int)l;
+  i2 = i0 == 0;
+  if (i2) goto l0;
+  i3 = i0 + i3;
+  i0 = (int)l + 8;
+  *(int*)(int)l = i3;
+  i4 = (int)*(void**)i0;
+  i3 = (int)source + 4;
+  i1 = (int)*(void**)i3;
+  *(void**)i4 = (void*)i1;
+  i2 = (int)source + 8;
+  i3 = i1 + 4;
+  i2 = (int)*(void**)i2;
+  *(void**)i3 = (void*)i4;
+  *(void**)i0 = (void*)i2;
+  Msg__InitMsgList((Msg__MsgList)(int)source);
+  goto l1;
+l0:
+  (void)memcpy((void*) (int)l, (const void*) (int)source, 12);
+l1:
+  ;
+}
+
 Msg__IntAttribute Msg__NewIntAttrib(const Msg__String name__ref, int name_0d, int value) {
   register int i0, i1;
   Msg__String name;
@@ -324,7 +365,7 @@ Msg__IntAttribute Msg__NewIntAttrib(const Msg__String name__ref, int name_0d, in
   {
     char *_mem, *_var;
     _mem = GC_malloc(12+8);
-    if (!_mem) _new_failed(_P(13057));
+    if (!_mem) _new_failed(_P(13911));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__IntAttributeDesc_td.td;
     i0 = (int)_var;
@@ -365,7 +406,7 @@ Msg__StringAttribute Msg__NewStringAttrib(const Msg__String name__ref, int name_
   {
     char *_mem, *_var;
     _mem = GC_malloc(12+8);
-    if (!_mem) _new_failed(_P(13701));
+    if (!_mem) _new_failed(_P(14555));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__StringAttributeDesc_td.td;
     i0 = (int)_var;
@@ -404,7 +445,7 @@ Msg__LStringAttribute Msg__NewLStringAttrib(const Msg__String name__ref, int nam
   {
     char *_mem, *_var;
     _mem = GC_malloc(12+8);
-    if (!_mem) _new_failed(_P(14308));
+    if (!_mem) _new_failed(_P(15162));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__LStringAttributeDesc_td.td;
     i0 = (int)_var;
@@ -443,7 +484,7 @@ Msg__MsgAttribute Msg__NewMsgAttrib(const Msg__String name__ref, int name_0d, Ms
   {
     char *_mem, *_var;
     _mem = GC_malloc(12+8);
-    if (!_mem) _new_failed(_P(14902));
+    if (!_mem) _new_failed(_P(15756));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__MsgAttributeDesc_td.td;
     i0 = (int)_var;
@@ -474,6 +515,54 @@ void Msg__MsgAttributeDesc_ReplacementText(Msg__MsgAttribute attr, Msg__LString 
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[2];
   ((void(*)(Msg__Msg, Msg__LString, int text_0d))i1)((Msg__Msg)i0, (Msg__LString)(int)text, text_0d);
+}
+
+Msg__StringPtr Msg__GetStringPtr(const Msg__String str__ref, int str_0d) {
+  register int i0, i1;
+  Msg__String str;
+  char* _old_top_vs = _top_vs;
+  _push_value(int, str, str__ref, str_0d);
+  i0 = Strings__Length((const unsigned char*)(int)str, str_0d);
+  i0++;
+  {
+    char *_mem, *_var;
+    int* _dim_ptr;
+    if(i0 < 0) _invalid_length(i0, _P(16465));
+    _mem = GC_malloc_atomic(i0*1+8);
+    if (!_mem) _new_failed(_P(16437));
+    _var = _mem+8;
+    _dim_ptr = (void*)(_var-4);
+    *(--_dim_ptr) = i0;
+    i1 = (int)_var;
+  }
+  i0 = *(int*)(i1-8);
+  _string_copy(i1, (int)str, i0);
+  _top_vs = _old_top_vs;
+  return (void*)i1;
+}
+
+Msg__LStringPtr Msg__GetLStringPtr(const Msg__LString str__ref, int str_0d) {
+  register int i0, i1;
+  Msg__LString str;
+  char* _old_top_vs = _top_vs;
+  _push_value(int, str, str__ref, str_0d*2);
+  i0 = LongStrings__Length((const unsigned short int*)(int)str, str_0d);
+  i0++;
+  {
+    char *_mem, *_var;
+    int* _dim_ptr;
+    if(i0 < 0) _invalid_length(i0, _P(16718));
+    _mem = GC_malloc_atomic(i0*2+8);
+    if (!_mem) _new_failed(_P(16686));
+    _var = _mem+8;
+    _dim_ptr = (void*)(_var-4);
+    *(--_dim_ptr) = i0;
+    i1 = (int)_var;
+  }
+  i0 = *(int*)(i1-8);
+  _string_copyl(i1, (int)str, i0);
+  _top_vs = _old_top_vs;
+  return (void*)i1;
 }
 
 void Msg_init(void) {

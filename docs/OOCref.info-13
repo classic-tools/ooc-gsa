@@ -4,11 +4,11 @@ the input file OOCref.texinfo.
    This file documents the Optimizing Oberon-2 Compiler (OOC) and its
 library.
 
-   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
-Library Reference Manual', for Version 1.4.5 or later of oo2c.
+   This is Edition 0.10 DRAFT, last updated 29 February 2000, of `The
+OOC Library Reference Manual', for Version 1.5.1 or later of oo2c.
 
-   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
-1999 Michael van Acken
+   Copyright (C) 1997-2000 Eric Nikitin Part II Copyright (C) 1998-2000
+Michael van Acken
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -28,810 +28,1100 @@ entitled "GNU General Public License" must be approved for accuracy by
 the Foundation.
 
 
-File: OOCref.info,  Node: Declaration Flags,  Next: INTERFACE Modules,  Prev: Type Flags,  Up: System Flags
+File: OOCref.info,  Node: oo2c debugging options,  Next: oo2c files,  Prev: oo2c libraries,  Up: oo2c options
 
-Declaration Flags
+Debugging Options
 .................
 
-   The following table lists non-standard properties that apply to
-declarations in external modules:
+   There are a number of ways to inspect the inner workings of the
+compiler during the optimization steps and in the backend.  The
+following command switches are specific to `oo2c'; it is unlikely that
+other implementations of OOC will share even a subset of them.
 
-Variable Declarations
+`--checks', option variable: `checks'
+     Do some consistency checks after every optimization.  This is used
+     to discover invalid code transformations that violate structural
+     requirements of the intermediate code.
 
-    `NO_DESCRIPTOR'
-          Applies to variables of record type.  A record with this
-          property cannot appear in type tests and type guards, and it
-          cannot be passed to formal parameters that need a type tag.
+`--stupid', option variable: `stupidCodeGen'
+     Disable all code transformations.  Feed output of frontend
+     directly to backend.
 
-    `STATIC_POINTER'
-          Applies to record pointers, and means that the pointer's
-          dynamic type is always equal to its static type.
+`--translate proc|gproc|module|program', option variable: `translationBasis'
+     Specify how much source code is read before running optimizations
+     and generating code.  Setting a higher structural level of the
+     translation basis allows for more optimizations to be run.  `proc'
+     reads a single procedure at a time, `gproc' a single global
+     procedure including all its nested procedures, `module' a whole
+     module, and `program' the entire set of program code.  `gproc' is
+     the default setting for `oo2c', `proc' and `program' are not
+     supported yet, and (at the moment) `module' has no noticeable
+     benefits compared to `gproc'.
 
-    `NO_LENGTH_INFO'
-          Applies to variables of open array type, and means that the
-          predefined function `LEN' cannot be called on this variable.
-          Also, the array value cannot be passed to a formal open array
-          parameter that expects to get the length of any open
-          dimensions.
+`--opt <string>', option variable: `optimizers'
+     Set the sequence of code transformations.  Every character in the
+     given string represents a transformation.  (To get the entire list
+     of available choices use some illegal selection, like `--opt .'.)
+     Without the special value `0', a final dead code elimination is
+     done before the code is given to the backend.  The character `?'
+     writes the intermediate code to `stdout'.  For example, the
+     command line arguments `--opt "?CD?"' write the code as emitted by
+     the frontend, run common subexpression elimination and dead code
+     elimination, and write the resulting code to `stdout' again.
 
-Parameter Declarations
+     The following options modify the output format of the intermediate
+     code:
 
-    `NO_TYPE_TAG'
-          Applies to formal variable parameters of record type, and
-          means that it is not accompanied by a type tag.  Such a
-          parameter cannot appear in a type test or type guard, and it
-          cannot be passed to a formal parameter that expects to get a
-          type tag.  This flag is implicitly set if the record type is
-          marked with `NO_DESCRIPTOR'.
+    `--gsa-qnames', option variable: `writeQualNames'
+          Include qualified names in the output.
 
-    `NO_LENGTH_TAG'
-          Applies to open array parameters, and means that it cannot be
-          passed as first argument to `LEN' and cannot be passed to a
-          formal open array parameter that expects to get the length of
-          any open dimensions.
+    `--gsa-opnd-pos', option variable: `writeOpndPos'
+          As much as possible, print source file positions of operands.
+          Note that many operands do not correspond directly to file
+          positions.
 
-          If such a parameter is used in a normal Oberon-2 procedure,
-          the compiler cannot create a local copy of the array
-          argument.  This means that it cannot guarantee the normal
-          semantics of value parameters.  (Recall that value parameters
-          normally follow these rules: local modifications to the
-          parameter stay local, and modifications to the variable that
-          was passed to the parameter are not reflected in the
-          parameter's local value.)
+    `--gsa-instr-pos', option variable: `writeInstrPos'
+          Print source file positions of instructions.
 
-          In this case, instead of the standard behaviour, the compiler
-          treats the parameter like a read-only variable and prevents
-          *local changes* to the parameter's value.  However, any
-          changes to the original *array variable*, which was passed to
-          the parameter in the first place, are reflected by the
-          parameter's value.  This resembles the semantics of the
-          keyword `const' when applied to C pointer types.
+    `--gsa-assign', option variable: `writeAssignHints'
+          Try to show how the intermediate code reflects assignments in
+          the source code.  This is only useful as long as no
+          optimizations are enabled; that is, together with `--opt
+          "?"'.  Note that setting this option might utterly confuse
+          the backend, and result in corrupted C code.
 
-          If the array type is marked with `NO_LENGTH_INFO', this flag
-          is implicitly set.
+    `--gsa-gate-old', option variable: `writeGateOld'
+          Extend the output of `gate' instructions to include their
+          `oldValue' field.  Very useful when debugging certain parts
+          of the frontend; otherwise, it serves no purpose.
 
-    `NIL_COMPAT'
-          Can be applied to any formal parameter passed by reference,
-          and means that the value `NIL' can be passed to it.
+`--cgsa', option variable: `writeGSAC'
+     Write intermediate code annotated by backend specific information
+     to `stdout'.  This is done just before control flow of the
+     intermediate code is converted from guarded commands to the more
+     conventional form of explicit jumps and branches.  After this
+     final transformation, the ANSI-C files are written.
 
-Linkage Names
-     Linkage names can be specified by a string literal, which is
-     included in the list of system flags of a variable or procedure
-     declaration.  This sets the declaration's C level name.  This
-     means that the specified string is used in the emitted C code
-     instead of the name generated by `oo2c' (usually module name plus
-     two underscores plus declaration name).
+     The output can be adjusted with the following options:
 
-Oberon-2 Procedures
-     Normally, a procedure declaration in an external module is taken
-     to be a declaration of an externally linked procedure definition.
-     That is, such procedure declarations usually have no body.  By
-     writing `CODE_FILE' into the module header, it is possible to
-     define standard Oberon-2 procedures, which have a non-empty body
-     part in the module.  Such procedures have to be marked with
-     `HAS_BODY'.
+    `--cgsa-qnames', option variable: `writeLocC'
+          Include qualified names in the output.
 
-Special Code Procedures
-     A procedure's list of system flags may contain the directive
-     `PROC_ID=n', where `n' is a positive integer constant.  This
-     signals the compiler to insert code pattern `n' for every call to
-     this procedure.  This is used to implement direct calls of math
-     functions built into the processor, or procedures that cannot be
-     implemented in the usual way (like the `oo2c' implementation of
-     `Exceptions.PUSHCONTEXT').  This flag is of use only when the
-     backend is extended to emit code for the new pseudo procedure.
+    `--cgsa-loc', option variable: `writeQualNamesC'
+          Add location values (i.e., variable names) to statements.
+          This makes it considerably easier to match fragments of
+          intermediate code with emitted C code.
+
+   Note that the above table is not exhaustive; other undocumented
+options may exist that are of interest only to the compiler writers.
 
 
-File: OOCref.info,  Node: INTERFACE Modules,  Next: FOREIGN Modules,  Prev: Declaration Flags,  Up: Interfacing to C Code
+File: OOCref.info,  Node: oo2c files,  Prev: oo2c debugging options,  Up: oo2c options
 
-INTERFACE Modules
------------------
+Files used by the Compiler
+..........................
 
-   An "interface module" describes the Oberon-2 interface to a piece of
-existing software.  In the case of `oo2c', this can be a file with C
-code, an object file, or a library.  The existing code is not required
-to follow the Oberon-2 typing and heap conventions.  Therefore, one
-must assume that the semantics of types, variables, and procedures in
-such a module are different from their Oberon-2 counterparts.
+   The location of global files depends on the installation.  The file
+names below assume that the default setting `--prefix=/usr/local' was
+used.
 
-   Names declared in an interface module, with the exception of the
-module name itself, can contain underscores `_' in place of a
-character.  The default linkage names of variables and procedures are
-the same as their Oberon-2 names, but without a module prefix.  All
-other names appearing in the module's C header file get a prefix built
-from the module name followed by two underscores.
+`/usr/local/lib/oo2c/oo2crc'
+     Default path to primary initialization file.
 
-   None of the record types defined in the module have a type
-descriptor, and they cannot be extended.  Likewise, array types have no
-type descriptor and open arrays carry no length information.  Pointer
-types have no type tag or length information, meaning that type tests,
-type guards, and `LEN' cannot be applied to them.  Parameters are
-passed without any implicit arguments containing a type tag or length
-information.
+`~/.oo2crc'
+     Default user level initialization file.  Included from the primary
+     initialization file.
 
-   The special parameter `...' is permitted as last argument in the
-formal parameter list of the declaration of a procedure or a procedure
-type.  Note that, in this case, the parameter list has to include at
-least one normal parameter.
+`.Mod'
+     Source code of an Oberon-2 module.
 
-   The following examples are taken from the Oberon-2 module `X11.Mod',
-which defines the interface to the X11 library.  The module header looks
-like this:
+`.Sym'
+     Symbol file describing the public interface of a compiled module.
 
-     MODULE X11 [INTERFACE "C";
-                 LINK LIB "X11" ADD_OPTION LibX11Prefix, LibX11Suffix END];
+`.h'
+     Header file describing the interface of a module on C level.
 
-   The first example highlights the basic translation process from a C
-header file to an Oberon-2 module, but be aware that the translation
-patterns shown are far from exhaustive.  The Oberon-2 counterparts to
-the base C types in the header are taken from the standard module
-`C.Mod', which also provides two often used character array types.
+`.c'
 
-     From C.Mod:
-     char* => TYPE charPtr1d* = POINTER TO ARRAY OF char;
-     char** => TYPE charPtr2d* = POINTER TO ARRAY OF charPtr1d;
-     
-     typedef unsigned long XID;
-     => TYPE XID* = C.longint;
-     
-     #define None 0L
-     => CONST None* = 0;
-     
-     #define NoEventMask  0L
-     #define KeyPressMask (1L<<0)
-     => CONST NoEventMask* = {};
-     => CONST KeyPressMask* = {0};
-     
-     #define Bool int
-     => TYPE Bool* = C.int;
-     
-     typedef struct {
-             int depth;       /* this depth (Z) of the depth */
-             int nvisuals;    /* number of Visual types at this depth */
-             Visual *visuals; /* list of visuals possible at this depth */
-     } Depth;
-     => TYPE
-       DepthPtr* = POINTER TO Depth;
-       Depth* = RECORD
-         depth*: C.int;       (* this depth (Z) of the depth *)
-         nvisuals*: C.int;    (* number of Visual types at this depth *)
-         visuals*: VisualPtr; (* list of visuals possible at this depth *)
-       END;
-     
-     extern XFontStruct *XLoadQueryFont(
-         Display* display, _Xconst char* name);
-     => PROCEDURE XLoadQueryFont* (
-         display: DisplayPtr; name: ARRAY OF C.char): XFontStructPtr;
-     
-     extern char *XFetchBytes(
-         Display* display, int* nbytes_return);
-     => PROCEDURE XFetchBytes* (
-         display: DisplayPtr; VAR nbytes_return: C.int): C.charPtr1d;
-     
-     extern Status XGetAtomNames(
-         Display* dpy, Atom* atoms, int count, char** names_return);
-     => PROCEDURE XGetAtomNames* (
-         dpy: DisplayPtr; VAR atoms: ARRAY OF Atom;
-         count: C.int; VAR names_return: C.charPtr2d): Status;
+`.d'
+     Translated ANSI-C code of a module.  The file `.d' holds global
+     definitions, `.c' the C functions.
 
-   Most of this kind of interface conversion is fairly straightforward.
-The most challenging aspect is the handling of pointer types in
-parameter lists.  A C pointer argument can be translated into a number
-of things: an Oberon-2 pointer type, a variable parameter of the
-pointer's base type, an open array parameter, or an array pointer.  The
-decision is made depending on the use of the argument in question.  We
-can only give rough guidelines here.
+`.o'
+     Object file derived from `.d' and `.c' by the C compiler.
 
-   Take, for example, the C function definition
+`.Lib'
+     Library description with information about inter-library
+     dependencies.
 
-     void f(int *a) {...};
+`/usr/local/lib/oo2c/Errors.short'
+     List of error messages.
 
-The formal parameter `a' could be either an IN/OUT or an OUT argument,
-which translates to
-
-     PROCEDURE f* (VAR a: C.int) ...                      (1)
-
-Or, it could be an array parameter, or an array pointer.  In that case,
-it translates to one of the following alternatives:
-
-     PROCEDURE f* (VAR a: ARRAY OF C.int) ...             (2)
-     PROCEDURE f* (a: POINTER TO ARRAY OF C.int) ...      (3)
-     PROCEDURE f* (a: ARRAY OF C.int) ...                 (4)
-
-The choice depends on how the function `f' accesses the argument `a',
-and on whether values passed to this argument are mostly taken from
-variables or from the heap.  If `*a' is used as simple integer
-variable, it translates to (1).  But if `a' refers to an integer array,
-variant (2) is used, and if it is an integer array stored exclusively
-on the heap, number (3) might be used.  If the array argument passed to
-`f' is not modified by the function, it can be passed as a value array
-like in (4); in this case, the C declaration typically adds the prefix
-`const' to the parameter.
-
-   Now, consider a pointer argument of a structured based type `T':
-
-     void f(T *a) {...};
-
-which offers one additional translation variant:
-
-     PROCEDURE f* (a: POINTER TO T) ...
-
-Again, whether a pointer value or the variable parameter is used
-depends on the primary source of the argument.  If it is taken
-exclusively from heap objects, the pointer value is more convenient.
-Otherwise, it has to be defined as variable parameter of type `T'.
-
-   Note that the Oberon-2 declarations shown above are not completely
-accurate in that it is not possible to use a `POINTER' type constructor
-in a formal parameter list.  Instead, such types have to be declared
-beforehand and their name used in the parameter list.
+`/usr/local/lib/oo2c/lib/__*.c'
+`/usr/local/lib/oo2c/lib/__*.h'
+     Auxiliary files with C definitions.  These need to reside in one
+     of the paths listed in the initialization files or compilation of
+     C code will fail.
 
 
-File: OOCref.info,  Node: FOREIGN Modules,  Next: Large Arrays of Constants,  Prev: INTERFACE Modules,  Up: Interfacing to C Code
+File: OOCref.info,  Node: oob options,  Next: oocn options,  Prev: oo2c options,  Up: Invoking Programs
 
-FOREIGN Modules
----------------
+Using the Symbol File Browser
+-----------------------------
 
-   A "foreign module" describes the interface of a standard Oberon-2
-module implemented in a non-standard way, say, in assembler or C.  By
-default, all declarations are assumed to comply to standard Oberon-2
-semantics.  All types defined in such a module behave exactly like
-standard Oberon-2 types, and all the normal operations are applicable
-to objects declared in a foreign module.  The user cannot distinguish a
-foreign module from a normal Oberon-2 module that has been implemented
-in the conventional way.
+   The symbol file browser `oob' displays the interface definition of a
+module as seen by the compiler.
 
-   Care must be taken when integrating the implementation of a foreign
-module with the compiler's run-time system.  This is typically done by
-writing an empty Oberon-2 module with the desired interface, compiling
-it to C code, and then editing the resulting files.
+     oob [-x|--extended] <module-name>
 
-   As a recommended guide, the following steps should be used when
-writing foreign modules:
+   The program accepts a single argument: the name of a module or a file
+name, which is stripped of its directory part and any suffix.  The
+symbol file for the resulting module name is located using the `PATHS'
+section of the configuration data.  Once found, the contents of the
+symbol file are written to `stdout' in a format resembling that of a
+module.
 
-  1. Write an empty module `Foo.Mod' with all exported declarations.
+   With option `--extended' (or `-x' for short), the output of `oob'
+for extended records includes the names of the base types, the
+inherited record fields, and the inherited type-bound procedures.  Every
+definition of a type-bound procedure is listed, even if it is redefined
+on subsequent extension levels.
 
-  2. Compile it.
+   The output differs from a true Oberon-2 module, in particular from
+the original source code, in a number of ways:
 
-  3. Copy the generated file `Foo.c' to a suitable place, and check
-     that the copied file is the one actually used by the compiler, for
-     example, by invoking `oowhereis Foo.c'.
+   * The symbol file is composed of only the essential data needed by
+     the compiler to interface to the corresponding module.  Therefore,
+     none of the comments embedded in the original source are included
+     in the output.
 
-  4. In `Foo.c', replace the line `#include "Foo.d"' with the contents
-     of the file `Foo.d'.
+   * The original order of declarations is not preserved.  The
+     declarations are instead grouped into blocks of constants, types,
+     variables, and procedures.  Within the blocks, the declared
+     objects are sorted alphabetically.
 
-  5. Modify the module header of `Foo.Mod' to include the proper
-     `FOREIGN' directive, and remove all procedure bodies (including the
-     procedures' `END' parts).  For a module `Foo', the header should
-     look like this:
+   * Constant expressions are reduced to their final value.
 
-          MODULE Foo [FOREIGN "C"; LINK FILE "Foo.c" END];
+   * Any reference to a named type that is defined as an alias of
+     another type is replaced with the name of the base type.
 
-     The command `oocn --filter --mod2foreign Foo.Mod' performs the
-     required changes automatically and writes them into the file
-     `Foo.txt' (*note oocn options::.).
+   * The names of a type declarations which are not exported explicitly
+     by the module, but appear in the definition of another exported
+     definition, are placed in brackets.
 
-  6. Fill in all the empty functions in `Foo.c'.  Note that all type
-     declarations in function headers should use the `#defines' from
-     `__StdTypes.h' (i.e., `CHAR', `BOOLEAN', `SHORTINT', etc.).
+   * The `IMPORT' statement lists just those imports of the original
+     module that appear as part of exported declarations.  Imported
+     modules which do not contribute the module's interface are omitted.
 
-   For examples of foreign modules, refer to the implementation of the
-library modules `Signal', `PosixFileDesc', or `Files'.
+   * Type-bound procedures appear as part of the record declaration of
+     their receiver type.
 
-
-File: OOCref.info,  Node: Large Arrays of Constants,  Next: Limitations of oo2c,  Prev: FOREIGN Modules,  Up: OO2C
+   * Unless the option `--extended' is given, a record definition lists
+     only those fields and type-bound procedures that are defined
+     explicitly for this record.  Inherited fields or type-bound
+     procedures are not listed.
 
-Large Arrays of Constants
-=========================
+   * For simplicity, the export mark `*' is omitted.  Read-only exports
+     are explicitly marked with `-'.
 
-   Some algorithms need large arrays of constant values that cannot be
-computed by the program itself.  Examples of this are the tables used
-to approximate mathematical functions, or the table of hexadecimal
-digits of `pi' used by the Blowfish encryption algorithm.  Because such
-tables are an integral part of these algorithms, it is not acceptable
-to simply read them from external files.
-
-   In Oberon-2, there is basically only one way to create these tables.
-That is, declare an array variable and write a huge list of assignments
-to fill the table with the desired values.  The problem with this
-approach is that it is highly inefficient.  It usually takes a long
-time for OOC to compile such a list of assignments, and the generated
-code is a highly redundant C file that is translated into a large
-object file.
-
-   While it is pointless to undertake any major effort to remedy the
-former problem (large tables of constants are too infrequent to make it
-worthwhile), it is possible to enhance the code generator to deal with
-the latter.  Therefore, `oo2c' has been extended to detect certain
-kinds of constant tables and translate them to array definitions with
-initialization parts.  However, there are some restrictions:
-
-  1. This mechanism only works for global array variables.
-
-  2. The code to fill the array has to be placed in the module body,
-     preferably at its very beginning.
-
-  3. The code cannot be part of an conditional or loop statement; due
-     to the peculiarities of OOC's intermediate code representation
-     this also implies that it cannot be placed after an `ASSERT' or
-     `HALT'.
-
-  4. Any assignment placed after code that might affect the variable is
-     ignored, for example, after a procedure call with unknown
-     side-effects.  To be safe, all assignments should be placed at the
-     very beginning of the module body.
-
-  5. There is a fixed upper limit on the number of constant entries
-     (currently this is one million elements).
-
-  6. This mechanism cannot initialize an array of strings; this case is
-     translated into a sequence of string assignments as usual.
-
-   An example of this is the module Blowfish(1).  In the module body,
-it initializes a two-dimensional array of `LONGINT's with over a
-thousand elements.  All of these assignments are removed by the backend
-from the code file `Blowfish.c'.  Instead, they appear as part of the
-definition of the array variable in `Blowfish.d', reducing the size of
-the object file by a significant amount.
-
-   ---------- Footnotes ----------
-
-   (1) To avoid problems with the export legislation of some countries,
-the encryption module is distributed as a separate package `bfcrypt'
+   Interface definitions can also be extracted from a module's source
+text; the command `oocn -d <module>' extracts the public interface of a
+module (*note oocn options::.).
 
 
-File: OOCref.info,  Node: Limitations of oo2c,  Next: Emacs Mode,  Prev: Large Arrays of Constants,  Up: OO2C
+File: OOCref.info,  Node: oocn options,  Next: ooef options,  Prev: oob options,  Up: Invoking Programs
 
-Limitations of oo2c
-===================
+Source Code Analysis and Transformation
+---------------------------------------
 
-   Because the implementation of `oo2c' is a pre-compiler translating
-to a high-level language, some run-time checks are only partial
-supported, or are not supported at all.  For the complete list of
-run-time checks see *Note Options and Pragmas::.
+   The tool `oocn' operates on the source code of Oberon-2 modules to
+produce various manipulations of the text.  These include the following:
+rewriting the source text, converting it into different formats,
+creating cross-reference information, and extracting the public
+interface of the module.  It is invoked like this:
 
-`RealOverflowCheck'
-     `oo2c' only detects an overflow when using `SHORT()' to convert a
-     `LONGREAL' value to `REAL'.  Other overflows might trigger a
-     floating-point exception signal (`SIGFPE') and dump core, or might
-     go by unnoticed, depending on the system.
+     oocn <mode> [options] <module>...
 
-`OverflowCheck'
-     `oo2c' does not support any overflow checks for integers.
+The `<mode>' argument determines the operation performed by `oocn'; for
+example, `--html' sets the mode to translate to HTML.  No more than one
+mode can be specified at at time.  If no mode is specified, `oocn'
+produces usage information, which lists all modes and options.
 
-`StackCheck'
-     `oo2c' cannot detect an overflow of the program stack.  If array
-     parameters are managed on a separate stack (*note oo2c C
-     options::.), enabling this run-time check makes it possible for
-     the program to detect an overflow of the auxiliary stack.
+   The `[options]' are used in addition to `<mode>' to modify the
+behaviour of `oocn'.
 
-   The error reporting of the math modules `LowReal', `LowLReal',
-`RealMath', and `LRealMath' is not implemented as described in this
-reference manual.  This is a problem of the math modules, not of the
-manual.  There is no practical reason why the math modules cannot
-adhere to the specifications; but due to lack of time, correct error
-reporting has not been implemented yet.
+   The `<module>...' argument is a list of one or more modules, or file
+names of modules.  If it is a file name, the directory part and
+extension are discarded.  Modules are then located by means of the
+`PATHS' section of the compiler's initialization file.
+
+   Except for its use of initialization files, `oocn' shares no code
+with the compiler proper.  In particular, `oocn' does very limited error
+checking.  It reports only a small subset of the errors that are
+detected by the compiler, and it accepts malformed Oberon-2 sources, as
+long as the errors do not interfere with its own operation.
+
+Modes
+.....
+
+   The following is a list of available modes:
+
+`--modules' or `-M'
+     List the names of all modules that are directly or indirectly
+     imported by the given modules (and also list the given modules
+     themselves).
+
+     The modules are written in an order defined by the `IMPORT'
+     relation; that is, module `Bar' is written before module `Foo' if
+     `Foo' depends on `Bar'.  For example, the invocation `oocn
+     --module Foo' lists the names of all modules that are used to
+     build the program `Foo', writing the name of the most basic module
+     first, and `Foo' last.  With option `--no-internal', the pseudo
+     module `SYSTEM' is omitted from the output.
+
+     *Please note*: This function implicitly adds the option
+     `--closure'.
+
+`-d'
+     Write the interface of the given modules to `stdout'.  Here the
+     term "interface" means the module's source text stripped of all
+     private declarations and all procedure bodies.  Comments in the
+     remaining text are preserved.  This mode is an abbreviation of
+     `--def-txt -o -'.
+
+`--html' or `-H'
+     Convert the given set of modules to HTML text.  For every module
+     `Foo', a file `<output-dir>/Foo.html' is created.  The default
+     output directory is the current working directory.  The HTML text
+     preserves the format of the source text, but adds colours for
+     keywords, comments, strings, and procedure declarations.
+     Identifiers of exported declaration are set in bold.  Hyper-links
+     are inserted
+
+        * from an import clause to the imported module,
+
+        * from a qualified identifier to the place of the corresponding
+          declaration,
+
+        * from a field selector in a designator to the declaration of
+          the field in the corresponding record type,
+
+        * from a call to a type-bound procedure to the (statically)
+          corresponding procedure declaration,
+
+        * to a type-bound procedure's super and base definition if the
+          procedure is a redefinition of an existing procedure, and
+
+        * from a procedure's forward declaration to its actual
+          definition.
+
+     Note that links to all record fields and type-bound procedures can
+     be inserted only if `oocn' was called with the option `--closure'.
+
+`--xref' or `-X'
+     Create cross-reference information for the given set of modules.
+     This mode creates a set of HTML files, just like `--html', and
+     adds hyper-links from every declaration into a companion file
+     `<output-dir>/Foo_xref.html'.  The cross-reference file lists all
+     uses of each declaration in the scope of the scanned modules.  For
+     a redefining type-bound procedure, it includes a link to the base
+     definition, and for an original type-bound procedure definition,
+     it lists all redefinitions and their uses.
+
+     *Please note*: This function implicitly adds the option
+     `--closure'.
+
+`--uses <decl>' or `-U <decl>'
+     The mode `--uses' acts as a command line interface to the
+     cross-reference data.  That is, it locates all references to the
+     specified object and writes them to `stdout' in the format of
+     `oo2c''s error messages.  The argument `<decl>' is a string
+     describing a declared object; the string must be the name of a
+     predefined object, or a module name followed by a (possibly empty)
+     sequence of names, with the names separated by dots.  The selector
+     `foo.bar' designates the object `bar' in scope `foo', where `foo'
+     is either
+
+        * a module name,
+
+        * a qualified procedure name,
+
+        * the name of a type-bound procedure,
+
+        * a record type,
+
+        * a variable of type record,
+
+        * a pointer whose base type is a record, or
+
+        * a variable of type pointer to record.
+
+     The command `oocn --uses bar' lists all appearances of the named
+     object `bar' in the scope of the set of modules specified on the
+     command line.  The uses of module names, predefined objects, and
+     objects from the pseudo module `SYSTEM' can also be listed in this
+     way.  Uses within inactive conditional compilation clauses are
+     ignored.
+
+     *Example:*
+
+          oocn --uses TextRider.Reader.SetEol.i TextRider
+             =>
+                 In file /usr/local/lib/oo2c/lib/TextRider.Mod:
+                 12345: declaration
+                 12551: use
+                 12597: use
+                 12693: use
+                 12706: use
+
+     The above command looks for uses of object `i', which belongs to
+     the type-bound procedure `SetEol' of type `Reader' declared in
+     module `TextRider', within module `TextRider' (and modules it
+     imports).
+
+     If the designated object is a type-bound procedure, `--uses' lists
+     the base definition of the procedure, all of its redefinitions,
+     and all calls to the type-bound procedure in the scope of the
+     inspected modules.
+
+     *Example:*
+
+          oocn --uses Files.Reader.Pos liboo2c
+             =>
+                 In file lib/Channel.Mod:
+                 11906: base definition
+                 In file lib/BinaryRider.Mod:
+                 2462: use
+                 In file lib/TextRider.Mod:
+                 9240: use
+                 In file backend/ansi-c/lib/PosixFileDescr.Mod:
+                 5963: redefinition
+                 In file backend/ansi-c/lib/ProgramArgs.Mod:
+                 2487: redefinition
+                 4175: use
+
+     *Please note*: This function implicitly adds the option
+     `--closure'.
+
+`--def-txt', `--def-html', `--def-xref'
+     Using the specified format, write the interface of the given
+     modules to a file in the current output directory.  The output
+     format is either plain text in file `Foo_def.txt', HTML text in
+     `Foo_def.html', or cross-referenced HTML text in `Foo_def.html' and
+     `Foo_def_xref.html'.  The output directory can be changed using
+     option `-o <dir>'.
+
+`--def-texi'
+     Create draft version of the public interface of the modules in
+     Texinfo format.  The output file is named `Foo_def.texi'.  Unlike
+     the other `--def-*' variants, the output has little resemblance to
+     the original input text, and it will probably need manual
+     intervention to turn it into something more readable.  The output
+     file is formatted as follows:
+
+        * Declarations are listed in four blocks: constants, types,
+          variables, and procedures.  Within the blocks the order of
+          declarations is preserved.  Methods are grouped again by
+          their receiver type.
+
+        * The lengths of an array are replaced with `n0', `n1', ...,
+          `nm' for the different dimensions.
+
+        * The descriptions attached to the declared entities are taken
+          from any comment following the declaration in the source
+          code.  Unless the source core was written with this in mind,
+          there is no guarantee that the right comment is chosen.  In
+          particular, for every declared name at most a single comment
+          is copied over into the Texinfo file.
+
+        * The comments are minimally changed before they are copied to
+          the Texinfo file: the comment delimiters are removed, all
+          indentation is deleted, and the characters `@', `{', and `}'
+          are quoted.
+
+        * Nested record constructors are not handled.  The fields of
+          any nested constructor must be inserted manually.
+
+        * Any system flags associated with procedure objects are
+          discarded.
+
+`--filter' or `-F'
+     Copy the Oberon-2 source code from the input module `Foo.Mod' to
+     the file `Foo.txt' in the output directory, possibly applying some
+     code transformation on the way.  All symbols are copied as is,
+     without any change to their textual representation.  This includes
+     text in comments, pragmas, and program code in inactive
+     conditional compilation clauses.  Outside these special symbols,
+     horizontal tabulators are converted to spaces, using a tabulator
+     width of 8.  All trailing whitespace is removed from lines, as are
+     any empty lines at the end of the module.
+
+     This mode is usually used in conjunction with one or more of the
+     code transformation options, like `--strip-pragmas' or
+     `--mod2foreign'.
+
+Options
+.......
+
+   Use the following options to modify the behaviour of each mode:
+
+`-o <dir>'
+     Set the output directory for all commands that write to files.
+     The name `-' specifies `stdout'.
+
+`-v'
+     Select verbose mode.  This writes the names of input and output
+     files to `stdout'.
+
+`--closure' or `-C'
+     Operate on all modules that are imported, either directly or
+     indirectly, by the modules given on the command line.  For
+     example, the command
+
+          oocn --html --closure Foo
+
+     will produce HTML files for all modules contributing to program
+     `Foo'.
+
+     *Please note*: For some modes, the option `--closure' is enabled
+     by default.
+
+`--no-internal'
+     Omit all pseudo modules that are internal to the compiler from the
+     output of `--modules'.  At the moment, this means that `SYSTEM'
+     does not appear in the module list.
+
+`--line-num'
+     Prepend the line number from the original source file to every
+     line of output.  This option affects all commands that produce
+     text or HTML directly from the source code.
+
+`--colors <name>'
+     Select color set to use when writing HTML text.  Currently
+     available variants: `hilit' (default) and `font-lock'.
+
+`--strip-comments'
+     Remove all comments from the source text before processing it.
+     Comments starting with `(**' are not discarded, use option
+     `--strip-doc-strings' for this.
+
+`--strip-doc-strings'
+     Remove all documentation strings, that is, comments starting with
+     `(**', from the source text.
+
+`--strip-pragmas'
+     Remove all pragmas from the source text.  Any program text
+     appearing in inactive conditional compilation clauses is also
+     discarded.  The evaluation of the guards of conditional
+     compilation clauses uses the current values of the pragma
+     variables.  Therefore, applying this filter reduces the source
+     file to the program text that is actually seen by the compiler when
+     translating the module, assuming that the same settings are used
+     for the pragma variables.
+
+`--strip-system-flags'
+     Remove all system flags from the source text.  For example, if a
+     module uses any of the flags that are enabled by `OOC_EXTENSIONS',
+     applying this filter reduces the module to standard Oberon-2 code.
+
+`--strip-mp-ident'
+     Convert multi-part module names to simple identifiers.  The colon
+     characters are removed from the name, and import statements
+     without an alias declaration are rewritten to alias to the last
+     part of the previous multi-part name.  *Please note*: This
+     transformation may map distinct multi-part names onto the same
+     identifier.  For example, `Foo:Bar' and `FooB:ar' are both mapped
+     to `FooBar'.
+
+`--mod2foreign'
+     This code transformation is intended for advanced users, who want
+     to write `FOREIGN' modules (*note FOREIGN Modules::.).  It turns
+     any Oberon-2 module into a `FOREIGN' module, by removing all
+     procedures bodies and the module's initialization code, and by
+     adding appropriate default system flags to the module's header.
+
+`--foreign2mod'
+     This is the reverse operation to `--mod2foreign'.  It adds empty
+     bodies to all procedures in the module, and replaces the module's
+     system flags with `[OOC_EXTENSIONS]'.
+
+   `oocn' also understands the following additional command line
+options, which function in the same way as they do for `oo2c':
+
+`--config'
+
+`--include-config'
+
+`--options'
+
+`--pragmas'
+
+File: OOCref.info,  Node: ooef options,  Next: oowhereis options,  Prev: oocn options,  Up: Invoking Programs
+
+Converting Error Messages
+-------------------------
+
+   Error messages emitted by `oo2c' refer to a character position in the
+source file.  The first character has index `0'.  Take, for example,
+this slightly faulty program:
+
+     MODULE Hello;
+     IMPORT Out;
+     BEGIN
+       Ou.String ("Hello World!") Out.Ln
+     END Hello.
+
+Compiling it with `oo2c' produces this output:
+
+     In file ./Hello.Mod:
+     34:197 Undeclared identifier
+     60:139 `;' expected
+
+File position `34' refers to the first character of `Ou', and `60' to
+the character to the right of the closing parenthesis.  This format is
+slightly awkward if there is no support from the editor to locate the
+designated points in the source code.
+
+   Because of this awkward format, the filter program `ooef' can be used
+to transform error messages into a more convenient form.  `ooef' reads
+the output of `oo2c' from `stdin', and writes a modified version to
+`stdout'.  Error messages are rewritten, and the rest of the input is
+echoed.  The filter should be invoked like this:
+
+     oo2c ... | ooef [option]
+
+   The output format is selected with the following options:
+
+`--context' or `-c'
+     Write an extract of the source text and insert additional lines to
+     point to the error position.  This is the default setting.  Lines
+     are numbered starting at `1'.
+
+     *Example:*
+
+          ~$ oo2c Hello.Mod | ooef
+          In file ./Hello.Mod:
+          MODULE Hello;
+          IMPORT Out;
+          BEGIN
+            Ou.String ("Hello World!") Out.Ln
+          #-^
+          # 4: 197 Undeclared identifier
+          #---------------------------^
+          # 4: 139 `;' expected
+          END Hello.
+
+`--line' or `-l'
+     Write errors as `file:line:error'.  This will only give an
+     approximation of the exact error position.  The first line has the
+     index `1'.
+
+     *Example:*
+
+          ~$ oo2c Hello.Mod | ooef -l
+          ./Hello.Mod:4:197 Undeclared identifier
+          ./Hello.Mod:4:139 `;' expected
+
+`--linecol' or `-L'
+     Write errors as `file:line,column:error'.  The first line has the
+     number `1', likewise the first column.
+
+     *Example:*
+
+          ~$ oo2c Hello.Mod | ooef -L
+          ./Hello.Mod:4,3:197 Undeclared identifier
+          ./Hello.Mod:4,29:139 `;' expected
+
+   To get the file position of a run-time error, pass the module name
+and the error position to `ooef' as arguments:
+
+     ooef [option] <module> <pos>
+
+   In this mode, `ooef' does not act as a filter.  It generates its
+output based on the given command line arguments instead.  The module's
+source file must be in the standard search path.
+
+   *Example:* Suppose the run-time system reports an index out of range
+error in module `Strings' at file position 2531.  The command `ooef
+Strings 2531' lists the corresponding lines of the file `Strings.Mod',
+highlighting the instruction whose run-time check failed:
+
+     In file /usr/local/lib/oo2c/lib/Strings.Mod:
+         i: INTEGER;
+       BEGIN
+         i := 0;
+         WHILE (stringVal[i] # 0X) DO
+     #--------------------^
+     # 68:
+           INC (i)
+         END;
+         RETURN i
 
 
-File: OOCref.info,  Node: Emacs Mode,  Next: o2-mode installation,  Prev: Limitations of oo2c,  Up: OO2C
+File: OOCref.info,  Node: oowhereis options,  Prev: ooef options,  Up: Invoking Programs
 
-Emacs Mode
-==========
+Using the File Finder
+---------------------
 
-   `oo2c' comes with a Oberon-2 major mode for the Free Software
-Foundation's GNU Emacs, which helps manage Oberon-2 source code.  It
-offers various keyboard shortcuts to insert skeletons for Oberon-2
-constructs, locate Oberon-2 files and declarations, compile modules,
-and to display error messages.  It can make the task of writing an
-Oberon-2 program considerably easier.
+   `oowhereis' can be used to locate files given their name.  This is a
+command line interface to the mechanism used by the compiler to find its
+files.  Among other things, it is used by the Emacs mode to determine
+the file names of modules listed in `IMPORT' statements.
 
-   All configuration commands mentioned in the subsequent sections are
-also listed in the file `o2-default.el'.  In the distribution archive,
-it resides in the `src/tools/emacs' directory.  After installation, it
-can be found in the same directory as the file `oberon2.el'.
+   The program expects a single argument, the name of a file.  If a
+matching file is found in any of the directories listed in the
+initialization file, the full path (including the directory part) is
+written to `stdout'.  In this case, the exit code is `0'.  Otherwise,
+nothing is written, and the program returns with an exit code of `1'.
+
+   For source files with an associated RCS master file, the name of the
+working file is returned (unless no working file is checked out and the
+option `--rcs-master', or `-r', is used).  By default, the name of the
+working file is returned even if this file does not currently exist.
+
+
+File: OOCref.info,  Node: Initialization Files,  Next: Options and Pragmas,  Prev: Invoking Programs,  Up: OO2C
+
+Initialization Files
+====================
+
+   `oo2c''s configuration mechanism manages a number of things: options
+that control the compiler's workings, pragma variables that are
+available during compilation, and the redirection table that specifies
+the directories used for file access.  This mechanism provides the
+means to create a hierarchy of configuration settings: system wide,
+user based, and project specific.  Initialization files give full
+access to the configuration database, whereas command line options
+provide shortcuts for only some, albeit often used, settings.
+
+   An initialization file is composed of sections; each section is
+introduced by its keyword, followed by data in a section-dependent
+formant, and terminated by the keyword `END'.  The following sections
+are known to the compiler: `OPTIONS', `PRAGMAS', `PATHS', `NEWFILES',
+and `INCLUDE'.  An initialization file may contain an arbitrary number
+of these sections as explained in the rest of this chapter.
+
+   Comments are permitted within an initialization file.  A comment
+starts with a `#' character and extends to the end of the line.
 
 * Menu:
 
-* o2-mode installation::        Integrating the new package with Emacs.
-* o2-mode functions::           Functions provided by Oberon-2 Mode
-* o2-mode hints::               Tips and tricks to improve things further.
+* Options and Pragmas::         Setting option and pragma variables.
+* Managing Files::              Specifying paths for input and output files.
+* Selecting Configuration::     Which initialization files are used?
+* Initialization Example::      The default initialization file as an example.
 
 
-File: OOCref.info,  Node: o2-mode installation,  Next: o2-mode functions,  Prev: Emacs Mode,  Up: Emacs Mode
+File: OOCref.info,  Node: Options and Pragmas,  Next: Managing Files,  Prev: Initialization Files,  Up: Initialization Files
 
-Installing the Oberon-2 Package
+Option and Pragma Variables
+---------------------------
+
+   Both the `OPTIONS' and the `PRAGMAS' sections define a set of (name,
+value) pairs.  Names must follow the rules of Oberon-2 identifiers
+(i.e., a character followed by a sequence of characters or digits), and
+the value has to be a literal value of type boolean, integer, or
+string.  Valid values are as follows: `TRUE' and `FALSE' for boolean
+literals, any valid `LONGINT' value for integer literals (including
+negative numbers), and strings are delimited by either `"' or `'' and
+cannot contain characters below ASCII code `20X'.
+
+   The EBNF syntax of these sections is defined as follows:
+
+     options_section = "OPTIONS" option_list "END".
+     pragmas_section = "OPTIONS" option_list "END".
+     option_list     = [option] { ";" [option]}.
+     option          = [ assignment | define ].
+     assignment      = name ":=" value.
+     define          = "DEFINE" assignment.
+
+For an example of how this looks in practice, see *Note Initialization
+Example::.
+
+   A new variable is defined by prefixing an assignment with the keyword
+`DEFINE'.  No variable of the same name may exist beforehand.  The
+definition also assigns a type to the variable based on the value on the
+right hand side of the assignment.  A variable can be defined only
+once, but its value can be changed through subsequent assignments.
+
+   Any further assignments change the value of an existing variable;
+the new value has to be of the same type as the old.  For example, once
+a variable is defined to be of type integer, all subsequent assignments
+can assign only other integer values to it.  Note that assignments are
+valid only for existing variables; that is, it must be a predefined
+compiler variable or a variable that was previously introduced by a
+variable definition.
+
+   Options and pragmas differ in two points:
+
+  1. Options are specific to `oo2c' (or rather, each implementation of
+     OOC), whereas the entire set of pragma variables is defined for
+     all OOC compilers.
+
+  2. Options cannot appear within embedded pragma statements in source
+     code, but pragma variables can be used in pragma statements inside
+     Oberon-2 modules.
+
+For the complete set of option variables see *Note oo2c options::.
+Variable names are listed, where applicable, beside the command line
+option that can change it.  For the built-in pragma variables of the
+compiler see *Note Predefined Pragma Variables::.
+
+   Pragma variables can be set from the command line by using the switch
+`--pragmas <string>'.  For example, specifying
+
+     --pragmas "IndexCheck:= FALSE; DerefCheck := FALSE"
+
+has the same effect as adding
+
+     PRAGMAS
+       IndexCheck := FALSE; DerefCheck := FALSE
+     END
+
+to an initialization file.  The command line option `--options
+<string>' does the same for `OPTIONS'.
+
+
+File: OOCref.info,  Node: Managing Files,  Next: Selecting Configuration,  Prev: Options and Pragmas,  Up: Initialization Files
+
+Paths of Input and Output Files
 -------------------------------
 
-   To use the Oberon-2 emacs major-mode, add the following lines to
-your Emacs initialization file (`~/.emacs'):
+   Even though Oberon-2 has only a single name space for module names,
+it would be inconvenient if the source code for all modules had to
+reside within a single directory.  Also, considering the number of
+intermediate files `oo2c' produces for a single module, the situation
+could be even worse.
 
-     ;; set load-path to incorporate directory with oberon2.el
-     (setq load-path (cons "/usr/local/lib/oo2c" load-path))
-     ;; auto load oberon2.el if oberon-2-mode is called
-     (autoload 'oberon-2-mode "oberon2" "The Oberon-2 major mode." t)
-     ;; set oberon-2-mode as major mode for all files ending in ".Mod"
-     (setq auto-mode-alist
-             (cons '("\\.Mod$" . oberon-2-mode) auto-mode-alist))
+   `oo2c' provides a way to distribute source code over a number of
+directories, and thus "stash away" intermediate files in a more suitable
+place.  When looking for a particular file, `oo2c' searches the
+directories defined in the `PATHS' sections of the initialization files.
+The `PATHS' section lists a number of wildcard strings, which are used
+to determine which directories should be scanned for matching file
+names.
 
-   The file `oberon2.el' is installed during installation of OOC, and so
-it may reside in another location than the path given above; modify the
-`load-path' setting accordingly.  If you are using Emacs version 19.22
-or older, replace `"oberon2"' with `"oberon2_18"' in the line
-`(autoload ...)'.  The package `oberon2.el' works only with the
-`compile.el' package of Emacs 19.28 (or above, I hope).  Note that
-`oberon2_18.el' is an older version of the package, and is no longer
-maintained; it does not support all the features of the current version.
+   The syntax of a `PATHS' section is defined like this:
 
-   If you have write permissions to system directories, a simple way to
-install the Oberon-2 mode for all users on the system is to copy
-`oberon2.el' into one of the directories of Emacs's load path (e.g.,
-`/usr/lib/emacs/site-lisp').  (To get the list of searched directories
-on your system, type `C-h v load-path' in Emacs.)  Then, add the above
-commands for `autoload' and `auto-mode-alist' to the file `default.el'.
-If no default file exists, you can create one somewhere in Emacs's
-load path, say, the same directory you used for `oberon2.el'.  You
-could also consider adding the contents of file `o2-default.el' to
-`default.el'; among other things, it contains the `autoload' commands
-given above.  Assuming that the permissions of both files are correct,
-all users on the system should have access to the Oberon-2 mode without
-needing to change any personal initialization files.
+     paths_section  = "PATHS" {source_pattern} "END".
+     source_pattern = "GET" wildcard_list "FROM" path {path}.
+     wildcard_list  = wildcard {[","] wildcard}.
+     wildcard       = name | string.
+     path           = ( name | string ) [";"].
+
+   A wildcard may contain the special characters `*' and `?'.  A `*'
+matches an arbitrary number of characters (including none at all),
+whereas `?' matches exactly one character.  Writing `[RCS]' after a
+wildcard signals that a file matching the pattern might be under control
+of the Revision Control System (RCS), and should be checked out if no
+working file exists.
+
+   Any non-absolute path (i.e., all path strings not starting with a
+`/' or a `~') is interpreted relative to the directory the compiler, or
+tool, was started from.  Whenever a program is invoked from a different
+directory, these relative path names will then resolve differently.  If
+the intention is to always use the exact same directories for all
+invocations, all paths in the initialization file must be absolute.
+
+   When looking for a particular file, say `foo', the list of patterns
+is scanned from top to bottom.  For every match, the list of
+directories is tested from left to right.  The first directory that
+contains a file with the requested name is used.  If the file cannot be
+found in any of these directories, the simple file name is used.  If
+RCS support is enabled for `foo', then the files `<dir>/RCS/foo,v' and
+`<dir>/foo,v' are also searched for in these directories.
+
+   *Example:*
+
+     PATHS
+     GET *.Mod [RCS] FROM .; /usr/local/foo
+     GET *.c FROM obj; /usr/local/bar
+     END
+
+   This tells `oo2c', when looking for files with the extension `Mod',
+search the current directory (`.') and then the directory
+`/usr/local/foo'; for files with the extension `c', search in the `obj'
+subdirectory (under the current working directory), and then the
+directory `/usr/local/bar'.
+
+   For instance, when searching for the file `foo.c', the matching
+pattern is `*.c', and so files `obj/foo.c' and `/usr/local/bar/foo.c'
+are tested, in that order, for existence.  The first match is taken;
+that is, if `obj/foo.c' exists, then that is the file used.  If neither
+of these files exist, the name `foo.c' is used as a last resort.  If
+this file exists in the current working directory, it is used;
+otherwise an appropriate error message is written.
+
+   As another example, when looking for `Foo.Mod', and the file
+`./RCS/Foo.Mod,v' exists, but not `./Foo.Mod', then the RCS master
+`./RCS/Foo.Mod,v' is checked out.  Then, the working file `./Foo.Mod'
+is created, and subsequently used.
+
+   Note that, if a module name is passed as argument from the command
+line, the standard suffix `.Mod' is appended, and the resulting file
+name is searched for using the above mechanism.  Also, if a file name
+that contains a directory part is used, no searching is done at all;
+the file name is used exactly as specified.
+
+   When trying to decide where to place a generated file (e.g., one of
+the numerous intermediate files with C code), `oo2c' uses a simplified
+version of the mechanism described above.  It looks for the first
+matching wildcard, and uses the first directory in that list; the newly
+created file is written to this directory.  It does not matter if the
+file exists beforehand or not, or if a file of the same name exists in
+any of the other listed directories.  To use the above example again,
+any file ending in `.Mod' would be put into the current working
+directory (a hypothetical case since the compiler never writes a new
+module), and all files ending in `.c' are placed in the directory `obj'.
+
+   For files that are only written and not subsequently read, it is
+possible to specify a destination directory in a special section
+`NEWFILES'.  Its syntax is somewhat simpler than `PATHS'.
+
+       new_files_section = "NEWFILES" {dest_pattern} "END".
+       dest_pattern      = "PUT" wildcard_list "INTO" path.
+
+   When writing a new file, the paths in `NEWFILES' take precedence over
+the ones in `PATHS'.  But when searching for files, `NEWFILES' is
+ignored.  Because most of the files `oo2c' is dealing with are either
+input-only or are written out to be used again at a later stage, use of
+`NEWFILES' is effectively limited to provide directories for executable
+programs.  If paths for executable programs are not set in either
+`NEWFILES' or `PATHS', they are placed in the current working directory.
+
+   The following example shows how the installation scripts of `oo2c'
+place the listed executable files in the subdirectory `stage2':
+
+   *Example:*
+
+     NEWFILES
+     PUT oo2c, oob, oowhereis, ooef, LibSummary, UpdateX11 INTO stage2
+     END
 
 
-File: OOCref.info,  Node: o2-mode functions,  Next: o2-mode hints,  Prev: o2-mode installation,  Up: Emacs Mode
+File: OOCref.info,  Node: Selecting Configuration,  Next: Initialization Example,  Prev: Managing Files,  Up: Initialization Files
 
-Functions of the Oberon-2 Mode
+Selecting Initialization Files
 ------------------------------
 
-   The keyboard shortcuts listed below are available for every buffer in
-Oberon-2 mode.  This list is also available online by pressing `C-h m'
-in such a buffer.
-
-   Indentation:
-
-`RET'
-     Make a newline, but indent like the previous line.
-
-`TAB'
-     Indent `o2-indent' spaces.  With a numeric prefix, indent region.
-
-`DEL'
-     Convert tabs to spaces while moving backward.
-
-`C-c TAB'
-     Add/remove indentation level(s) to region [deprecated, use `TAB'].
-
-   The variable `o2-ident' determines how many spaces are inserted per
-indentation level (the default is 2).
-
-   Inserting Oberon-2 constructs:
-
-`C-c C-c'
-     Comment region.
-
-`C-c C-v'
-     Uncomment text around point.
-
-`C-c m'
-     `MODULE' outline.
-
-`C-c p'
-     `PROCEDURE' outline.
-
-`C-c t'
-     Type-bound `PROCEDURE' outline.
-
-`C-c C-t'
-     Redefinition of type-bound `PROCEDURE'.
-
-`C-c i'
-     `IF' ... `THEN' statement.
-
-`C-c C-e'
-     Insert `ELSIF'.
-
-`C-c c'
-     `CASE' statement.
-
-`C-c C-w'
-     `WITH' statement.
-
-`C-c e'
-     Insert `ELSE'.
-
-`C-c b'
-     Insert a `|'.
-
-`C-c f'
-     `FOR' statement.
-
-`C-c w'
-     `WHILE' statement.
-
-`C-c r'
-     `REPEAT' ... `UNTIL' statement.
-
-`C-c l'
-     `LOOP' statement.
-
-`C-c C-r'
-     `RECORD' constructor.
-
-`C-c h'
-     Comment with various information about the module.
-
-   Move by procedure headings:
-
-`C-c C-n'
-     Move to next procedure.
-
-`C-c C-p'
-     Move to previous procedure.
-
-`C-c C-u'
-     Move to procedure in which the present one is nested.
-
-`M-C-h'
-     Put mark at end of procedure, and point at the beginning.
-
-   Functions to hide procedure bodies and declarations:
-
-`C-c C-h'
-     Hide whole procedure.
-
-`C-c C-s'
-     Show whole procedure again.
-
-`C-c C-l'
-     Hide bodies of all local procedures.
-
-`M-x o2-hide-proc'
-     Hide local declarations and the procedure body.
-
-`M-x o2-show-proc'
-     Show local declarations and body again.
-
-`M-x o2-hide-all'
-     Hide all of buffer except procedure headings.
-
-`M-x o2-show-all'
-     Make all text in the buffer visible again.
-
-   Managing source code:
-
-`C-c C-f'
-     Find file for a given module name.
-
-`C-c 4 f'
-     Like `C-c C-f', but display in another window.
-
-`C-c 5 f'
-     Like `C-c C-f', but display in another frame.
-
-`C-c C-d'
-     Generate and display the definition of a module.
-
-`C-c 4 d'
-     Like `C-c C-d', but display in another window.
-
-`C-c 5 d'
-     Like `C-c C-d', but display in another frame.
-
-`C-c .'
-     Display (same window) the definition of an identifier.
-
-`C-c 4 .'
-     Display (other window) the definition of an identifier.
-
-`C-c 5 .'
-     Display (other frame) the definition of an identifier.
-
-`C-c /'
-     Display, and blink to, declaration of identifier under cursor.
-
-`C-c ,'
-     Display (same window) a procedure bound to a given type.
-
-`C-c 4 ,'
-     Display (other window) a procedure bound to a given type.
-
-`C-c 5 ,'
-     Display (other frame) a procedure bound to a given type.
-
-`C-c u'
-     Step through all uses of a declaration with `C-c ''.  All the
-above functions accept a module's alias name (as declared in the
-current buffers `IMPORT' list) instead of the real module name.  For
-further information on `C-c .' or `C-c ,' use `C-h k'.
-
-   Any of the functions that display files in another window or frame
-do not change the selected window if the `C-u' prefix is set.  For
-example, `C-u C-c 4 .' displays the source of the definition of the
-given identifier in another window, but the current window stays
-selected and point stays at the current position.
-
-   `S-mouse-3' (i.e., shift with right mouse button), similar to `C-c
-/', invokes `C-u C-c 4 .' with the qualified identifier under the mouse
-cursor as argument and blink to the found position.
-
-   Compiling:
-
-`M-c'
-     Compile current buffer.
-
-`C-u M-c'
-     Prompt for compile command and compile current buffer.
-
-`M-C-c'
-     Run a make on a module.
-
-`C-c ''
-     Display the next error.
-
-`C-c g'
-     Prompt for module and error position, goto position.
-
-   Also, please note the following:
-
-   * Searches are case sensitive.
-
-   * Both the `DEL' key and the `backspace' key automatically convert
-     tabs to spaces as they step back.
-
-   * In o2-mode, the `TAB' key does not insert any new tab characters,
-     but instead, inserts `o2-indent' spaces.
-
-   * `M-;' indents or create a comment on the current line at column 41
-     (default).
-
-   * Since GNU Emacs 19.29, the Oberon-2 menu can also be invoked with
-     `C-mouse-3' (i.e., control with right mouse button).
+   By default, all programs use the initialization file that was
+created when the compiler package was installed.  The initialization
+file lists all options needed for the system's C compiler, holds
+various system specific settings, and specifies paths to the library
+files installed along with the compiler (*note Initialization
+Example::.).  The global initialization file is shared by all users,
+unless a particular user provides his own primary initialization file
+instead.  A user can do this by defining an environment variable
+OOC_CONFIG or by using the command line option `--config' (*note
+Invoking Programs::.).
+
+   More control over the configuration data is allowed by the special
+initialization file section `INCLUDE'.  It is a simple, but efficient,
+way to add personalized or project specific configuration details to the
+global default settings.  The format of an `INCLUDE' section is simply
+`INCLUDE <file> END', which causes the entire contents of `<file>' to
+be processed as if those contents had appeared in place of the
+`INCLUDE' statement.
+
+   For example, the default initialization file contains the following
+statement to include a user's personalized settings:
+
+     INCLUDE ~/.oo2crc END
+
+The file `.oo2crc' from the user's home directory is then parsed just as
+though it were part of the initialization file at the place of the
+`INCLUDE' statement.  If a user decides that he needs even more control,
+he could add a line to `~/.oo2crc' like this:
+
+     INCLUDE ./.oo2crc_local END
+
+Then, the contents of the file `.oo2crc_local', located in the current
+working directory, are also added to the configuration database.
+Provided that the user has a separate working directory for every
+project, this mechanism allows specification of additional settings,
+beyond the global and the personalized ones, for each project.
+Supplementary initialization files should be included after the
+`OPTIONS' and `PRAGMAS' sections, but before `PATHS'.  This way, the
+specialized files override all option and pragma variables, and their
+own paths then take precedence over the more global ones.
+
+   Option `--include-config <file>' can be used to include
+initialization files from the command line.
+
+   The compiler emits a warning if it cannot find the global
+initialization file.  On the other hand, no message is produced when
+the compiler fails to find a file listed in an `INCLUDE' section.
 
 
-File: OOCref.info,  Node: o2-mode hints,  Prev: o2-mode functions,  Up: Emacs Mode
+File: OOCref.info,  Node: Initialization Example,  Next: Interfacing to C Code,  Prev: Selecting Configuration,  Up: Initialization Files
 
-Additional Tips&Tricks
-----------------------
+An Example Initialization File
+------------------------------
 
-   Add `(setq o2-cwd (expand-file-name "dir"))' to `~/.emacs' if you
-want Emacs to execute `oo2c', `oob', and so forth in the directory
-`dir', regardless of the working directory the editor was started from.
+   The file below is a slightly modified version of the primary
+initialization file of a vanilla installation after `configure
+--prefix=/usr' on a Linux system.
 
-   Typically, the most often used function is the one that places the
-cursor at the next error position after a compile.  This is bound to
-the 2-key sequence `C-c '' (or `C-c `').  To bind this function to a
-single key, say `F8', add one of the following lines to `~/.emacs':
+     OPTIONS
+       verbose := FALSE;
+       errorMessages := "/usr/lib/oo2c/Errors.short";
+       optimize := FALSE;
+     
+       cc := "gcc"; cflags := "-pipe"; coptflags := "-O2";
+       ldflags := "-L/usr/lib"; gcflags := "/usr/lib/oo2c/gc.a";
+       valueStack := -1;
+     
+       libtoolCmd := "oolibtool";
+       installCmd := "/usr/bin/install -c -m 644  ";
+       libpath := "/usr/lib";
+     
+       DEFINE LibX11Prefix := " -L/usr/X11R6/lib  -lSM -lICE";
+       DEFINE LibX11Suffix := "";
+     END
+     
+     PRAGMAS
+       Warnings := FALSE; Assertions := TRUE; Initialize := FALSE;
+       StackCheck := TRUE; ConformantMode := FALSE;
+     
+       CaseSelectCheck := TRUE; IndexCheck := TRUE;
+       RangeCheck := TRUE; DerefCheck := TRUE;
+       FunctResult := TRUE; TypeGuard := TRUE;
+       OverflowCheck := FALSE; IntDivCheck := TRUE;
+       RealOverflowCheck := TRUE; RealDivCheck := TRUE
+     END
+     
+     INCLUDE ~/.oo2crc END
+     
+     PATHS
+     GET *.Mod [RCS] FROM .;/usr/lib/oo2c/lib
+     GET *.Sym, *.Lib FROM .;/usr/lib/oo2c/sym
+     GET *.h, *.d, *.c FROM .;/usr/lib/oo2c/obj;/usr/lib/oo2c/lib
+     GET *.o FROM .;/usr/lib/oo2c/obj
+     END
 
-        (global-set-key [f8] 'o2-next-error)
-
-which works under `X' and recent (>=19) versions of Emacs, or
-
-        (global-set-key "[19~" 'o2-next-error)
-
-for text terminals and older versions of Emacs (replace the cryptic
-string `[19~' by the one that Emacs produces when pressing `C-q F8').
-
-   If you are working with an X color display, you might try to add the
-following piece of code to your `~/.emacs' file (for version 19+).  It
-enables the `Font Lock' minor mode for Oberon-2 buffers, colorizing
-procedure headers, keywords, comments, pragmas, and strings:
-
-     (add-hook 'oberon-2-mode-hook
-     	  (lambda ()
-     	    ;(o2-font-lock-hilit-colors)
-     	    (turn-on-font-lock)))
-     (setq font-lock-maximum-decoration t)
-
-In case you prefer the color scheme of the `hilit19' package, you
-should uncomment the function inside the lambda clause above.  Note that
-this will change the colors for all buffers with `Font Lock' enabled,
-though.  `Font Lock' supports different levels of fontification, with
-rendering of higher levels taking more time to display.  The value `t'
-selects maximum (and slowest) decoration.
-
-   As another option it is possible to enable a pull-down index menu for
-comfortable navigation in a source module.  The index lists all record,
-procedure, and type-bound procedure declarations of the module.
-Selecting a menu item will move the cursor to the place of the
-declaration.  This command enables this feature, adding a "Index"
-pull-down menu to the left of the "Oberon-2" menu:
-
-     (add-hook 'oberon-2-mode-hook
-               (lambda ()
-                 (imenu-add-to-menubar "Index")))
-
-   Other possible additions to `~/.emacs' are the commands listed below.
-They put compilation shells into special frames instead of splitting
-the current frame.  The special frames are of height 10 and placed in
-the upper right corner of the display; they use a smaller font, menu
-and scroll bars are disabled, and the frame raises itself to the
-foreground when the mouse cursor enters it and lowers itself when left
-by the mouse cursor.  *Please note*: This only works with Emacs
-versions 19.31 and higher.  These settings are included in file
-`o2-default.el'
-
-     (if window-system
-         (let ((o2-frame-params
-                '((height . 10)
-                  (unsplittable . t) (menu-bar-lines . 0)
-                  (left . (- 0)) (top . 0) (user-position . t)
-                  (font . "5x7") (width . 60) (auto-raise . t)
-                  (vertical-scroll-bars . nil) (auto-lower . t)
-                  (name . "o2-compilation"))))
-           (setq special-display-regexps
-                 `(("^\\*o2-compile.*\\*$" . ,o2-frame-params)
-                   ("^\\*o2-make.*\\*$" . ,o2-frame-params)))))
+   The paths for error messages and library files are set by `configure'
+when installing the compiler package.  Likewise, `configure' also
+specifies the options for the C compiler, system commands, and external
+libraries.  In this example, one item was changed manually; `gcc''s
+optimization flags were moved from `cflags' to `coptflags'.  With the
+exception of the `PATHS' section, this initialization file reflects the
+values hard coded into the compiler during installation.
 
 
-File: OOCref.info,  Node: Syntax of Text Tokens,  Next: SYSTEM,  Prev: OO2C,  Up: Top
+File: OOCref.info,  Node: Interfacing to C Code,  Next: Using Foreign Code,  Prev: Initialization Example,  Up: OO2C
 
-Syntax of Text Tokens
-*********************
+Interfacing to C Code
+=====================
 
-   This section describes the accepted syntax for text tokens used by
-the various modules within the OOC library.  These definitions apply to
-read operations on text, and to modules like *Note IntStr::, *Note
-RealStr::, and *Note LRealStr::, which convert between string values
-and numeric representation.
-
-   These may also apply to write operations for text, but there are
-some cases (like `writer.WriteString' in *Note Class Writer
-(TextRider)::) that do not strictly adhere to these definitions.  Also
-note that internal representation of strings is different from text
-representation of strings.
-
-   An "identifier", sometimes referred to as a "name", has the form
-
-       letter {letter | decimal_digit}
-
-   (Note that an underscore `_' is not considered to be part of an
-identifier, nor is a selector `.')
-
-   A "string" has the form
-
-       """ {non_control_char} """ |
-       "'" {non_control_char} "'".
-
-   where a "non-control char" is any character with an ordinal value
-greater than or equal to a space character (i.e., `non_control_char >=
-20X').
-
-   A "signed whole number" (used to represent an integer value) has the
-form
-
-       ["+" | "-"] decimal_digit {decimal_digit}.
-
-   An "unsigned hexadecimal number" (used to represent an integer value)
-has the form
-
-       ["+" | "-"] decimal_digit {hex_digit}.
-
-   where a "hex digit" is one of `0..9' or `A..F'. (Note that
-lower-case letters, `a..f', are not valid hex digits.)
-
-   A "signed fixed-point real number" has the form
-
-       ["+" | "-"] decimal_digit {decimal_digit} ["." {decimal_digit}].
-
-   A "signed floating-point real number" has the form
-
-       ["+" | "-"] decimal_digit {decimal_digit} ["." {decimal_digit}]
-                   ("E" | "e") ["+" | "-"] decimal_digit {decimal_digit}.
-
-   A "set constructor" has the form
-
-       "{" [set_element {"," set_element}] "}".
-
-   where a "set element" has the form
-
-       set_value [".." set_value].
-
-   with "set value" being an integer number in the range `0..MAX(SET)'.
-
-
-File: OOCref.info,  Node: SYSTEM,  Next: OOC Error Messages,  Prev: Syntax of Text Tokens,  Up: Top
-
-SYSTEM module
-*************
+   Unlike many of the other Oberon systems, OOC does not try to provide
+a closed development environment or, as in some cases, an entire
+operating system.  Instead, it provides a set of tools that can be used
+to write portable software for a number of operating systems.  OOC is
+meant to coexist with the target OS and its system libraries.  In the
+case of `oo2c', this means interfacing with the Unix operating system
+and its libraries, which are mostly written in the C programming
+language.
 
 * Menu:
+
+* Using Foreign Code::          Considerations about using foreign code.
+* System Flags::                Elements of non-standard interface modules.
+* INTERFACE Modules::           Interfacing to existing C code.
+* FOREIGN Modules::             Writing Oberon-2 modules in C.
+
+
+File: OOCref.info,  Node: Using Foreign Code,  Next: System Flags,  Prev: Interfacing to C Code,  Up: Interfacing to C Code
+
+Using Foreign Code
+------------------
+
+   Access to foreign code (like object files, static or shared
+libraries, modules, etc.) should be transparent to Oberon-2 modules.
+Using foreign types, reading and writing to foreign variables, and
+calling foreign procedures should look exactly like normal Oberon-2
+entities.  Therefore, all foreign constructs have to be mapped to their
+Oberon-2 counterparts.  That is, each C type is mapped onto an Oberon-2
+type, each C function onto an Oberon-2 procedure, and so on.  This
+mapping is accomplished by using special definition modules, which in
+turn can be imported and used just like any other Oberon-2 module.
+
+   Problems can arise when a foreign construct does not map directly
+onto an Oberon-2 construct.  For instance, one construct could carry
+more information or attributes than the other.  An example of this is
+the Oberon-2 pointer type, which is associated with a type tag (for
+records) or a length (for open arrays).  In C, a pointer is simply an
+address.  So in this case, the mapping must be extended to cover
+semantic attributes that are not actually defined in the Oberon-2
+language (but rather, these are implementation details).
+
+   So, the mapping mechanism must provide a way of modifying the
+semantics of standard Oberon-2 constructs (because we do not want to
+modify our definition of Oberon-2 to include, say, a C-like `struct'
+type).  For instance, a C pointer type is mapped to an Oberon-2 pointer
+that is marked as having no associated type tag or length information.
+
+   Note that this approach generally works only for languages whose
+list of features is approximately a subset of those in Oberon-2.  For
+example, complicated constructs like C++ classes cannot be adequately
+mapped to standard Oberon-2.
+
+   *Please note*: All foreign modules should be considered unsafe,
+low-level, and system (or compiler) dependent.  Any module accessing
+such a module could also inherit those dependencies, so care must be
+taken when using any foreign module.
+
+
+File: OOCref.info,  Node: System Flags,  Next: Module Flags,  Prev: Using Foreign Code,  Up: Interfacing to C Code
+
+System Flags
+------------
+
+   To attach non-standard attributes to Oberon-2 constructs, so-called
+system flags are introduced.  "System flags" are applied either to the
+declaration of an object (like variable, procedure, parameter) or to a
+type constructor (record, array, formal parameter list, etc.).
+Syntactically, a system flag is defined using a left bracket `[',
+followed by a implementation-defined statement sequence (which may
+consist of list of keywords, strings, separators, etc.), and is
+terminated by a right bracket `]'.  Placement of each system flag
+associates it with a specific Oberon-2 construct.
+
+   *Example:*
+
+     MODULE Xutil [INTERFACE "C"];
+     MODULE Files [FOREIGN "C"; LINK FILE "Files.c" END];
+     MODULE liboo2c [LIBRARY "oo2c" "0:0:0"; INTERFACE "C"];
+     TYPE R = RECORD [UNION] ... END;
+     VAR argc- ["_program_argc"]: C.int;
+     PROCEDURE Foo* (VAR status_in_out[NIL_COMPAT]: INTEGER): INTEGER;
+
+   Three types of system flags are permitted: module, declaration, and
+type.
+
+   Declaration flags are written to the right of the name and the
+export mark.  Type flags are placed after the keyword starting the type
+constructor.  Procedure declarations are a special case; declaration
+flags are placed before the procedure name, and type flags are written
+in front of its formal parameter list.
+
+   *Example:*
+
+     PROCEDURE [decl flags...] Foo* [type flags...] (bar: T; ...);
+
+Splitting the system flags in this way is done to allow a syntactical
+distinction between properties of the object and properties of the
+object's type.  For example, the linkage name of the procedure is an
+attribute of the object, whereas the procedure's calling convention
+influences things like assignment compatibility to procedure variables,
+and is therefore an attribute of the procedure's type.
+
+   System flags are not permitted in standard Oberon-2 modules; they are
+restricted exclusively to foreign modules.  For `oo2c', this means they
+can only be used in modules declared `INTERFACE' or `FOREIGN'.
+
+* Menu:
+
+* Module Flags::
+* Type Flags::
+* Declaration Flags::
 

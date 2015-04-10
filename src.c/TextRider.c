@@ -18,13 +18,18 @@ void TextRider__ErrorContextDesc_GetTemplate(TextRider__ErrorContext context, Ms
   i0 = (int)msg + 8;
   i0 = *(int*)i0;
   if (!(i0<=0 || i0>=2)) goto l0;
+  (void)memcpy((void*) (int)str, (const void*) (int)_c0, 1);
   Msg__ContextDesc_GetTemplate((Msg__Context)(int)context, (Msg__Msg)(int)msg, (Msg__LString)(int)templ, templ_0d);
   goto l1;
 l0:
   if (!(i0==1)) goto l1;
-  (void)memcpy((void*) (int)str, (const void*) (int)_c0, 46);
+  (void)memcpy((void*) (int)str, (const void*) (int)_c1, 46);
 l1:
+  i0 = strcmp((const char*) (int)str, (const char*) (int)_c0) != 0;
+  if (!(i0)) goto l2;
   _string_copy2l((int)templ, (int)str, templ_0d);
+l2:
+  ;
 }
 
 void TextRider__EolDetect(TextRider__Reader r, unsigned char ch) {
@@ -724,9 +729,9 @@ void TextRider__ReaderDesc_ReadBool(TextRider__Reader r, unsigned char *bool_) {
   i0 = (int)*(void**)(int)r;
   i0 = i0 != 0;
   if (i0) goto l2;
-  i0 = strcmp((const char*) (int)ident, (const char*) (int)_c1) == 0;
-  if (i0) goto l1;
   i0 = strcmp((const char*) (int)ident, (const char*) (int)_c2) == 0;
+  if (i0) goto l1;
+  i0 = strcmp((const char*) (int)ident, (const char*) (int)_c3) == 0;
   if (i0) goto l0;
   i0 = (int)TextRider__GetError((int)8);
   *(void**)(int)r = (void*)i0;
@@ -1749,9 +1754,9 @@ l5:
   i3 = *(unsigned int*)i3;
   i3 = (i3 & ((unsigned int)1 << 1)) != 0;
   if (!(i3)) goto l6;
-  i3 = strcmp((const char*) i4, (const char*) (int)_c1) == 0;
+  i3 = strcmp((const char*) i4, (const char*) (int)_c2) == 0;
   if (i3) goto l7;
-  i4 = strcmp((const char*) i4, (const char*) (int)_c2) == 0;
+  i4 = strcmp((const char*) i4, (const char*) (int)_c3) == 0;
   if (i4) goto l7;
 l6:
   s = (void*)i5;
@@ -2014,12 +2019,12 @@ void TextRider__WriterDesc_WriteBool(TextRider__Writer w, unsigned char bool_) {
   if (bool_) goto l0;
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c2, 6);
+  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c3, 6);
   goto l1;
 l0:
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c1, 5);
+  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c2, 5);
 l1:
   ;
 }
@@ -2254,7 +2259,7 @@ l0:
 l1:
   i0 = i3 < 31;
   if (!(i2)) goto l2;
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i5)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c3, 3);
+  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i5)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c4, 3);
 l2:
   if (!(i0)) goto l4;
   i1 = i3 + 1;
@@ -2275,7 +2280,7 @@ l5:
   i0 = i3 < i8;
   ((void(*)(TextRider__Writer, short int, int))i7)((TextRider__Writer)(int)w, (short int)i3, (int)0);
   if (!(i0)) goto l6;
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i6)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c4, 3);
+  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i6)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c5, 3);
   ((void(*)(TextRider__Writer, short int, int))i7)((TextRider__Writer)(int)w, (short int)i8, (int)0);
 l6:
   i2 = 1;
@@ -2335,7 +2340,7 @@ TextRider__Reader TextRider__ConnectReader(Channel__Channel ch) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(36+8);
-    if (!_mem) _new_failed(_P(46163));
+    if (!_mem) _new_failed(_P(46213));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &TextRider__ReaderDesc_td.td;
     i1 = (int)_var;
@@ -2390,7 +2395,7 @@ TextRider__Writer TextRider__ConnectWriter(Channel__Channel ch) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(20+8);
-    if (!_mem) _new_failed(_P(46842));
+    if (!_mem) _new_failed(_P(46892));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &TextRider__WriterDesc_td.td;
     i1 = (int)_var;
@@ -2426,7 +2431,7 @@ TextRider__Scanner TextRider__ConnectScanner(Channel__Channel ch) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(312+8);
-    if (!_mem) _new_failed(_P(47394));
+    if (!_mem) _new_failed(_P(47444));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &TextRider__ScannerDesc_td.td;
     i1 = (int)_var;
@@ -2447,11 +2452,11 @@ void TextRider_init(void) {
   {
     char *_mem, *_var;
     _mem = GC_malloc(4+8);
-    if (!_mem) _new_failed(_P(47532));
+    if (!_mem) _new_failed(_P(47582));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &TextRider__ErrorContextDesc_td.td;
     i0 = (int)_var;
   }
-  Msg__InitContext((Msg__Context)i0, (const Msg__String)(int)_c5, 19);
+  Msg__InitContext((Msg__Context)i0, (const Msg__String)(int)_c6, 19);
   TextRider__errorContext = (void*)i0;
 }

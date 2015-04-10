@@ -4,11 +4,11 @@ the input file OOCref.texinfo.
    This file documents the Optimizing Oberon-2 Compiler (OOC) and its
 library.
 
-   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
-Library Reference Manual', for Version 1.4.5 or later of oo2c.
+   This is Edition 0.10 DRAFT, last updated 29 February 2000, of `The
+OOC Library Reference Manual', for Version 1.5.1 or later of oo2c.
 
-   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
-1999 Michael van Acken
+   Copyright (C) 1997-2000 Eric Nikitin Part II Copyright (C) 1998-2000
+Michael van Acken
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -28,60 +28,6 @@ entitled "GNU General Public License" must be approved for accuracy by
 the Foundation.
 
 
-File: OOCref.info,  Node: Other File Operations,  Next: Summary of File Constants,  Prev: File Locators,  Up: Files
-
-Other File Operations
-.....................
-
-   It isn't always desirable to have to open a file before performing
-certain operations on it.  You may not be interested in a file's
-contents; but rather some property of the file itself (for instance,
-does the named file even exist).  As such, module Files provides some
-free-standing procedures:
-
- - Procedure: SetModTime `(VAR FILE: ARRAY OF CHAR;  VAR MTIME:
-          Time.TimeStamp; VAR RES: INTEGER)'
-     Sets the modification time of the given file to MTIME.  On success
-     RES will contain `done', otherwise an error code that'll indicate
-     the problem.
-
-     *Please note*: under Unix this procedure will also change the
-     access time to the value of MTIME.
-
- - Procedure: GetModTime `(VAR FILE: ARRAY OF CHAR;  VAR MTIME:
-          Time.TimeStamp; VAR RES: INTEGER)'
-     Gets the modification time of the given file to MTIME.  On success
-     RES will contain `done', otherwise an error code indicating the
-     problem.
-
- - Function: Exists `(VAR FILE: ARRAY OF CHAR): BOOLEAN'
-     Returns `TRUE' if file FILE exists, `FALSE' otherwise.  This
-     procedure may be changed in future revisions to give more useful
-     information on failure.
-
- - Procedure: ErrorDescr `(VAR RES: INTEGER; VAR DESCR: ARRAY OF CHAR)'
-     Translates this module's error codes into strings.  The string
-     starts with a capital letter and does not include any termination
-     punctuation.  DESCR should be large enough to hold a multi-line
-     message (256 characters should suffice).  If `RES=done', then
-     DESCR is assigned the empty string.
-
-     *Please note*: This procedure should only be used to determine the
-     result code of a failed attempt to create a new instance of a file
-     (i.e., whenever one of the functions `New()', `Old()', or `Tmp()'
-     returned `NIL').  You should use the type-bound `ErrorDescr'
-     procedures for all other situations.
-
-   *Example:*
-
-     (* Attempting to open a "read-only" file for writing *)
-     
-     f := Files.Old ("example.dat", {Files.write}, res);
-        => res = accessDenied
-     Files.ErrorDescr (res, str);
-        => str = "Failed to open file with requested access rights"
-
-
 File: OOCref.info,  Node: Summary of File Constants,  Prev: Other File Operations,  Up: Files
 
 Summary of File Constants
@@ -97,11 +43,17 @@ Summary of Channel Constants::.), local names have been provided:
      A possible return value for `Reader.Pos()' or `Writer.Pos()'
      meaning that the reader or writer has no concept of a position.
 
-   The following values may appear in the `res' field of `File',
-`Reader', or `Writer':
+   The following constant applies to the `res' field, and may be
+compared to it.  (i.e., `ch.res = done' or `ch.res # done'.)
 
  - Constant: done
      This indicates successful completion of the last operation.
+
+   The following values are compared against the `res.code' field of the
+corresponding object (of types `Channel', `Reader', or `Writer').
+
+   The methods `res.GetLText()' or `res.GetText()' can be used to
+translate any error code into a human readable message.
 
  - Constant: invalidChannel
      The channel (i.e., file) isn't valid.  For example, because it
@@ -118,7 +70,8 @@ Summary of Channel Constants::.), local names have been provided:
      usually this error happens with a writer, but for buffered files
      this may also occur during a `Flush' or a `Close'.
 
-   The following constants only apply to `Reader.res' and `Writer.res':
+   The following constants only apply to `Reader.res.code' and
+`Writer.res.code':
 
  - Constant: outOfRange
      `SetPos' has been called with a negative argument or it has been
@@ -143,7 +96,7 @@ Summary of Channel Constants::.), local names have been provided:
      the current reading position doesn't represent an object of the
      requested type.
 
-   The following constants only apply to `File.res':
+   The following constants only apply to `File.res.code':
 
  - Constant: noReadAccess
      `NewReader' was called to create a reader on a file that doesn't
@@ -282,12 +235,12 @@ channel).
 
    A fourth standard channel, `null', is also provided.
 
-   Mappers may be attached to any of these channels to provide read/
+   Mappers may be attached to any of these channels to provide read and
 write operations for them.  Mappers from module `TextRider' are most
 often used.
 
    Also, be aware that modules `In', `Out', and `Err' provide simple
-interfaces to the standard channels (*note Standard I/O::.)  So that,
+interfaces to the standard channels (*note Standard I/O::.).  So that,
 in many cases, you may not have to use module `StdChannels' directly.
 
  - Read-only Variable: stdin
@@ -355,9 +308,10 @@ this:
 the program name is not counted by `ArgNumber' even though it is
 present in `args'.
 
-   Note that command line arguments should not contain any end-of-line
-characters, otherwise, a single argument would be mapped onto multiple
-lines.
+   Note that any end-of-line characters within command line arguments
+are mapped to space (`20X') characters.  This ensures, that a single
+argument is always mapped onto a single line of text, even if it has
+embedded end-of-line characters.
 
    Also, be careful with settings for `TextRider.Reader' and especially
 `TextRider.Scanner': end-of-line characters are treated as whitespace
@@ -443,7 +397,7 @@ invocations are to be considered equivalent:
        r.ReadLn;
      
        r.ReadLInt(int);
-       IF r.Res() # TextRider.done THEN
+       IF r.res # TextRider.done THEN
           (* Error processing: can't read an integer *)
        ELSIF ~r.Eol() THEN
           (* Error processing: this argument has other stuff after
@@ -453,14 +407,425 @@ invocations are to be considered equivalent:
        r.ReadLn; (* skip to the next line *)
      
        r.ReadIdentifier(str);
-       IF r.Res() # TextRider.done THEN
+       IF r.res # TextRider.done THEN
           (* Error processing: can't read an identifier *)
        ELSIF ~r.Eol() THEN
           (* Error processing: extra stuff after the identifier *)
        END;
 
 
-File: OOCref.info,  Node: Standard Mappers,  Next: Standard I/O,  Prev: Channels,  Up: I/O Subsystem
+File: OOCref.info,  Node: Messages,  Next: Standard Mappers,  Prev: Channels,  Up: I/O Subsystem
+
+Messages
+========
+
+   Module `Msg' provides a framework for messages, which are used as a
+level of indirection between simple error codes and human readable error
+messages.  Unlike numeric error codes, an instance of `Msg' carries its
+own interpretation context.  Using this context, plus the error code
+stored in the message, and possibly additional data, the message can be
+converted into a description.  The additional data can be text
+fragments, numbers, or other messages, and it can be inserted anywhere
+into the message's text.  There is no need to determine the message
+text at the place the message is created.  A message can be converted
+to text anywhere in the program.
+
+   This module actually combines several concepts: messages, message
+attributes, message contexts, and message lists.  Although this may
+seem a bit complicated, the actual mechanism is very simple.
+
+   A "message" is an object that can be converted to human readable
+text and presented to a program's user.  Within the OOC Library,
+messages are used to store errors in the I/O modules.  Another example
+is an XML parser, which uses messages to create an error list when
+parsing an XML document.
+
+   "Contexts" and "attributes" are primarily of interest for modules
+that generate messages.  These determine the content of the message,
+and how it can be translated into readable text.  A typical user will
+mostly be in the position of message consumer, and will be handed
+filled in message objects.  For a user, the typical operation will be
+to convert a message into descriptive text (see methods
+`Message.GetText()' and `Message.GetLText()').
+
+   "Message lists" are a convenience feature for modules like parsers,
+which normally do not abort after a single error message.  Usually,
+they try to continue their work after an error, looking for more
+problems and possibly emitting more error messages.  Using message
+lists, errors can be collected together (e.g., within a compiler) to be
+presented to the user in a single batch.
+
+Messages
+--------
+
+ - Class: Msg = POINTER TO MsgDesc
+     A message's type is uniquely identified by its context and its
+     code.  Using these two attributes, a message can be converted to
+     text.  The text may contain placeholders, which are filled by the
+     textual representation of attribute values associated with the
+     message.
+    Field: nextMsg-: `Msg'
+
+    Field: prevMsg-: `Msg'
+          These two fields are initialized to `NIL', and are used by
+          `MsgList'.
+
+    Field: code-: `Code'
+
+    Field: context-: `Context'
+
+    Field: attribList-: `Attribute'
+          This list of attributes is sorted by name.  Follow
+          `Attribute.nextAttrib' to traverse the list.
+
+   The following function is a constructor for a message object:
+
+ - Function: New `(CONTEXT: Context; CODE: Code): Msg'
+     This function creates and returns a new message object for the
+     given context, using the specified message code.  The message's
+     attribute list is empty.
+
+   Users of messages will be most interested in the following methods,
+which are used to retrieve the textual representation of a message:
+
+Method: `(MSG: Msg)' GetLText `(VAR TEXT: LString)'
+     This method converts a message into a text string.  The basic
+     format of the string is determined by calling
+     `msg.context.GetTemplate'.  Then the attributes are inserted into
+     the template string; the placeholder string `${foo}' is replaced
+     with the textual representation of each attribute (see
+     `Context.GetTemplate').
+
+     *Pre-condition*: `LEN(text)<2^15'
+
+     *Please note:* Behaviour is undefined if replacement text of an
+     attribute contains an attribute reference.
+
+Method: `(MSG: Msg)' GetText `(VAR TEXT: String)'
+     This method operates just like `GetLText', but the message text is
+     truncated to ISO-Latin-1 characters.  All characters that are not
+     part of ISO-Latin-1 are mapped to question marks `?'.
+
+   *Example:*
+
+     VAR r: TextRider.Reader;
+         f: Files.File;
+         str: ARRAY 256 OF CHAR;
+         res: Files.Result;     (* `Result' is an alias for `Msg.Msg'. *)
+     
+       f := Files.Old("Sample.txt", {Files.read}, res);
+       IF (f = NIL) THEN
+          res.GetText(str);
+          Err.String(str); Err.Ln;
+       ELSE
+          r := TextRider.ConnectReader(f);
+          IF (r # NIL) THEN
+             r.ReadLine(str);	    (* Read the lines of a file. *)
+             WHILE r.res=Files.done DO
+                Out.String(str); Out.Ln; (* And output them to the screen. *)
+                r.ReadLine(str);
+             END;
+             (*  Check to see if it stopped reading because it reached
+              *  end-of-file.  If not, then print the error string.
+              *)
+             IF (r.res.code#Files.readAfterEnd) THEN
+                r.res.GetText(str);
+                Err.String(str); Err.Ln;
+             END;
+          END;
+       END;
+
+   A programmer who is creating a library module can use the following
+methods to manage the attributes of a message:
+
+Method: `(MSG: Msg)' GetAttribute `(NAME: String): Attribute'
+     This method returns the attribute NAME of the message object.  If
+     no such attribute exists, the value `NIL' is returned.
+
+Method: `(MSG: Msg)' SetAttribute `(ATTR: Attribute)'
+     This method appends an attribute to the message's attribute list.
+     If an attribute of the same name exists already, it is replaced by
+     the new one.
+
+     *Pre-condition*: `Length(attr.name^)<=sizeAttrName' and ATTR has
+     not been attached to any other message.
+
+Method: `(MSG: Msg)' SetIntAttrib `(NAME: String; VALUE: LONGINT)'
+     *Pre-condition*: `Length(name)<=sizeAttrName'
+
+   *Example:*
+
+     VAR
+       lineVal, colVal: LONGINT;
+       attrib1, attrib2: Msg.Attribute;
+     
+     msg.SetIntAttrib ("line", lineVal);
+     msg.SetIntAttrib ("column", colVal);
+     
+     ...
+     
+     attrib1 := GetAttribute("line");
+     attrib2 := GetAttribute("column");
+
+Method: `(MSG: Msg)' SetStringAttrib `(NAME: String; VALUE: StringPtr)'
+     *Pre-condition*: `Length(name)<=sizeAttrName'
+
+Method: `(MSG: Msg)' SetLStringAttrib `(NAME: String; VALUE: LStringPtr)'
+     *Pre-condition*: `Length(name)<=sizeAttrName'
+
+Method: `(MSG: Msg)' SetMsgAttrib `(NAME: String; VALUE: Msg)'
+     *Pre-condition*: `Length(name)<=sizeAttrName'
+
+Contexts and Attributes
+-----------------------
+
+   When writing a library module (or perhaps a set of related library
+modules), a `Context' is defined, which may specify message formats and
+handle generation of messages.  Specific `Attributes' that directly
+relate to a `Context', and its related messages, are defined to go
+along with that `Context'.
+
+   The basic steps are
+   * Declare a subclass of `Context'.
+
+   * Define a variable of that `Context' class (and be sure to
+     initialize it in the module body).
+
+   * (Optional) Define attributes that are applicable to the context.
+
+   * Override the `GetTemplate' method so that it supplies messages in
+     the desired format (using `GetAttribute' to retrieve attribute
+     information, if necessary).
+
+   * (Optional) Write a message generating function to produce
+     appropriate message objects.
+
+   The following is an example showing how a `Context' can be set up.
+(In this case, for a command line parser).  Note that use of
+`Attributes' is not required (and not shown in this example), and that
+this example has only a single error message.
+
+     MODULE CmdLine;
+     
+     IMPORT Msg;
+     
+     (* Context and template infrastructure *)
+     CONST
+       connectFailed = 1;
+     
+     TYPE
+       ErrorContext = POINTER TO ErrorContextDesc;
+       ErrorContextDesc = RECORD
+         (Msg.ContextDesc)
+       END;
+     
+     VAR
+       cmdLineContext: ErrorContext;
+     
+     PROCEDURE (context: ErrorContext) GetTemplate* (msg: Msg.Msg;
+                                                     VAR templ: Msg.LString);
+       VAR
+         t: ARRAY 128 OF Msg.LChar;
+       BEGIN
+         CASE msg. code OF
+         | connectFailed:
+           t := "Failed to connect reader to program arguments"
+         END;
+         COPY (t, templ)
+       END GetTemplate;
+     
+     
+     
+     PROCEDURE Error (code: Msg.Code): Msg.Msg;
+     (* Create error message for context `cmdLineContext', using the error
+        code `code'.  *)
+       VAR
+         err: Msg.Msg;
+       BEGIN
+         err := Msg.New (cmdLineContext, code);
+         RETURN err
+       END Error;
+     
+     
+     BEGIN
+       (* initialize error context *)
+       NEW (cmdLineContext);
+       Msg.InitContext (cmdLineContext, "CmdLine")
+     END CmdLine.
+
+ - Class: Context = POINTER TO ContextDesc
+     Instances of this class describe the context under which messages
+     are converted into their textual representation.  Together, a
+     message's context and its code identify the message type.
+
+    Field: id-: `StringPtr'
+          As a debugging aid, this field is usually filled with an
+          string that identifies the module that created this context
+          instance (see procedure `InitContext').
+
+   The following is an initialization procedure for `Context's:
+
+ - Procedure: InitContext `(CONTEXT: Context; ID: String)'
+     This procedure intializes an instance of `Context'.  The string
+     argument ID should describe the message context to the programmer.
+     It should not appear in output generated for a program's user, or
+     at least, it should not be necessary for a user to interpret this
+     string to understand the message.  Generally, it is a good idea to
+     use the module name of the context variable for the identifier.
+     If this is not sufficient to identify the variable, add the
+     variable name to the string.
+
+Method: `(CONTEXT: Context)' GetTemplate `(MSG: Msg; VAR TEMPL: LString)'
+     This method returns a template string for the message MSG.  The
+     template is used as the basis for the human readable string
+     returned by `GetText'.  Typically, the string is derived from the
+     message code, and it contains attribute references.  Instead of
+     the reference `${foo}', the procedure `GetText' (see below) will
+     insert the textual representation of the attribute with the name
+     `foo'.  The special reference `${MSG_CONTEXT}' is replaced by the
+     value of `context.id', and `${MSG_CODE}' with `msg.code'.
+
+     The default implementation returns this string:
+          MSG_CONTEXT: ${MSG_CONTEXT}
+          MSG_CODE: ${MSG_CODE}
+          attribute_name: ${attribute_name}
+
+     The last item is repeated for every attribute name.  The lines are
+     separated by `CharClass.eol'.
+
+     *Pre-condition*: `msg # NIL'
+
+   *Example:*
+
+     PROCEDURE (context: aContext) GetTemplate* (msg: Msg.Msg;
+                                                 VAR templ: Msg.LString);
+     VAR
+        t: ARRAY 128 OF Msg.LChar;
+     BEGIN
+        CASE msg. code OF
+     
+        ...  (* set the value of `t' with appropriate message *)
+     
+        END;
+        COPY (t, templ);
+        (* then append the line and column numbers ---
+         * note that attribute values are later substituted by
+         * `Msg.GetLText' or `Msg.GetText'.
+         *)
+        LongStrings.Append (" line=${line}, column=${column}", templ);
+     END GetTemplate;
+
+Attributes
+..........
+
+ - Constant: sizeAttrName
+     Maximum length of the attribute name for `InitAttribute',
+     `NewIntAttrib', `NewStringAttrib', `NewLStringAttrib', or
+     `NewMsgAttrib'.
+
+ - Class: Attribute = POINTER TO AttributeDesc
+     An attribute is a (name, value) tuple, which can be associated
+     with a message.  When a message is tranlated into its readable
+     version through the `GetText' function, the value part of each
+     attribute can be converted to some textual representation, and
+     then inserted into the message's text.  Within a message, an
+     attribute is uniquely identified by its name.
+    Field: nextAttrib-: `Attribute'
+
+    Field: name-: `StringPtr'
+          The name of an `Attribute' is restricted to `sizeAttrName'
+          characters.
+
+   The following is an initialization procedure for `Attribute's:
+
+ - Procedure: InitAttribute `(ATTR: Attribute; NAME: String)'
+     This procedure initializes an attribute object and sets its NAME.
+
+Method: `(ATTR: Attribute)' ReplacementText `(VAR TEXT: LString)'
+     This method converts the attribute value into some textual
+     representation.  The length of the resulting string must not exceed
+     `sizeAttrReplacement' characters.  Note that `GetLText()' calls
+     this procedure with a text buffer of `sizeAttrReplacement+1' bytes.
+
+   The following are default implementations for some commonly used
+message attributes and their corresponding constructors and
+`ReplacementText' methods:
+
+ - Class: IntAttribute = POINTER TO IntAttributeDesc
+    Field: int-: `LONGINT'
+
+ - Function: NewIntAttrib `(NAME: String; VALUE: LONGINT): IntAttribute'
+     This function creates and returns a new attribute (`IntAttribute')
+     object.
+
+     *Pre-condition*: `Length(name)<=sizeAttrName'
+
+Method: `(ATTR: IntAttribute)' ReplacementText `(VAR TEXT: LString)'
+ - Class: StringAttribute = POINTER TO StringAttributeDesc
+    Field: string-: `StringPtr'
+
+ - Function: NewStringAttrib `(NAME: String; VALUE: StringPtr):
+          StringAttribute'
+     This function creates and returns a new attribute
+     (`StringAttribute') object.
+
+     *Pre-condition*: `Length(name)<=sizeAttrName'
+
+Method: `(ATTR: StringAttribute)' ReplacementText `(VAR TEXT: LString)'
+ - Class: LStringAttribute = POINTER TO LStringAttributeDesc
+    Field: string-: `LStringPtr'
+
+ - Function: NewLStringAttrib `(NAME: String; VALUE: LStringPtr):
+          LStringAttribute'
+     This function creates and returns a new attribute
+     (`LStringAttribute') object.
+
+     *Pre-condition*: `Length(name)<=sizeAttrName'
+
+Method: `(ATTR: LStringAttribute)' ReplacementText `(VAR TEXT: LString)'
+ - Class: MsgAttribute = POINTER TO MsgAttributeDesc
+
+Field: msg-: `Msg'
+ - Function: NewMsgAttrib `(NAME: String; VALUE: Msg): MsgAttribute'
+     This function creates and returns a new attribute (`MsgAttribute')
+     object.
+
+     *Pre-condition*: `Length(name)<=sizeAttrName'
+
+Method: `(ATTR: MsgAttribute)' ReplacementText `(VAR TEXT: LString)'
+Message Lists
+-------------
+
+ - Class: MsgList = POINTER TO MsgListDesc
+    Field: msgCount-: `LONGINT'
+          The number of messages on the list.
+
+    Field: msgList-: `Msg'
+          The messages of the list can be traversed using the fields
+          `Msg.nextMsg' and `Msg.prevMsg'.
+
+   The following are for construction and initialization of `MsgList's:
+
+ - Procedure: InitMsgList `(L: MsgList)'
+     This procedure initializes a message list object.
+
+ - Function: NewMsgList `(): MsgList'
+     This function creates and returns a new message list object.
+
+   The following methods are used to add messages to a message list:
+
+Method: `(L: MsgList)' Append `(MSG: Msg)'
+     Appends the message MSG to the list L.
+
+     *Pre-condition*: MSG is not part of another message list.
+
+Method: `(L: MsgList)' AppendList `(SOURCE: MsgList)'
+     Appends the messages of list SOURCE to L.  Afterwards, SOURCE is
+     an empty list, and the elements of SOURCE can be found at the end
+     of the list L.
+
+
+File: OOCref.info,  Node: Standard Mappers,  Next: Standard I/O,  Prev: Messages,  Up: I/O Subsystem
 
 Standard Mappers
 ================
@@ -566,10 +931,26 @@ Class Reader (Rider)
      attempts to read will be ignored until the error is cleared using
      `ClearError'.
 
-     *Note Class Reader (TextRider):: for examples of usage.
+     *Note Class Reader (TextRider)::, for examples of usage.
 
     Field: opt-: `SET'
           The current read options setting for the reader.
+
+    Field: res-: `Msg.Msg'
+          This field indicates the status of the last read operation
+          (e.g., `ReadLine', `ReadInt', `SetPos', etc.).
+
+          Error codes (for `res.code') are highly dependent on the
+          channel being read, and therefore on the basic riders
+          provided by that channel, so you must look at the result
+          codes for a particular channel's reader type (e.g.,
+          `Files.Reader' error codes).  See the various channel types
+          for details of these error codes (i.e., *Note Files::, *Note
+          StdChannels::, or *Note ProgramArgs::).
+
+          If `res#done', use either `res.GetLText()' or `res.GetText()'
+          to get a plain text error description corresponding to the
+          error code.
 
     Field: base-: `Channel.Channel'
           This field refers to the channel the reader is connected to.
@@ -606,37 +987,17 @@ Method: `(R: Reader)' ClearError
 Method: `(R: Reader)' Eol `(): BOOLEAN'
      This method returns `TRUE' if the reader is currently positioned
      at an end-of-line marker (see `SetEol' below).  This will also
-     return `TRUE' if `R.Res() # done'.  Otherwise, `FALSE' is returned.
-
-Method: `(R: Reader)' ErrorDescr `(VAR DESCR: ARRAY OF CHAR)'
-     Retrieves a descriptive error message string stating the reason
-     why one of the previous operations failed.
+     return `TRUE' if `R.res # done'.  Otherwise, `FALSE' is returned.
 
 Method: `(R: Reader)' Pos `(): LONGINT'
      Returns the current reading position associated with the reader R
      in channel `R.base'.
 
-Method: `(R: Reader)' Res `(): INTEGER'
-     This method returns the status of the last read operation (e.g.,
-     `ReadLine', `ReadInt', `SetPos', etc.).  Note that unlike some
-     other reader types, `Res()' is a method rather than a field; but
-     otherwise, it performs equivalently.
-
-     Error codes are highly dependent on the channel being read, and
-     therefore on the basic riders provided by that channel, so you
-     must look at the result codes for a particular channel's reader
-     type (e.g., Files.Reader error codes).  See the various channel
-     types for details of these error codes (i.e., *Note Files::, *Note
-     StdChannels::, or *Note ProgramArgs::).
-
-     Use method `ErrorDescr' to get a plain text error description of
-     this error code.
-
 Method: `(R: Reader)' SetEol `(MARKER: ARRAY OF CHAR; MARKERLEN: INTEGER)'
      This method sets the end-of-line marker; that is, what
      character(s) is used to mark the end of a line.  If the passed
      string MARKER does not fit into the field `eol', or if it contains
-     a character >= ` ', then `R.Res()' is set to `invalidFormat'.
+     a character >= ` ', then `R.res.code' is set to `invalidFormat'.
 
      A marker length `markerLen=-1' enables auto detection of the
      end-of-line convention used by the channel.  For auto detection to
@@ -667,7 +1028,7 @@ Method: `(R: Reader)' SetEol `(MARKER: ARRAY OF CHAR; MARKERLEN: INTEGER)'
      `eol' encountered.
 
      *Pre-condition*: All of the following apply:
-       1. `r.Res() = done', and
+       1. `r.res = done', and
 
        2. `(markerLen = -1) OR (1 <= markerLen < LEN (marker))', and
 
@@ -687,9 +1048,10 @@ before reading a token; there are only three methods that do not skip
 whitespace: `ReadChar', `ReadLn', and `ReadLine'.
 
    When attempting to read, and if the value is not properly formatted
-for its type, `r.Res()' returns `invalidFormat'.  The reader remains
-positioned at the character which caused the `invalidFormat' error, but
-further reading can not take place until the error is cleared.
+for its type, `r.res.code' is set to `invalidFormat'.  The reader
+remains positioned at the character which caused the `invalidFormat'
+error, but further reading can not take place until the error is
+cleared.
 
    If a number, or potential set element, is properly formatted, but
 has a value that is out of range of the target type, then a
@@ -703,15 +1065,15 @@ if the character array is not large enough to hold the entire input.
 
    Otherwise, for any operation attempting to read when there are no
 characters left to be read, a read-after-end error occurs and
-`Reader.Res()' returns `readAfterEnd'.
+`Reader.res.code' is set to `readAfterEnd'.
 
    In any case, whenever an error occurs, it is safest to assume that
 *no* value has been read.  That is, the variable being read into is
 left with an undefined value.
 
    All further calls of these read methods will be ignored if
-`R.Res()#done'.  That is, no new characters will be read if an error
-has occurred previously.
+`R.res#done'.  That is, no new characters will be read if an error has
+occurred previously.
 
 Method: `(R: Reader)' ReadBool `(VAR BOOL: BOOLEAN)'
      Reads in an identifier (see `ReadIdentifier' below), and if it is
@@ -845,390 +1207,4 @@ Method: `(R: Reader)' ReadSet `(VAR S: SET)'
      `valueOutOfRange' error occurs.
 
      Upon encountering an error, the value of S is undefined.
-
-
-File: OOCref.info,  Node: Class Writer (Rider),  Next: Class Scanner (Rider),  Prev: Class Reader (Rider),  Up: Rider
-
-Class Writer (Rider)
-....................
-
- - Abstract Class: Writer = POINTER TO WriterDesc
-     This class provides facilities for writing various types of text.
-     Note that this type does not inherit properties from any basic
-     writer type; rather it uses the basic writer type associated with
-     the channel it is attached to.
-
-     *Note Class Writer (TextRider):: for examples of usage.
-
-    Field: opt-: `SET'
-          The current write options setting for the writer.  See *Note
-          Summary of TextRider Constants:: for possible option values.
-
-    Field: base-: `Channel.Channel'
-          This field refers to the channel the writer is connected to.
-
-   The following methods can be used to check the status of a writer
-or, in some cases, change its state.  Some methods are fully described
-in the abstract writer section (*note Abstract Class Writer::.), so
-only brief descriptions of those are given here.
-
-Method: `(W: Writer)' ClearError
-     Clears error conditions on the writer W, re-enabling further write
-     operations.
-
-Method: `(W: Writer)' ErrorDescr `(VAR DESCR: ARRAY OF CHAR)'
-     Retrieves a descriptive error message string stating the reason
-     why one of the previous operations failed.
-
-Method: `(W: Writer)' Pos `() : LONGINT'
-     Returns the current writing position associated with the writer
-     `w' in channel `W.base'.
-
-Method: `(W: Writer)' Res `() : INTEGER'
-     This method returns the status of the last write operation (e.g.,
-     `WriteBytes', `WriteInt', `SetPos', etc.)  Note that unlike some
-     other writer types, `Res()' is a method rather than a field; but
-     otherwise, it performs equivalently.
-
-     Error codes are highly dependent on the channel being written to
-     (and therefore on the basic riders provided for that channel), so
-     you must look at the result codes for the basic writer that is
-     associated with that particular channel (e.g., Files.Writer error
-     codes).  See the various channel types for details of these error
-     codes (i.e., *Note Files::, *Note StdChannels::, *Note
-     ProgramArgs::)
-
-     Use `ErrorDescr' to get a plain text error description of this
-     error code.
-
-Method: `(W: Writer)' SetEol `(MARKER: ARRAY OF CHAR; MARKERLEN: INTEGER)'
-     This method sets the end-of-line marker; that is, what
-     character(s) is used to mark the end of a line.  If the passed
-     string MARKER does not fit into the field `eol', then `W.Res()' is
-     set to `invalidFormat'.  The empty marker is permitted.  The
-     default value for a newly created writer is `CharClass.systemEol'.
-
-     *Pre-condition*: All of the following apply:
-       1. `w.Res() = done', and
-
-       2. `0 <= markerLen < LEN (marker)', and
-
-       3. `markerLen <= maxLengthEol'.
-
-Method: `(W: Writer)' SetOpts `(OPTS: SET)'
-     This method is used to set the writer options `W.opt'.
-
-Method: `(W: Writer)' SetPos `(NEWPOS: LONGINT)'
-     Sets the writing position to NEWPOS.
-
-   The following writer methods are used to write values in text format
-to the underlying channel.  In some situations, it is possible for only
-part of the value to be actually written.
-
-Method: `(W: Writer)' WriteBool `(BOOL: BOOLEAN)'
-     Writes the value of BOOL as text.  That is, either `TRUE' or
-     `FALSE'.
-
-Method: `(W: Writer)' WriteChar `(CH: CHAR)'
-     Writes a single character value CH.
-
-Method: `(W: Writer)' WriteHex `(LINT: LONGINT; D: LONGINT)'
-     Writes the value of LINT as an unsigned hexadecimal number with a
-     minimum field width of D.  Leading zeros are written if the value
-     of LINT requires less than D places.  If D is less than or equal
-     to zero, field width is 8.
-
-Method: `(W: Writer)' WriteInt `(INT: INTEGER; N: LONGINT)'
-     Writes the value of INT as a decimal number with a minimum field
-     width of N.  Leading spaces are written if the value of INT
-     requires less than N places.  A sign is written only for negative
-     values.
-
-Method: `(W: Writer)' WriteLInt `(LINT: LONGINT; N: LONGINT)'
-     This method provides the same facility as `WriteInt', except that
-     it deals with `LONGINT' values.
-
-Method: `(W: Writer)' WriteSInt `(SINT: SHORTINT; N: LONGINT)'
-     This method provides the same facility as `WriteInt', except that
-     it deals with `SHORTINT' values.
-
-Method: `(W: Writer)' WriteReal `(REAL: REAL; N, K: LONGINT)'
-     Writes the value of REAL as a floating-point number with a minimum
-     field width of N.
-
-     If the value of K is greater than 0, that number of significant
-     digits is included.  Otherwise, an implementation-defined number
-     of significant digits is included.  The decimal point is not
-     included if there are no significant digits in the fractional part.
-
-     The number is scaled with one digit in the whole number part.  A
-     sign is included only for negative values.
-
-Method: `(W: Writer)' WriteLReal `(LREAL: LONGREAL; N, K: LONGINT)'
-     This method provides the same facility as `WriteReal', except that
-     it deals with `LONGREAL' values.
-
-Method: `(W: Writer)' WriteRealEng `(REAL: REAL; N, K: LONGINT)'
-     Writes the value of REAL as a floating-point number with a minimum
-     field width of N.
-
-     If the value of K is greater than 0, that number of significant
-     digits is included.  Otherwise, an implementation-defined number
-     of significant digits is included.  The decimal point is not
-     included if there are no significant digits in the fractional part.
-
-     The number is scaled with one to three digits in the whole number
-     part and with an exponent that is a multiple of three.  A sign is
-     included only for negative values.
-
-Method: `(W: Writer)' WriteLRealEng `(LREAL: LONGREAL; N, K: LONGINT)'
-     This method provides the same facility as `WriteRealEng', except
-     that it deals with `LONGREAL' values.
-
-Method: `(W: Writer)' WriteRealFix `(REAL: REAL; N, K: LONGINT)'
-     Writes the value of REAL as a fixed-point number with a minimum
-     field width of N.
-
-     The value is rounded to the given value of K relative to the
-     decimal point.  The decimal point is suppressed if K is less than
-     0.
-
-     The number will have at least one digit in the whole number part.
-     A sign is included only for negative values.
-
-Method: `(W: Writer)' WriteLRealFix `(LREAL: LONGREAL; N, K: LONGINT)'
-     This method provides the same facility as `WriteRealFix', except
-     that it deals with `LONGREAL' values.
-
-Method: `(W: Writer)' WriteSet `(S: SET)'
-     Writes the value of S as an Oberon-2 set constructor, including
-     curly braces, commas, and range indicators ("`..'") where
-     appropriate.
-
-Method: `(W: Writer)' WriteString `(S: ARRAY OF CHAR)'
-     Writes a string value up to, but not including, the terminating
-     `0X' character.  The behaviour of this method is undefined if S is
-     an unterminated character array.
-
-     *Please note:* `ReadString' and `WriteString' *are not* symmetric.
-     That is, `WriteString' does not enclose the written string in
-     quote marks; only the actual character values contained in S are
-     written.
-
-Method: `(W: Writer)' WriteLn
-     Writes an end-of-line marker (i.e., a "newline").  The default
-     value for a newly created writer is `CharClass.systemEol' (see
-     `SetEol' above).
-
-
-File: OOCref.info,  Node: Class Scanner (Rider),  Prev: Class Writer (Rider),  Up: Rider
-
-Class Scanner (Rider)
-.....................
-
-   A "text scanner" is a special type of reader, which is used to parse
-text for different kinds of tokens.  Integers, reals, strings,
-identifiers, set constructors, the boolean tokens `TRUE' and `FALSE',
-and other special symbols are all tokens recognized by this kind of
-scanner.
-
-   These tokens are scanned sequentially, converted to an appropriate
-type, and then returned in one of the scanner's fields.  The scanner's
-`type' field is then used to determine the type of token which has been
-scanned.
-
-   Along with some typical reader methods, such as `SetPos', the primary
-method of a scanner is `Scan', which simply scans the next token based
-on the scanner's current options setting.
-
-   *Note Class Scanner (TextRider):: for examples of usage.
-
- - Data type: String
-     A string type of pre-defined length for use within a scanner.
-     Note that because this type is of finite length, a scanner is
-     limited in the length of string it can scan.
-
-     *Please note:* `LEN()' can be used on a variable of type `String'
-     to determine the maximum size that can be held by a scanner string.
-
- - Abstract Class: Scanner = POINTER TO ScannerDesc
-     This class provides facilities for scanning sequences of
-     characters from a channel and parsing those characters into
-     various tokens.  The tokens a scanner can recognize are defined by
-     the constants provided for its `type' field (*Note Summary of
-     TextRider Constants::).
-
-     Note that a scanner will not continue to read (via calls to
-     `Scan') if it has scanned an invalid token or an error occurs;
-     `ClearError' must be called explicitly before scanning can
-     continue.  The difference is that `invalid' means that the token
-     could not be interpreted; a sequence of characters was read, but
-     could not be interpreted as a valid token.  An `error' occurs when
-     there is a problem with the underlying `Reader'; so, `error' is
-     used to determine when you have reached end-of-text.
-
-    Field: base-: `Channel.Channel'
-          This field refers to the channel the scanner is connected to.
-
-    Field: lines-: `LONGINT'
-          Total number of lines (i.e., end-of-line characters) that
-          have been scanned.  This number is updated by `Scan'.
-
-    Field: opt-: `SET'
-          The current read options setting for the scanner.  See *Note
-          Summary of TextRider Constants:: for possible option values.
-
-    Field: pos-: `LONGINT'
-          Starting position of the most recently scanned token.  Note
-          that this is *not* the same as the value returned by the
-          `Pos()' method.
-
-          This value may be useful when an `invalid' token is scanned,
-          as it will point to the start of the `invalid' token (whereas
-          `Pos()' would be positioned *after* the invalid token).  You
-          could, for example, reset the scanner options and re-position
-          the scanner back at the invalid token to attempt a re-scan.
-
-    Field: type-: `INTEGER'
-          The type of the token that has been most recently scanned.
-          The constants `bool', `char', `error', `int', `invalid',
-          `line', `ident', `real', `set', `string', `tab', and
-          `undefined' are possible values for `type'.  See also the
-          related output fields listed below.
-
-     The following are the output fields within a scanner.  Before the
-     first call to the `Scan' method, the values of these fields are
-     undefined.  After each successive call to `Scan', `type' is set
-     and the matching output field contains the value of the scanned
-     token.  The value of output fields not corresponding to `type' are
-     undefined.
-
-    Field: bool-: `BOOLEAN'
-          This field will contain a valid value only if the
-          `interpretBools' option is set and one of the tokens `TRUE'
-          or `FALSE' is scanned.
-
-    Field: char-: `CHAR'
-          Contains a value if `type' is `char', `line', or `tab'.
-
-    Field: int-: `LONGINT'
-          Contains a value if `type' is `int'.
-
-          *Please note:* Valid integers are in either signed decimal or
-          unsigned hexadecimal formats (hexadecimal tokens *must* be
-          terminated with an "`H'" character).
-
-    Field: real-: `LONGREAL'
-          Contains a value if `type' is `real'.
-
-    Field: set-: SET;
-          Contains a value if `type' is `set'.
-
-    Field: string-: String;
-          Contains a value if `type' is `string' or `ident'.
-
-   The following scanner methods are equivalent to the corresponding
-reader methods described in *Note Class Reader (TextRider)::, so only
-brief descriptions are given here.
-
-Method: `(S: Scanner)' Available `() : LONGINT'
-     Returns the number of bytes available for the next scanning
-     operation.
-
-Method: `(S: Scanner)' ClearError
-     Clears error conditions on the scanner S, re-enabling further
-     operations on S.
-
-Method: `(S: Scanner)' ErrorDescr `(VAR DESCR: ARRAY OF CHAR)'
-     Retrieves a descriptive error message string stating the reason
-     why one of the previous operations failed.
-
-Method: `(S: Scanner)' Pos `(): LONGINT'
-     Returns the current reading position associated with the scanner S
-     in channel `S.base'.  Note that the value returned by this method
-     is different from the position indicated by the scanner's `pos'
-     field.
-
-Method: `(S: Scanner)' Res `(): INTEGER'
-     This method returns the status of the last read operation (e.g.,
-     `Scan', `SetPos', etc.).  Note that `Res()' is a method rather
-     than a field; but otherwise, it performs equivalently.
-
-     Use method `ErrorDescr' to get a plain text error description of
-     this error code.
-
-Method: `(S: Scanner)' SetEol `(MARKER: ARRAY OF CHAR; MARKERLEN: INTEGER)'
-     This method sets the end-of-line marker; it provides the same
-     facility as `Reader.SetEol'.  A marker length `markerLen=-1'
-     enables auto detection of the end-of-line convention used by the
-     channel.
-
-Method: `(S: Scanner)' SetOpts `(OPTS: SET)'
-     This method is used to set the scanner options `S.opt'.  See *Note
-     Summary of TextRider Constants:: for possible option values.
-
-Method: `(S: Scanner)' SetPos `(NEWPOS: LONGINT)'
-     Sets the current scanning position to NEWPOS.
-
-Method: `(S: Scanner)' Scan
-     This method skips whitespace, and then scans for the next token as
-     specified by the scanning options.  Based on the type of token
-     scanned, `S.type' is set and the matching output field is assigned
-     a value.
-
-     If the end of the valid text is reached, `S.type' is set to
-     `error'.  (Note that `error' is set when the last available valid
-     token is read, not necessarily by a `readAfterEnd' condition.)
-
-     Valid tokens are described as follows:
-
-    `bool'
-          If `interpretBools' is set as a scanner option, the text
-          tokens `TRUE' or `FALSE' are read as `bool'.  (Otherwise,
-          these tokens are read as type `ident'.)
-
-    `char'
-          Normally, any printable characters other than a letter or
-          number and any non-printable control character.  However,
-          scanner options will affect what a scanner interprets to be a
-          `char':
-
-             * If `interpretSets' is not set, elements of a set
-               constructor, "`{'", "`}'", "`,'", are read as `char'
-               (and the associated integer constants are read as
-               separate tokens).
-
-             * If `interpretStrings' is not set, quote characters are
-               read as `char' (and string contents are then read as
-               separate tokens).
-
-             * If `useSignedNumbers' is not set, "`+'" and "`-'" are
-               read as `char'.  (Otherwise, they are always considered
-               part of a number.)
-
-    `int'
-          Any Oberon-2 integer constant.  (Note that hexadecimal
-          numbers must be unsigned and be terminated with an "`H'".
-          Also, lower-case letters, `a..f', are not valid hex digits.)
-
-    `line'
-          If `returnCtrlChars' is set, an end-of-line character is read
-          as `S.type = line'.  Otherwise, it is counted as whitespace.
-
-    `ident'
-          Any Oberon-2 identifier.  (Note that "`_'" is not considered
-          as part of an identifier, nor is a selector "`.'".)
-
-    `real'
-          Any Oberon-2 real number constant.
-
-    `set'
-          Any Oberon-2 set constructor.
-
-    `string'
-          Any Oberon-2 string constant.
-
-    `tab'
-          If `returnCtrlChars' is set, a tab character is read as
-          `S.type = tab'.  Otherwise, it is counted as whitespace.
 

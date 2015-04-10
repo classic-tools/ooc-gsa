@@ -1,9 +1,10 @@
-(*	$Id: IntConv.Mod,v 1.3 1999/09/02 13:07:24 acken Exp $	*)
+(*	$Id: IntConv.Mod,v 1.4 2000/01/16 16:32:02 ooc-devel Exp $	*)
 MODULE IntConv;
  
  (*
     IntConv -  Low-level integer/string conversions.       
     Copyright (C) 1995 Michael Griebling
+    Copyright (C) 2000 Michael van Acken
  
     This module is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as 
@@ -137,8 +138,15 @@ BEGIN
             IF int>(MAX(LONGINT)-digit) DIV 10 THEN RETURN strOutOfRange END;
             int:=int*10+digit
           ELSE
-            IF int<(MIN(LONGINT)+digit) DIV 10 THEN RETURN strOutOfRange END;
-            int:=int*10-digit
+            IF int>(MIN(LONGINT)+digit) DIV 10 THEN
+              int:=int*10-digit
+            ELSIF (int < (MIN(LONGINT)+digit) DIV 10) OR
+                  ((int = (MIN(LONGINT)+digit) DIV 10) &
+                    ((MIN(LONGINT)+digit) MOD 10 # 0)) THEN
+              RETURN strOutOfRange
+            ELSE
+              int:=int*10-digit
+            END
           END
         END
     | Conv.invalid, Conv.terminator: EXIT
@@ -222,13 +230,3 @@ BEGIN
   NEW(S); NEW(W); NEW(SI);  
   S.p:=SState; W.p:=WState; SI.p:=ScanInt
 END IntConv.
-
-
-
-
-
-
-
-
-
-

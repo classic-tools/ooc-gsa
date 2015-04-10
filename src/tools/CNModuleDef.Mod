@@ -1,7 +1,7 @@
-(*	$Id: CNModuleDef.Mod,v 1.4 1999/11/22 21:17:57 ooc-devel Exp $	*)
+(*	$Id: CNModuleDef.Mod,v 1.5 1999/12/26 22:52:50 ooc-devel Exp $	*)
 MODULE CNModuleDef;
 (*  Extracts the public interface of a module from its syntax tree.
-    Copyright (C) 1998  Michael van Acken
+    Copyright (C) 1998, 1999  Michael van Acken
 
     This file is part of OOC.
 
@@ -459,7 +459,8 @@ PROCEDURE RemoveLocalDecl (ast: AST.Module);
           name := name. next
         END;
         decl := decl. next
-      UNTIL ~(decl IS AST.VarDecl) OR
+      UNTIL (decl = NIL) OR
+            ~(decl IS AST.VarDecl) OR
             (decl(AST.VarDecl). varKW # NIL);
       RETURN TRUE
     END RemoveAllVar;

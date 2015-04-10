@@ -4,11 +4,11 @@ the input file OOCref.texinfo.
    This file documents the Optimizing Oberon-2 Compiler (OOC) and its
 library.
 
-   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
-Library Reference Manual', for Version 1.4.5 or later of oo2c.
+   This is Edition 0.10 DRAFT, last updated 29 February 2000, of `The
+OOC Library Reference Manual', for Version 1.5.1 or later of oo2c.
 
-   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
-1999 Michael van Acken
+   Copyright (C) 1997-2000 Eric Nikitin Part II Copyright (C) 1998-2000
+Michael van Acken
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -28,19 +28,1128 @@ entitled "GNU General Public License" must be approved for accuracy by
 the Foundation.
 
 
+File: OOCref.info,  Node: JulianDay,  Next: SysClock,  Prev: Time,  Up: Date and Time
+
+Module JulianDay
+================
+
+   The module `JulianDay' provides facilities for convertion between
+day/ month/ year and various forms of Julian Days.  Julian Days are a
+standard convention used for describing dates with the least possible
+ambiguity.
+
+   The "Julian Day Number" (JDN) is a whole number representing the
+number of consecutive days since noon 1 January 4713 B.C. (this is
+Julian Day 0).
+
+   The "Julian Date" (JD) is an extension of Julian Day Number, which
+includes a fractional part representing the elapsed fraction of a day
+since the preceding noon.
+
+   The "Modified Julian Day" (MJD) begins instead at midnight (in
+keeping with more standard conventions) 17 November 1858.  This allows
+the first two digits of the Julian Day to be removed; that is, this
+date is Julian Day 2400000.  So,
+
+     MJD = JD - 2400000.5
+
+   The "Modified Julian Date" is the Julian Date minus 2400000.5.
+
+   The "Truncated Julian Day" (TJD) is the Modified Julian Day
+truncated to four digits.  When TJD first came into use, its origin
+date (i.e., "epoch") was at midnight 24 May 1968 (i.e., JDN 2440000).
+However, it "recycled" at midnight 10 October 1995 (i.e., JDN 2450000),
+so currently
+
+     TJD = MJD - 50000
+
+     *Please note:* The various Julian Days are integer values and are
+     distinct from Julian Dates, which are real number values.  You
+     should keep this in mind when using the facilities in module
+     `JulianDay'.
+
+   Several constants are provided for use in Julian Day and Date
+calculations:
+
+ - Constant: startMJD
+     Zero basis (i.e, "epoch") for modified Julian Day expressed as a
+     Julian Date.  (This number will be `2400000.5D0'.)
+
+ - Constant: startTJD
+     Zero basis (i.e, "epoch") for Truncated Julian Day.
+
+   The following is provided to test for use of the Gregorian calendar:
+
+     The "Gregorian Calendar" is the calendar system now in general use
+     throughout the world.  It was adopted because the *Julian Calendar*
+     (used in the Roman empire and then by the Roman Catholic Church)
+     accumulated an error of one day every 128 years (thus it is
+     currently 13 days behind the Gregorian Calendar).
+
+     The Gregorian Calendar (first prescribed in 1582 by Pope Gregory
+     XIII) adjusts the Julian year to the astronomical year by dropping
+     three leap years every 400 years.  That is, at the end of each
+     century, there is no leap year, except in the years 1600, 2000,
+     2400, and so forth.
+
+ - Read-only Variable: UseGregorian
+     A boolean value that is `TRUE' when the Gregorian Calendar is being
+     used by module `JulianDay'.  See also the procedure
+     `SetGregorianStart'.
+
+   Conversion facilities are provided as follows:
+
+ - Function: DateToJD `(DAY, MONTH: SHORTINT; YEAR: INTEGER): LONGREAL'
+     This function returns the Julian Date for the given DAY, MONTH,
+     and YEAR at 0000 UTC (midnight).  Any date with a positive year is
+     valid.  The returned value is the number of days since noon 1
+     January 4713 B.C.  (Note that the result will always have a
+     fractional part equal to `.5'.)
+
+ - Procedure: JDToDate `(JD: LONGREAL; VAR DAY, MONTH: SHORTINT; VAR
+          YEAR: INTEGER)'
+     This procedure converts a Julian Date JD to a date given by the
+     DAY, MONTH, and YEAR.
+
+   Algorithms for `DateToJD' and `JDToDate' by William H. Jefferys
+(with some modifications) at
+
+   `http://quasar.as.utexas.edu/BillInfo/JulianDatesG.html'
+
+   *Example:*
+
+     VAR date: LONGREAL;
+         day, month: SHORTINT;
+         year: INTEGER;
+     
+     date := JulianDay.DateToJD(10, 10, 1995);
+        => date = 2450000.5
+     JulianDay.JDToDate(date, day, month, year);
+        => day = 10, month = 10, year = 1995
+     
+     date := JulianDay.DateToJD(17, 11, 1858);
+        => date = 2400000.5
+     JulianDay.JDToDate(date, day, month, year);
+        => day = 17, month = 11, year = 1858
+
+ - Function: DateToDays `(DAY, MONTH: SHORTINT; YEAR: INTEGER): LONGINT'
+     This function returns the Modified Julian Day for the given DAY,
+     MONTH, and YEAR at 0000 UTC (midnight).  Any date with a positive
+     year is valid.  The returned value is the number of days since
+     midnight 17 November 1858.
+
+ - Procedure: DaysToDate `(JD: LONGINT; VAR DAY, MONTH: SHORTINT; VAR
+          YEAR: INTEGER)'
+     This procedure converts a Modified Julian Day JD to a date given by
+     the DAY, MONTH, and YEAR.
+
+   *Example:*
+
+     VAR days: LONGINT;
+         day, month: SHORTINT;
+         year: INTEGER;
+     
+     days := JulianDay.DateToDays(10, 10, 1995);
+        => days = 50000
+     JulianDay.DaysToDate(days, day, month, year);
+        => day = 10, month = 10, year = 1995
+     
+     days := JulianDay.DateToDays(17, 11, 1858);
+        => days = 0
+     JulianDay.DaysToDate(days, day, month, year);
+        => day = 17, month = 11, year = 1858
+     
+     days := JulianDay.DateToDays(8, 4, 1513);
+        => days = -126222
+     JulianDay.DaysToDate(days, day, month, year);
+        => day = 8, month = 4, year = 1513
+
+ - Function: DateToTJD `(DAY, MONTH: SHORTINT; YEAR: INTEGER): LONGINT'
+     This function returns the Truncated Julian Day for the given DAY,
+     MONTH, and YEAR at 0000 UTC (midnight).  Any date with a positive
+     year is valid.  The returned value is the number of days since
+     midnight 10 October 1995.
+
+ - Procedure: TJDToDate `(JD: LONGINT; VAR DAY, MONTH: SHORTINT; VAR
+          YEAR: INTEGER)'
+     This procedure converts a Truncated Julian Day JD to a date given
+     by the DAY, MONTH, and YEAR.
+
+   *Example:*
+
+     VAR days: LONGINT;
+         day, month: SHORTINT;
+         year: INTEGER;
+     
+     days := JulianDay.DateToTJD(10, 10, 1995);
+        => days = 0
+     JulianDay.TJDToDate(days, day, month, year);
+        => day = 10, month = 10, year = 1995
+     
+     days := JulianDay.DateToTJD(25, 12, 1997);
+        => days = 807
+     JulianDay.TJDToDate(days, day, month, year);
+        => day = 25, month = 12, year = 1997
+     
+     days := JulianDay.DateToTJD(17, 11, 1858);
+        => days = -50000
+     JulianDay.TJDToDate(days, day, month, year);
+        => day = 17, month = 11, year = 1858
+
+ - Procedure: SetGregorianStart `(DAY, MONTH: SHORTINT; YEAR: INTEGER)'
+     Sets the start date when the Gregorian Calendar was first used
+     where the date in DAY, MONTH, and YEAR according to the Julian
+     Calendar.
+
+     The default date used is `3 Sep 1752' (when the Gregorian Calendar
+     was adopted in England).  (At that time, the Julian Calendar was
+     11 days behind the Gregorian Calendar.  And so, `3 Sep 1752'
+     according to the Julian Calendar is `14 Sep 1752' according the
+     the Gregorian Calendar.)
+
+   *Example:*
+
+     VAR date: LONGREAL;
+         day, month: SHORTINT;
+         year: INTEGER;
+     
+     date := JulianDay.DateToJD(2, 9, 1752);
+        => date = 2361220.5
+     
+     JulianDay.SetGregorianStart(15, 10, 1582);
+        (* move start date to before `3 Sep 1752' *)
+     
+     JulianDay.JDToDate(date, day, month, year);
+        => day = 13, month = 9, year = 1752
+        (* When Gregorian start date occurs at an earlier date,
+           Julian Calendar date `2 Sep 1752' is corrected to
+           the Gregorian date `13 Sep 1752'.
+        *)
+
+
+File: OOCref.info,  Node: SysClock,  Next: Calendar,  Prev: JulianDay,  Up: Date and Time
+
+Module SysClock
+===============
+
+   Module `SysClock' provides facilities for accessing a system clock
+that records the date and time of day.  This includes a `DateTime' type,
+which represents a system-independent time format.  Note that the module
+`Calendar' provides additional operations for `DateTime'.
+
+   *Please note:*
+   * No provision is made for leap seconds.
+
+   * The field `summerTimeFlag' is present for information only.  `UTC'
+     can always be obtained by subtracting the `zone' (time zone) value
+     from the time data, regardless of the value of the
+     `summerTimeFlag'.  However, its presence does allow a program to
+     know whether or not the date and time data represents standard
+     time for that location, or "summer time".  A program could
+     therefore be written to change the system clock to summer time
+     automatically on a certain date, provided it had not already been
+     changed.
+
+   The following constants are defined:
+
+ - Constant: maxSecondParts
+     Accuracy of measure for "parts of a second" (`fractions') (Most
+     systems have just millisecond accuracy: `maxSecondParts = 999'.)
+
+ - Constant: zoneMin
+     Used as a minimum range limit for time zone (`zone') in minutes.
+
+ - Constant: zoneMax
+     Used as a maximum range limit for time zone (`zone') in minutes.
+
+   The following constants are used as possible time zone values for
+`zone':
+
+ - Constant: localTime
+     Indicates that time zone is inactive and time is local.
+
+ - Constant: unknownZone
+     Indicates that time zone is unknown.
+
+   The following constants are used as possible daylight savings mode
+values for
+`summerTimeFlag':
+
+ - Constant: unknown
+     Indicates that current daylight savings status is unknown.
+
+ - Constant: inactive
+     Indicates that daylight savings adjustments are not in effect.
+
+ - Constant: active
+     Indicates that daylight savings adjustments are being used.
+
+ - Record: DateTime
+     This type represents an instant in time using a combination of
+     fields for date and time information.  The fields are defined as
+     follows:
+
+    Field: year: `INTEGER'
+          A positive value representing a four digit year.
+
+    Field: month: `SHORTINT'
+          A value in the range `1..12'.
+
+    Field: day: `SHORTINT'
+          A value in the range `1..31'.
+
+    Field: hour: `SHORTINT'
+          A value in the range `0..23'.
+
+    Field: minute: `SHORTINT'
+          A value in the range `0..59'.
+
+    Field: second: `SHORTINT'
+          A value in the range `0..59'.
+
+    Field: fractions: `INTEGER'
+          A value in the range `0..`maxSecondParts'' representing parts
+          of a second in milliseconds.
+
+    Field: zone: `INTEGER'
+          A value in the range ``zoneMin'..`zoneMax''.  This represents
+          a time zone differential factor, which is the number of
+          minutes to add to local time to obtain UTC or is set to
+          `localTime' when time zones are inactive.
+
+          *Please note:* `-780..720' is the typical range for `zone'.
+
+    Field: summerTimeFlag: `SHORTINT'
+          This value represents the current status of daylight savings
+          mode.  Interpretation of this flag depends on local usage.
+          However, the constants `unknown', `active', and `inactive'
+          are provided as possible values.
+
+   The following procedures are provided in module `SysClock':
+
+ - Function: CanGetClock `(): BOOLEAN'
+     This function returns `TRUE' if there is a system clock, which the
+     program is permitted to read.  Otherwise, it returns `FALSE'.
+
+ - Function: CanSetClock `(): BOOLEAN'
+     This function returns `TRUE' if there is a system clock, which the
+     program is permitted to set.  Otherwise, it returns `FALSE'.
+
+ - Function: IsValidDateTime `(D: DateTime): BOOLEAN'
+     This function returns `TRUE' if the value of D represents a valid
+     date and time.  Otherwise, it returns `FALSE'.
+
+ - Procedure: GetClock `(VAR USERDATA: DateTime)'
+     This procedure assigns the system date and time to the fields of
+     USERDATA (i.e., USERDATA is set to local time).
+
+     If an error occurs, USERDATA is set to `1 Jan 1970'.
+
+ - Procedure: SetClock `(USERDATA: DateTime)'
+     This procedure sets the system clock to the date and time
+     specified by USERDATA.  If the program cannot set the system
+     clock, a call of `SetClock' has no effect.
+
+     The behavior of `SetClock' is undefined if USERDATA represents a
+     invalid date and time.
+
+ - Procedure: MakeLocalTime `(VAR C: DateTime)'
+     This procedure sets the daylight savings mode `summerTimeFlag' and
+     time zone `zone' for calendar date C.  This assumes that C
+     describes a valid local time.  The previous values of
+     `summerTimeFlag' and `zone' are ignored and are overwritten by a
+     call to `MakeLocalTime'.
+
+     *Please note:*
+       1. On most Unix systems the time zone information is only
+          available for dates falling approximately within 1 Jan 1902
+          to 31 Dec 2037.  Outside this range the field `zone' will be
+          set to the unspecified `localTime' value , and
+          `summerTimeFlag' will be set to `unknown'.
+
+       2. The time zone information might not be fully accurate for
+          past (and future) years that apply different Daylight Savings
+          Time (DST) rules than the current year.  Usually, the current
+          set of rules is used for all years between 1902 and 2037.
+
+       3. With DST there is one hour in the year that happens twice:
+          the hour after which the clock is turned back for a full
+          hour.  It is undefined which time zone will be selected for
+          dates refering to this hour; that is, whether DST or normal
+          time zone will be chosen.
+
+
+File: OOCref.info,  Node: Calendar,  Prev: SysClock,  Up: Date and Time
+
+Module Calendar
+===============
+
+   Module `Calendar' provides facilities for manipulation of dates and
+times.  These facilities include procedures to convert between
+`SysClock.DateTime' and `Time.TimeStamp', as well as conversions
+between `DateTime' and various string formats.
+
+   The following constants are defined for the days of the week:
+
+ - Constant: sunday
+
+ - Constant: monday
+
+ - Constant: tuesday
+
+ - Constant: wednesday
+
+ - Constant: thursday
+
+ - Constant: friday
+
+ - Constant: saturday
+
+   And the following constants are defined for the months of the year:
+
+ - Constant: january
+
+ - Constant: february
+
+ - Constant: march
+
+ - Constant: april
+
+ - Constant: may
+
+ - Constant: june
+
+ - Constant: july
+
+ - Constant: august
+
+ - Constant: september
+
+ - Constant: october
+
+ - Constant: november
+
+ - Constant: december
+
+   The following procedures are used to initialize instances of
+`DateTime':
+
+ - Procedure: SetLocalTime `(VAR C: SysClock.DateTime; D, M: SHORTINT;
+          Y: INTEGER; H, MIN, S: SHORTINT)'
+     This procedure initializes the calendar C with the local date from
+     D days, M months, Y years; and the local time from H hours, MIN
+     minutes, and S seconds.  These values must be in the valid ranges
+     for each field:
+
+    `year'
+          `Y > 0'.
+
+    `month'
+          M in the range `1..12'.
+
+    `day'
+          D in the range `1..31'.
+
+    `hour'
+          H in the range `0..23'.
+
+    `minute'
+          MIN in the range `0..59'.
+
+    `second'
+          S in the range `0..59'.
+
+     The other fields of C are set as follows:
+
+        * `fractions' is set to `0'.
+
+        * `zone' is set to the number of minutes needed to add to local
+          time to obtain UTC.
+
+        * `summerTimeFlag' is set to one of `active', `inactive', or
+          `unknown'.
+
+     *Please note:* `SetLocalTime' utilizes `SysClock.MakeLocalTime' to
+     obtain time zone and daylight savings mode information.  All
+     restrictions on `MakeLocalTime' also apply to `SetLocalTime'.
+
+   *Example:*
+
+     VAR
+       c: SysClock.DateTime;
+     
+     Calendar.SetLocalTime(c, 31, 12, 1997, 15, 30, 00);
+        => c = Wednesday, 31 Dec 1997, 15:30:00.0
+
+ - Procedure: SetUTC `(VAR C: SysClock.DateTime; D, M: SHORTINT; Y:
+          INTEGER; H, MIN, S: SHORTINT)'
+     This procedure initializes the calendar C exactly like
+     `SetLocalTime' except for the following differences:
+
+        * `C.zone' is always set to `0'.
+
+        * `C.summerTimeFlag' is always set to `inactive'.
+
+   The following procedures are used to convert between
+`SysClock.DateTime' and `Time.TimeStamp':
+
+ - Procedure: GetTimeStamp `(VAR C: SysClock.DateTime; S:
+          Time.TimeStamp)'
+     This procedure sets the calendar C from the time stamp S based on
+     local time (i.e., `C.zone' and `C.summerTimeFlag' are set as in
+     `SetLocalTime').
+
+   *Example:*
+
+     VAR
+       c: SysClock.DateTime;
+       ts: Time.TimeStamp;
+     
+     Time.InitTimeStamp(ts, 50000, 43200000);
+             (* == noon 10 October 1995 UTC *)
+     Calendar.GetTimeStamp(c, ts);
+        => c = Tuesday, 10 Oct 1995, 08:00:00
+        => c.zone = 240
+             (* i.e., local time is 4 hours behind UTC *)
+
+ - Procedure: SetTimeStamp `(C: SysClock.DateTime; VAR T: T.TimeStamp)'
+     This procedure converts the calendar date `c' to a time stamp T.
+
+   The following functions provide useful information about a particular
+`DateTime' value:
+
+ - Function: DayOfWeek `(C: SysClock.DateTime): SHORTINT'
+     This function returns the day of the week of C as one of the
+     constant values
+     `sunday..saturday'.
+
+ - Function: IsLeapYear `(C: SysClock.DateTime): BOOLEAN'
+     This function returns `TRUE' if C occurs within a leap year.
+     Otherwise, it returns `FALSE'.
+
+ - Function: DaysPerMonth `(C: SysClock.DateTime): SHORTINT'
+     This function returns the total number of days in the month of C
+     (i.e., one of `28', `29', `30', or `31').  Leap years are taken
+     into account.
+
+ - Function: WeekNumber `(C: SysClock.DateTime; STARTDAY: SHORTINT):
+          INTEGER'
+     This function returns the week number of C based on each week
+     beginning on STARTDAY.  The value of STARTDAY is one of the
+     constant values
+     `sunday..saturday'.  The first week of a month is recognized as
+     having 4 or more days in that month where each week begins on
+     STARTDAY.
+
+ - Function: DayOfYear `(C: SysClock.DateTime): INTEGER'
+     This function returns the day of the year of C in the range
+     `1..366'.  For instance, January first for any year returns `1'.
+
+   *Example:*
+
+     VAR
+       c: SysClock.DateTime;
+       day, week, dayOfYear, daysInMon: INTEGER;
+     
+     Calendar.SetLocalTime(c, 31, 12, 1996, 12, 00, 00);
+        => c = Tuesday, 31 Dec 1996, 12:00:00
+     day := Calendar.DayOfWeek(c);
+        => day = Calendar.tuesday
+     week := Calendar.WeekNumber(c, Calendar.sunday);
+        => week = 1
+     dayOfYear := Calendar.DayOfYear(c);
+        => dayOfYear = 366
+     IF Calendar.IsLeapYear(c) THEN ...
+        => TRUE
+     
+     Calendar.SetLocalTime(c, 31, 12, 1997, 15, 30, 00);
+        => c = Wednesday, 31 Dec 1997, 15:30:00
+     day := Calendar.DayOfWeek(c);
+        => day = Calendar.wednesday
+     week := Calendar.WeekNumber(c, Calendar.sunday);
+        => week = 53
+     dayOfYear := Calendar.DayOfYear(c);
+        => dayOfYear = 365
+     IF Calendar.IsLeapYear(c) THEN ...
+        => FALSE
+     
+     Calendar.SetLocalTime(c, 1, 2, 1996, 00, 00, 00);
+        => c = Thursday, 1 Feb 1996, 00:00:00
+     IF Calendar.IsLeapYear(c) THEN ...
+        => TRUE
+     daysInMon := Calendar.DaysPerMonth(c);
+        => daysInMon = 29
+     
+     Calendar.SetLocalTime(c, 1, 2, 1997, 00, 00, 00);
+        => c = Saturday, 1 Feb 1997, 00:00:00
+     IF Calendar.IsLeapYear(c) THEN ...
+        => FALSE
+     daysInMon := Calendar.DaysPerMonth(c);
+        => daysInMon = 28
+
+   The following procedures are used to convert between
+`SysClock.DateTime' and time-formatted strings:
+
+ - Procedure: TimeToStr `(VAR C: SysClock.DateTime; PATTERN: ARRAY OF
+          CHAR; VAR DATESTR: ARRAY OF CHAR)'
+     This procedure converts C to a string DATESTR using the format
+     template PATTERN.  Allowable conversion specifiers for PATTERN are
+     specialized for printing the date and time components of C
+     according to the locale currently specified for time conversion
+     (*note Locales::.).
+
+     Normal characters appearing in PATTERN are copied verbatim to the
+     output string DATESTR; this can include multibyte character
+     sequences.  Conversion specifiers are introduced by a `%'
+     character, and are replaced in the output string as follows:
+
+    `%a'
+          The abbreviated weekday name according to the current locale.
+
+    `%A'
+          The full weekday name according to the current locale.
+
+    `%b'
+          The abbreviated month name according to the current locale.
+
+    `%B'
+          The full month name according to the current locale.
+
+    `%c'
+          The preferred date and time representation for the current
+          locale.
+
+    `%d'
+          The day of the month as a decimal number (in the range `01'
+          to `31').
+
+    `%D'
+          The day of the month as above, but with no leading zero.
+
+    `%H'
+          The hour as a decimal number, using a 24-hour clock (in the
+          range `00' to `23').
+
+    `%I'
+          The hour as a decimal number, using a 12-hour clock (in the
+          range `01' to `12').
+
+    `%i'
+          The hour as a decimal number, using a 12-hour clock, but with
+          no leading zero.
+
+    `%j'
+          The day of the year as a decimal number (in the range `001'
+          to `366').
+
+    `%m'
+          The month as a decimal number (in the range `01' to `12').
+
+    `%M'
+          The minute as a decimal number.
+
+    `%p'
+          One of `AM' or `PM', according to the given time value; or
+          the corresponding strings for the current locale.
+
+    `%S'
+          The second as a decimal number.
+
+    `%U'
+          The week number of the current year as a decimal number,
+          starting with the first Sunday as the first day of the first
+          week.
+
+    `%W'
+          The week number of the current year as a decimal number,
+          starting with the first Monday as the first day of the first
+          week.
+
+    `%w'
+          The day of the week as a decimal number, Sunday being `0'.
+
+    `%x'
+          The preferred date representation for the current locale, but
+          without the time.
+
+    `%X'
+          The preferred time representation for the current locale, but
+          with no date.
+
+    `%y'
+          The year as a decimal number, but without a century (in the
+          range `00' to `99').
+
+    `%Y'
+          The year as a decimal number, including the century.
+
+    `%Z'
+          The time zone or name or abbreviation (empty if the time zone
+          cannot be determined).
+
+    `%%'
+          A literal `%' character.
+
+   *Example:*
+
+     VAR
+       c: SysClock.DateTime;
+       str: ARRAY 256 OF CHAR;
+     
+     (* c initialized to Wednesday, 25 Dec 1996, 15:30:00 *)
+     
+     Calendar.TimeToStr(c, "%A, %D %b %Y, %H:%M:%S", str);
+        => str = "Wednesday, 25 Dec 1996, 15:30:00"
+     Calendar.TimeToStr(c, "%a, %d/%m/%y, %H:%M:%S %Z", str);
+        => str = "Wed, 25/12/96, 15:30:00 UTC-0500"
+     Calendar.TimeToStr(c, "%A, %D %B %Y, %I:%M:%S %p", str);
+        => str = "Wednesday, 25 December 1996, 03:30:00 PM"
+     Calendar.TimeToStr(c, "%b %D, %Y is %A and the %jth day.", str);
+        => str = "Dec 25, 1996 is Wednesday and the 360th day."
+
+ - Function: StrToTime `(VAR C: SysClock.DateTime; DATESTR: ARRAY OF
+          CHAR; PATTERN: ARRAY OF CHAR): BOOLEAN'
+     This function converts the string DATESTR into a calendar C using
+     the format template PATTERN.  Allowable conversion specifiers for
+     PATTERN the same as in the `TimeToStr' procedure.  However, only
+     date and time components are used in the conversion; any other
+     information, such as the day of the week and the week number, are
+     ignored.
+
+     For names appearing in DATESTR, upper and lower-case distinctions
+     are ignored.
+
+     Unspecified time or date components are set to the lower-bound
+     value for that component (after adjustment for the current time
+     zone): For example, incomplete times will assume the zero time for
+     missing time elements; and missing date elements will assume the
+     corresponding date element from the reference date `1 Jan 1970'.
+
+     If DATESTR is successfully parsed into a valid calendar date
+     according to the PATTERN, `StrToTime' returns `TRUE'.  Otherwise,
+     it returns `FALSE'.
+
+   *Example:*
+
+     VAR
+       c: SysClock.DateTime;
+     
+     IF Calendar.StrToTime(c, "Sunday, Oct 12, 1995", "%A, %b %D, %Y") THEN
+        => TRUE, c = Thursday, 12 Oct 1995, 00:00:00
+             (* Note that day of week is ignored,
+                and correct value assigned to c *)
+     
+     IF Calendar.StrToTime(c, "jul 4, 1776", "%b %D, %Y") THEN
+        => TRUE, c = Thursday, 4 Jul 1776, 00:00:00
+     
+     IF Calendar.StrToTime(c, "3:30 pm, 25 December 96",
+                           "%i:%M %p, %D %B %y") THEN
+        => TRUE, c = Wednesday, 25 Dec 1996, 15:30:00
+     
+     IF Calendar.StrToTime(c, "1963 14:15:30", "%Y %H:%M:%S") THEN
+        => TRUE, c = Tuesday, 1 Jan 1963, 14:15:30
+     
+     IF Calendar.StrToTime(c, "05/30/97", "%m/%d/%y") THEN
+        => TRUE, c = Friday, 30 May 1997, 00:00:00
+     
+     IF Calendar.StrToTime(c, "31 Feb 1997", "%D %b %Y") THEN
+        => FALSE, c = undefined
+
+
+File: OOCref.info,  Node: Oakwood Compliant Modules,  Next: Exception Handling,  Prev: Date and Time,  Up: Top
+
+Oakwood Compliant Modules
+*************************
+
+   In order to support `the Oakwood Guildlines', OOC provides a set of
+basic library modules that comply with the Oakwood specification.  (Note
+that all Oakwood modules may not be available.)  All Oakwood compliant
+modules begin with the prefix "Oak".
+
+* Menu:
+
+* OakStrings::                  String manipulation.
+* OakFiles::                    File access.
+* OakIn::                       Basic functions for formatted input.
+* OakOut::                      Basic functions for formatted output.
+* OakMath and OakMathL::        Mathematical functions for `REAL'.
+                                  and `LONGREAL'.
+
+
+File: OOCref.info,  Node: OakStrings,  Next: OakFiles,  Up: Oakwood Compliant Modules
+
+Module OakStrings
+=================
+
+   Module `OakStrings' provides a set of operations on strings (i.e., on
+string constants and character arrays, both of which contain the
+character `0X' as a terminator).  All positions in strings start at `0'.
+
+   (`The Oakwood Guildlines' remark that string assignments and string
+comparisons are already supported by the language Oberon-2.)
+
+Procedures
+----------
+
+ - Function: Length `(S: ARRAY OF CHAR): INTEGER'
+     Returns the number of characters in S up to and excluding the first
+     `0X'.
+
+ - Procedure: Insert `(SRC: ARRAY OF CHAR; POS: INTEGER; VAR DST: ARRAY
+          OF CHAR)'
+     Inserts the string SRC into the string DST at position POS
+     (`0<=POS<=Length(DST)').  If `POS=Length(DST)', SRC is appended to
+     DST.  If the size of DST is not large enough to hold the result of
+     the operation, the result is truncated so that DST is always
+     terminated with a `0X'.
+
+ - Procedure: Append `(S: ARRAY OF CHAR; VAR DST: ARRAY OF CHAR)'
+     Has the same effect as `Insert(S, Length(DST), DST)'.
+
+ - Procedure: Delete `(VAR S: ARRAY OF CHAR; POS, N: INTEGER)'
+     Deletes N characters from S starting at position POS
+     (`0<=POS<=Length(S)').  If `N>Length(S)-POS', the new length of S
+     is POS.
+
+ - Procedure: Replace `(SRC: ARRAY OF CHAR; POS: INTEGER; VAR DST:
+          ARRAY OF CHAR)'
+     Has the same effect as `Delete(DST, POS, Length(SRC))' followed by
+     `Insert(SRC, POS, DST)'.
+
+ - Procedure: Extract `(SRC: ARRAY OF CHAR; POS, N: INTEGER; VAR DST:
+          ARRAY OF CHAR)'
+     Extracts a substring DST with N characters from position POS
+     (`0<=POS<= Length(SRC)') in SRC.  If `N>Length(SRC)-POS', DST is
+     only the part of SRC from POS to the end of SRC, i.e.
+     `Length(src)-1'.  If the size of DST is not large enough to hold
+     the result of the operation, the result is truncated so that DST
+     is always terminated with a `0X'.
+
+ - Function: Pos `(PAT, S: ARRAY OF CHAR; POS: INTEGER): INTEGER'
+     Returns the position of the first occurrence of PAT in S.
+     Searching starts at position POS.  If PAT is not found, `-1' is
+     returned.
+
+ - Procedure: Cap `(VAR S: ARRAY OF CHAR)'
+     Replaces each lower case letter within S by its upper case
+     equivalent.
+
+
+File: OOCref.info,  Node: OakFiles,  Next: OakIn,  Prev: OakStrings,  Up: Oakwood Compliant Modules
+
+Module OakFiles
+===============
+
+   Module `OakFiles' provides operations on files and the file
+directory.
+
+   `The Oakwood Guildlines' define the type `File' as representing a
+stream of bytes ususally stored on an external medium.  A `File' has a
+certain length as well as the date and time of its last modification.
+
+   A "file directory" is a mapping from file names to files.  A file
+that is not registered in the directory is considered temporary.
+
+   The type `Rider' holds a read/write position in a file (positions
+start with 0).  There may be multiple riders set to the same file.  The
+field `eof' is set to `TRUE' if an attempt was made to read beyond the
+end of the file.  The field `res' reports the success of `ReadBytes'
+and `WriteBytes' operations.  Writing data overwrites old data at the
+rider position.  When data is written beyond the end of the file, the
+file length increases.
+
+Operations for Unformatted Input and Output
+-------------------------------------------
+
+   In general, all operations must use the following format for external
+representation:
+
+   * "Little endian" representation (i.e., the least significant byte
+     of a word is the one with the lowest address on the file).
+
+   * Numbers: `SHORTINT' 1 byte, `INTEGER' 2 bytes, `LONGINT' 4 bytes
+
+   * Sets: 4 bytes, element 0 is the least significant bit
+
+   * Booleans: single byte with `FALSE' = 0, `TRUE' = 1
+
+   * Reals: IEEE standard; `REAL' 4 bytes, `LONGREAL' 8 bytes
+
+   * Strings: with terminating `0X'
+
+   *Example:*
+
+       VAR f: Files.File; r: Files.Rider; ch: CHAR;
+
+   Reading from an existing file:
+       f := Files.Old ("xxx");
+       IF f # NIL THEN
+         Files.Set (r, f, 0);
+         Files.Read (r, ch);
+         WHILE ~ r.eof DO
+           Files.Read (r, ch)
+         END
+       END
+
+   Writing to a new file yyy:
+       f := Files.New ("yyy");
+       Files.Set (r, f, 0);
+       Files.WriteInt (r, 8);
+       Files.WriteString (r, " bytes");
+       Files.Register (f)
+
+     *Please note:* This module implements virtual file descriptors;
+     that is, an unlimited number of files can be open at the same
+     time.  These files share the limited number of file descriptors
+     provided by the operating system.
+
+Remarks
+-------
+
+   `The Oakwood Guildlines' provide the following specifications:
+
+   `WriteNum' and `ReadNum', should use the following encoding
+algorithms for conversion to and from external format:
+
+     PROCEDURE WriteNum (VAR r: Rider; x: LONGINT);
+     BEGIN
+        WHILE (x < - 64) OR (x > 63) DO
+            Write(r, CHR(x MOD 128 + 128)); x := x DIV 128
+        END;
+        Write(r, CHR(x MOD 128))
+     END WriteNum;
+     
+     PROCEDURE ReadNum (VAR r: Rider; VAR x: LONGINT);
+        VAR s: SHORTINT; ch: CHAR; n: LONGINT;
+     BEGIN
+        s := 0; n := 0;
+        Read(r, ch);
+        WHILE ORD(ch) >= 128 DO
+           INC(n, ASH(ORD(ch) - 128, s) );
+           INC(s, 7);
+           Read(r, ch)
+        END;
+        x := n + ASH(ORD(ch) MOD 64 - ORD(ch) DIV 64 * 64, s)
+     END ReadNum;
+
+   The reason for the specification of the file name in the operation
+`New' is to allow allocation of the file on the correct medium from the
+beginning (if the operating system supports multiple media).
+
+   The operations `Read', `Write', `ReadBytes' and `WriteBytes' require
+the existence of a type `SYSTEM.BYTE' with the following
+characteristics:
+
+   * If a formal parameter is of type `SYSTEM.BYTE', the corresponding
+     actual parameter may be of type `CHAR', `SHORTINT', or
+     `SYSTEM.BYTE'.
+
+   * If a formal variable parameter is of type `ARRAY OF SYSTEM.BYTE',
+     the corresponding actual parameter may be of any type.  Note that
+     this feature is dangerous and inherently unportable.  Its use
+     should therefore be restricted to system-level modules.
+
+Types
+-----
+
+ - Data type: File = POINTER TO FileDesc
+
+ - Record: FileDesc = RECORD
+
+ - Record: Rider = RECORD
+    Field: eof-: `BOOLEAN'
+          Set to `TRUE' if an attempt was made to read beyond the end
+          of the file.
+
+    Field: res-: `INTEGER'
+          See `ReadBytes' and `WriteBytes' below for possible values of
+          `res'.
+
+Operations on Files and the File Directory
+------------------------------------------
+
+ - Function: Old `(NAME: ARRAY OF CHAR): File'
+     `Old(NAME)' searches for the NAME in the directory and returns the
+     corresponding file.  If the NAME is not found, it returns `NIL'.
+
+ - Function: New `(NAME: ARRAY OF CHAR): File'
+     `New(NAME)' creates and returns a new file.  The NAME is
+     remembered for the later use of the operation `Register'.  The
+     file is only entered into the directory when `Register' is called.
+
+ - Procedure: Register `(F: File)'
+     `Register(F)' enters the file F into the directory together with
+     the name provided in the operation `New' that created F.  The file
+     buffers are written back.  Any existing mapping of this name to
+     another file is overwritten.
+
+ - Procedure: Close `(VAR F: File)'
+     `Close(F)' writes back the file buffers of F.  The file is still
+     accessible by its handle F and the riders positioned on it.  If a
+     file is not modified, it is not necessary to close it.
+
+          *Please note:* The above holds only for
+          `permanentClose=FALSE'.  Otherwise, the buffers are flushed
+          and the file handle is deallocated (and F is set to `NIL');
+          at this time, all riders on this file become invalid.  This
+          behaviour, and the variable `permanentClose', are not part of
+          `The Oakwood Guidelines'.
+
+ - Procedure: Purge `(F: File)'
+     `Purge(F)' resets the length of file F to `0'.
+
+ - Procedure: Delete `(NAME: ARRAY OF CHAR; VAR RES: INTEGER)'
+     `Delete(NAME, RES)' removes the directory entry for the file
+     `name' without deleting the file.  If `res=0' the file has been
+     successfully deleted.  If there are variables referring to the file
+     while `Delete' is called, they can still be used.
+
+ - Procedure: Rename `(OLD, NEW: ARRAY OF CHAR; VAR RES: INTEGER)'
+     `Rename(OLD, NEW, RES)' renames the directory entry OLD to NEW.
+     If `res=0', the file has been successfully renamed.  If there are
+     variables referring to the file while `Rename' is called, they can
+     still be used.
+
+ - Function: Length `(F: File): LONGINT'
+     `Length(F)' returns the number of bytes in file F.
+
+ - Procedure: GetDate `(F: File; VAR T, D: LONGINT)'
+     `GetDate(F, T, D)' returns the time T and date D of the last
+     modification of file F.
+
+     The encoding is as follows:
+          hour = t DIV 4096;
+          minute = t DIV 64 MOD 64;
+          second = t MOD 64;
+          
+          year = d DIV 512;
+          month = d DIV 32 MOD 16;
+          day = d MOD 32.
+
+Operations on Riders
+--------------------
+
+ - Procedure: Set `(VAR R: Rider; F: File; POS: LONGINT)'
+     `Set(R, F, POS)' sets the rider R to position POS in file F.  The
+     field `r.eof' is set to FALSE.  The operation requires that `0 <=
+     pos <= Length(F)'.
+
+ - Function: Pos `(VAR R: Rider): LONGINT'
+     `Pos(R)' returns the position of the rider R.
+
+ - Function: Base `(VAR R: Rider): File'
+     `Base(R)' returns the file to which the rider R has been set.
+
+Reading
+.......
+
+ - Procedure: Read `(VAR R: Rider; VAR X: SYSTEM.BYTE)'
+     `Read(R, X)' reads the next byte X from rider R and advances R
+     accordingly.
+
+ - Procedure: ReadInt `(VAR R: Rider; VAR I: INTEGER)'
+     `ReadInt(R, I)' reads a integer number I from rider R and advances
+     R accordingly.
+
+ - Procedure: ReadLInt `(VAR R: Rider; VAR I: LONGINT)'
+     `ReadLInt(R, I)' reads a long integer number I from rider R and
+     advances R accordingly.
+
+ - Procedure: ReadReal `(VAR R: Rider; VAR X: REAL)'
+     `ReadReal(R, X)' reads a real number X from rider R and advances R
+     accordingly.
+
+ - Procedure: ReadLReal `(VAR R: Rider; VAR X: LONGREAL)'
+     `ReadLReal(R, X)' reads a long real number X from rider R and
+     advances R accordingly.
+
+ - Procedure: ReadNum `(VAR R: Rider; VAR I: LONGINT)'
+     `ReadNum(R, I' reads an integer number I from rider R and advances
+     R accordingly.  The number I is compactly encoded (see the
+     "Remarks" section above).
+
+ - Procedure: ReadString `(VAR R: Rider; VAR S: ARRAY OF CHAR)'
+     `ReadString(R, S)' reads a sequence of characters (including the
+     terminating `0X') from rider R and returns it in `s'.  The rider
+     is advanced accordingly.  The actual parameter corresponding to S
+     must be long enough to hold the character sequence plus the
+     terminating `0X'.
+
+ - Procedure: ReadSet `(VAR R: Rider; VAR S: SET)'
+     `ReadSet(R, S)' reads a set S from rider R and advances R
+     accordingly.
+
+ - Procedure: ReadBool `(VAR R: Rider; VAR B: BOOLEAN)'
+     `ReadBool(R, B)' reads a Boolean value B from rider R and advances
+     R accordingly.
+
+ - Procedure: ReadBytes `(VAR R: Rider; VAR BUF: ARRAY OF SYSTEM.BYTE;
+          N: LONGINT)'
+     `ReadBytes(R, BUF, N)' reads N bytes into buffer BUF starting at
+     the rider position R.  The rider is advanced accordingly.  If less
+     than N bytes could be read, `R.res' contains the number of
+     requested but unread bytes.
+
+Writing
+.......
+
+ - Procedure: Write `(VAR R: Rider; X: SYSTEM.BYTE)'
+     `Write(R, X)' writes the byte X to rider R and advances R
+     accordingly.
+
+ - Procedure: WriteInt `(VAR R: Rider; I: INTEGER)'
+     `WriteInt(R, I)' writes the integer number I to rider R and
+     advances R accordingly.
+
+ - Procedure: WriteLInt `(VAR R: Rider; I: LONGINT)'
+     `WriteLInt(R, I)' writes the long integer number I to rider R and
+     advances R accordingly.
+
+ - Procedure: WriteReal `(VAR R: Rider; X: REAL)'
+     `WriteReal(R, X)' writes the real number X to rider R and advances
+     R accordingly.
+
+ - Procedure: WriteLReal `(VAR R: Rider; X: LONGREAL)'
+     `WriteLReal(R, X)' write the long real number X to rider R and
+     advance R accordingly.
+
+ - Procedure: WriteNum `(VAR R: Rider; I: LONGINT)'
+     `WriteNum(R, I)' writes the integer number I to rider R and
+     advances R accordingly.  The number I is compactly encoded (see
+     the "Remarks" section above).
+
+ - Procedure: WriteString `(VAR R: Rider; S: ARRAY OF CHAR)'
+     `WriteString(R, S)' writes the sequence of characters S (including
+     the terminating `0X') to rider R and advances R accordingly.
+
+ - Procedure: WriteSet `(VAR R: Rider; S: SET)'
+     `WriteSet(R, S)' writes the set S to rider R and advances R
+     accordingly.
+
+ - Procedure: WriteBool `(VAR R: Rider; B: BOOLEAN)'
+     `WriteBool(R, B)' writes the Boolean value B to rider R and
+     advances R accordingly.
+
+ - Procedure: WriteBytes `(VAR R: Rider; VAR BUF: ARRAY OF SYSTEM.BYTE;
+          N: LONGINT)'
+     `WriteBytes(R, BUF, N)' writes the first N bytes from buf to rider
+     R and advances R accordingly.  `R.res' contains the number of
+     bytes that could not be written (e.g., due to a disk full error).
+
+
 File: OOCref.info,  Node: OakIn,  Next: OakOut,  Prev: OakFiles,  Up: Oakwood Compliant Modules
 
 Module OakIn
 ============
 
-   Module `In' provides a set of basic routines for formatted input of
-characters, character sequences, numbers, and names.  It assumes a
+   Module `OakIn' provides a set of basic routines for formatted input
+of characters, character sequences, numbers, and names.  It assumes a
 standard input stream with a current position that can be reset to the
 beginning of the stream.  A call to procedure `Open' initializes module
-`In' and sets it to read from the standard input channel
+`OakIn' and sets it to read from the standard input channel
 `StdChannels.stdin' (*note StdChannels::.)
 
-   Module `In' has a concept of a "current position", which is the
+   Module `OakIn' has a concept of a "current position", which is the
 character position in the input stream from where the next symbol is
 read.  `Open' (re)sets it to the beginning of the input stream.  After
 reading a symbol, the current position is set to the position
@@ -109,9 +1218,9 @@ File: OOCref.info,  Node: OakOut,  Next: OakMath and OakMathL,  Prev: OakIn,  Up
 Module OakOut
 =============
 
-   Module `Out' provides a set of basic routines for formatted output of
-characters, numbers, and strings.  It assumes a standard output stream
-to which the symbols are written.
+   Module `OakOut' provides a set of basic routines for formatted output
+of characters, numbers, and strings.  It assumes a standard output
+stream to which the symbols are written.
 
  - Procedure: Open
      Initializes the output stream.
@@ -305,1101 +1414,4 @@ one process to signal another process.
 
 * Exception::                   Run-time exception handling.
 * Signal::                      Installing signal handlers.
-
-
-File: OOCref.info,  Node: Exception,  Next: Signal,  Up: Exception Handling
-
-Module Exception
-================
-
-   The primary use of this module is to provide error handling and to
-allow programmer control over both system and language (`HALT' and
-`ASSERT') exception handling.  The programmer may define handlers,
-which can be used in place of those defined by the implementation.
-
-   There are two states of program execution: normal and exceptional.  A
-program remains in the normal execution state until an exception is
-raised by a call to `RAISE', `HALT', or `ASSERT', or after a failed
-run-time check.  After that, the program remains in the exceptional
-execution state until `ACKNOWLEDGE' or `RETRY' is called.
-
-   An exception affects the control flow of a program; raising an
-exception implies transfer of control to some sort of handler, even
-across procedure invocations.  An "exception handler" is a statement
-sequence that is executed when an exception occurs.  In OOC, an
-exception handler is set up as part of an execution context.  Both
-normal and exceptional execution blocks can be set up within the same
-procedure, or exceptions can be allowed to propogate up the call stack
-and handled by a calling procedure.  A execution context, and exception
-handler, is typically set up like
-
-     Exception.PUSHCONTEXT (e);
-     IF (e = NIL) THEN
-       (* normal execution *)
-     ELSE  (* an exception was raised *)
-       (* handle the exception raised during normal execution *)
-     END;
-     Exception.POPCONTEXT;
-
-     *Please note:* Wherever the word "thread" appears below, it should
-     be read as "program" for the moment.  Multi-threading isn't
-     supported yet.
-
-* Menu:
-
-* Exception Facilities::        Exception sources and associated operations.
-* Restrictions on PUSHCONTEXT:: Restrictions and cautions when setting
-                                 exception contexts.
-* Predefined Exception Sources::Exception sources defined in module
-                                 `Exception'.
-* Runtime Exception Numbers::   Exception numbers associated with source
-                                 `runtime'.
-* Exception Examples::          Several detailed examples using `Exception'.
-
-
-File: OOCref.info,  Node: Exception Facilities,  Next: Restrictions on PUSHCONTEXT,  Up: Exception
-
-Exception Facilities
---------------------
-
-   The facilities provided by module `Exception' allow the user to raise
-exceptions and query the current execution state (normal or
-exceptional).  Exceptions are identified uniquely by a pair (`Source',
-`Number').
-
-   The programmer is responsible for managing the stack of exception
-handlers; this is because Oberon-2 does not provide direct language
-support for exceptions, and therefore exception handling in OOC is done
-through a library module.  The stack is manipulated primarily through
-the procedures `PUSHCONTEXT' and `POPCONTEXT'.  The only other action
-that changes the stack is raising an exception while the program is an
-exceptional execution state; this pops the topmost context (that was
-responsible for the exception) from the stack before moving control to
-the then topmost execution context.  Raising an exception in the state
-of normal execution does *not* change the stack.
-
- - Data type: Number = LONGINT
-     Values of this type are used to distinguish between different
-     exceptions from the same source.
-
- - Data type: Source = POINTER TO SourceDesc
-     Values of this type are used to identify the source of exceptions
-     raised; that is, a `Source' is defined and allocated to establish
-     a particular set of exceptions.
-
- - Procedure: PUSHCONTEXT `(VAR SOURCE: Source)'
-     This procedure pushes the current execution context onto the
-     exception handler stack and sets SOURCE to `NIL'; if the context
-     is later reactivated by raising an exception, SOURCE is set to the
-     exception's source (*note Exception Examples::.).  At most one
-     context can be pushed per procedure at a time.  During a single
-     procedure evaluation, two successive calls to `PUSHCONTEXT'
-     without a `POPCONTEXT' in between are not allowed and result in
-     undefined program behaviour.
-
-     *Please note:* When the context is activated again (by raising an
-     exception), the value of non-global variables of enclosing
-     procedures that were modified after the initial call to
-     `PUSHCONTEXT' are undefined.
-
- - Procedure: POPCONTEXT `'
-     This procedure removes the exception handler from the top of the
-     stack; if the stack is empty an exception is raised.  If the
-     program is in an exceptional execution state at the point where
-     `POPCONTEXT' is called, the exception is raised again, thereby
-     passing it along to the next higher exception handler.  During the
-     execution of a procedure, the dynamic number of calls to
-     `POPCONTEXT' has to balance the ones to `PUSHCONTEXT'.
-
- - Procedure: RETRY `'
-     If the current thread is in the exceptional execution state, a
-     call to this procedure reactivates the context on top of the stack
-     of exception handlers, and resets the execution state to normal.
-     This looks as if the corresponding call of `PUSHCONTEXT' returns
-     again, with the parameter SOURCE set to `NIL'.  This allows the
-     "normal" part to be re-executed.  Be very careful when using this
-     because all local variables of the enclosing procedure(s) that
-     were modified after the initial call to `PUSHCONTEXT' are
-     undefined when activating the context again.
-
-     If the current thread is in the normal execution state, calling
-     `RETRY' raises an exception.
-
- - Procedure: ACKNOWLEDGE `'
-     If the current thread is in the exceptional execution state, a
-     call to this procedure places it back in the state of normal
-     execution.  Calling this procedure indicates that an exception has
-     been handled without retrying the "normal" part.
-
-     If the current thread is in the normal execution state, calling
-     `ACKNOWLEDGE' raises an exception.
-
- - Procedure: AllocateSource `(VAR NEWSOURCE: Source)'
-     This procedure allocates a unique value of type `Source'.  If an
-     unique value cannot be allocated, an exception is raised.
-
- - Procedure: RAISE `(SOURCE: Source; NUMBER: Number; MESSAGE: ARRAY OF
-          CHAR)'
-     A call to this procedure associates the given values of SOURCE,
-     NUMBER, and MESSAGE with the current context and raises an
-     exception.  This means that the current thread switches into the
-     exceptional execution state and activates an execution context
-     from the stack of exception handlers.  If the program is in the
-     normal execution state at the time of the call to `RAISE', the
-     context on top of the stack is activated; if it was already in the
-     exceptional execution state, the stack is popped before activating
-     the context.  Activating the execution context looks as if the
-     corresponding call to `PUSHCONTEXT' returns a second time, except
-     this time returning with SOURCE (of `PUSHCONTEXT') set to SOURCE
-     (of `RAISE') (*note Exception Examples::.).
-
-     Using a value of `NIL' for SOURCE raises an exception.
-
-     The MESSAGE should have the format "`[<module>] <description>'";
-     it may be truncated by `RAISE' to an implementation-defined length.
-
- - Function: CurrentNumber `(SOURCE: Source): Number'
-     If the current thread is in the exceptional execution state
-     because of the raising of an exception from SOURCE, this function
-     returns the corresponding number; otherwise, it raises an
-     exception.
-
- - Procedure: GetMessage `(VAR TEXT: ARRAY OF CHAR)'
-     If the current thread is in the exceptional execution state, this
-     procedure returns the (possibly truncated) string associated with
-     the current context.  Otherwise, in normal execution state, it
-     returns the empty string.
-
- - Function: IsExceptionalExecution `(): BOOLEAN'
-     If the current thread is in the exceptional execution state
-     because of the raising of an exception, this function returns
-     `TRUE'; otherwise, it returns `FALSE'.
-
-
-File: OOCref.info,  Node: Restrictions on PUSHCONTEXT,  Next: Predefined Exception Sources,  Prev: Exception Facilities,  Up: Exception
-
-Restrictions on PUSHCONTEXT
----------------------------
-
-   There are a number of important restrictions on the use of
-`PUSHCONTEXT':
-
-  1. Within a procedure, at most one context can be active at a time
-     (i.e., contexts cannot be nested).  This allows for an efficient
-     implementation of the context stack without falling back on heap
-     objects.  If nested contexts are required, local procedures can be
-     used to set up a new exception context.
-
-  2. The state of all non-global variables that were modified after a
-     `PUSHCONTEXT' is undefined if the context is activated again by
-     raising an exception or calling `RETRY'.  The reason is that,
-     while the compiler ensures that the evaluation of a piece of code
-     delivers the correct results in the end, it does not ensure that
-     the state of an interrupted computation is correctly reflected by
-     the memory contents at the time of the interruption.
-
-  3. For exceptions that are not initiated by an explicit call to
-     `RAISE' (i.e., failed run-time checks and external signals), the
-     place where the exception was raised is undefined.  That is, the
-     programmer cannot be certain of the exact set of intructions that
-     were completed before the exception was raised.  The reason is
-     that a sequence of instructions as specified in the source code
-     may be evaluated in a different order or in an overlapped fashion
-     in the emitted machine code.
-
-  4. Every call to `PUSHCONTEXT' must have exactly one matching call to
-     `POPCONTEXT' within the same procedure, assuming that the program
-     parts in between are completed without raising an exception.
-
-     If a stack underflow occurs when `POPCONTEXT' is called, an
-     exception is raised.  If an execution context is left on the stack
-     that doesn't correspond to a valid procedure (i.e., a procedure
-     doing a `PUSHCONTEXT' returns without doing a matching
-     `POPCONTEXT'), activating the context by raising an exception
-     transfers the program into a completely undefined state.  Most
-     likely, the program abort due to a segmentation violation or a
-     comparable error, or the stack of execution contexts is rolled
-     back until a valid context is reached.  There is no way to check
-     for such a situation.  Any programmer should be aware that an
-     invalid context stack can cause considerable grief.
-
-
-File: OOCref.info,  Node: Predefined Exception Sources,  Next: Runtime Exception Numbers,  Prev: Restrictions on PUSHCONTEXT,  Up: Exception
-
-Predefined Exception Sources
-----------------------------
-
-   Several exception sources are predefined in module `Exception'.
-These are available for handling exceptions generated through Oberon-2
-language constructs and other run-time exceptions.
-
- - Read-only Variable: halt: `Source'
-
- - Read-only Variable: assert: `Source'
-     These two exception variables are associated to the standard
-     predefined procedures `HALT' and `ASSERT'; `HALT(n)' is equivalent
-     to `RAISE (halt, n, "")', and `ASSERT(FALSE, n)' to `RAISE
-     (assert, n, "")'.
-
- - Read-only Variable: runtime: `Source'
-     This exception source is used to report failed run-time checks.
-
-
-File: OOCref.info,  Node: Runtime Exception Numbers,  Next: Exception Examples,  Prev: Predefined Exception Sources,  Up: Exception
-
-Runtime Exception Numbers
--------------------------
-
-   The source `runtime' is used to report failed run-time checks, and
-the following exception numbers are associated with it.  These numbers
-signify the corresponding failed run-time checks, which are described
-fully in *Note Illegal Operations::.
-
- - Constant: derefOfNIL
-     A dereference of `NIL' or type test on `NIL'.
-
- - Constant: realDivByZero
-     Real division by zero.
-
- - Constant: integerDivByZero
-     Integer division by zero.
-
- - Constant: realOverflow
-     Real overflow (during either conversion or arithmetic operation).
-
- - Constant: integerOverflow
-     Integer overflow (during either conversion or arithmetic
-     operation).
-
- - Constant: illegalLength
-     `NEW' was called with a negative length for an open array pointer
-     type.
-
- - Constant: outOfMemory
-     `NEW' could not allocate the requested memory.
-
- - Constant: indexOutOfRange
-     Array index out of range.
-
- - Constant: elementOutOfRange
-     Set element out of range.
-
- - Constant: endOfFunction
-     The end of a function procedure is reached without encountering a
-     `RETURN' statement.
-
- - Constant: noMatchingLabel
-     No matching label in `CASE' construct, and there is no `ELSE' part.
-
- - Constant: noValidGuard
-     All guards of `WITH' failed, and there is no `ELSE' part.
-
- - Constant: typeGuardFailed
-     Type guard failed.
-
- - Constant: typeAssertFailed
-     The target of a record assignment does not have compatible type.
-
- - Constant: stackOverflow
-     Stack overflow.
-
-
-File: OOCref.info,  Node: Exception Examples,  Prev: Runtime Exception Numbers,  Up: Exception
-
-Exception Examples
-------------------
-
-   Typically, one exception source is defined per module.  Exception
-numbers are then used to distinguish between the actual exceptions
-raised against that source.  Those exceptions can then be handled
-either within that module itself, as is generally the case in OOC
-Library modules that use `Exception', or the source and related
-constants can be exported and then handled externally.  Because
-exception sources `assert', `halt', and `runtime' are defined within
-`Exception', failed assertions, and so forth, can be handled just like
-any other exception.
-
-A Simple Example
-................
-
-   The following example is meant to show how to define and use an
-exception source.  Two instances are given where exceptions are raised
-against that source; note that the exception is handled in only one of
-these.
-
-     MODULE SimpleException;
-     
-     IMPORT  Exception, Err;
-     
-     CONST
-       genericException = 1;
-     
-     VAR  src: Exception.Source;
-     
-       PROCEDURE RaiseIt;
-       BEGIN
-         Exception.RAISE (src, genericException,
-                          "[SimpleException] An exception is raised")
-       END RaiseIt;
-     
-       PROCEDURE HandleIt;
-         VAR e: Exception.Source;
-       BEGIN
-         Exception.PUSHCONTEXT (e);
-         IF (e = NIL) THEN  (* normal execution *)
-           RaiseIt
-         ELSE  (* an exception was raised *)
-           Err.String ("Caught the exception."); Err.Ln;
-           Exception.ACKNOWLEDGE
-         END;
-         Exception.POPCONTEXT;
-       END HandleIt;
-     
-       PROCEDURE LetItGo;
-       BEGIN
-         RaiseIt
-       END LetItGo;
-     
-     BEGIN
-       Exception.AllocateSource (src);
-       HandleIt;
-       LetItGo;
-     END SimpleException.
-
-   The exception source `src' is allocated (and initialized) by the call
-to `AllocateSource' in the body of the module.  Procedure `RaiseIt'
-raises an exception against that source.
-
-   In procedure `HandleIt', an exception context is established, and
-then any exceptions that are raised in the scope of that context are
-handled.  Note the use of `ACKNOWLEDGE' to indicate the exception was
-handled, and `POPCONTEXT' to end the context and clean up after it.
-
-   In procedure `LetItGo', the raised exception is not handled, so the
-exception propagates up the call stack, and finding no enclosing context
-handler, finally terminates the program.  The output of this program
-should look something like
-
-     Caught the exception.
-     ##
-     ## Unhandled exception (#1):
-     ## [SimpleException] An exception is raised
-     ##
-
-Differentiating Exceptions
-..........................
-
-   To identify different exceptions, and provide different handling
-depending on the exception raised, both the exception `Source' and
-`Number' need to be considered.  The pair (`Source', `Number') uniquely
-identify the exception that has been raised.  For example,
-
-     MODULE MultiExcept;
-     
-     IMPORT
-       Exception, Out;
-     
-     CONST
-       genericException = 1;
-       zeroException = 2;
-       negativeException = 3;
-     
-     VAR
-       src: Exception.Source;
-     
-       PROCEDURE RaiseIt;
-       BEGIN
-         Exception.RAISE (src, genericException,
-                          "[MultiExcept] An exception is raised")
-       END RaiseIt;
-     
-       PROCEDURE Test (c: INTEGER);
-       BEGIN
-         Out.String ("Testing value="); Out.Int (c, 0); Out.Ln;
-         IF (c = 0) THEN
-           Exception.RAISE (src, zeroException,
-                            "[MultiExcept] Value is zero")
-         ELSIF (c < 0) THEN
-           Exception.RAISE (src, negativeException,
-                            "[MultiExcept] Value less than zero")
-         ELSE
-           RaiseIt
-         END;
-       END Test;
-     
-       PROCEDURE p (i: INTEGER);
-          VAR
-            e: Exception.Source;
-            str: ARRAY 256 OF CHAR;
-        BEGIN
-          Exception.PUSHCONTEXT (e);
-          IF (e = NIL) THEN
-            Test(i);
-          ELSE
-            IF (e = src) THEN (* identify the exception source *)
-              IF (Exception.CurrentNumber(e) = zeroException) THEN
-                Exception.GetMessage(str);
-                Out.String ("Caught exception: "); Out.String(str); Out.Ln;
-                Exception.ACKNOWLEDGE
-              ELSIF (Exception.CurrentNumber(e) = negativeException) THEN
-                Exception.GetMessage(str);
-                Out.String ("Caught exception: "); Out.String(str); Out.Ln;
-                Exception.ACKNOWLEDGE
-              END;
-            END;  (* Note: No ELSE part; *)
-          END;    (* all other exceptions are re-raised. *)
-          Exception.POPCONTEXT;
-        END p;
-     
-     BEGIN
-       Exception.AllocateSource (src);
-       p(-4);
-       p(0);
-       p(3);
-     END MultiExcept.
-
-   Exception numbers `genericException', `zeroException', and
-`negativeException' are defined for `src'.  In procedure `p', two of
-these exceptions are handled, and all other exceptions, including
-`genericException', are simply re-raised.  The output of this program
-looks like
-
-     Testing value=-4
-     Caught exception: [MultiExcept] Value less than zero
-     Testing value=0
-     Caught exception: [MultiExcept] Value is zero
-     Testing value=3
-     ##
-     ## Unhandled exception (#1):
-     ## [MultiExcept] An exception is raised
-     ##
-
-Assertions and Exceptions
-.........................
-
-   The previous two examples are somewhat contrived; you probably
-wouldn't use exceptions quite that way.  Those examples were meant to
-show how the exception mechanisms work, not necessarily how you would
-use them in a real situation.  So for this next set of examples, let us
-look at a more practical problem.  Consider the following module, which
-performs a typical programming task: reading from one file, processing
-the information, and writing the result out to another file.  Note
-that, in this version, no error checking is done.
-
-     MODULE FileFilter;
-     
-     IMPORT Files, TextRider;
-     
-       PROCEDURE Process(inFileName:  ARRAY OF CHAR;
-                         outFileName: ARRAY OF CHAR);
-         VAR r: TextRider.Reader;
-             w: TextRider.Writer;
-             fin, fout: Files.File;
-             res: INTEGER;
-       BEGIN
-         fin := Files.Old(inFileName, {Files.read}, res);
-         r := TextRider.ConnectReader(fin);
-     
-         fout := Files.New(outFileName, {Files.write}, res);
-         w := TextRider.ConnectWriter(fout);
-     
-         (* Process the files... *)
-     
-         fin.Close;
-         fout.Close;
-       END Process;
-     
-     BEGIN
-       Process("in.txt", "out.txt");
-     END FileFilter.
-
-   There are a number of places where things might go wrong.  For
-instance, suppose `in.txt' does not exist; running the program would
-result in the following output:
-
-     ##
-     ## Unhandled exception (#1) in module TextRider at pos 45930:
-     ## Dereference of NIL
-     ##
-
-     *Please note:* The exception is only raised if `TextRider' was
-     compiled with run-time checks enabled; they are disabled by
-     default.  In general, it is not a good idea to assume that library
-     modules raise "proper" exceptions when they are fed illegal
-     values.  For instance, nstead of a deref-of-nil exception, they
-     might cause the OS to signal a `SIGSEGV' (or something similar).
-     Some modules (everything implemented in C) cannot be forced to
-     handle run-time checks gracefully at all.
-
-   This exception occurs because `Files.Old' failed and returned a value
-of `NIL', and that value was passed to `ConnectReader'.  This situation
-should be checked for; Oberon-2 provides a predefined procedure
-`ASSERT' that could be used in this situation.  The following version
-adds error checking to the program:
-
-       PROCEDURE Process(inFileName:  ARRAY OF CHAR;
-                         outFileName: ARRAY OF CHAR);
-         VAR r: TextRider.Reader;
-             w: TextRider.Writer;
-             fin, fout: Files.File;
-             res: INTEGER;
-       BEGIN
-         fin := Files.Old(inFileName, {Files.read}, res);
-         ASSERT(res = Files.done);
-     
-         r := TextRider.ConnectReader(fin);
-         ASSERT(r # NIL);
-     
-         fout := Files.New(outFileName, {Files.write}, res);
-         ASSERT(res = Files.done);
-     
-         w := TextRider.ConnectWriter(fout);
-         ASSERT(w # NIL);
-     
-         (* Process the files... *)
-     
-         IF fin # NIL THEN fin.Close END;
-         IF fout # NIL THEN fout.Close END;
-       END Process;
-
-   Running this program under the same conditions (i.e., `in.txt' does
-not exist) produces the following result:
-
-     ##
-     ## Unhandled exception (#1) in module FileFilter2 at pos 299:
-     ## Assertion failed
-     ##
-
-   This is slightly better than the first version; at least the
-unhandled exception message now shows the relative location of the
-exception in the source text.  But, it would be even better, especially
-if this kind of file processing were done from an interactive program,
-if there were a way to recover from this situation.  The next version
-shows how failed assertions can be caught:
-
-       PROCEDURE Process(inFileName:  ARRAY OF CHAR;
-                         outFileName: ARRAY OF CHAR);
-         CONST
-             finError = 1; rError = 2; foutError = 3; wError = 4;
-         VAR r: TextRider.Reader;
-             w: TextRider.Writer;
-             fin, fout: Files.File;
-             res: INTEGER;
-             e: Exception.Source;
-       BEGIN
-         fin := NIL; fout := NIL;
-         Exception.PUSHCONTEXT (e);
-         IF (e = NIL) THEN
-           fin := Files.Old(inFileName, {Files.read}, res);
-           ASSERT(res = Files.done, finError);
-     
-           r := TextRider.ConnectReader(fin);
-           ASSERT(r # NIL, rError);
-     
-           fout := Files.New(outFileName, {Files.write}, res);
-           ASSERT(res = Files.done, foutError);
-     
-           w := TextRider.ConnectWriter(fout);
-           ASSERT(w # NIL, wError);
-     
-         (* Process the files... *)
-         ELSE
-           IF e = Exception.assert THEN
-             CASE Exception.CurrentNumber(e) OF
-               finError:
-                 (* ... *)
-                 Exception.ACKNOWLEDGE
-             | rError:
-                 (* ... *)
-                 Exception.ACKNOWLEDGE
-             | foutError:
-                 (* ... *)
-                 Exception.ACKNOWLEDGE
-             | wError:
-                 (* ... *)
-                 Exception.ACKNOWLEDGE
-             ELSE  (* exception is not acknowledged otherwise. *)
-             END;
-           END;  (* all other exceptions are re-raised. *)
-         END;
-         Exception.POPCONTEXT;
-     
-         IF fin # NIL THEN fin.Close END;
-         IF fout # NIL THEN fout.Close END;
-       END Process;
-
-   When an exception occurs (indicated by a failed assertion) special
-processing can be done based on the exception number: `finError',
-`rError', `foutError', or `wError'.  Note that the calls to `Close'
-occur outside of the exception context, so that the files can still be
-closed when an exception occurs (as long as they are not `NIL').  An
-else clause is included as part of the `CASE' to prevent a misleading
-`noMatchingLabel' exception.
-
-   This example shows how the exception mechanism can be used in
-conjunction with `ASSERT'.  If more fine-grained control is required,
-an exception source can be defined and calls to `RAISE' used in place of
-`ASSERT'.
-
-
-File: OOCref.info,  Node: Signal,  Prev: Exception,  Up: Exception Handling
-
-Module Signal
-=============
-
-   The module `Signal' provides the means to connect signals to the
-exception handling mechanism defined by module `Exception'.  A signal
-reports the occurrence of an exceptional event to an executing program;
-that is, a signal is an externally generated software interrupt.  The
-following are examples of events that can generate a signal: Program or
-operation errors, or external events such as alarms or job control
-events; one process can also send a signal to another process.
-
-   Full coverage of the use of signals is beyond the scope of this
-manual.  To learn more about signals, most books on the Unix operating
-system have sections describing signals.  Otherwise, `The GNU C Library
-Reference Manual' (available to download in various formats--say, as
-"info" files--or in print with ISBN 1-882114-53-1) is an excellent
-source of information on the use of signals.
-
-   Signals can also be set up to be handled independently of
-exceptions.  The procedure `SetHandler' is used to install a handler
-procedure for when a specific signal occurs.  The procedure `Raise' can
-be used to raise a particular signal, which is then handled in the same
-way as system generated signals (i.e., either an exception is raised or
-the signal's action is activated).
-
-   A signal's action can be set to `handlerException', which means that
-an occurance of the given signal raises an exception.  Unless specified
-otherwise, signals trigger their respective default actions.
-
-   A generic handler, which could be used to handle different kinds of
-signals, might look something like this:
-
-     PROCEDURE GenericHandler(sigNum: Signal.SigNumber);
-       VAR dummy: Signal.SigHandler;
-     BEGIN
-       Err.String("Handling signal="); Err.LongInt(sigNum, 0); Err.Ln;
-     
-       dummy := Signal.SetHandler(sigNum, GenericHandler);
-         (* sigNum's action might be reset by the system to
-          * `handlerDefault', so we explicitly reset our own
-          *  signal action here.  See note below.  *)
-     
-       IF sigNum = Signal.Map(Signal.sigint) THEN
-         (* Actions applicable to `sigint'. *)
-       ELSIF sigNum = Signal.Map(Signal.sigsegv) THEN
-         (* Actions applicable to `sigsegv'.
-          * HALT() would probably be good here. *)
-       ELSIF sigNum = ...
-         ...
-       ELSE
-         (* For other signals that have this procedure as their action,
-          * but are not handled by an ELSIF branch, reset the action
-          * as default, and raise it again. *)
-         dummy := Signal.SetHandler(sigNum, Signal.handlerDefault);
-         Signal.Raise(sigNum)
-       END;
-     END GenericHandler;
-
-     *Please note:* Resetting the signal's action to the current handler
-     is only necessary for System V systems.  For BSD or POSIX, the
-     current signal handler is kept.  Also note that with System V
-     there is a race condition: There is no guarantee that the signal
-     isn't raised again after the handler is cleared by the system, but
-     before the called handler has reinstalled itself.
-
-   This handler would be installed for various signals (probably in a
-module's BEGIN block) as follows:
-
-     oldHandler := Signal.SetHandler(Signal.Map(Signal.sigint),
-                                     GenericHandler);
-     oldHandler := Signal.SetHandler(Signal.Map(Signal.sigsegv),
-                                     GenericHandler);
-     ...
-
-Signal Facilities
------------------
-
-Constants
-.........
-
-   The following constants define symbolic names for signals.  Because
-signal numbers vary from system to system, the numbers below cannot be
-passed directly to a system call; a number has to be mapped to the
-system's numbering scheme first by the function `Map'.  Multiple names
-can be mapped to a single signal number; for example on most systems,
-the signals `sigiot' and `sigabrt' are aliases.  Not all signals are
-available on all systems.  If a signal is not defined for the current
-system, `Map' will return the value `unknownSignal'.
-
-*Program error signals:*
-
- - Constant: sigfpe
-     Fatal arithmetic error.
-
- - Constant: sigill
-     Illegal instruction.
-
- - Constant: sigsegv
-     Segmentation violation.
-
- - Constant: sigbus
-     Bus error.
-
- - Constant: sigabrt
-     Program abortion.
-
- - Constant: sigiot
-     I/O trap, usually just another name for sigabrt.
-
- - Constant: sigtrap
-     Program breakpoint.
-
- - Constant: sigemt
-     Emulator trap.
-
- - Constant: sigsys
-     Bad system call.
-
- - Constant: sigstkflt
-     Stack fault.
-
-*Termination signals:*
-
- - Constant: sigterm
-     Generic way to cause program termination.
-
- - Constant: sigint
-     Program interrupt (usually caused by `C-c').
-
- - Constant: sigquit
-     Program interrupt (usually caused by `C-\').
-
- - Constant: sigkill
-     Immediate program termination.
-
- - Constant: sighup
-     "Hang-up" signal.
-
-*Alarm signals:*
-
- - Constant: sigalrm
-     Typically indicates expiration of a timer.
-
- - Constant: sigvtalrm
-     Virtual timerO.
-
- - Constant: sigio
-     File descriptor is ready to perform input or output.
-
- - Constant: sigurg
-     "Urgent" or out-of-band data arrived at socket.
-
- - Constant: sigpoll
-     System V signal name, similar to sigio.
-
-*Job control signals:*
-
- - Constant: sigchld
-     Child process terminates or stops.
-
- - Constant: sigcld
-     Obsolete name for sigchld.
-
- - Constant: sigcont
-     Continue process.
-
- - Constant: sigstop
-     Stop process.
-
- - Constant: sigtstp
-     Interactive stop signal.
-
- - Constant: sigttin
-     Background process reads from terminal.
-
- - Constant: sigttou
-     Background process writes to terminal.
-
-*Operation error signals:*
-
- - Constant: sigpipe
-     Broken pipe.
-
- - Constant: siglost
-     Resource lost.
-
- - Constant: sigxcpu
-     CPU time limit exceeded.
-
- - Constant: sigxfsz
-     File size limit exceeded.
-
- - Constant: sigpwr
-     Power state indication.
-
-*Miscellaneous signals:*
-
- - Constant: sigusr1
-     User defined signal 1.
-
- - Constant: sigusr2
-     User defined signal 2.
-
- - Constant: sigwinch
-     Window size change.
-
- - Constant: siginfo
-     Information request.
-
- - Constant: sigdil
-     ???
-
-*Other:*
-
- - Constant: unknownSignal
-     Result of `Map' for invalid signal names.
-
-Types
-.....
-
-   The following types are declared in module `Signal':
-
- - Data type: SigNumber
-     A system dependant integer type used to represent signal numbers.
-
- - Procedure type: SigHandler = `PROCEDURE (SIGNUM: SigNumber)'
-     The procedure type used as the signature of a signal handler,
-     which is installed with the procedure `SetHandler'.  A procedure
-     variable of this type is activated upon the arrival of the signal,
-     and the system dependent signal number is passed to the SIGNUM
-     parameter.
-
-Variables
-.........
-
-   The following variables are defined for use with facilities provided
-in module `Signal':
-
- - Read-only Variable: handlerDefault: SigHandler
-     Setting a signal's action to this handler specifies that the
-     signal should invoke the default action when raised.
-
- - Read-only Variable: handlerIgnore: SigHandler
-     Setting a signal's action to this handler specifies that the
-     signal should be ignored.  Note that, the signals `sigkill' and
-     `sigstop' cannot be ignored.
-
- - Read-only Variable: handlerError: SigHandler
-     The value of this variable is returned from from `SetHandler' to
-     indicate an error.
-
- - Read-only Variable: handlerException: SigHandler
-     Setting a signal's action to this handler specifies that the
-     signal should raise an exception.  Upon arrival of the signal
-     `signum', the handler will install itself again as action for the
-     given signal number, and then activate `Exception.RAISE' with
-     `Signal.exception' as source, the message string `[Signal] Caught
-     signal number <signum>', and the system dependent value of
-     `signum' as exception number.
-
-     If the exception isn't handled by the user, the default exception
-     handler will print the usual message to `stderr', reset the
-     signal's handler to the default action, and raise the signal
-     again.  If the latter doesn't terminate the program, the default
-     handler will terminate the program like a failed run-time check.
-
- - Read-only Variable: exception: Exception.Source
-     This is used as the exception source for signals that are set to
-     raise an exception via `handlerException'.
-
-Procedures
-..........
-
-   The following procedures are provided for setting signal handlers and
-raising signals:
-
- - Function: Map `(SIGNUM: SigNumber): SigNumber'
-     Maps a signal name from the above list onto the system dependent
-     signal number associated with that name.  If the signal isn't
-     defined for the system, `unknownSignal' is returned.  More than
-     one signal may be mapped onto the same number.
-
- - Function: SetHandler `(SIGNUM: SigNumber; ACTION: SigHandler):
-          SigHandler'
-     Installs the signal handler ACTION for the signal number SIGNUM.
-     The signal number must be mapped to the system's number scheme
-     first; that is, the names defined above can't be used directly,
-     but have to be passed through `Map' first.  The behaviour of this
-     procedure is undefined if the given number does not correspond to
-     a legal signal.
-
-     If the signal can be handled, the next occurence of the given
-     signal will activate the procedure in ACTION, passing the system
-     specific signal number via the procedure's SIGNUM parameter.
-     Calling this procedure with `ACTION = NIL' is equivalent to
-     calling it with `ACTION = handlerDefault'.  The system might, as
-     in the case of System V systems, reset the signal handler to the
-     default action before calling ACTION.  On other systems, notably
-     POSIX and BSD, the current action is kept.  So, it is generally a
-     good idea to explicitly set the signal handler again as part of
-     ACTION.
-
-     On success, the `SetHandler' function returns the action that was
-     previously in effect for the specified SIGNUM.  This value can be
-     saved and later restored by calling `SetHandler' again.
-
-     On failure, the value `handlerError' is returned.  Possible errors
-     are an invalid SIGNUM, or an attempt to ignore or provide a
-     handler for the signals `sigkill' or `sigstop'.
-
-          *Please note:* In `oo2c', this function is just a wrapper
-          around the C function `signal'.  For more details, check the
-          specification of this function (e.g., its man page or the
-          relevant chapter of libc info).
-
- - Procedure: Raise `(SIGNUM: SigNumber)'
-     Raises a signal associated with SIGNUM for the current process.
-     See `SetHandler' for the restrictions regarding the values of
-     SIGNUM.
-
-   Initial actions for all signals within a program are usually either
-`handlerDefault' or `handlerIgnore'.  A check should be done when
-establishing new signal handlers to be sure that the original action
-was not `handlerIgnore'.
-
-   *Example:*
-
-     MODULE SigTest;
-     
-     IMPORT Signal, ...;
-     
-     VAR
-       oldHandler: Signal.SigHandler;
-     
-       PROCEDURE CleanUp(sigNum: Signal.SigNumber);
-       (* Set the handler back to default, clean up (e.g., close
-        * files), and then resend the signal.  *)
-       BEGIN
-         oldHandler := Signal.SetHandler(sigNum, Signal.handlerDefault);
-         (* Do the clean up stuff. *)
-         Signal.Raise(sigNum);
-       END CleanUp;
-     
-     BEGIN
-       oldHandler := Signal.SetHandler(Signal.Map(Signal.sigint), CleanUp);
-     
-       (* Check to make sure the signal was not set to be ignored.  *)
-       IF oldHandler = Signal.handlerIgnore THEN
-         oldHandler := Signal.SetHandler(Signal.Map(Signal.sigint),
-                                         Signal.handlerIgnore);
-       END;
-     
-       ...   (* Other program termination signals, like sighup and
-              * sigterm, might also be set to do the CleanUp action.
-              *)
-     END SigTest.
-
-   Certain signals might not occur when normal run-time checks are
-enabled.  For example, index checks are normally done when accessing
-array elements, so a segmentation violation should never occur because
-of accessing out-of-bounds array elements.  However, if these run-time
-checks are disabled, appropriate signal handlers can be set up to
-capture error conditions.
-
-   *Example:*
-
-     <* IndexCheck := FALSE *>
-     ...
-     
-     PROCEDURE PrintIt(sigNum: Signal.SigNumber);
-     BEGIN
-       oldHandler := Signal.SetHandler(sigNum, PrintIt);
-       Err.String("Resetting program and exiting...");  Err.Ln;
-       (* Cleanup stuff *)
-       HALT(1);
-     END PrintIt;
-     
-     ...
-     
-     oldHandler := Signal.SetHandler(Signal.Map(Signal.sigsegv), PrintIt);
-
-   It is often very difficult to recover from serious events that
-trigger signals.  This is why the exception handling module `Exception'
-has been tied into `Signal'; a program can be set up to handle the error
-via an exception handler.
-
-   *Example:*
-
-     MODULE SigExcept;
-     <* IndexCheck := FALSE *>
-     
-     IMPORT Signal, Exception, ...;
-     
-     VAR
-       oldHandler: Signal.SigHandler;
-     
-       PROCEDURE RunIt;
-         VAR
-             ...
-             e: Exception.Source;
-       BEGIN
-         Exception.PUSHCONTEXT (e);
-         IF (e = NIL) THEN
-           ...  (* Normal excecution part *)
-         ELSE
-           IF e = Signal.exception THEN
-             IF Exception.CurrentNumber(e) = Signal.Map(Signal.sigsegv) THEN
-                 ...
-                 Exception.ACKNOWLEDGE
-             ELSE
-             END
-           END
-         END
-         Exception.POPCONTEXT;
-       END RunIt;
-     
-     BEGIN
-       oldHandler := Signal.SetHandler(Signal.Map(Signal.sigsegv),
-                                       Signal.handlerException);
-       ...
-       RunIt
-     END SigExcept.
-
-
-File: OOCref.info,  Node: Localization,  Next: Language,  Prev: Exception Handling,  Up: Top
-
-Localization
-************
-
-* Menu:
-
-* Locales::                     Localization information based on the
-                                  Posix/C facilities.
-* LocStrings::                  Character and string localization
-                                  facilities.
-* LocNumConv::                  Localized number conversions.
-* LocNumStr::                   Convert numbers to/from strings using
-                                  locale information.
-* LocTextRider::                Localized text riders.
-* LocText::                     Text string localization facilities.
-
-
-File: OOCref.info,  Node: Locales,  Next: LocStrings,  Up: Localization
-
-Module Locales
-==============
-
-
-File: OOCref.info,  Node: LocStrings,  Next: LocNumConv,  Prev: Locales,  Up: Localization
-
-Module LocStrings
-=================
-
-
-File: OOCref.info,  Node: LocNumConv,  Next: LocNumStr,  Prev: LocStrings,  Up: Localization
-
-Module LocNumConv
-=================
 

@@ -1,7 +1,7 @@
-(* 	$Id: ParseStatm.Mod,v 1.135 1999/11/06 11:17:44 ooc-devel Exp $	 *)
+(* 	$Id: ParseStatm.Mod,v 1.136 2000/02/04 19:39:50 ooc-devel Exp $	 *)
 MODULE ParseStatm;
 (*  Parses Oberon-2 statements and translates them to GSA.
-    Copyright (C) 1995-1999  Michael van Acken
+    Copyright (C) 1995-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -58,6 +58,8 @@ PROCEDURE AssignmentCompatible (region: D.Region; varType: D.Struct; VAR expr: A
     END CArrayAssignCompatible;
   
   BEGIN
+    Expr.CheckValue (expr);
+    
     tv := varType. form; te := expr. type. form;
     IF (tv = D.strUndef) OR (te = D.strUndef) THEN
       comp := TRUE                       (* var or expr is erroneous *)
