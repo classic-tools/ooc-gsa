@@ -1,6 +1,40 @@
 Note: Directory parts of files mentioned here refer to the
       OOC source tree, not the shrunk oo2c distribution.
 
+2002-02-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/Files.c (Writer.Truncate):
+	Debungle pointer argument in call to
+	PosixFileDescr.Truncate.  (Thanks to Tim Teulings.)
+
+2002-01-18  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/Integers.Mod (Compare):
+	Fix for two negative numbers.  (Thanks to Stewart
+	Greenhill.)
+
+2002-01-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolFile.Mod:
+	Fix calculation of the nesting depth of records.  This problem can
+	cause broken file descriptors with incomplete lists of base types
+
+2001-12-29  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/Integers.Mod:
+	[From Stewart Greenhill:] This version of Integers corrects a bug in
+	the core library ToString function.  The Integer "negative zero" was
+	incorrectly converted to "-" instead of "0".
+
+2001-12-06  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (TypeConversion):
+	Don't try to be clever with skipping of type
+	conversion instructions, if one of them is represented as a real
+	constant and the other as an integer.  Constant propagation would
+	access the "int" field of a real value (or vice versa), which is
+	typically 0.
+
 2001-09-29  Michael van Acken  <acken@informatik.uni-kl.de>
 
 	* backend/ansi-c/Allocate.Mod (ResolveVarConflicts):

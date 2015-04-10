@@ -1,8 +1,8 @@
 #!@PERL@
-# $Id: oobacktrace,v 1.5 1999/11/08 21:24:06 ooc-devel Exp $
+# $Id: oobacktrace,v 1.6 2001/10/20 15:14:38 ooc-devel Exp $
 # 
 # Wrapper to map backtrace information onto function names
-# Copyright (C) 1999  Michael van Acken
+# Copyright (C) 1999, 2001  Michael van Acken
 # 
 # This file is part of OOC.
 # 
@@ -33,6 +33,9 @@ wrapper around the program.  It captures the stderr and tries to map
 the address values of the backtrace information to function names.  If
 possible, the name and line number of the C file defining the function
 is also given.
+
+Exit code of the wrapper that of the command, unless the command was
+terminated by a signal.  In this case, the wrapper exits with 127.
 EOD
   exit 1;
 }
@@ -50,7 +53,7 @@ unless ($ARGV[0] =~ m:/:) {
 }
 my $cmd = join(" ", map { s/'/'\\''/g; "'".$_."'" } @ARGV);
 $ARGV[0] =~ s/'/'\\''/g;
-system("$cmd 2>$tmp");
+my $rc = system("$cmd 2>$tmp");
 
 if (-s $tmp) {
   # get symbol data from command by running nm on the command name
@@ -86,3 +89,10 @@ if (-s $tmp) {
   close F;
 }
 
+if ($rc == 0) {			# program completed successfully
+    exit(0);
+} elsif ($rc >> 8 == 0) {	# program caught itself a signal
+    exit(127);
+} else {			# return the original exit code
+    exit($rc >> 8);
+}

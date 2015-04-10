@@ -1,6 +1,6 @@
 ;;; oberon2.el --- major mode for Oberon-2 editing and compilation
 
-;; Copyright (C) 1995-2000  Michael van Acken  <acken@informatik.uni-kl.de>
+;; Copyright (C) 1995-2001  Michael van Acken  <acken@informatik.uni-kl.de>
 ;; 
 ;; Version: 1.16, requires Emacs 19.28
 ;; You can ignore the "free variable o2-source-for-errors" errors when 
@@ -1845,8 +1845,11 @@ procedure is part of the region."
 ;; Return non-nil if point is in an Oberon-2 string, i.e. it's after the
 ;; starting delimiter but before (or on) the ending delimiter of the string.
 ;; In this case result is a cons list, with car being the first position in the
-;; string, and cdr the first position behind it.  This function won't
-;; distinguish between point being inside comment/normal code.
+;; string, and cdr the first position behind it.
+;;
+;; Note: For an incomplete string, o2-in-stringp assumes that the string ends
+;; with the current line.  This function won't distinguish between point being
+;; inside comment/normal code.
 (defun o2-in-stringp (&optional point)
   (save-excursion
     (save-match-data
@@ -1863,7 +1866,7 @@ procedure is part of the region."
 		  (skip-chars-forward 
 		   (concat "^\n" (char-to-string (preceding-char))))
 		  (cond ((eolp)
-			 (throw 'exit nil))
+                         (throw 'exit (cons beg (point))))
 			((>= (point) opoint)
 			 (throw 'exit (cons beg (1+ (point))))))
 		  (forward-char))
@@ -2337,11 +2340,9 @@ procedure is part of the region."
       (while (< (point) end-marker)
 	(setq start (point))
 	(cond ((re-search-forward "^@example" end-marker t)
-	       (print "a")
 	       (fill-region start (point))
 	       (re-search-forward "^@end example" end-marker 'move))
 	      (t
-	       (print "b")
 	       (fill-region start end-marker)
 	       (goto-char end-marker)))))))
 

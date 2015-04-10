@@ -11,10 +11,17 @@ setting --disable-gc or --disable-libs.
   1. Preparing the garbage collector:
 
      If gc is installed as a library on the system, configure will
-     detect this and use it automatically.
+     detect this and use it automatically.  You may need to add
+     the directory with gc.h to the C compiler's include paths, for
+     example with something like
+     
+       `env CFLAGS="-ImyGCIncludePath" ./configure ...'
 
-     Otherwise, get the garbage collector sources from Boehm's server
+     Otherwise, vor gc version _prior_ to gc6.0, get the garbage
+     collector sources from Boehm's server
+
        http://www.hpl.hp.com/personal/Hans_Boehm/gc/
+
      and unpack the tar file in oo2c's top-level directory.
 
      Check the README and Makefile in the newly created subdirectory
@@ -23,7 +30,9 @@ setting --disable-gc or --disable-libs.
      oo2c's configure. 
 
      oo2c's installation process will detect the gc sources.  They are
-     compiled and installed automatically.
+     compiled and installed automatically.  Note: This works with gc5.x,
+     but the makefiles have changed with gc6.  Automatic inclusion of
+     the gc sources no longer seems to work.
 
   2. Installing GNU libtool:
 

@@ -1,7 +1,7 @@
-(* 	$Id: SymbolFile.Mod,v 1.28 1999/11/06 15:34:07 ooc-devel Exp $	 *)
+(* 	$Id: SymbolFile.Mod,v 1.29 2002/01/12 22:16:33 ooc-devel Exp $	 *)
 MODULE SymbolFile;
 (*  Exporting and importing of symbol files.
-    Copyright (C) 1995-1999  Michael van Acken
+    Copyright (C) 1995-1999, 2002  Michael van Acken
 
     This file is part of OOC.
 
@@ -757,7 +757,10 @@ PROCEDURE Read* (moduleName: ARRAY OF CHAR; pos: LONGINT): D.Object;
               IF (t. base. form = D.strNone) THEN
                 t. base := NIL
               ELSE
-                t. len := t. base. len+1
+                (* t. len := t. base. len+1;
+                   note: can't set base here, because the base record's len
+                   may not be set yet; therefore this is postponed to
+                   StructAlloc *)
               END
             END;
             
@@ -881,7 +884,14 @@ PROCEDURE Read* (moduleName: ARRAY OF CHAR; pos: LONGINT): D.Object;
           (* before calling `StdTypes.StructAlloc', make sure that all types
              that are part of `t' have been allocated *)
           StructAlloc (t. base);
+          
           IF (t. form = D.strRecord) THEN
+            IF (t. base = NIL) THEN
+              t. len := 0
+            ELSE
+              t. len := t. base. len+1
+            END;
+            
             obj := t. decl;
             WHILE (obj # NIL) DO
               StructAlloc (obj. type);

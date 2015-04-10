@@ -202,11 +202,11 @@ l2:
   d1 = LowLReal__scale((double)d0, (short int)i0);
   i0 = 165;
 l3:
-  i2 = (int)_ashl(i0, 1, (unsigned int));
-  i2 = (int)n + i2;
-  _entier(i1, d1);
-  *(short int*)i2 = i1;
-  i2 = *(short int*)i2;
+  _entier(i2, d1);
+  i1 = (int)_ashl(i0, 1, (unsigned int));
+  i1 = (int)n + i1;
+  *(short int*)i1 = i2;
+  i2 = *(short int*)i1;
   d0 = i2;
   i0++;
   d0 = d1 - d0;

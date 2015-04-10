@@ -1,4 +1,4 @@
-(*	$Id: Integers.Mod,v 1.7 1999/09/02 13:08:11 acken Exp $	*)
+(*	$Id: Integers.Mod,v 1.10 2002/05/07 07:15:46 ooc-devel Exp $	*)
 MODULE Integers;
 
 (*
@@ -215,16 +215,19 @@ VAR
       INC(c);
     END;
     ASSERT(c<l, 103);          (* string has to be big enough *)
-    
-    (* reverse the string characters *)
-    DEC(c);
-    FOR i:=z TO z+((c-z) DIV 2) DO
-      ch:=s[i]; s[i]:=s[c-i+z]; s[c-i+z]:= ch
-    END;
    
-    (* return something for a zero number *)
-    IF c<0 THEN s[0]:='0'; INC(c) END;
-    s[c+1]:=0X
+    IF z = c THEN 
+      (* return something for a zero number *)
+      s[0]:='0';
+      s[1]:=0X
+    ELSE
+      (* reverse the string characters *)
+      DEC(c);
+      FOR i:=z TO z+((c-z) DIV 2) DO
+        ch:=s[i]; s[i]:=s[c-i+z]; s[c-i+z]:= ch
+      END;
+      s[c+1] := 0X;
+    END;
   END ToString;
    
   PROCEDURE Mult (VAR w: ARRAY OF INTEGER; u, v: ARRAY OF INTEGER);
@@ -589,7 +592,7 @@ VAR
   (* Post: x>y, RETURN 1; x=y, RETURN 0; x<y RETURN -1 *)
   BEGIN
     IF x[0]#y[0] THEN RETURN x[0] (* if x<0 and y>0 then x<y and vice versa *)
-    ELSE RETURN UCompare(x^, y^)  (* signs are the same *)
+    ELSE RETURN UCompare(x^, y^) * x[0]  (* signs are the same *)
     END
   END Compare;
   

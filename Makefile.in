@@ -43,7 +43,7 @@ LIBTOOL=@LIBTOOL@
 ### to install files in.
 
 ### This should be the number of the oo2c version we're building.
-version=1.5.6
+version=1.5.7
 
 ### Transformation applied to program names when installing.
 transform=@program_transform_name@
@@ -383,12 +383,15 @@ FRC:
 ###      into directory "test".  Afterwards compare all files "test/*" with
 ###      their counterparts in "stage2".  There should be no difference.
 test: ${oo2c_exe} oo2crc.test
+	if test $(enable_libs) = yes; then \
+	     echo "tests are broken if compiler is build with libraries, aborting"; exit 1; \
+	fi
 	if test ! -d test; then mkdir test; fi
 	${oo2c_exe} --config oo2crc.test -Mv --no-build oo2c
 	(cd test; \
          for i in *; do \
 	   if ! diff -q ../stage2/$$i $$i; then \
-	     echo "Test failed: stage2/$$i and test$$i differ."; exit 1; \
+	     echo "Test failed: stage2/$$i and test/$$i differ."; exit 1; \
 	   fi; \
 	 done)
 
@@ -418,6 +421,6 @@ clean: FRC
 distclean: clean
 	rm -f config.status config.cache config.log Makefile lib/__config.h \
 	  lib/__pushcontext.h oo2crc.stage1 oo2crc.stage1.mk oo2crc.stage2 \
-	  oo2crc oo2crc.mk src.c/makefile.oo2c \
+	  oo2crc oo2crc.mk oobacktrace src.c/makefile.oo2c \
 	  src/backend/Config.Mod src/backend/Config.Mod.mk lib/C.Mod \
 	  src/tools/emacs/oberon2.el src/tools/emacs/oberon2_18.el 

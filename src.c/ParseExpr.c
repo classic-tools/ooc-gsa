@@ -960,6 +960,14 @@ l2:
   return (void*)i1;
 }
 
+unsigned char ParseExpr__TypeConversion_SameConstRepr(signed char t1, signed char t2) {
+  register int i0, i1;
+  i1 = t1 < 8;
+  i0 = t2 < 8;
+  i0 = i1 == i0;
+  return (unsigned char)i0;
+}
+
 void ParseExpr__TypeConversion(Data__Region region, Attributes__Item *x, _Type x__tag, signed char targetType, unsigned char adaptType, int pos) {
   register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10;
   register float f0;
@@ -999,10 +1007,10 @@ l1:
   i4 += 24;
   i4 = *(int*)i4;
   i3 &= 0xFU;
-  i3 = IntArith__Includes((signed char)i3, (signed char)i4);
-  if (!(i3)) goto l2;
-  i3 = IntArith__Includes((signed char)i0, (signed char)i2);
-  if (i3) goto l4;
+  i6 = IntArith__Includes((signed char)i3, (signed char)i4);
+  if (!(i6)) goto l2;
+  i6 = IntArith__Includes((signed char)i0, (signed char)i2);
+  if (i6) goto l4;
 l2:
   i6 = IntArith__Includes((signed char)i4, (signed char)i2);
   if (!(i6)) goto l3;
@@ -1013,9 +1021,11 @@ l3:
   if (!(i6)) goto l5;
   i6 = IntArith__Includes((signed char)i2, (signed char)i0);
   if (!(i6)) goto l5;
-  i4 = IntArith__Includes((signed char)i4, (signed char)i0);
-  if (!(i4)) goto l5;
+  i6 = IntArith__Includes((signed char)i4, (signed char)i0);
+  if (!(i6)) goto l5;
 l4:
+  i4 = ParseExpr__TypeConversion_SameConstRepr((signed char)i3, (signed char)i4);
+  if (!(i4)) goto l5;
   i6 = (int)*(void**)i5;
   i6 += 28;
   i6 = (int)*(void**)i6;
@@ -3606,9 +3616,9 @@ Data__Const ParseExpr__SimpleExpr_Concat(Data__Const x, Data__Const y) {
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i8 < 0) _invalid_length(i8, _P(74088));
+    if(i8 < 0) _invalid_length(i8, _P(74339));
     _mem = GC_malloc_atomic(_not_zero(i8*1)+8);
-    if (!_mem) _new_failed(_P(74064));
+    if (!_mem) _new_failed(_P(74315));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i8;

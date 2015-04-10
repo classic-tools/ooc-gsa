@@ -337,9 +337,9 @@ Parameter__String SymbolFile__ReadString(BinaryRider__Reader r) {
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i0 < 0) _invalid_length(i0, _P(8034));
+    if(i0 < 0) _invalid_length(i0, _P(8040));
     _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
-    if (!_mem) _new_failed(_P(8023));
+    if (!_mem) _new_failed(_P(8029));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i0;
@@ -369,9 +369,9 @@ Data__Const SymbolFile__ReadStringConst(BinaryRider__Reader r, signed char form)
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i0 < 0) _invalid_length(i0, _P(8361));
+    if(i0 < 0) _invalid_length(i0, _P(8367));
     _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
-    if (!_mem) _new_failed(_P(8350));
+    if (!_mem) _new_failed(_P(8356));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i0;
@@ -400,9 +400,9 @@ void SymbolFile__AppendToStructArray(Data__Struct t) {
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i6 < 0) _invalid_length(i6, _P(8668));
+    if(i6 < 0) _invalid_length(i6, _P(8674));
     _mem = GC_malloc(_not_zero(i6*4)+8);
-    if (!_mem) _new_failed(_P(8640));
+    if (!_mem) _new_failed(_P(8646));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i6;
@@ -1254,51 +1254,44 @@ Data__Struct SymbolFile__Read_ReadObject_ReadStruct(BinaryRider__Reader *SymbolF
   i1 = (int)((_Type)i1)->tbprocs[14];
   ((_TBP_BinaryRider__ReaderDesc_ReadNum)i1)((BinaryRider__Reader)i0, (int *)(int)&form);
   i0 = form <= 0;
-  if (i0) goto l12;
+  if (i0) goto l11;
   i4 = form <= 21;
-  if (i4) goto l11;
+  if (i4) goto l10;
   i0 = form > 31;
-  if (i0) goto l4;
+  if (i0) goto l3;
   i5 = (int)SymbolTable__NewStruct((signed char)form, (int)-1);
   i4 = i5 + 40;
   i3 = i5 + 44;
   SymbolFile__AppendToStructArray((Data__Struct)i5);
-  i2 = *(unsigned int*)i4;
-  i1 = (int)*SymbolFile__Read_r;
-  SymbolFile__ReadFlags((BinaryRider__Reader)i1, (unsigned int *)i4);
+  i1 = *(unsigned int*)i4;
+  i2 = (int)*SymbolFile__Read_r;
+  SymbolFile__ReadFlags((BinaryRider__Reader)i2, (unsigned int *)i4);
   i0 = i5 + 24;
   i2 = *(unsigned int*)i3;
   i1 = (int)*SymbolFile__Read_r;
   SymbolFile__ReadFlags((BinaryRider__Reader)i1, (unsigned int *)i3);
-  i2 = i5 + 20;
-  i3 = (int)SymbolFile__Read_ReadObject_ReadStruct((BinaryRider__Reader *)&*SymbolFile__Read_r, (struct SymbolFile__Read_ModuleListDesc* *)&*SymbolFile__Read_modList, SymbolFile__Read_fileName, (Data__Object *)&*SymbolFile__Read_mod);
-  *(void**)i0 = (void*)i3;
-  i3 = *(signed char*)i2;
-  i3 = i3 != 31;
-  if (i3) goto l1;
-  i3 = (int)*(void**)i0;
-  i1 = i3 + 20;
-  i1 = *(signed char*)i1;
-  i1 = i1 == 21;
-  if (i1) goto l0;
-  i3 += 32;
-  i0 = *(int*)i3;
-  i3 = i5 + 32;
-  i0++;
-  *(int*)i3 = i0;
-  goto l1;
-l0:
+  i3 = i5 + 20;
+  i2 = (int)SymbolFile__Read_ReadObject_ReadStruct((BinaryRider__Reader *)&*SymbolFile__Read_r, (struct SymbolFile__Read_ModuleListDesc* *)&*SymbolFile__Read_modList, SymbolFile__Read_fileName, (Data__Object *)&*SymbolFile__Read_mod);
+  *(void**)i0 = (void*)i2;
+  i2 = *(signed char*)i3;
+  i2 = i2 != 31;
+  if (i2) goto l0;
+  i2 = (int)*(void**)i0;
+  i2 += 20;
+  i2 = *(signed char*)i2;
+  i2 = i2 != 21;
+  if (i2) goto l0;
   *(void**)i0 = (void*)0;
-l1:
+l0:
   i4 = *(unsigned int*)i4;
   i4 = (i4 & ((unsigned int)1 << 0)) != 0;
-  if (!(i4)) goto l2;
+  if (!(i4)) goto l1;
   i4 = (int)*SymbolFile__Read_r;
   SystemFlags__ReadStructInfo((BinaryRider__Reader)i4, (Data__Struct)i5);
-l2:
-  i1 = *(signed char*)i2;
-  if (i1==27 || i1==30) goto l13;
-  if (!(i1==28 || i1==31)) goto l3;
+l1:
+  i1 = *(signed char*)i3;
+  if (i1==27 || i1==30) goto l12;
+  if (!(i1==28 || i1==31)) goto l2;
   i2 = i5 + 28;
   i4 = i1 == 28;
   i3 = (int)*(void**)i2;
@@ -1306,66 +1299,66 @@ l2:
   t = (void*)i5;
   SymbolFile__Read_ReadObject_ReadStruct_ReadObjList((Data__Object *)i2, (unsigned char)i4, (BinaryRider__Reader *)&*SymbolFile__Read_r, (Data__Struct *)&t, SymbolFile__Read_fileName, (Data__Object *)&*SymbolFile__Read_mod, (struct SymbolFile__Read_ModuleListDesc* *)&*SymbolFile__Read_modList);
   i5 = (int)t;
-  goto l13;
-l3:
-  if (!(i1==29)) goto l13;
+  goto l12;
+l2:
+  if (!(i1==29)) goto l12;
   i2 = (int)*SymbolFile__Read_r;
   i1 = i5 + 32;
   i4 = *(int*)(i2-4);
   i3 = *(int*)i1;
   i4 = (int)((_Type)i4)->tbprocs[14];
   ((_TBP_BinaryRider__ReaderDesc_ReadNum)i4)((BinaryRider__Reader)i2, (int *)i1);
-  goto l13;
-l4:
+  goto l12;
+l3:
   i5 = (int)*SymbolFile__Read_r;
   i1 = (int)SymbolFile__ReadString((BinaryRider__Reader)i5);
   i5 = form != 32;
   i0 = (int)*SymbolFile__Read_modList;
-  if (i5) goto l5;
+  if (i5) goto l4;
   i3 = i0;
-  goto l7;
-l5:
+  goto l6;
+l4:
   i5 = form;
   i3 = i0;
-l6:
+l5:
   i5--;
   i3 = (int)*(void**)i3;
   i2 = i5 != 32;
-  if (i2) goto l6;
-l7:
+  if (i2) goto l5;
+l6:
   i5 = i3 == 0;
-  if (!(i5)) goto l8;
+  if (!(i5)) goto l7;
   SymbolFile__Read_Abort(SymbolFile__Read_fileName, (BinaryRider__Reader *)&*SymbolFile__Read_r);
-l8:
+l7:
   i5 = *(int*)(i1-8);
   i2 = i3 + 4;
   i2 = (int)*(void**)i2;
   i5 = (int)SymbolTable__FindDecl((Data__Addressable)i2, (const unsigned char*)i1, i5);
   i2 = i5 == 0;
-  if (i2) goto l9;
+  if (i2) goto l8;
   i2 = i5 + 28;
   i2 = *(signed char*)i2;
   i2 = i2 == 2;
-  if (i2) goto l10;
-l9:
+  if (i2) goto l9;
+l8:
   SymbolFile__Read_Abort(SymbolFile__Read_fileName, (BinaryRider__Reader *)&*SymbolFile__Read_r);
-l10:
+l9:
   i5 += 24;
   i5 = (int)*(void**)i5;
   SymbolFile__AppendToStructArray((Data__Struct)i5);
-  goto l13;
-l11:
+  goto l12;
+l10:
   i5 = (int)_ashl(form, 2, (unsigned int));
   i5 = (int)Data__struct + i5;
   i5 = (int)*(void**)i5;
-  goto l13;
-l12:
+  goto l12;
+l11:
   i5 = - form;
   i0 = (int)SymbolFile__structArray;
   i1 = (int)_ashl(i5, 2, (unsigned int));
   i1 = i0 + i1;
   i5 = (int)*(void**)i1;
-l13:
+l12:
   return (void*)i5;
 }
 
@@ -1561,7 +1554,7 @@ l0:
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(8)+8);
-    if (!_mem) _new_failed(_P(28124));
+    if (!_mem) _new_failed(_P(28314));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &SymbolFile__Read_ModuleListDesc_td.td;
     i1 = (int)_var;
@@ -1606,38 +1599,51 @@ l5:
 void SymbolFile__Read_StructAlloc(Data__Struct t) {
   register int i0, i1, i2;
   i0 = (int)t == 0;
-  if (i0) goto l2;
+  if (i0) goto l4;
   i0 = (int)t + 20;
   i1 = *(signed char*)i0;
   i2 = i1 == 21;
-  if (i2) goto l2;
+  if (i2) goto l4;
   i2 = (int)t + 48;
   i2 = *(int*)i2;
   i2 = i2 != (-2147483647-1);
-  if (i2) goto l2;
+  if (i2) goto l4;
   i1 = i1 == 27;
-  if (i1) goto l1;
+  if (i1) goto l3;
   i1 = (int)t + 24;
+  i2 = (int)*(void**)i1;
+  SymbolFile__Read_StructAlloc((Data__Struct)i2);
+  i2 = *(signed char*)i0;
+  i2 = i2 != 31;
+  if (i2) goto l3;
+  i2 = (int)*(void**)i1;
+  i1 = i2 == 0;
+  if (i1) goto l0;
+  i2 += 32;
+  i2 = *(int*)i2;
+  i1 = i2 + 1;
+  i2 = (int)t + 32;
+  *(int*)i2 = i1;
+  goto l1;
+l0:
+  i1 = (int)t + 32;
+  *(int*)i1 = 0;
+l1:
+  i1 = (int)t + 28;
+  i2 = (int)*(void**)i1;
+  i1 = i2 == 0;
+  if (i1) goto l3;
+l2:
+  i1 = i2 + 24;
   i1 = (int)*(void**)i1;
   SymbolFile__Read_StructAlloc((Data__Struct)i1);
-  i0 = *(signed char*)i0;
-  i0 = i0 != 31;
-  if (i0) goto l1;
-  i1 = (int)t + 28;
-  i1 = (int)*(void**)i1;
-  i0 = i1 == 0;
-  if (i0) goto l1;
-l0:
-  i0 = i1 + 24;
-  i0 = (int)*(void**)i0;
-  SymbolFile__Read_StructAlloc((Data__Struct)i0);
-  i0 = i1 + 36;
-  i1 = (int)*(void**)i0;
-  i0 = i1 != 0;
-  if (i0) goto l0;
-l1:
+  i1 = i2 + 36;
+  i2 = (int)*(void**)i1;
+  i1 = i2 != 0;
+  if (i1) goto l2;
+l3:
   StdTypes__StructAlloc((Data__Struct)(int)t);
-l2:
+l4:
   ;
 }
 
@@ -1904,7 +1910,7 @@ l23:
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(76)+8);
-    if (!_mem) _new_failed(_P(33456));
+    if (!_mem) _new_failed(_P(33805));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ObjectDesc_td.td;
     i3 = (int)_var;
@@ -1912,7 +1918,7 @@ l23:
   {
     char *_mem, *_var;
     _mem = GC_malloc(_not_zero(56)+8);
-    if (!_mem) _new_failed(_P(33516));
+    if (!_mem) _new_failed(_P(33865));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ConstDesc_td.td;
     i2 = (int)_var;
@@ -1940,7 +1946,7 @@ void SymbolFile_init(void) {
     char *_mem, *_var;
     int* _dim_ptr;
     _mem = GC_malloc(_not_zero(124*4)+8);
-    if (!_mem) _new_failed(_P(33698));
+    if (!_mem) _new_failed(_P(34047));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 124;
@@ -1961,7 +1967,7 @@ void SymbolFile_init(void) {
     char *_mem, *_var;
     int* _dim_ptr;
     _mem = GC_malloc_atomic(_not_zero(2*1)+8);
-    if (!_mem) _new_failed(_P(33939));
+    if (!_mem) _new_failed(_P(34288));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 2;

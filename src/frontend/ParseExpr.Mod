@@ -1,4 +1,4 @@
-(* 	$Id: ParseExpr.Mod,v 1.122 2001/04/07 08:04:01 ooc-devel Exp $	 *)
+(* 	$Id: ParseExpr.Mod,v 1.123 2001/12/06 08:51:14 ooc-devel Exp $	 *)
 MODULE ParseExpr;
 (*  Parses Oberon-2 expressions and translates them to GSA.
     Copyright (C) 1995-2001  Michael van Acken
@@ -573,6 +573,11 @@ PROCEDURE TypeConversion* (region: D.Region; VAR x: Attr.Item;
         RETURN D.GetIntConst (value, D.struct[targetType])
       END
     END GetIntConst;
+
+  PROCEDURE SameConstRepr (t1, t2: SHORTINT): BOOLEAN;
+    BEGIN
+      RETURN (t1 < Opc.subclR) = (t2 < Opc.subclR)
+    END SameConstRepr;
   
   BEGIN
     IF (x. type. form # targetType) THEN
@@ -639,16 +644,18 @@ PROCEDURE TypeConversion* (region: D.Region; VAR x: Attr.Item;
              dead code, or if we have to use the instruction as operand *)
           oldSrc := SHORT (SHORT (x. currValue(D.Instruction). opndList. arg(D.Const). int));
           oldDst := SHORT (x. currValue(D.Instruction). opcode MOD Opc.sizeClass);
-          IF Int.Includes (oldDst, oldSrc) & Int.Includes (dst, src) OR
-             Int.Includes (oldSrc, src) & Int.Includes (src, dst) OR
-             Int.Includes (src, oldSrc) & Int.Includes (src, dst) & 
-               Int.Includes (oldSrc, dst) THEN
+          IF (Int.Includes (oldDst, oldSrc) & Int.Includes (dst, src) OR
+              Int.Includes (oldSrc, src) & Int.Includes (src, dst) OR
+              Int.Includes (src, oldSrc) & Int.Includes (src, dst) & 
+                Int.Includes (oldSrc, dst)) &
+             SameConstRepr (oldDst, oldSrc) THEN
             (* we can use the operand, since the old conversion can't cause
                an overflow *)
             arg := x. currValue(D.Instruction). opndList. nextOpnd. arg
           ELSE  
             (* we got something like LONG(SHORT(x)), ie the previous conversion
-               (SHORT) may cause an overflow that can't be ignored *)
+               (SHORT) may cause an overflow that can't be ignored, or we
+               are converting between reals and ints *)
             arg := x. currValue
           END
         ELSE

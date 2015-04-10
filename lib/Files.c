@@ -1,6 +1,6 @@
-/*	$Id: Files.c,v 1.21 2001/05/25 12:01:28 ooc-devel Exp $	*/
+/*	$Id: Files.c,v 1.22 2002/02/15 22:01:59 ooc-devel Exp $	*/
 /*  Access to files and file attributes.
-    Copyright (C) 1997-2000  Michael van Acken
+    Copyright (C) 1997-2000, 2002  Michael van Acken
 
     This module is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public License
@@ -597,7 +597,7 @@ void Files__FileDesc_Close(Files__File f) {
 }
 
 void Files__WriterDesc_Truncate(Files__Writer w, int newLength) {
-  PosixFileDescr__Truncate ((PosixFileDescr__Writer)w->base, newLength);
+  PosixFileDescr__Truncate ((PosixFileDescr__Writer)w, newLength);
 }
 
 #define NO_ERROR ((fd == -2) || ((fd == -1) && (errno == EACCES)))

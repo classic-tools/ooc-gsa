@@ -27,6 +27,7 @@ void ParseExpr__CheckType(Data__Struct type, signed char expected, int pos);
 unsigned char ParseExpr__TypeTest_HasDynamicType(Attributes__Item *x, _Type x__tag);
 short int ParseExpr__TypeTest_BaseTypes(Data__Struct t);
 Data__Const ParseExpr__TypeConversion_GetIntConst(int value, unsigned char *ParseExpr__TypeConversion_adaptType, signed char *ParseExpr__TypeConversion_targetType);
+unsigned char ParseExpr__TypeConversion_SameConstRepr(signed char t1, signed char t2);
 void ParseExpr__Designator_Deref(unsigned char checkForPtr, Attributes__Item *ParseExpr__Designator_x, Data__Region *ParseExpr__Designator_region, _Type ParseExpr__Designator_x__tag);
 Data__Usable ParseExpr__Designator_FieldAddress(Attributes__Item *x, _Type x__tag, Data__Object field, Data__Region *ParseExpr__Designator_region);
 Data__Usable ParseExpr__Designator_ElementAddress(Data__Usable baseAdr, Data__Usable index, Data__Usable elementSize, int pos, Data__Region *ParseExpr__Designator_region);

@@ -171,7 +171,8 @@ l3:
   if (i0) goto l4;
   f2 = x * 1.44269502F;
   i0 = RealMath__round((float)f2);
-  d1 = i0;
+  f2 = i0;
+  d1 = f2;
   d0 = d1 * 6.9314718055994529E-1;
   d1 = x;
   d1 -= d0;
@@ -272,7 +273,8 @@ l0:
   if (i1) goto l4;
   f1 = x * 6.36619747E-1F;
   i1 = RealMath__round((float)f1);
-  d1 = i1;
+  f1 = i1;
+  d1 = f1;
   d0 = d1 * 1.5707963705062866;
   d1 = x;
   d1 -= d0;
