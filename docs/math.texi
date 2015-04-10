@@ -1,0 +1,925 @@
+@node Mathematics, Date and Time, I/O Subsystem, Top
+@chapter Mathematics
+
+The mathematics modules described in this chapter serve several purposes.
+They provide access to the underlying representation of @code{REAL} and
+@code{LONGREAL} values, as well as facilities for common mathematical
+functions and constants.
+
+The @code{REAL} and @code{LONGREAL} types, collectively referred to as the
+@dfn{real numeric types}, are used to represent @dfn{floating-point
+numbers}, which may be stored in various ways on a computer.  The actual
+values are approximations of real numbers and may not be wholely accurate.
+Hence, precise details of the floating-point representation are often
+required when creating operations that involve real numeric types in order
+to minimize errors and calculate error bounds.
+
+A full discourse on floating-point numbers, as well as more complete
+descriptions of algorithms used for manipulating floating-point data, is
+beyond the scope of this manual.  For further information, consult the
+following references:
+
+@format
+@cite{IEEE Standard for Binary Floating-Point Arithmetic}
+(ANSI/IEEE STD 754-1985) (R1990) 
+Institute of Electrical and Electronics Engineers, Inc. (IEEE)
+
+@cite{IEEE Standard for Radix-Independent Floating-Point Arithmetic}
+(ANSI/IEEE STD 854-1987) (R1994)
+Institute of Electrical and Electronics Engineers, Inc. (IEEE)
+
+@cite{Information technology -- Language independent arithmetic -- 
+Part 1: Integer and floating point arithmetic}
+(ISO/IEC 10967-1:1994(E))
+International Organization for Standardization (ISO)
+
+@cite{What Every Computer Scientist Should Know About Floating-Point Arithmetic}
+David Goldberg
+ACM Computing Surveys, Vol. 23, No. 1, March 1991, pp. 5-48
+
+@cite{Software Manual for the Elementary Functions}
+William James Cody
+Prentice Hall, July 1980
+
+@cite{Computer Approximations}
+John F. Hart
+Krieger Publishing Company, June 1978
+@end format
+
+@menu
+* Low-level Numeric Properties:: Access to underlying properties of types 
+                                  @code{REAL} and @code{LONGREAL}.
+* Mathematical Functions::      Mathematical functions on @code{REAL}
+                                  and @code{LONGREAL} values.   
+* Arbitrary Precision Integers:: Arbitrary precision integer operations.
+* Complex Numbers::             Mathematical functions for types
+                                  @code{COMPLEX} and @code{LONGCOMPLEX}.
+* Random Numbers::              Psuedo-random number generators.
+@end menu
+
+
+@node Low-level Numeric Properties, Mathematical Functions,  , Mathematics
+@section Low-level Numeric Properties
+@pindex LowReal
+@cindex REAL, low-level properties
+@pindex LowLReal
+@cindex LONGREAL, low-level properties
+
+The modules @code{LowReal} and @code{LowLReal} give access to the underlying
+properties of the types @code{REAL} and @code{LONGREAL}.  
+
+Default properties of the real numeric types are defined by the constants in
+these modules.  (An implementation may provide facilities for dynamically
+changing properties from these defaults.)
+
+@strong{Please note:} 
+
+@itemize @bullet
+@item
+The value of @var{places}, and the other facilities in these modules, refers
+only to the representation used to store values.  It is possible for
+expressions to be computed to greater precision than that used to store
+values.
+
+@item
+If the implementation of the corresponding real numeric type conforms to
+@cite{ISO/IEC 10967-1:199x (LIA-1)}, the following correspondences hold:
+
+@smallexample
+OOC lib         LIA-1
+--------        --------
+radix           r
+places          p
+gUnderflow      denorm
+small           fmin_N
+expoMin         emin
+expoMax         emax
+@end smallexample
+
+@item
+The value of the parameter @code{fmax}, which is required by @cite{ISO/IEC
+10967-1:199x}, is given by the predefined function @code{MAX} when applied
+to the corresponding real numeric type.
+@end itemize
+
+@defvr Constant radix
+The whole number value of the radix (base number system) used to represent
+the corresponding real number values.  (Most modern computers use IEEE 754,
+which defines the radix to be 2.)
+@end defvr
+
+@defvr Constant places
+A whole number value representing of the number of @code{radix} places used
+to store values of the corresponding real numeric type.
+@end defvr
+
+@defvr Constant expoMax
+A whole number value representing the largest possible exponent of the
+corresponding real numeric type.
+@end defvr
+
+@defvr Constant expoMin
+A whole number value representing the smallest possible exponent of the
+corresponding real numeric type.
+@end defvr
+
+@quotation
+@strong{Please note:} It is possible that @code{expoMin = expoMax}, which is
+likely for the case of fixed point representation.
+@end quotation
+
+@defvr Constant large
+The largest possible value of the corresponding real numeric type.
+
+@strong{Please note:} On some systems, @code{large} may be a machine
+representation of infinity.
+@end defvr
+
+@defvr Constant small
+The smallest possible positive value of the corresponding real numeric type,
+represented to maximal precision.
+
+@strong{Please note:} If an implementation has stored values strictly
+between @samp{0.0} and @code{small}, then presumbly the implementation
+supports gradual underflow.
+@end defvr
+
+@defvr Constant IEC559
+A boolean value that is @code{TRUE} if, and only if, the implementation of
+the corresponding real numeric type conforms to @cite{IEC 559:1989 (IEEE
+754:1987)} in all regards.
+
+@strong{Please note:} 
+@itemize @bullet
+@item
+If @code{IEC559} is @code{TRUE}, the value of @code{radix} is @code{2}.
+
+@item
+If @code{LowReal.IEC559} is @code{TRUE}, the 32-bit format of @cite{IEC
+559:1989} is used for the type @code{REAL}.
+
+@item
+If @code{LowLReal.IEC559} is @code{TRUE}, the 64-bit format of @cite{IEC
+559:1989} is used for the type @code{LONGREAL}.
+@end itemize
+@end defvr
+
+@defvr Constant LIA1
+A boolean value that is @code{TRUE} if, and only if, the implementation of
+the corresponding real numeric type conforms to @cite{ISO/IEC 10967-1:199x
+(LIA-1)} in all regards: parameters, arithmetic, exceptions, and
+notification.
+@end defvr
+
+@defvr Constant rounds
+A boolean value that is @code{TRUE} if, and only if, each operation produces
+a result that is one of the values of the corresponding real numeric type
+nearest to the mathematical result.
+
+@strong{Please note:} If @code{rounds} is @code{TRUE}, and the mathematical
+result lies mid-way between two values of the corresponding real numeric
+type, then the selection from the two possible values is
+implementation-dependent.
+@end defvr
+
+@defvr Constant gUnderflow
+A boolean value that is @code{TRUE} if, and only if, there are values of the
+corresponding real numeric type between @samp{0.0} and @code{small}.
+@end defvr
+
+@defvr Constant exception
+A boolean value that is @code{TRUE} if, and only if, every operation that
+attempts to produce a real value out of range raises an exception.
+@end defvr
+
+@defvr Constant extend
+A boolean value that is @code{TRUE} if, and only if, expressions of the
+corresponding real numeric type are computed to higher precision than the
+stored values.
+
+@strong{Please note:} If @code{extend} is @code{TRUE}, then values greater
+than @code{large} can be computed in expressions, but cannot be stored in
+variables.
+@end defvr
+
+@defvr Constant nModes
+A whole number value giving the number of bit positions needed for the
+status flags for mode control.
+@end defvr
+
+@deftp {Data type} Modes = SET
+This type is used to represent the status flags that apply to the underlying
+implementation of the corresponding real numeric type.  This type is used
+for the @code{setMode} and @code{currentMode()} procedures.
+@end deftp
+
+The following functions are provided in either @code{LowReal} (for
+@code{REAL}) or @code{LowLReal} (for @code{LONGREAL}):
+
+@deffn Function exponent @code{(@var{x}: REAL): INTEGER}
+@end deffn
+@deffn Function exponent @code{(@var{x}: LONGREAL): INTEGER}
+This function returns the exponent value of @var{x}, which must lie between
+@code{expoMin} and @code{expoMax}.  If @code{@var{x}=0.0}, an exception
+occurs and may be raised.
+@end deffn
+
+@deffn Function fraction @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function fraction @code{(@var{x}: LONGREAL): LONGREAL}
+This function returns the significand (or significant) part of @var{x}.
+Hence, the following relationship holds:
+
+@smallexample
+@var{x} = scale(fraction(@var{x}), exponent(@var{x}))
+@end smallexample
+@end deffn
+
+@deffn Function IsInfinity @code{(@var{real}: REAL): BOOLEAN}
+@end deffn
+@deffn Function IsInfinity @code{(@var{real}: LONGREAL): BOOLEAN}
+This function returns @code{TRUE} if, and only if, @var{real} is a
+representation of Infinity (either positive or negative).
+@end deffn
+
+@deffn Function IsNaN @code{(@var{real}: REAL): BOOLEAN}
+@end deffn
+@deffn Function IsNaN @code{(@var{real}: LONGREAL): BOOLEAN}
+This function returns @code{TRUE} if, and only if, @var{real} is a NaN ("Not
+a Number") representation.
+@end deffn
+
+@quotation
+@strong{Please note:} The routines @code{IsInfinity} and @code{IsNaN} allow,
+for example, for string formatting routines to have a reasonably portable
+way to check whether they are dealing with out of range or illegal numbers.
+@end quotation
+
+@deffn Function sign @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function sign @code{(@var{x}: LONGREAL): LONGREAL}
+This function returns the sign of @var{x} as follows:
+
+@format
+  If @code{x > 0.0}, return @code{1.0}
+  If @code{x = 0.0}, return either @code{1.0} or @code{-1.0}
+  If @code{x < 0.0}, return @code{-1.0}
+@end format
+
+@strong{Please note:} The uncertainty about the handling of @code{0.0} is to
+allow for systems that distinguish between @code{+0.0} and @code{-0.0} (such
+as IEEE 754 systems).
+@end deffn
+
+@deffn Function succ @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function succ @code{(@var{x}: LONGREAL): LONGREAL}
+This function returns the next value of the corresponding real numeric type
+greater than @var{x}, if such a value exists; otherwise, an exception occurs
+and may be raised.
+@end deffn
+
+@deffn Function ulp @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function ulp @code{(@var{x}: LONGREAL): LONGREAL}
+This function returns the value of the corresponding real numeric type equal
+to a unit in the last place of @var{x}, if such a value exists; otherwise,
+an exception occurs and may be raised.
+
+@strong{Please note:} When this value exists, one, or both, of the following
+is true: @code{ulp(x) = succ(x)-x} or @code{ulp(x) = x-pred(x)}.
+@end deffn
+  
+@deffn Function pred @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function pred @code{(@var{x}: LONGREAL): LONGREAL}
+This function returns the next value of the corresponding real numeric type
+less than @var{x}, if such a value exists; otherwise, an exception occurs
+and may be raised.
+@end deffn 
+
+@deffn Function intpart @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function intpart @code{(@var{x}: LONGREAL): LONGREAL}
+This function returns the integral part of @var{x}.  For negative values,
+this is @code{-intpart(abs(@var{x}))}.
+@end deffn
+
+@deffn Function fractpart @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function fractpart @code{(@var{x}: LONGREAL): LONGREAL}
+This function returns the fractional part of @var{x}.  This satisfies the
+relationship @code{fractpart(@var{x}) + intpart(@var{x}) = @var{x}}.
+@end deffn
+ 
+@deffn Function scale @code{(@var{x}: REAL; @var{n}: INTEGER): REAL}
+@end deffn
+@deffn Function scale @code{(@var{x}: LONGREAL; @var{n}: INTEGER): LONGREAL}
+This function returns @code{@var{x}*radix^n}, if such a value exists;
+otherwise, an exception occurs and may be raised.
+@end deffn
+
+@deffn Function trunc @code{(@var{x}: REAL; @var{n}: INTEGER): REAL}
+@end deffn
+@deffn Function trunc @code{(@var{x}: LONGREAL; @var{n}: INTEGER): LONGREAL}
+This function returns the value of the most significant @var{n} places of
+@var{x}.  If @var{n} is less than or equal to zero, an exception occurs and
+may be raised.
+@end deffn
+
+@deffn Function round @code{(@var{x}: REAL; @var{n}: INTEGER): REAL}
+@end deffn
+@deffn Function round @code{(@var{x}: LONGREAL; @var{n}: INTEGER): LONGREAL}
+This function returns the value of @var{x} rounded to the most significant
+@var{n} places.  If such a value does not exist, or if @var{n} is less than
+or equal to zero, an exception occurs and may be raised.
+@end deffn
+
+@deffn Function synthesize @code{(@var{expart}: INTEGER; @var{frapart}: REAL): REAL}
+@end deffn
+@deffn Function synthesize @code{(@var{expart}: INTEGER; @var{frapart}: LONGREAL): LONGREAL}
+This function returns a value of the corresponding real numeric type
+contructed from the value of @var{expart} and @var{frapart}.  This value
+satisfies the relationship
+
+@smallexample
+synthesize(exponent(@var{x}), fraction(@var{x})) = @var{x}.
+@end smallexample
+@end deffn
+
+@deffn Procedure setMode @code{(@var{m}: Modes)}
+This procedure sets status flags from the value of @var{m}, appropriate to
+the underlying implementation of the corresponding real numeric type.
+
+@strong{Please note:} 
+@itemize @bullet
+@item
+Many implementations of floating-point provide options for setting flags
+within the system, which control details of the handling of the type.
+Although two procedures are provided, one for each real numeric type, the
+effect may be the same.  Typical effects that can be obtained by this means
+are as follows:
+
+@itemize @bullet
+@item
+Ensuring that overflow will raise an exception.
+@item
+Allowing underflow to raise an exception.
+@item
+Controlling the rounding.
+@item
+Allowing special values to be produced (e.g., @code{NaN}s in implementations
+conforming to @cite{IEC 559:1989 (IEEE 754:1987)}).
+@item
+Ensuring that special value access will raise an exception.
+@end itemize
+
+Because these effects are so varied, the values of type @code{Modes} that
+may be used are not specified by this manual.
+
+@item
+The effect of @code{setMode} on operations on values of the corresponding
+real numeric type in processes other than the calling process is not
+defined.  Implementations are not required to preserve the status flags (if
+any) with the process state.
+@end itemize
+@end deffn
+
+@deffn Function currentMode @code{(): Modes} 
+This function returns the current status flags (in the form set by
+@code{setMode}), or the default status flags (if @code{setMode} is not
+used).
+
+@strong{Please note:} The returned value is not necessarily the value set by
+@code{setMode}, because a call of @code{setMode} might attempt to set flags
+that cannot be set by the program.
+@end deffn
+ 
+@deffn Function IsLowException @code{(): BOOLEAN}
+This function returns @code{TRUE} if the current process is in the
+exceptional execution state because of the raising of the corresponding
+@code{LowReal} or @code{LowLReal} exception; otherwise, it returns
+@code{FALSE}.
+@end deffn
+
+@node Mathematical Functions, Arbitrary Precision Integers, Low-level Numeric Properties, Mathematics
+@section Mathematical Functions
+@pindex RealMath
+@cindex REAL, mathematical functions
+@cindex mathematical functions
+@pindex LRealMath
+@cindex LONGREAL, mathematical functions
+
+The modules @code{RealMath} and @code{LRealMath} provide facilities for
+common mathematical functions and constants for @code{REAL} and
+@code{LONGREAL} numeric types.
+
+@strong{Please note:} The angle in all trigonometric functions is measured
+in radians.
+
+The following useful mathematical constants are provided:
+
+@defvr Constant pi
+An implementation-defined approximation to the mathematical constant
+@dfn{pi}.
+@end defvr
+
+@defvr Constant exp1
+An implementation-defined approximation to the mathematical constant
+@dfn{e}.
+@end defvr
+
+@strong{Please note:} Due to the approximations involved, @code{sin(pi)}
+might not exactly equal zero.  Similarly, @code{exp1} might not exactly
+equal @code{exp(1)}.
+
+The following are mathematical functions provided in either @code{RealMath}
+(for @code{REAL}) or @code{LRealMath} (for @code{LONGREAL}):
+
+@deffn Function sqrt @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function sqrt @code{(@var{x}: LONGREAL): LONGREAL}
+This function returns an approximation to the positive square root of
+@var{x}.  If @var{x} is negative, an exception is raised.
+@end deffn
+
+@deffn Function exp @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function exp @code{(@var{x}: LONGREAL): LONGREAL}
+This function returns an approximation to the mathematical constant @code{e}
+raised to the power of @var{x}.  
+@end deffn
+
+@deffn Function ln @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function ln @code{(@var{x}: LONGREAL): LONGREAL}
+This function returns an approximation to the natural logarithm of @var{x}.
+If @var{x} is zero or negative, an exception is raised.
+@end deffn
+
+@deffn Function sin @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function sin @code{(@var{x}: LONGREAL): LONGREAL}
+This function returns an approximation to the sine of @var{x} for all values
+of @var{x}.
+@end deffn
+ 
+@deffn Function cos @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function cos @code{(@var{x}: LONGREAL): LONGREAL}
+This function returns an approximation to the cosine of @var{x} for all
+values of @var{x}.
+@end deffn
+ 
+@deffn Function tan @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function tan @code{(@var{x}: LONGREAL): LONGREAL}
+This function returns an approximation to the tangent of @var{x}.  If
+@var{x} is an odd multiple of @code{pi/2}, an exception is raised.
+@end deffn
+
+@deffn Function arcsin @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function arcsin @code{(@var{x}: LONGREAL): LONGREAL}
+This function returns an approximation to the arcsine of @var{x}.  The
+result will be in the range @code{[-pi/2, pi/2]}.  If the absolute value of
+@var{x} is greater than one, an exception is raised.
+@end deffn
+ 
+@deffn Function arccos @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function arccos @code{(@var{x}: LONGREAL): LONGREAL}
+This function returns an approximation to the arccosine of @var{x}.  The
+result will be in the range @code{[0, pi]}.  If the absolute value of
+@var{x} is greater than one, an exception is raised.
+@end deffn
+
+@deffn Function arctan @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function arctan @code{(@var{x}: LONGREAL): LONGREAL}
+This function returns an approximation to the arctangent of @var{x} for all
+values of @var{x}.  The result will be in the range @code{[-pi/2, pi/2]}.
+@end deffn
+ 
+@deffn Function power @code{(@var{base}, @var{exponent}: REAL): REAL}
+@end deffn
+@deffn Function power @code{(@var{base}, @var{exponent}: LONGREAL): LONGREAL}
+This function returns an approximation to the value of @var{base} raised to
+the power @var{exponent}.  If @var{base} is zero or negative, an exception
+is raised.
+
+@strong{Please note:} This function is mathematically equivalent to @*
+@code{exp(@var{exponent} * ln(@var{base}))}, but may be computed
+differently.
+@end deffn
+  
+@deffn Function round @code{(@var{x}: REAL): LONGINT}
+@end deffn
+@deffn Function round @code{(@var{x}: LONGREAL): LONGINT}
+This function returns the nearest integer to the value of @var{x}.  If the
+mathematical result is not within the range of the type @code{LONGINT}, an
+exception occurs and may be raised.
+
+@strong{Please note:} If the value of @var{x} is midway between two integer
+values, the result is an implementation-defined selection of one of the two
+possible values.
+@end deffn
+
+@deffn Function IsRMathException @code{(): BOOLEAN}
+This function returns @code{TRUE} if the current process is in the
+exceptional execution state because of the raising of the corresponding
+@code{RealMath} or @code{LRealMath} exception; otherwise, it returns
+@code{FALSE}.
+@end deffn
+
+@node Arbitrary Precision Integers, Complex Numbers, Mathematical Functions, Mathematics
+@section Arbitrary Precision Integers
+@pindex Integers
+@cindex integers, arbitrary precision
+@cindex arbitrary precision integers
+
+Very often, a program requires numbers with a greater range or accuracy than
+exists with the built-in Oberon-2 integer types.  Hence, the module
+@code{Integers} provides facilities for @dfn{arbitrary precision} integer
+operations.
+
+For further information on how these kinds of facilites may be implemented,
+consult the following reference:
+
+@format
+@cite{The Art Of Computer Programming:
+Volume 2, Seminumerical Algorithms, Second Edition}
+Donald E. Knuth
+Addison-Wesley Publishing Co., January 1981
+@end format
+
+@deftp {Data type} Integer = POINTER TO IntegerDesc
+Instances of this type are used to represent arbitrary precision integers.
+@end deftp
+
+The following operations are used to create initial instances of
+@code{Integer} and convert @code{Integer}s to standard numeric
+types.
+
+@deffn Function Entier @code{(@var{x}: LONGREAL): Integer}
+This function returns an instance of @code{Integer} whose value is the
+largest integer not greater than @var{x}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR n: Integers.Integer;
+
+n:=Integers.Entier(1.0D20); 
+   @result{} n = 100000000000000000000
+
+n:=Integers.Entier(1111111111.5D0); 
+   @result{} n = 1111111111
+
+n:=Integers.Entier(0.0); 
+   @result{} n = 0
+@end smallexample
+
+@deffn Function Float @code{(@var{x}: Integer): LONGREAL}
+This function returns an approximation to the value of @var{x} converted to
+a @code{LONGREAL}.  If the result cannot be represented as a @code{LONGREAL}
+because the value of @var{x} is either too large or too small, this function
+returns either @code{MIN(LONGREAL)} or @code{MAX(LONGREAL)}.
+@end deffn
+  
+@deffn Function Long @code{(@var{x}: LONGINT): Integer}
+This function returns an instance of @code{Integer} whose value is @var{x}.
+@end deffn
+  
+@deffn Function Short @code{(@var{x}: Integer): LONGINT}
+This function returns the value of @var{x} converted to a @code{LONGINT}.
+If the result cannot be represented as a @code{LONGINT} because the value of
+@var{x} is either too large or too small, this function returns either
+@code{MIN(LONGINT)} or @code{MAX(LONGINT)}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR n: Integers.Integer;
+    s: LONGINT;
+    f: LONGREAL; 
+
+n:=Integers.Long(1234);
+s:=Integers.Short(n); 
+   @result{} s = 1234
+f:=Integers.Float(n);
+   @result{} f = 1.23400000000000E+3
+
+n:=Integers.Long(80000000H); 
+s:=Integers.Short(n); 
+   @result{} s = -2147483648
+f:=Integers.Float(n);
+   @result{} f = -2.14748364800000E+9
+
+n:=Integers.Long(7FFFFFFFH);
+s:=Integers.Short(n); 
+   @result{} s = 2147483647
+f:=Integers.Float(n);
+   @result{} f = 2.14748364700000E+9
+@end smallexample
+    
+The following are common mathematical operations, which operate on
+@code{Integer}s:
+  
+@deffn Function Abs @code{(@var{x}: Integer): Integer}
+This function returns the absolute value of @var{x}.
+@end deffn
+
+@deffn Function Odd @code{(@var{x}: Integer): BOOLEAN}
+This function returns @code{TRUE} if @var{x} is an odd number, and
+@code{FALSE} if it is even.
+@end deffn
+
+@deffn Function Compare @code{(@var{x}, @var{y}: Integer): LONGINT}
+This function compares the values of @var{x} and @var{y} and gives the
+following result:
+
+@format
+  If @code{x > y}, return @code{1}
+  If @code{x = y}, return @code{0}
+  If @code{x < y}, return @code{-1}
+@end format
+@end deffn
+  
+@deffn Function Difference @code{(@var{x}, @var{y}: Integer): Integer}
+This function returns the difference of @var{x} and @var{y} (i.e.,
+@code{x-y}).  
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR n: Integers.Integer;
+
+n:=Integers.Difference(Integers.Long(2000000), Integers.Long(999));
+   @result{} n = 1999001
+
+n:=Integers.Difference(Integers.Long(999), Integers.Long(-2000000)); 
+   @result{} n = -2000999
+
+n:=Integers.Difference(Integers.Long(-999), Integers.Long(999)); 
+   @result{} n = -1998
+
+n:=Integers.Difference(Integers.Long(-2000000), Integers.Long(-999)); 
+   @result{} n = -1999001
+@end smallexample
+
+@deffn Function Sum @code{(@var{x}, @var{y}: Integer): Integer}
+This function returns the sum of @var{x} and @var{y} (i.e., @code{x+y}).
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR n: Integers.Integer;
+
+n:=Integers.Sum(Integers.Long(999), Integers.Long(2000000));
+   @result{} n = 2000999
+
+n:=Integers.Sum(Integers.Long(999), Integers.Long(-2000000)); 
+   @result{} n = -1999001
+
+n:=Integers.Sum(Integers.Long(-999), Integers.Long(999)); 
+   @result{} n = 0
+
+n:=Integers.Sum(Integers.Long(-2000000), Integers.Long(-999)); 
+   @result{} n = -2000999
+@end smallexample
+
+@deffn Function Product @code{(@var{x}, @var{y}: Integer): Integer}
+This function returns the product of @var{x} and @var{y} (i.e., @code{x*y}).
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR n: Integers.Integer;
+
+n:=Integers.Product(Integers.Long(100000000), Integers.Long(100000000)); 
+   @result{} n = 10000000000000000
+
+n:=Integers.Product(Integers.Long(71234), Integers.Long(66000)); 
+   @result{} n = 4701444000
+@end smallexample
+
+@deffn Function Quotient @code{(@var{x}, @var{y}: Integer): Integer}
+This function returns the quotient of @var{x} divided by @var{y} (i.e.,
+@code{x DIV y}).
+
+@strong{Pre-condition}: @var{y} is not zero.
+@end deffn
+  
+@deffn Function Remainder @code{(@var{x}, @var{y}: Integer): Integer}
+This function returns the remainder of @var{x} divided by @var{y} (i.e.,
+@code{x MOD y}).
+
+@strong{Pre-condition}: @var{y} is not zero.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR m, n: Integers.Integer;
+
+n:=Integers.Quotient(Integers.Long(2000000000), Integers.Long(1234)); 
+m:=Integers.Remainder(Integers.Long(2000000000), Integers.Long(1234)); 
+   @result{} n = 1620745, m = 670
+
+n:=Integers.Quotient(Integers.Long(2000000000), Integers.Long(123456)); 
+m:=Integers.Remainder(Integers.Long(2000000000), Integers.Long(123456)); 
+   @result{} n = 16200, m = 12800
+@end smallexample
+
+@deffn Procedure QuoRem @code{(@var{x}, @var{y}: Integer; VAR @var{quo}, @var{rem}: Integer)}
+This procedure calculates both the quotient and remainder of @var{x} divided
+by @var{y}.  
+
+@strong{Pre-condition}: @var{y} is not zero.
+@end deffn
+
+@emph{Example:}  
+  
+@smallexample
+VAR m, n: Integers.Integer;
+
+Integers.QuoRem(Integers.Long(2000000000), Integers.Long(1234), n, m); 
+   @result{} n = 1620745, m = 670
+
+Integers.QuoRem(Integers.Long(2000000000), Integers.Long(123456), n, m); 
+   @result{} n = 16200, m = 12800
+@end smallexample
+
+@deffn Function GCD @code{(@var{x}, @var{y}: Integer): Integer}
+This function returns the greatest common divisor of @var{x} and @var{y}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR n: Integers.Integer; 
+
+n:=Integers.GCD(Integers.Long(40902), Integers.Long(24140));
+   @result{} n = 34
+
+n:=Integers.GCD(Integers.Long(27182818), Integers.Long(10000000));
+   @result{} n = 2
+
+n:=Integers.GCD(Integers.Long(2940), Integers.Long(238));
+   @result{} n = 14
+@end smallexample
+
+@deffn Function Power @code{(@var{x}: Integer; @var{exp}: LONGINT): Integer}
+This function returns the value of @var{x} raised to the power @var{exp}.
+
+@strong{Pre-condition}: @var{exp} is greater than zero.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR n: Integers.Integer; 
+
+n:=Integers.Power(Integers.Long(2940), 2);
+   @result{} n = 8643600
+
+n:=Integers.Power(Integers.Long(2), 33);
+   @result{} n = 8589934592
+
+n:=Integers.Power(Integers.Long(10), 9);
+   @result{} n = 1000000000
+
+n:=Integers.Power(Integers.Long(2), 100);
+   @result{} n = 1267650600228229401496703205376
+@end smallexample
+
+@deffn Function Sign @code{(@var{x}: Integer): SHORTINT}
+This function returns the sign of @var{x} as follows:
+
+@format
+  If @code{x > 0}, return @code{1}
+  If @code{x = 0}, return @code{0}
+  If @code{x < 0}, return @code{-1}
+@end format
+@end deffn
+  
+@deffn Function Factorial @code{(@var{x}: LONGINT): Integer}
+This function returns @var{x} factorial (i.e.,
+@code{x!=x(x-1)(x-2)...(2)(1)}).
+
+@strong{Pre-condition}: @var{x} is not negative.
+@end deffn
+  
+@emph{Example:}  
+
+@smallexample
+VAR n: Integers.Integer; 
+
+n:=Integers.Factorial(13);
+   @result{} n = 6227020800
+
+n:=Integers.Factorial(20);
+   @result{} n = 2432902008176640000
+@end smallexample
+
+The following operations are used to extract pieces of @code{Integers}:
+  
+@deffn Function ThisDigit10 @code{(@var{x}: Integer; @var{exp10}: LONGINT): CHAR}
+This function returns a single character, which represents the digit in
+@var{x} located at position @var{exp10}.  Note that the right most digit
+(i.e., the "ones" place) has position zero.
+
+@strong{Pre-condition}: @var{exp10} is not negative.
+@end deffn
+      
+@emph{Example:}  
+
+@smallexample
+VAR n: Integers.Integer; 
+    c: CHAR;
+
+Integers.ConvertFromString("1267650600228229401496703205376", n);
+
+c:=Integers.ThisDigit10(n, 0);
+   @result{} c = "6"
+
+c:=Integers.ThisDigit10(n, 10);
+   @result{} c = "9"
+
+c:=Integers.ThisDigit10(n, 30);
+   @result{} c = "1"
+@end smallexample
+
+@deffn Function Digits10Of @code{(@var{x}: Integer): LONGINT}
+This function returns the value of the last ten digits of @var{x} (i.e., it
+returns @code{x MOD 1000000000}).
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR n: Integers.Integer; 
+    s: LONGINT;
+
+Integers.ConvertFromString("1267650600228229401496703205376", n);
+
+s:=Integers.Digits10Of(n);
+   @result{} s = 703205376
+@end smallexample
+
+The following operations are used to convert between strings and
+@code{Integers}:
+      
+@deffn Procedure ConvertFromString @code{(@var{s}: ARRAY OF CHAR; VAR @var{x}: Integer)}
+This procedure converts @var{s} to an @code{Integer} value, which is
+assigned to @var{x}.  Leading spaces and tab characters in @var{s} are
+skipped.
+
+@strong{Pre-condition}: @var{s} is in the form of a signed whole number
+(@pxref{Syntax of Text Tokens})
+@end deffn
+
+@deffn Procedure ConvertToString @code{(@var{x}: Integer; VAR @var{s}: ARRAY OF CHAR)}
+This procedure converts @var{x} to a string value, which is assigned to
+@var{s}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR n: Integers.Integer; 
+    str: ARRAY 1024 OF CHAR;
+
+Integers.ConvertFromString("1234567890", n);
+   @result{} n = 1234567890
+Integers.ConvertToString(n, str); 
+   @result{} str = "1234567890"
+
+Integers.ConvertFromString("  -9999999999", n); 
+   @result{} n = -9999999999
+Integers.ConvertToString(n, str);
+   @result{} str = "-9999999999"
+
+Integers.ConvertFromString(" 12345678901234567890123456789", n);
+   @result{} n = 12345678901234567890123456789
+Integers.ConvertToString(n, str); 
+   @result{} str = "12345678901234567890123456789"
+@end smallexample
+
+The following operations can be used to internalize and externalize
+@code{Integers} (i.e., read from and write to channels):
+
+@deffn Procedure Externalize @code{(VAR @var{w}: BinaryRider.Writer; @var{x}: Integer)}
+Writes the value of @var{x} to a channel using writer @var{w}.
+@end deffn
+  
+@deffn Procedure Internalize @code{(VAR @var{r}: BinaryRider.Reader; VAR @var{x}: Integer)}
+Retrieves a stored @code{Integer} value from a channel using reader @var{r},
+and assigns it to @var{x}.
+@end deffn

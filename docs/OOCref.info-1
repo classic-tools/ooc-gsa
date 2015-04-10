@@ -1,0 +1,1084 @@
+This is Info file OOCref.info, produced by Makeinfo version 1.68 from
+the input file OOCref.texinfo.
+
+   This file documents the Optimizing Oberon-2 Compiler (OOC) and its
+library.
+
+   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
+Library Reference Manual', for Version 1.4.5 or later of oo2c.
+
+   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
+1999 Michael van Acken
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the text of the translation of the section
+entitled "GNU General Public License" must be approved for accuracy by
+the Foundation.
+
+
+File: OOCref.info,  Node: Top,  Next: Introduction,  Prev: (dir),  Up: (dir)
+
+Main Menu
+*********
+
+   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
+Reference Manual', for Version 1.4.5 or later of oo2c.
+
+* Menu:
+
+* Introduction::                Purpose of the OOC Reference Manual.
+
+Part I:  The OOC Library
+
+* OOC Library Overview::        An introduction to the OOC Library.
+* Character & String Handling:: Character representation and testing, and
+                                 procedures for manipulating strings.
+* Integer/String Conversion::   Conversions between integer types and
+                                 string representations of integers.
+* Real/String Conversion::      Conversions between real types and string
+                                 representations of reals.
+* I/O Subsystem::               Input/Output facilities and channel types.
+* Mathematics::                 Math functions and properties for real
+                                 numeric types and complex number types.
+* Date and Time::               Functions for getting the date and time,
+                                 and for conversion between formats.
+* Oakwood Compliant Modules::   Modules which support the Oakwood
+                                 Guildlines.
+* Exception Handling::          Run-time exception handling and signal
+                                 handling.
+* Localization::                Facilities for enabling programs to run
+                                 internationally.
+
+Part II:  The OOC Compiler
+
+* Language::                    Specification of the Oberon-2 language as
+                                 used by the OOC compiler.
+* Pragmas::                     Mechanisms for embedding code generation
+                                 directives.
+* OO2C::                        Specifics of the oo2c implemetation of the
+                                 OOC compiler.
+
+Appendices
+
+* Syntax of Text Tokens::       Syntactical definitions for the various
+                                  text tokens.
+* SYSTEM::                      Low-level operations particular to the OOC
+                                 compiler (may vary by implementation).
+* OOC Error Messages::          A commented list of standard compiler error
+                                 messages.
+* Copying::                     The GNU General Public License describing
+                                 how you can copy and share OOC.
+
+Indices
+
+* Concept Index::               Index of concepts and names.
+* Type Index::                  Index of types and type qualifiers.
+* Procedure Index::             Index of procedures.
+* Variable & Constant Index::   Index of global variables and constants.
+* File Index::                  Index of programs and files.
+
+ -- The Detailed Node Listing --
+
+OOC Library Overview
+
+* Standards::                   Standards followed by OOC and its library.
+* Definition of Terms::         Terminology used in this part of the manual.
+
+Character & String Handling
+
+* Ascii::                       Standard short character names for control
+                                 chars.
+* CharClass::                   Classification of values of type `CHAR'.
+* Strings::                     Facilities to manipulate strings.
+
+Strings
+
+* Copying and Concatenation::   Procedures to copy the contents of strings.
+* Compare & Searching Strings:: Comparison of strings and locating
+                                 sub-strings.
+* Misc. Strings Procedures::    Procedures `Length' and `Capitalize'.
+
+Integer/String Conversion
+
+* ConvTypes::                   Common types used in the string conversion
+                                 modules.
+* IntConv::                     Low-level integer/string conversions.
+* IntStr::                      Integer-number/string conversions.
+
+Real/String Conversion
+
+* RealConv::                    Low-level `REAL'/string conversions.
+* RealStr::                     `REAL'/string conversions.
+* LRealConv::                   Low-level `LONGREAL'/string conversions.
+* LRealStr::                    `LONGREAL'/string conversions.
+
+I/O Subsystem
+
+* Input/Output Overview::       An introduction to the basic concepts of
+                                 I/O in the OOC library.
+* Channels::                    Details of the various channel modules.
+* Standard Mappers::            Descriptions of the standard mapper types.
+* Standard I/O::                Simple interfaces to standard input, output
+                                 and error channels.
+
+Input/Output Overview
+
+* I/O Concepts::                Basic I/O concepts of the OOC library.
+* Riders and Mappers::          Discussion of the functions of riders and
+                                 mappers.
+* Locators & Opening Channels:: Description of the use of locators to
+                                 open channels.
+
+Channels
+
+* Channel::                     Defines abtract channel and rider types.
+* Files::                       File access.
+* StdChannels::                 Interface to standard in, out, and err
+                                 channels.
+* ProgramArgs::                 Facilities to access program arguments.
+
+Channel
+
+* Abstract Class Channel::      Elements of abtract channel types.
+* Abstract Class Reader::       Elements of abstract reader types.
+* Abstract Class Writer::       Elements of abstract writer types.
+* Channel Procedures::          Free-standing procedures in module
+                                 Channel.
+* Summary of Channel Constants::Summarized list of constants in module
+                                 Channel.
+
+Files
+
+* Class File::                  Specific features of class File.
+* Class Reader (for File)::     Specific features of the reader class
+                                 associated with class File.
+* Class Writer (for File)::     Specific features of the writer class
+                                 associated with class File.
+* File Locators::               Locators used for opening files.
+* Other File Operations::       Free-standing procedures in module Files.
+* Summary of File Constants::   Summarized list of constants in module
+                                 Files.
+
+Standard Mappers
+
+* Text Mappers::                Textual input from and output to channels.
+* BinaryRider::                 Binary input from and output to channels.
+
+Text Mappers
+
+* Rider::                       Abstract classes for text based I/0.
+* LongRider::                   Abstract classes with LONGCHAR support.
+* TextRider::                   ISO-Latin-1 (CHAR) text based I/0.
+* UnicodeRider::                Unicode (LONGCHAR) text based I/0.
+
+Rider
+
+* Class Reader (Rider)::        Abstract class defining text readers.
+* Class Writer (Rider)::        Abstract class defining text writers.
+* Class Scanner (Rider)::       Abstract class defining text scanners.
+
+LongRider
+
+* Class Reader (LongRider)::    Abstract class defining text readers.
+* Class Writer (LongRider)::    Abstract class defining text writers.
+* Class Scanner (LongRider)::   Abstract class defining text scanners.
+
+TextRider
+
+* Class Reader (TextRider)::    Class for reading text from channels.
+* Class Writer (TextRider)::    Class for writing text to channels.
+* Class Scanner (TextRider)::   Class for scanning text from channels.
+* Connecting TextRiders::       Procedures to connect text readers, writers,
+                                  and scanners to channels.
+* Summary of TextRider Constants:: Summarized list of constants in module
+                                  TextRider.
+
+UnicodeRider
+
+* Class Reader (UnicodeRider):: Class for reading unicode text from channels.
+* Class Writer (UnicodeRider):: Class for writing unicode text to channels.
+* Class Scanner (UnicodeRider)::Class for scanning unicode text from
+                                  channels.
+* Connecting UnicodeRiders::    Procedures to connect (unicode) readers,
+                                  writers, and scanners to channels.
+* Summary of UnicodeRider Constants:: Summarized list of constants in module
+                                  UnicodeRider.
+
+BinaryRider
+
+* Class Reader (BinaryRider)::  Class for reading binary data from channels.
+* Class Writer (BinaryRider)::  Class for writing binary data to channels.
+* Connecting BinaryRiders::     Procedures to connect binary readers and
+                                 writers to channels.
+* Summary of BinaryRider Constants:: Summarized list of constants in module
+                                 BinaryRider.
+
+Standard I/O
+
+* In::                          Simple interface to standard input.
+* Out::                         Simple interface to standard output.
+* Err::                         Simple interface to standard error channel.
+
+Mathematics
+
+* Low-level Numeric Properties:: Access to underlying properties of types
+                                  `REAL' and `LONGREAL'.
+* Mathematical Functions::      Mathematical functions on `REAL'
+                                  and `LONGREAL' values.
+* Arbitrary Precision Integers:: Arbitrary precision integer operations.
+* Complex Numbers::             Mathematical functions for types
+                                  `COMPLEX' and `LONGCOMPLEX'.
+* Random Numbers::              Psuedo-random number generators.
+
+Date and Time
+
+* Time::                        Manipulation of time stamps and time
+                                 intervals.
+* JulianDay::                   Convert between day/month/year and
+                                 Modified Julian Days.
+* SysClock::                    Reading and setting the system clock.
+* Calendar::                    Conversions between calender dates, time
+                                 stamps, and date/time string formats.
+
+Oakwood Compliant Modules
+
+* OakStrings::                  String manipulation.
+* OakFiles::                    File access.
+* OakIn::                       Basic functions for formatted input.
+* OakOut::                      Basic functions for formatted output.
+* OakMath and OakMathL::        Mathematical functions for `REAL'.
+                                  and `LONGREAL'.
+
+Exception Handling
+
+* Exception::                   Run-time exception handling.
+* Signal::                      Installing signal handlers.
+
+Localization
+
+* Locales::                     Localization information based on the
+                                  Posix/C facilities.
+* LocStrings::                  Character and string localization
+                                  facilities.
+* LocNumConv::                  Localized number conversions.
+* LocNumStr::                   Convert numbers to/from strings using
+                                  locale information.
+* LocTextRider::                Localized text riders.
+* LocText::                     Text string localization facilities.
+
+Language
+
+* Specifications::              Specifications beyond the language report.
+* Non-conformant Mode::         Deviations from the Language Report in
+                                  "Non-conformant" Mode.
+* Additional Data Types::       Additional basic data types used by OOC.
+* Language Extensions::         Experimental extensions to the language.
+* Illegal Operations::          Illegal operations and their effects.
+
+Language Extensions
+
+* ABSTRACT::                    Abstract classes and methods.
+* NO_COPY::                     Avoiding Local Copies of Value Parameters.
+
+Pragmas
+
+* Pragma Syntax::               Syntax for embedding pragmas.
+* Predefined Pragma Variables:: How to use the predefined pragma variables.
+
+OO2C
+
+* OO2C Overview::               An introduction to the oo2c implementation.
+* Installing oo2c::             How to install oo2c.
+* Invoking Programs::           Using compiler and tools.
+* Initialization Files::        How to configure the compiler.
+* Interfacing to C Code::       How to write interface and foreign modules.
+* Limitations of oo2c::         Implementation limits of oo2c.
+* Large Arrays of Constants::   How oo2c deals with large arrays of
+                                 constants.
+* Emacs Mode::                  How to install and use Emacs mode.
+
+Installing oo2c
+
+* Preparing for Installation::  Optional add-on packages supported by oo2c.
+* Basic Installation::          The usual way to install oo2c on a system.
+* Compilers and Options::       Fine tuning the C compiler.
+* Installation Names::          Selecting destination dir and program names.
+* Installing with Run-Time Checks::  Adding debug code to library and compiler.
+
+Invoking Programs
+
+* oo2c options::                Oberon-2 to ANSI-C Translator
+* oob options::                 Symbol File Browser
+* oocn options::                Source Code Analysis and Transformation
+* ooef options::                Conversion Tool for Error Messages
+* oowhereis options::           File Finder
+
+oo2c options
+
+* oo2c primary operations::     Primary operations of the compiler.
+* oo2c std options::            Selecting translation variants.
+* oo2c C options::              Specifying the C compiler and its options.
+* oo2c libraries::              Creating shared or static libraries.
+* oo2c debugging options::      How to take a look at oo2c's internals.
+* oo2c files::                  Input and output files of oo2c.
+
+Initialization Files
+
+* Options and Pragmas::         Setting option and pragma variables.
+* Managing Files::              Specifying paths for input and output files.
+* Selecting Configuration::     Which initialization files are used?
+* Initialization Example::      The default initialization file as an example.
+
+Interfacing to C Code
+
+* Using Foreign Code::          Considerations about using foreign code.
+* System Flags::                Elements of non-standard interface modules.
+* INTERFACE Modules::           Interfacing to existing C code.
+* FOREIGN Modules::             Writing Oberon-2 modules in C.
+
+System Flags
+
+* Module Flags::
+* Type Flags::
+* Declaration Flags::
+
+Emacs Mode
+
+* o2-mode installation::        Integrating the new package with Emacs.
+* o2-mode functions::           Functions provided by Oberon-2 Mode
+* o2-mode hints::               Tips and tricks to improve things further.
+
+
+File: OOCref.info,  Node: Introduction,  Next: OOC Library Overview,  Prev: Top,  Up: Top
+
+Introduction
+************
+
+   The goal of OOC is to produce free (GPL), stand-alone (not part of
+an Oberon system), optimizing Oberon-2 compilers and libraries.  OOC
+stands for "Optimizing Oberon-2 Compiler".
+
+   The purpose of this manual is to describe the OOC library and
+provide a reference for the use of these facilities with the OOC
+compiler.  There are also chapters discussing unique features of the
+OOC compiler and, in particular, the oo2c implementation of OOC.
+
+   This manual assumes familiarity with the Oberon-2 programming
+language and basic programming concepts.  It is considered a reference
+as opposed to a tutorial, but examples will be provided to assist in
+understanding where they are appropriate.
+
+
+File: OOCref.info,  Node: OOC Library Overview,  Next: Character & String Handling,  Prev: Introduction,  Up: Top
+
+Part I:  The OOC Library
+************************
+
+OOC Library Overview
+********************
+
+   This part of the manual describes the OOC library, and provides a
+reference as to the use of these facilities with the OOC compiler.
+
+   The Oberon-2 programming language does not provide built-in
+facilities for performing common operations such as input/output,
+string manipulation, mathematical functions and so forth.  These
+facilities are instead implemented in library modules.  As such, much
+of learning about a new Oberon-2 compiler, such as OOC, is discovering
+how to use those library facilities.
+
+   The designers of the OOC library have attempted to make all modules
+as easy to use and understand as possible.  Module definitions can be
+viewed with the browser that comes with the OOC compiler; this is an
+easy way to see what facilities are available in each module.
+
+   However, module definitions are generally not sufficient for a good
+understanding of all facilities.  This manual provides a more
+comprehensive guide to the OOC library.  As with all Oberon-2 modules,
+library modules must always be imported before they can be used within
+a client module.
+
+* Menu:
+
+* Standards::                   Standards followed by OOC and its library.
+* Definition of Terms::         Terminology used in this part of the manual.
+
+
+File: OOCref.info,  Node: Standards,  Next: Definition of Terms,  Up: OOC Library Overview
+
+Standards
+=========
+
+   The only available standard for Oberon-2 is described in `The Oakwood
+Guildlines for Oberon-2 Compiler Developers', which will be referred to
+subsiquently as "Oakwood".  The Oakwood library does not provide the
+kind of functionality that OOC's designers wished to provide.  However,
+because Oakwood is the only available standard, these modules have been
+provided in the OOC library.  The names of the Oakwood modules for OOC
+all begin with "Oak" (e.g., OakIn, OakOut).
+
+   The OOC library also provides replacements for Oakwood modules that
+contain expanded functionality.  That is, OOC provides modules In, Out,
+Files, and so forth.
+
+   Also, in order to provide consistency, the OOC library attempts to
+follow these naming conventions:
+
+     ================================================================
+     Names for              Start with              Examples
+     ----------------------------------------------------------------
+     Constants, variables   Lower-case noun         version, wordSize
+                            Lower-case adjective    full
+     
+     Types                  Upper-case noun         File, TextFrame
+     
+     Procedures             Upper-case verb         WriteString
+     
+     Functions              Upper-case noun         Position
+                            Upper-case adjective    Empty, Equal
+     
+     Modules                Upper-case noun         Files, TextFrames
+     ----------------------------------------------------------------
+
+
+File: OOCref.info,  Node: Definition of Terms,  Prev: Standards,  Up: OOC Library Overview
+
+Definition of Terms
+===================
+
+   Standard Oberon-2 terminology closely follows "conventional"
+programming practices.  The Oberon-2 language report describes things
+using words like "procedure" and "type".  Special object-oriented (OO)
+terms like "class" and "method" aren't typically used by the Oberon
+community.  These OO ideas can be described using various combinations
+of "conventional" terms; for instance, "extensible record" or
+"type-bound procedure".
+
+   But it isn't always convenient to use these conventional terms; the
+object-oriented terms are often more concise and handier to use.  Also,
+there are notable distinctions in the OOC library between modules that
+provide things like a collection of mathematical functions (that
+operate on existing types) and true extensible abstract data types
+(e.g., channels and riders).  For these reasons, this section defines
+how certain terms are to be used throughout the rest of this manual.
+
+   A "data type" is a simple Oberon-2 type declaration.  It may be any
+type whose internal structure is of no importance to the user, or an
+"alias" type that declares an alias name for a basic type like
+`INTEGER'.
+
+   A "record" is a normal Oberon-2 record type declaration.  It
+generally can be used directly to define variables.  Operations on
+records (i.e., procedures) are declared external to the type (e.g.,
+`SysClock.DateTime' *note SysClock::.)
+
+   A "class" differs from normal records in that they are extensible and
+their operations are implemented as type-bound procedures.  These are
+usually declared as a pointer plus record combination and the two types
+should be considered as a single class.  Generally, it is pointless to
+create a variable of the record type--you can't use it; its contents are
+undefined.
+
+   A "method" is simply another term for a type-bound procedure.
+
+   An "object" is an instance of a class (i.e., a variable whose type
+is a class).
+
+   An "abstract class" serves as a pattern from which other classes can
+be derived.  Abstract classes provide an interface, but no
+implementation (or perhaps a partial implementation).  They can never
+be used to create objects; rather, they must be extended to form
+"concrete subclasses" that inherit the interface and then go on to
+complete the implementation.  Abstract classes ensure a consistent
+design for their subclasses.
+
+
+File: OOCref.info,  Node: Character & String Handling,  Next: Integer/String Conversion,  Prev: OOC Library Overview,  Up: Top
+
+Character & String Handling
+***************************
+
+   Operations on strings and characters are an important part of many
+programs.  The Oberon-2 language provides various built-in operations
+on characters and strings, but the OOC library goes on to extend the
+native facilities of Oberon-2 with a useful set of modules for
+character and string manipulation.
+
+* Menu:
+
+* Ascii::                       Standard short character names for control
+                                 characters.
+* CharClass::                   Classification of values of type CHAR.
+* Strings::                     Facilities to manipulate strings.
+
+
+File: OOCref.info,  Node: Ascii,  Next: CharClass,  Up: Character & String Handling
+
+Module Ascii
+============
+
+   The Oberon-2 language report defines characters using "`ASCII'"
+(American Standard Code for Information Exchange) representation.
+Because of this, and for convenience, OOC provides module `Ascii', which
+defines useful constants corresponding to certain `ASCII' characters.
+
+   Note that OOC does support the full ISO-Latin-1 character set, which
+is a strict superset of `ASCII', as well as Unicode (via
+`LONGCHAR'--*note Additional Data Types::.)
+
+   `ASCII' characters can be printable characters, such as letters and
+digits, and also non-printing characters such as tab and linefeed.
+`ASCII' only truly defines 128 characters; this means that the
+interpretation of the range from `80X' to `0FFX' may vary.
+
+   Constants for all of the standard `ASCII' names for non-printing
+characters are provided in module `Ascii':
+
+     CONST
+       nul = 00X;     soh = 01X;     stx = 02X;
+       etx = 03X;     eot = 04X;     enq = 05X;
+       ack = 06X;     bel = 07X;     bs  = 08X;
+       ht  = 09X;     lf  = 0AX;     vt  = 0BX;
+       ff  = 0CX;     cr  = 0DX;     so  = 0EX;
+       si  = 0FX;     dle = 01X;     dc1 = 11X;
+       dc2 = 12X;     dc3 = 13X;     dc4 = 14X;
+       nak = 15X;     syn = 16X;     etb = 17X;
+       can = 18X;     em  = 19X;     sub = 1AX;
+       esc = 1BX;     fs  = 1CX;     gs  = 1DX;
+       rs  = 1EX;     us  = 1FX;     del = 7FX;
+
+   The most commonly used ASCII names have the following meanings:
+
+      bel -- bell
+      bs  -- backspace
+      ht  -- horizontal tabulator
+      vt  -- vertical tabulator
+      lf  -- line feed
+      ff  -- form feed
+      cr  -- carriage return
+      esc -- escape
+      del -- delete
+
+   Also, some often used synonyms are declared in module Ascii:
+
+     CONST
+       sp   = " ";
+       xon  = dc1;
+       xoff = dc3;
+
+
+File: OOCref.info,  Node: CharClass,  Next: Strings,  Prev: Ascii,  Up: Character & String Handling
+
+Module CharClass
+================
+
+   Programs that deal with characters and strings often need to perform
+tests that "classify a character."  Is the character a letter?  A
+digit?  A whitespace character?  and so forth.
+
+   Module CharClass provides a set of boolean function procedures that
+are used for such classification of values of the type `CHAR'.  All
+procedures accept a single argument of type `CHAR' and return a
+`BOOLEAN' result.
+
+   Recall that Oberon-2 is defined so that characters are ordered the
+in the same manner as defined by ASCII.  Specifically, all the digits
+precede all the upper-case letters, and all the upper-case letters
+precede all the lower-case letters.  This assumption is carried over
+into module CharClass.  Also, note that CharClass uses constants
+defined in module Ascii within many of its procedures (*note Ascii::.)
+
+   For example, the function `IsLetter' is used to test whether a
+particular character is one of `A' through `Z' or `a' through `z':
+
+     Out.String("The character '");
+     IF CharClass.IsLetter(c) THEN
+        Out.Char(c);
+        Out.String("' is a letter.");
+     ELSE
+        Out.Char(c);
+        Out.String("' isn't a letter.");
+     END;
+     Out.Ln
+
+   *Please note*: None of these predicates are affected by the current
+localization setting.  For example, `IsUpper' will always test for
+`"A"<=ch & ch<="Z"' regardless of whether the locale specifies that
+additional characters belong to this set or not.  The same holds for the
+compare and capitalization procedures in module Strings.
+
+ - Constant: eol
+     The implementation-defined character used to represent end-of-line
+     internally by OOC (*note Ascii::.)
+
+ - Read-only Variable: systemEol
+     An implementation defined string that represents the end-of-line
+     marker used by the target system for text files.  `systemEol' may
+     be more than one character in length, and is not necessarily equal
+     to `eol'.  Note that `systemEol' is a string; it is always
+     terminated by `0X' (i.e., `systemEol' cannot contain the character
+     `0X').
+
+ - Function: IsNumeric `(CH: CHAR): BOOLEAN'
+     Returns `TRUE' if, and only if, CH is classified as a numeric
+     character (i.e., a decimal digit--`0' through `9').
+
+ - Function: IsLetter `(CH: CHAR): BOOLEAN'
+     Returns `TRUE' if, and only if, CH is classified as a letter.
+
+ - Function: IsUpper `(CH: CHAR): BOOLEAN'
+     Returns `TRUE' if, and only if, CH is classified as an upper-case
+     letter.
+
+ - Function: IsLower `(CH: CHAR): BOOLEAN'
+     Returns `TRUE' if, and only if, CH is classified as a lower-case
+     letter.
+
+ - Function: IsControl `(CH: CHAR): BOOLEAN'
+     Returns `TRUE' if, and only if, CH represents a control function
+     (that is, an ASCII character that is not a printing character).
+
+ - Function: IsWhiteSpace `(CH: CHAR): BOOLEAN'
+     Returns `TRUE' if, and only if, CH represents a space character or
+     other "format effector".  `IsWhiteSpace' returns `TRUE' for only
+     these characters:
+
+          ` ' -- space (i.e., `Ascii.sp')
+          
+          `Ascii.ff' -- formfeed
+          
+          `Ascii.cr' -- carriage return
+          
+          `Ascii.ht' -- horizontal tab
+          
+          `Ascii.vt' -- vertical tab
+
+ - Function: IsEOL `(CH: CHAR): BOOLEAN'
+     Returns `TRUE' if, and only if, CH is the implementation-defined
+     character used to represent end of line internally.
+
+
+File: OOCref.info,  Node: Strings,  Prev: CharClass,  Up: Character & String Handling
+
+Modules Strings and LongStrings
+===============================
+
+   As string manipulation is so common to programming problems, the OOC
+library provides additional string operations to those built into
+Oberon-2.  The Oberon-2 language defines a "string" as a character
+array containing `0X' as an embedded terminator.  This means that an
+`ARRAY OF CHAR' isn't necessarily a string.  The module `Strings'
+provides string manipulation operations for use on terminated character
+arrays, whereas module `LongStrings' has operations for terminated
+arrays of long characters (`LONGCHAR'--*note Additional Data Types::.)
+
+   Recall that "string literals" are sequences of characters enclosed in
+single (`'') or double (`"') quote marks.  The opening quote must be
+the same as the closing quote and must not occur within the string.
+Passing a string literal of length N as an argument to a procedure
+expecting an `ARRAY OF CHAR' delivers N+1 characters to the parameter.
+
+   The number of characters in a string (up to the terminating `0X') is
+called its "length".  A string literal of length 1 can be used wherever
+a character constant is allowed and vice versa.
+
+     *Please note*: All procedures reading and producing strings expect
+     termination with `0X'.  The behaviour of a procedure is undefined
+     if one of its input parameters is an unterminated character array.
+     Behavior is also undefined if a negative value is used as an
+     input parameter that represents an array position or a string
+     length.
+
+* Menu:
+
+* Copying and Concatenation::   Procedures to copy the contents of strings.
+* Compare & Searching Strings:: Comparison of strings and locating
+                                 sub-strings.
+* Misc. Strings Procedures::    Procedures `Length' and `Capitalize'.
+
+
+File: OOCref.info,  Node: Copying and Concatenation,  Next: Compare & Searching Strings,  Up: Strings
+
+Copying and Concatenation
+-------------------------
+
+   This section describes procedures that construct a string value, and
+attempt to assign it to a variable parameter.  All of these procedures
+have the property that if the length of the constructed string value
+exceeds the capacity of the variable parameter, a truncated value is
+assigned.  The constructed string always ends with a string terminator
+`0X'.
+
+   Also described are procedures that provide for pre-testing of the
+operation-completion conditions for the copying and concatenation
+procedures.
+
+ - Procedure: Assign `(SOURCE: ARRAY OF CHAR;  VAR DESTINATION: ARRAY
+          OF CHAR)'
+
+ - Procedure: Assign `(SOURCE: ARRAY OF LONGCHAR;  VAR DESTINATION:
+          ARRAY OF LONGCHAR)'
+     This procedure copies the string value of SOURCE to DESTINATION.
+     It is equivalent to the predefined procedure `COPY'.  Unlike
+     `COPY', this procedure can be assigned to a procedure variable.
+
+ - Function: CanAssignAll `(SOURCELENGTH: INTEGER;  VAR DESTINATION:
+          ARRAY OF CHAR): BOOLEAN'
+
+ - Function: CanAssignAll `(SOURCELENGTH: INTEGER;  VAR DESTINATION:
+          ARRAY OF LONGCHAR): BOOLEAN'
+     Returns TRUE if a number of characters, indicated by SOURCELENGTH,
+     will fit into DESTINATION; otherwise returns FALSE.
+
+     *Pre-condition*: SOURCELENGTH is not negative.
+
+   *Example:*
+
+     VAR source:      ARRAY 6 OF CHAR;
+         destination: ARRAY 4 OF CHAR;
+     
+     source := "";
+     Strings.CanAssignAll (Strings.Length (source), destination);
+        => TRUE
+     Strings.Assign (source, destination);
+        => destination = ""
+     
+     source := "abc";
+     Strings.CanAssignAll (Strings.Length (source), destination);
+        => TRUE
+     Strings.Assign (source, destination);
+        => destination = "abc"
+     
+     source := "abcd";
+     Strings.CanAssignAll (Strings.Length (source), destination);
+        => FALSE
+     Strings.Assign (source, destination);
+        => destination = "abc"
+
+ - Procedure: Extract `(SOURCE: ARRAY OF CHAR; STARTPOS,
+          NUMBERTOEXTRACT: INTEGER; VAR DESTINATION: ARRAY OF CHAR)'
+
+ - Procedure: Extract `(SOURCE: ARRAY OF LONGCHAR; STARTPOS,
+          NUMBERTOEXTRACT: INTEGER; VAR DESTINATION: ARRAY OF LONGCHAR)'
+     This procedure copies at most NUMBERTOEXTRACT characters from
+     SOURCE to DESTINATION, starting at position STARTPOS in SOURCE.
+     An empty string value will be extracted if STARTPOS is greater
+     than or equal to `Length(SOURCE)'.
+
+     *Pre-condition*: STARTPOS and NUMBERTOEXTRACT are not negative.
+
+ - Function: CanExtractAll `(SOURCELENGTH, STARTPOS,  NUMBERTOEXTRACT:
+          INTEGER; VAR DESTINATION: ARRAY OF CHAR): BOOLEAN'
+
+ - Function: CanExtractAll `(SOURCELENGTH, STARTPOS,  NUMBERTOEXTRACT:
+          INTEGER; VAR DESTINATION: ARRAY OF LONGCHAR): BOOLEAN'
+     Returns `TRUE' if there are NUMBERTOEXTRACT characters starting at
+     STARTPOS and within the SOURCELENGTH of some string, and if the
+     capacity of DESTINATION is sufficient to hold NUMBERTOEXTRACT
+     characters; otherwise returns `FALSE'.
+
+     *Pre-condition*: SOURCELENGTH, STARTPOS, and NUMBERTOEXTRACT are
+     not negative.
+
+   *Example:*
+
+     VAR source:      ARRAY 6 OF CHAR;
+         destination: ARRAY 4 OF CHAR;
+     
+     source := "abcde";
+     
+     Strings.CanExtractAll (Strings.Length (source), 0, 3, destination);
+        => TRUE
+     Strings.Extract (source, 0, 3, destination);
+        => destination = "abc"
+     
+     Strings.CanExtractAll (Strings.Length (source), 3, 2, destination);
+        => TRUE
+     Strings.Extract (source, 3, 2, destination);
+        => destination = "de"
+     
+     Strings.CanExtractAll (Strings.Length (source), 0, 4, destination);
+        => FALSE
+     Strings.Extract (source, 0, 4, destination);
+        => destination = "abc"
+     
+     Strings.CanExtractAll (Strings.Length (source), 2, 4, destination);
+        => FALSE
+     Strings.Extract (source, 2, 4, destination);
+        => destination = "cde"
+     
+     Strings.CanExtractAll (Strings.Length (source), 5, 1, destination);
+        => FALSE
+     Strings.Extract (source, 5, 1, destination);
+        => destination = ""
+     
+     Strings.CanExtractAll (Strings.Length (source), 4, 0, destination);
+        => TRUE
+     Strings.Extract (source, 4, 0, destination);
+        => destination = ""
+
+ - Procedure: Delete `(VAR STRINGVAR: ARRAY OF CHAR;  STARTPOS,
+          NUMBERTODELETE: INTEGER)'
+
+ - Procedure: Delete `(VAR STRINGVAR: ARRAY OF LONGCHAR;  STARTPOS,
+          NUMBERTODELETE: INTEGER)'
+     Deletes at most NUMBERTODELETE characters from STRINGVAR, starting
+     at position STARTPOS.  The string value in STRINGVAR is not
+     altered if STARTPOS is greater than or equal to
+     `Length(STRINGVAR)'.
+
+     *Pre-condition*: STARTPOS and NUMBERTODELETE are not negative.
+
+ - Function: CanDeleteAll `(STRINGLENGTH, STARTPOS,  NUMBERTODELETE:
+          INTEGER): BOOLEAN'
+
+ - Function: CanDeleteAll `(STRINGLENGTH, STARTPOS,  NUMBERTODELETE:
+          INTEGER): BOOLEAN'
+     Returns `TRUE' if there are NUMBERTODELETE characters starting at
+     STARTPOS and within the STRINGLENGTH of some string; otherwise
+     returns `FALSE'.
+
+     *Pre-condition*: STRINGLENGTH, STARTPOS and NUMBERTODELETE are not
+     negative.
+
+   *Example:*
+
+     VAR stringVar: ARRAY 6 OF CHAR;
+         startPos:  INTEGER;
+     
+     stringVar := "abcd";
+     Strings.CanDeleteAll (Strings.Length (stringVar), 0, 4);
+        => TRUE
+     Strings.Delete (stringVar, 0, 4);
+        => stringVar = ""
+     
+     stringVar := "abcd";
+     Strings.CanDeleteAll (Strings.Length (stringVar), 1, 2);
+        => TRUE
+     Strings.Delete (stringVar, 1, 2);
+        => stringVar = "ad"
+     
+     stringVar := "abcd";
+     Strings.CanDeleteAll (Strings.Length (stringVar), 0, 5);
+        => FALSE
+     Strings.Delete (stringVar, 0, 5);
+        => stringVar = ""
+
+ - Procedure: Insert `(SOURCE: ARRAY OF CHAR;  STARTPOS: INTEGER; VAR
+          DESTINATION: ARRAY OF CHAR)'
+
+ - Procedure: Insert `(SOURCE: ARRAY OF LONGCHAR;  STARTPOS: INTEGER;
+          VAR DESTINATION: ARRAY OF LONGCHAR)'
+     Inserts SOURCE into DESTINATION at position STARTPOS.  After the
+     call, DESTINATION contains the string that is contructed by first
+     splitting DESTINATION at the position STARTPOS and then
+     concatenating the first half, SOURCE, and the second half.  The
+     string value in DESTINATION is not altered if STARTPOS is greater
+     than `Length(SOURCE)'.  If `STARTPOS=Length(SOURCE)', then SOURCE
+     is appended to DESTINATION.
+
+     *Pre-condition*: STARTPOS is not negative.
+
+ - Function: CanInsertAll `(SOURCELENGTH, startPos: INTEGER;  VAR
+          DESTINATION: ARRAY OF CHAR): BOOLEAN'
+
+ - Function: CanInsertAll `(SOURCELENGTH, startPos: INTEGER;  VAR
+          DESTINATION: ARRAY OF LONGCHAR): BOOLEAN'
+     Returns `TRUE' if there is room for the insertion of SOURCELENGTH
+     characters from some string into DESTINATION starting at STARTPOS;
+     otherwise returns `FALSE'.
+
+     *Pre-condition*: SOURCELENGTH and STARTPOS are not negative.
+
+   *Example:*
+
+     VAR source:      ARRAY 6 OF CHAR;
+         destination: ARRAY 8 OF CHAR;
+     
+     source := "abc";
+     destination := "012";
+     
+     Strings.CanInsertAll (Strings.Length (source), 1, destination);
+        => TRUE
+     Strings.Insert (source, 1, destination);
+        => destination = "0abc12"
+     
+     Strings.CanInsertAll (Strings.Length (source), 3, destination);
+        => TRUE
+     Strings.Insert (source, 3, destination);
+        => destination = "012abc"
+     
+     Strings.CanInsertAll (Strings.Length (source, 4, destination);
+        => FALSE
+     Strings.Insert (source, 4, destination);
+        => destination = "012"
+     
+     source := "abcde";
+     destination := "012356";
+     
+     Strings.CanInsertAll (Strings.Length (source), 0, destination);
+        => FALSE
+     Strings.Insert (source, 0, destination);
+        => destination = "abcde01"
+     
+     Strings.CanInsertAll (Strings.Length (source), 4, destination);
+        => FALSE
+     Strings.Insert (source, 4, destination);
+        => destination = "0123abc"
+
+ - Procedure: Replace `(SOURCE: ARRAY OF CHAR;  STARTPOS: INTEGER; VAR
+          DESTINATION: ARRAY OF CHAR)'
+
+ - Procedure: Replace `(SOURCE: ARRAY OF LONGCHAR;  STARTPOS: INTEGER;
+          VAR DESTINATION: ARRAY OF LONGCHAR)'
+     Copies SOURCE into DESTINATION starting at position STARTPOS.  The
+     existing character values of DESTINATION are overwritten (i.e.,
+     replaced by) SOURCE's values.  Copying stops when all of SOURCE
+     has been copied, or when the last character of the string value in
+     DESTINATION has been replaced.  The string value in DESTINATION is
+     not altered if STARTPOS is greater than or equal to
+     `Length(SOURCE)'.
+
+     Notice that `Replace' does not continue past the string terminator
+     `0X' in DESTINATION.  That is, `Length(DESTINATION)' will never be
+     changed by `Replace'.
+
+     *Pre-condition*: STARTPOS is not negative.
+
+ - Function: CanReplaceAll `(SOURCELENGTH, STARTPOS: INTEGER;  VAR
+          DESTINATION: ARRAY OF CHAR): BOOLEAN'
+
+ - Function: CanReplaceAll `(SOURCELENGTH, STARTPOS: INTEGER;  VAR
+          DESTINATION: ARRAY OF LONGCHAR): BOOLEAN'
+     Returns `TRUE' if there is room for the replacement of
+     SOURCELENGTH characters in DESTINATION starting at STARTPOS;
+     otherwise returns `FALSE'.
+
+     *Pre-condition*: SOURCELENGTH and STARTPOS are not negative.
+
+   *Example:*
+
+     VAR source, destination: ARRAY 6 OF CHAR;
+     
+     source := "ab"; destination := "1234";
+     Strings.CanReplaceAll (Strings.Length (source), 0, destination);
+        => TRUE
+     Strings.Replace (source, 0, destination);
+        => destination = "ab34"
+     
+     source := "abc"; destination := "1234";
+     Strings.CanReplaceAll (Strings.Length (source), 2, destination);
+        => FALSE
+     Strings.Replace (source, 2, destination);
+        => destination = "12ab"
+     
+     source := ""; destination := "1234";
+     Strings.CanReplaceAll (Strings.Length (source), 4, destination);
+        => TRUE
+     Strings.Replace (source, 4, destination);
+        => destination = "1234"
+     
+     source := ""; destination := "1234";
+     Strings.CanReplaceAll (Strings.Length (source), 5, destination);
+        => FALSE
+     Strings.Replace (source, 5, destination);
+        => destination = "1234"
+
+ - Procedure: Append `(SOURCE: ARRAY OF CHAR;  VAR DESTINATION: ARRAY
+          OF CHAR)'
+
+ - Procedure: Append `(SOURCE: ARRAY OF LONGCHAR;  VAR DESTINATION:
+          ARRAY OF LONGCHAR)'
+     Appends SOURCE to DESTINATION.
+
+ - Function: CanAppendAll `(SOURCELENGTH: INTEGER;  VAR DESTINATION:
+          ARRAY OF CHAR): BOOLEAN'
+
+ - Function: CanAppendAll `(SOURCELENGTH: INTEGER;  VAR DESTINATION:
+          ARRAY OF LONGCHAR): BOOLEAN'
+     Returns `TRUE' if there is sufficient room in DESTINATION to
+     append a string of length SOURCELENGTH to the string in
+     DESTINATION; otherwise returns `FALSE'.
+
+     *Pre-condition*: SOURCELENGTH is not negative.
+
+   *Example:*
+
+     VAR source, destination: ARRAY 6 OF CHAR;
+     
+     source := "12"; destination := "abc";
+     Strings.CanAppendAll (Strings.Length (source), destination);
+        => TRUE
+     Strings.Append (source, destination);
+        => destination = "abc12"
+     
+     source := "123"; destination := "abc";
+     Strings.CanAppendAll (Strings.Length (source), destination);
+        => FALSE
+     Strings.Append (source, destination);
+        => destination = "abc12"
+     
+     source := "123"; destination := "abcde";
+     Strings.CanAppendAll (Strings.Length (source), destination);
+        => FALSE
+     Strings.Append (source, destination);
+        => destination = "abcde"
+
+ - Procedure: Concat `(SOURCE1, SOURCE2: ARRAY OF CHAR;  VAR
+          DESTINATION: ARRAY OF CHAR)'
+
+ - Procedure: Concat `(SOURCE1, SOURCE2: ARRAY OF LONGCHAR;  VAR
+          DESTINATION: ARRAY OF LONGCHAR)'
+     Concatenates SOURCE2 onto SOURCE1 and copies the result into
+     DESTINATION.  Note that any previous contents of DESTINATION are
+     destroyed by `Concat'.
+
+ - Function: CanConcatAll `(SOURCE1LENGTH, SOURCE2LENGTH: INTEGER;  VAR
+          DESTINATION: ARRAY OF CHAR): BOOLEAN'
+
+ - Function: CanConcatAll `(SOURCE1LENGTH, SOURCE2LENGTH: INTEGER;  VAR
+          DESTINATION: ARRAY OF LONGCHAR): BOOLEAN'
+     Returns `TRUE' if there is sufficient room in DESTINATION for a
+     two strings of lengths SOURCE1LENGTH and SOURCE2LENGTH; otherwise
+     returns `FALSE'.
+
+     *Pre-condition*: SOURCE1LENGTH and SOURCE2LENGTH are not negative.
+
+   *Example:*
+
+     VAR source1, source2: ARRAY 5 OF CHAR;
+         destination: ARRAY 6 OF CHAR;
+     
+     source1 := "12"; source2 := "abc";
+     Strings.CanConcatAll (Strings.Length (source1),
+                           Strings.Length (source2), destination);
+        => TRUE
+     Strings.Concat (source1, source2, destination);
+        => destination = "12abc"
+     
+     source1 := "123"; source2 := "abc";
+     Strings.CanConcatAll (Strings.Length (source1),
+                           Strings.Length (source2), destination);
+        => FALSE
+     Strings.Concat (source1, source2, destination);
+        => destination = "123ab"
+     
+     source1 := ""; source2 := "abc";
+     Strings.CanConcatAll (Strings.Length (source1),
+                           Strings.Length (source2), destination);
+        => TRUE
+     Strings.Concat (source1, source2, destination);
+        => destination = "abc"
+

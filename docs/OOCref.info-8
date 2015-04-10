@@ -1,0 +1,1382 @@
+This is Info file OOCref.info, produced by Makeinfo version 1.68 from
+the input file OOCref.texinfo.
+
+   This file documents the Optimizing Oberon-2 Compiler (OOC) and its
+library.
+
+   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
+Library Reference Manual', for Version 1.4.5 or later of oo2c.
+
+   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
+1999 Michael van Acken
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the text of the translation of the section
+entitled "GNU General Public License" must be approved for accuracy by
+the Foundation.
+
+
+File: OOCref.info,  Node: Time,  Next: JulianDay,  Up: Date and Time
+
+Module Time
+===========
+
+   Module `Time' provides facilites for time stamp and time interval
+manipulation.
+
+   A "time stamp" represents a particular instant in time.
+
+   A "time interval" is the duration between two instants read on the
+same time scale.
+
+   Another way to view time stamps and intervals is to consider them in
+the context of a one-dimensional vector space: A time stamp is a point,
+a time interval a vector.  Seen in this way, some functions perform
+vector arithmetic on time intervals.
+
+     *Please note:* Date and time modules refer to "UTC", which is
+     Coordinated Universal Time (or Universal Time Coordinated).  UTC
+     replaces Greenwich Mean Time (GMT) and is recommended for all
+     general timekeeping applications.  UTC and GMT are effectively
+     equivalent; the difference being that UTC is adjusted by an
+     integral number of seconds called "leap seconds" (see
+     `http://www.boulder.nist.gov/timefreq/glossary.htm' for more
+     precise definitions).
+
+     No provision is made for leap seconds in the date and time modules.
+
+   The following constants are defined:
+
+ - Constant: msecPerSec
+     The number of milliseconds per second.
+
+ - Constant: msecPerMin
+     The number of milliseconds per minute.
+
+ - Constant: msecPerHour
+     The number of milliseconds per hour.
+
+ - Constant: msecPerDay
+     The number of milliseconds per day.
+
+   Module `Time' declares the following types for time intervals and
+time stamps:
+
+ - Class: Interval = RECORD
+     This type is used to represent a delta time measure, which can be
+     used to increment a time or find the time difference between two
+     times.
+
+     The maximum number of milliseconds in an interval is the value
+     `msecPerDay'.
+
+     The fields are defined as follows:
+
+    Field: dayInt-: `LONGINT'
+          The number of days in this interval.
+
+    Field: msecInt-: `LONGINT'
+          The number of milliseconds in this interval.
+
+   The following are operations on `Interval':
+
+ - Procedure: InitInterval `(VAR INT: Interval; DAYS, MSECS: LONGINT)'
+     This procedure is used to initialize an `Interval' INT with DAYS
+     days and MSECS milliseconds.
+
+     *Pre-condition*: MSECS is not negative.
+
+Method: `(VAR A: Interval)' Add `(B: Interval)'
+     This method computes the value of A added to B.  The result is
+     assigned to A.
+
+Method: `(VAR A: Interval)' Sub `(B: Interval)'
+     This method computes the value of B subtracted from A.  The result
+     is assigned to A.
+
+   *Example:*
+
+     VAR int1, int2: Time.Interval;
+     
+     Time.InitInterval(int1, 10, 0);
+     
+     Time.InitInterval(int2, 5, 0);
+        => int2.dayInt = 5, int2.msecInt = 0
+     
+     int1.Add(int2);  (* == int1 = int1 + int2 *)
+        => int1.dayInt = 15, int1.msecInt = 0
+     
+     int1.Add(int1);  (* == int1 = int1 + int1 *)
+        => int1.dayInt = 30, int1.msecInt = 0
+     
+     int1.Sub(int2);  (* == int1 = int1 - int2 *)
+        => int1.dayInt = 25, int1.msecInt = 0
+     
+     Time.InitInterval(int1, 0, 43200000);  (* == 12 hours *)
+        => int1.dayInt = 0, int1.msecInt = 43200000
+     
+     int1.Add(int1);  (* 12 hrs + 12 hrs = 24 hrs == 1 day *)
+        => int1.dayInt = 1, int1.msecInt = 0
+     
+     Time.InitInterval(int2, 0, 1800000);  (* == 30 minutes *)
+        => int2.dayInt = 0, int2.msecInt = 1800000
+     
+     int2.Add(int2);  (* 30 mins + 30 mins = 60 mins == 1 hr *)
+        => int2.dayInt = 0, int2.msecInt = 3600000
+     
+     int1.Sub(int2);  (* 24 hrs - 1 hr = 23 hrs == 82800000 *)
+        => int1.dayInt = 0, int1.msecInt = 82800000
+
+Method: `(VAR A: Interval)' Cmp `(B: Interval): SHORTINT'
+     This method compares the values of A and B and returns the
+     following result:
+
+       If `a > b', return `1'
+       If `a = b', return `0'
+       If `a < b', return `-1'
+
+Method: `(VAR A: Interval)' Scale `(B: LONGREAL)'
+     This method scales the value of A by B (i.e., A multiplied by B).
+     The result is assigned to A.
+
+     *Pre-condition*: B is not negative.
+
+Method: `(VAR A: Interval)' Fraction `(B: Interval): LONGREAL'
+     This method computes the fraction B of the interval A (i.e, A
+     divided by B).
+
+     *Pre-condition*: B is not zero.
+
+   *Example:*
+
+     VAR int1, int2: Time.Interval;
+         result: SHORTINT;
+         frac: LONGREAL;
+     
+     Time.InitInterval(int1, 0, 82800000);  (* == 23 hours *)
+        => int1.dayInt = 0, int1.msecInt = 82800000
+     
+     Time.InitInterval(int2, 0, 3600000);  (* == 1 hr *)
+        => int2.dayInt = 0, int2.msecInt = 3600000
+     
+     result := int1.Cmp(int2);
+        => result = 1  (* == int1 > int2 *)
+     
+     result := int2.Cmp(int1);
+        => result = -1  (* == int2 < int1 *)
+     
+     result := int1.Cmp(int1);
+        => result = 0  (* == int1 = int1 *)
+     
+     int2.Scale(23);  (* 1 hr * 23 = 23 hrs *)
+        => int2.dayInt = 0, int2.msecInt = 82800002
+             (* approximately equal to 23 hrs. *)
+     
+     int2.Scale(2);  (* 23 hrs * 2 = 46 hours *)
+        => int2.dayInt = 1, int2.msecInt = 79199997
+             (* approximately == 1 day and 22 hours *)
+     
+     frac := int2.Fraction(int1); (* 46 hrs / 23 hrs = 2 *)
+        => frac = 2.00000006219615  (* approx. 2 *)
+     
+     frac := int1.Fraction(int2); (* 23 hrs / 46 hrs = 0.5 *)
+        => frac = 4.99999984450962E-1  (* approx. 0.5 *)
+
+ - Class: TimeStamp = RECORD
+     This type represents an instant in time using a compressed
+     date/time format.
+
+     *Please note:* `TimeStamp' is in Coordinated Universal Time (UTC)
+     on systems that support time zones.  Without such support, it is
+     assumed that they refer to the local time zone with an unspecified
+     time zone offset.
+
+     The fields are defined as follows:
+
+    Field: days-: `LONGINT'
+          Modified Julian days since midnight 17 Nov 1858.  This
+          quantity can be negative to represent dates occuring before
+          day zero.
+
+    Field: msecs-: `LONGINT'
+          Milliseconds since 00:00.
+
+   The following are operations on `TimeStamp':
+
+ - Procedure: InitTimeStamp `(VAR T: TimeStamp; DAYS, MSECS: LONGINT)'
+     This procedure is used to initialize a `TimeStamp' T with DAYS
+     days and MSECS milliseconds.
+
+     *Pre-condition*: MSECS is not negative.
+
+Method: `(VAR A: TimeStamp)' Add `(B: Interval)'
+     This method adds the interval B to the time stamp A.
+
+Method: `(VAR A: TimeStamp)' Sub `(B: Interval)'
+     This method subtracts the interval B from the time stamp A.
+
+Method: `(VAR A: TimeStamp)' Delta `(B: TimeStamp; VAR C: Interval)'
+     This method subtracts the value of time stamp B from the time stamp
+     A.  The result is assigned to the interval C.
+
+Method: `(VAR A: TimeStamp)' Cmp `(B: TimeStamp): SHORTINT'
+     This method compares the values of A and B and returns the
+     following result:
+
+       If `a > b', return `1'
+       If `a = b', return `0'
+       If `a < b', return `-1'
+
+   *Example:*
+
+     VAR ts1, ts2: Time.TimeStamp;
+         int1  : Time.Interval;
+         result: SHORTINT;
+     
+     Time.InitTimeStamp(ts1, 40000, 0);
+        => ts1.days = 40000, ts1.msecs = 0
+             (* == midnight 24 May 1968 *)
+     
+     Time.InitInterval(int1, 10, 3600000);
+     ts1.Add(int1);
+        => ts1.days = 40010, ts1.msecs = 3600000
+             (* == 1:00 3 Jun 1968 *)
+     
+     Time.InitInterval(int1, 5000, 21600000);
+             (* == 5000 days, 6 hours *)
+     ts1.Sub(int1);
+        => ts1.days = 35009, ts1.msecs = 68400000
+             (* == 19:00 24 Sep 1954 *)
+     
+     Time.InitTimeStamp(ts2, 50000, 43200000);
+        => ts1.days = 50000, ts1.msecs = 43200000
+             (* == noon 10 October 1995 *)
+     
+     ts2.Delta(ts1, int1);
+        => int1.dayInt = 14990, int1.msecInt = 61200000
+     
+     result := ts2.Cmp(ts1);
+        => result = 1
+             (* == ts2 > ts1  i.e., ts2 occurs after ts1 *)
+
+
+File: OOCref.info,  Node: JulianDay,  Next: SysClock,  Prev: Time,  Up: Date and Time
+
+Module JulianDay
+================
+
+   The module `JulianDay' provides facilities for convertion between
+day/ month/ year and various forms of Julian Days.  Julian Days are a
+standard convention used for describing dates with the least possible
+ambiguity.
+
+   The "Julian Day Number" (JDN) is a whole number representing the
+number of consecutive days since noon 1 January 4713 B.C. (this is
+Julian Day 0).
+
+   The "Julian Date" (JD) is an extension of Julian Day Number, which
+includes a fractional part representing the elapsed fraction of a day
+since the preceding noon.
+
+   The "Modified Julian Day" (MJD) begins instead at midnight (in
+keeping with more standard conventions) 17 November 1858.  This allows
+the first two digits of the Julian Day to be removed; that is, this
+date is Julian Day 2400000.  So,
+
+     MJD = JD - 2400000.5
+
+   The "Modified Julian Date" is the Julian Date minus 2400000.5.
+
+   The "Truncated Julian Day" (TJD) is the Modified Julian Day
+truncated to four digits.  When TJD first came into use, its origin
+date (i.e., "epoch") was at midnight 24 May 1968 (i.e., JDN 2440000).
+However, it "recycled" at midnight 10 October 1995 (i.e., JDN 2450000),
+so currently
+
+     TJD = MJD - 50000
+
+     *Please note:* The various Julian Days are integer values and are
+     distinct from Julian Dates, which are real number values.  You
+     should keep this in mind when using the facilities in module
+     `JulianDay'.
+
+   Several constants are provided for use in Julian Day and Date
+calculations:
+
+ - Constant: startMJD
+     Zero basis (i.e, "epoch") for modified Julian Day expressed as a
+     Julian Date.  (This number will be `2400000.5D0'.)
+
+ - Constant: startTJD
+     Zero basis (i.e, "epoch") for Truncated Julian Day.
+
+   The following is provided to test for use of the Gregorian calendar:
+
+     The "Gregorian Calendar" is the calendar system now in general use
+     throughout the world.  It was adopted because the *Julian Calendar*
+     (used in the Roman empire and then by the Roman Catholic Church)
+     accumulated an error of one day every 128 years (thus it is
+     currently 13 days behind the Gregorian Calendar).
+
+     The Gregorian Calendar (first prescribed in 1582 by Pope Gregory
+     XIII) adjusts the Julian year to the astronomical year by dropping
+     three leap years every 400 years.  That is, at the end of each
+     century, there is no leap year, except in the years 1600, 2000,
+     2400, and so forth.
+
+ - Read-only Variable: UseGregorian
+     A boolean value that is `TRUE' when the Gregorian Calendar is being
+     used by module `JulianDay'.  See also the procedure
+     `SetGregorianStart'.
+
+   Conversion facilities are provided as follows:
+
+ - Function: DateToJD `(DAY, MONTH: SHORTINT; YEAR: INTEGER): LONGREAL'
+     This function returns the Julian Date for the given DAY, MONTH,
+     and YEAR at 0000 UTC (midnight).  Any date with a positive year is
+     valid.  The returned value is the number of days since noon 1
+     January 4713 B.C.  (Note that the result will always have a
+     fractional part equal to `.5'.)
+
+ - Procedure: JDToDate `(JD: LONGREAL; VAR DAY, MONTH: SHORTINT; VAR
+          YEAR: INTEGER)'
+     This procedure converts a Julian Date JD to a date given by the
+     DAY, MONTH, and YEAR.
+
+   Algorithms for `DateToJD' and `JDToDate' by William H. Jefferys
+(with some modifications) at
+
+   `http://quasar.as.utexas.edu/BillInfo/JulianDatesG.html'
+
+   *Example:*
+
+     VAR date: LONGREAL;
+         day, month: SHORTINT;
+         year: INTEGER;
+     
+     date := JulianDay.DateToJD(10, 10, 1995);
+        => date = 2450000.5
+     JulianDay.JDToDate(date, day, month, year);
+        => day = 10, month = 10, year = 1995
+     
+     date := JulianDay.DateToJD(17, 11, 1858);
+        => date = 2400000.5
+     JulianDay.JDToDate(date, day, month, year);
+        => day = 17, month = 11, year = 1858
+
+ - Function: DateToDays `(DAY, MONTH: SHORTINT; YEAR: INTEGER): LONGINT'
+     This function returns the Modified Julian Day for the given DAY,
+     MONTH, and YEAR at 0000 UTC (midnight).  Any date with a positive
+     year is valid.  The returned value is the number of days since
+     midnight 17 November 1858.
+
+ - Procedure: DaysToDate `(JD: LONGINT; VAR DAY, MONTH: SHORTINT; VAR
+          YEAR: INTEGER)'
+     This procedure converts a Modified Julian Day JD to a date given by
+     the DAY, MONTH, and YEAR.
+
+   *Example:*
+
+     VAR days: LONGINT;
+         day, month: SHORTINT;
+         year: INTEGER;
+     
+     days := JulianDay.DateToDays(10, 10, 1995);
+        => days = 50000
+     JulianDay.DaysToDate(days, day, month, year);
+        => day = 10, month = 10, year = 1995
+     
+     days := JulianDay.DateToDays(17, 11, 1858);
+        => days = 0
+     JulianDay.DaysToDate(days, day, month, year);
+        => day = 17, month = 11, year = 1858
+     
+     days := JulianDay.DateToDays(8, 4, 1513);
+        => days = -126222
+     JulianDay.DaysToDate(days, day, month, year);
+        => day = 8, month = 4, year = 1513
+
+ - Function: DateToTJD `(DAY, MONTH: SHORTINT; YEAR: INTEGER): LONGINT'
+     This function returns the Truncated Julian Day for the given DAY,
+     MONTH, and YEAR at 0000 UTC (midnight).  Any date with a positive
+     year is valid.  The returned value is the number of days since
+     midnight 10 October 1995.
+
+ - Procedure: TJDToDate `(JD: LONGINT; VAR DAY, MONTH: SHORTINT; VAR
+          YEAR: INTEGER)'
+     This procedure converts a Truncated Julian Day JD to a date given
+     by the DAY, MONTH, and YEAR.
+
+   *Example:*
+
+     VAR days: LONGINT;
+         day, month: SHORTINT;
+         year: INTEGER;
+     
+     days := JulianDay.DateToTJD(10, 10, 1995);
+        => days = 0
+     JulianDay.TJDToDate(days, day, month, year);
+        => day = 10, month = 10, year = 1995
+     
+     days := JulianDay.DateToTJD(25, 12, 1997);
+        => days = 807
+     JulianDay.TJDToDate(days, day, month, year);
+        => day = 25, month = 12, year = 1997
+     
+     days := JulianDay.DateToTJD(17, 11, 1858);
+        => days = -50000
+     JulianDay.TJDToDate(days, day, month, year);
+        => day = 17, month = 11, year = 1858
+
+ - Procedure: SetGregorianStart `(DAY, MONTH: SHORTINT; YEAR: INTEGER)'
+     Sets the start date when the Gregorian Calendar was first used
+     where the date in DAY, MONTH, and YEAR according to the Julian
+     Calendar.
+
+     The default date used is `3 Sep 1752' (when the Gregorian Calendar
+     was adopted in England).  (At that time, the Julian Calendar was
+     11 days behind the Gregorian Calendar.  And so, `3 Sep 1752'
+     according to the Julian Calendar is `14 Sep 1752' according the
+     the Gregorian Calendar.)
+
+   *Example:*
+
+     VAR date: LONGREAL;
+         day, month: SHORTINT;
+         year: INTEGER;
+     
+     date := JulianDay.DateToJD(2, 9, 1752);
+        => date = 2361220.5
+     
+     JulianDay.SetGregorianStart(15, 10, 1582);
+        (* move start date to before `3 Sep 1752' *)
+     
+     JulianDay.JDToDate(date, day, month, year);
+        => day = 13, month = 9, year = 1752
+        (* When Gregorian start date occurs at an earlier date,
+           Julian Calendar date `2 Sep 1752' is corrected to
+           the Gregorian date `13 Sep 1752'.
+        *)
+
+
+File: OOCref.info,  Node: SysClock,  Next: Calendar,  Prev: JulianDay,  Up: Date and Time
+
+Module SysClock
+===============
+
+   Module `SysClock' provides facilities for accessing a system clock
+that records the date and time of day.  This includes a `DateTime' type,
+which represents a system-independent time format.  Note that the module
+`Calendar' provides additional operations for `DateTime'.
+
+   *Please note:*
+   * No provision is made for leap seconds.
+
+   * The field `summerTimeFlag' is present for information only.  `UTC'
+     can always be obtained by subtracting the `zone' (time zone) value
+     from the time data, regardless of the value of the
+     `summerTimeFlag'.  However, its presence does allow a program to
+     know whether or not the date and time data represents standard
+     time for that location, or "summer time".  A program could
+     therefore be written to change the system clock to summer time
+     automatically on a certain date, provided it had not already been
+     changed.
+
+   The following constants are defined:
+
+ - Constant: maxSecondParts
+     Accuracy of measure for "parts of a second" (`fractions') (Most
+     systems have just millisecond accuracy: `maxSecondParts = 999'.)
+
+ - Constant: zoneMin
+     Used as a minimum range limit for time zone (`zone') in minutes.
+
+ - Constant: zoneMax
+     Used as a maximum range limit for time zone (`zone') in minutes.
+
+   The following constants are used as possible time zone values for
+`zone':
+
+ - Constant: localTime
+     Indicates that time zone is inactive and time is local.
+
+ - Constant: unknownZone
+     Indicates that time zone is unknown.
+
+   The following constants are used as possible daylight savings mode
+values for
+`summerTimeFlag':
+
+ - Constant: unknown
+     Indicates that current daylight savings status is unknown.
+
+ - Constant: inactive
+     Indicates that daylight savings adjustments are not in effect.
+
+ - Constant: active
+     Indicates that daylight savings adjustments are being used.
+
+ - Record: DateTime
+     This type represents an instant in time using a combination of
+     fields for date and time information.  The fields are defined as
+     follows:
+
+    Field: year: `INTEGER'
+          A positive value representing a four digit year.
+
+    Field: month: `SHORTINT'
+          A value in the range `1..12'.
+
+    Field: day: `SHORTINT'
+          A value in the range `1..31'.
+
+    Field: hour: `SHORTINT'
+          A value in the range `0..23'.
+
+    Field: minute: `SHORTINT'
+          A value in the range `0..59'.
+
+    Field: second: `SHORTINT'
+          A value in the range `0..59'.
+
+    Field: fractions: `INTEGER'
+          A value in the range `0..`maxSecondParts'' representing parts
+          of a second in milliseconds.
+
+    Field: zone: `INTEGER'
+          A value in the range ``zoneMin'..`zoneMax''.  This represents
+          a time zone differential factor, which is the number of
+          minutes to add to local time to obtain UTC or is set to
+          `localTime' when time zones are inactive.
+
+          *Please note:* `-780..720' is the typical range for `zone'.
+
+    Field: summerTimeFlag: `SHORTINT'
+          This value represents the current status of daylight savings
+          mode.  Interpretation of this flag depends on local usage.
+          However, the constants `unknown', `active', and `inactive'
+          are provided as possible values.
+
+   The following procedures are provided in module `SysClock':
+
+ - Function: CanGetClock `(): BOOLEAN'
+     This function returns `TRUE' if there is a system clock, which the
+     program is permitted to read.  Otherwise, it returns `FALSE'.
+
+ - Function: CanSetClock `(): BOOLEAN'
+     This function returns `TRUE' if there is a system clock, which the
+     program is permitted to set.  Otherwise, it returns `FALSE'.
+
+ - Function: IsValidDateTime `(D: DateTime): BOOLEAN'
+     This function returns `TRUE' if the value of D represents a valid
+     date and time.  Otherwise, it returns `FALSE'.
+
+ - Procedure: GetClock `(VAR USERDATA: DateTime)'
+     This procedure assigns the system date and time to the fields of
+     USERDATA (i.e., USERDATA is set to local time).
+
+     If an error occurs, USERDATA is set to `1 Jan 1970'.
+
+ - Procedure: SetClock `(USERDATA: DateTime)'
+     This procedure sets the system clock to the date and time
+     specified by USERDATA.  If the program cannot set the system
+     clock, a call of `SetClock' has no effect.
+
+     The behavior of `SetClock' is undefined if USERDATA represents a
+     invalid date and time.
+
+ - Procedure: MakeLocalTime `(VAR C: DateTime)'
+     This procedure sets the daylight savings mode `summerTimeFlag' and
+     time zone `zone' for calendar date C.  This assumes that C
+     describes a valid local time.  The previous values of
+     `summerTimeFlag' and `zone' are ignored and are overwritten by a
+     call to `MakeLocalTime'.
+
+     *Please note:*
+       1. On most Unix systems the time zone information is only
+          available for dates falling approximately within 1 Jan 1902
+          to 31 Dec 2037.  Outside this range the field `zone' will be
+          set to the unspecified `localTime' value , and
+          `summerTimeFlag' will be set to `unknown'.
+
+       2. The time zone information might not be fully accurate for
+          past (and future) years that apply different Daylight Savings
+          Time (DST) rules than the current year.  Usually, the current
+          set of rules is used for all years between 1902 and 2037.
+
+       3. With DST there is one hour in the year that happens twice:
+          the hour after which the clock is turned back for a full
+          hour.  It is undefined which time zone will be selected for
+          dates refering to this hour; that is, whether DST or normal
+          time zone will be chosen.
+
+
+File: OOCref.info,  Node: Calendar,  Prev: SysClock,  Up: Date and Time
+
+Module Calendar
+===============
+
+   Module `Calendar' provides facilities for manipulation of dates and
+times.  These facilities include procedures to convert between
+`SysClock.DateTime' and `Time.TimeStamp', as well as conversions
+between `DateTime' and various string formats.
+
+   The following constants are defined for the days of the week:
+
+ - Constant: sunday
+
+ - Constant: monday
+
+ - Constant: tuesday
+
+ - Constant: wednesday
+
+ - Constant: thursday
+
+ - Constant: friday
+
+ - Constant: saturday
+
+   And the following constants are defined for the months of the year:
+
+ - Constant: january
+
+ - Constant: february
+
+ - Constant: march
+
+ - Constant: april
+
+ - Constant: may
+
+ - Constant: june
+
+ - Constant: july
+
+ - Constant: august
+
+ - Constant: september
+
+ - Constant: october
+
+ - Constant: november
+
+ - Constant: december
+
+   The following procedures are used to initialize instances of
+`DateTime':
+
+ - Procedure: SetLocalTime `(VAR C: SysClock.DateTime; D, M: SHORTINT;
+          Y: INTEGER; H, MIN, S: SHORTINT)'
+     This procedure initializes the calendar C with the local date from
+     D days, M months, Y years; and the local time from H hours, MIN
+     minutes, and S seconds.  These values must be in the valid ranges
+     for each field:
+
+    `year'
+          `Y > 0'.
+
+    `month'
+          M in the range `1..12'.
+
+    `day'
+          D in the range `1..31'.
+
+    `hour'
+          H in the range `0..23'.
+
+    `minute'
+          MIN in the range `0..59'.
+
+    `second'
+          S in the range `0..59'.
+
+     The other fields of C are set as follows:
+
+        * `fractions' is set to `0'.
+
+        * `zone' is set to the number of minutes needed to add to local
+          time to obtain UTC.
+
+        * `summerTimeFlag' is set to one of `active', `inactive', or
+          `unknown'.
+
+     *Please note:* `SetLocalTime' utilizes `SysClock.MakeLocalTime' to
+     obtain time zone and daylight savings mode information.  All
+     restrictions on `MakeLocalTime' also apply to `SetLocalTime'.
+
+   *Example:*
+
+     VAR
+       c: SysClock.DateTime;
+     
+     Calendar.SetLocalTime(c, 31, 12, 1997, 15, 30, 00);
+        => c = Wednesday, 31 Dec 1997, 15:30:00.0
+
+ - Procedure: SetUTC `(VAR C: SysClock.DateTime; D, M: SHORTINT; Y:
+          INTEGER; H, MIN, S: SHORTINT)'
+     This procedure initializes the calendar C exactly like
+     `SetLocalTime' except for the following differences:
+
+        * `C.zone' is always set to `0'.
+
+        * `C.summerTimeFlag' is always set to `inactive'.
+
+   The following procedures are used to convert between
+`SysClock.DateTime' and `Time.TimeStamp':
+
+ - Procedure: GetTimeStamp `(VAR C: SysClock.DateTime; S:
+          Time.TimeStamp)'
+     This procedure sets the calendar C from the time stamp S based on
+     local time (i.e., `C.zone' and `C.summerTimeFlag' are set as in
+     `SetLocalTime').
+
+   *Example:*
+
+     VAR
+       c: SysClock.DateTime;
+       ts: Time.TimeStamp;
+     
+     Time.InitTimeStamp(ts, 50000, 43200000);
+             (* == noon 10 October 1995 UTC *)
+     Calendar.GetTimeStamp(c, ts);
+        => c = Tuesday, 10 Oct 1995, 08:00:00
+        => c.zone = 240
+             (* i.e., local time is 4 hours behind UTC *)
+
+ - Procedure: SetTimeStamp `(C: SysClock.DateTime; VAR T: T.TimeStamp)'
+     This procedure converts the calendar date `c' to a time stamp T.
+
+   The following functions provide useful information about a particular
+`DateTime' value:
+
+ - Function: DayOfWeek `(C: SysClock.DateTime): SHORTINT'
+     This function returns the day of the week of C as one of the
+     constant values
+     `sunday..saturday'.
+
+ - Function: IsLeapYear `(C: SysClock.DateTime): BOOLEAN'
+     This function returns `TRUE' if C occurs within a leap year.
+     Otherwise, it returns `FALSE'.
+
+ - Function: DaysPerMonth `(C: SysClock.DateTime): SHORTINT'
+     This function returns the total number of days in the month of C
+     (i.e., one of `28', `29', `30', or `31').  Leap years are taken
+     into account.
+
+ - Function: WeekNumber `(C: SysClock.DateTime; STARTDAY: SHORTINT):
+          INTEGER'
+     This function returns the week number of C based on each week
+     beginning on STARTDAY.  The value of STARTDAY is one of the
+     constant values
+     `sunday..saturday'.  The first week of a month is recognized as
+     having 4 or more days in that month where each week begins on
+     STARTDAY.
+
+ - Function: DayOfYear `(C: SysClock.DateTime): INTEGER'
+     This function returns the day of the year of C in the range
+     `1..366'.  For instance, January first for any year returns `1'.
+
+   *Example:*
+
+     VAR
+       c: SysClock.DateTime;
+       day, week, dayOfYear, daysInMon: INTEGER;
+     
+     Calendar.SetLocalTime(c, 31, 12, 1996, 12, 00, 00);
+        => c = Tuesday, 31 Dec 1996, 12:00:00
+     day := Calendar.DayOfWeek(c);
+        => day = Calendar.tuesday
+     week := Calendar.WeekNumber(c, Calendar.sunday);
+        => week = 1
+     dayOfYear := Calendar.DayOfYear(c);
+        => dayOfYear = 366
+     IF Calendar.IsLeapYear(c) THEN ...
+        => TRUE
+     
+     Calendar.SetLocalTime(c, 31, 12, 1997, 15, 30, 00);
+        => c = Wednesday, 31 Dec 1997, 15:30:00
+     day := Calendar.DayOfWeek(c);
+        => day = Calendar.wednesday
+     week := Calendar.WeekNumber(c, Calendar.sunday);
+        => week = 53
+     dayOfYear := Calendar.DayOfYear(c);
+        => dayOfYear = 365
+     IF Calendar.IsLeapYear(c) THEN ...
+        => FALSE
+     
+     Calendar.SetLocalTime(c, 1, 2, 1996, 00, 00, 00);
+        => c = Thursday, 1 Feb 1996, 00:00:00
+     IF Calendar.IsLeapYear(c) THEN ...
+        => TRUE
+     daysInMon := Calendar.DaysPerMonth(c);
+        => daysInMon = 29
+     
+     Calendar.SetLocalTime(c, 1, 2, 1997, 00, 00, 00);
+        => c = Saturday, 1 Feb 1997, 00:00:00
+     IF Calendar.IsLeapYear(c) THEN ...
+        => FALSE
+     daysInMon := Calendar.DaysPerMonth(c);
+        => daysInMon = 28
+
+   The following procedures are used to convert between
+`SysClock.DateTime' and time-formatted strings:
+
+ - Procedure: TimeToStr `(VAR C: SysClock.DateTime; PATTERN: ARRAY OF
+          CHAR; VAR DATESTR: ARRAY OF CHAR)'
+     This procedure converts C to a string DATESTR using the format
+     template PATTERN.  Allowable conversion specifiers for PATTERN are
+     specialized for printing the date and time components of C
+     according to the locale currently specified for time conversion
+     (*note Locales::.).
+
+     Normal characters appearing in PATTERN are copied verbatim to the
+     output string DATESTR; this can include multibyte character
+     sequences.  Conversion specifiers are introduced by a `%'
+     character, and are replaced in the output string as follows:
+
+    `%a'
+          The abbreviated weekday name according to the current locale.
+
+    `%A'
+          The full weekday name according to the current locale.
+
+    `%b'
+          The abbreviated month name according to the current locale.
+
+    `%B'
+          The full month name according to the current locale.
+
+    `%c'
+          The preferred date and time representation for the current
+          locale.
+
+    `%d'
+          The day of the month as a decimal number (in the range `01'
+          to `31').
+
+    `%D'
+          The day of the month as above, but with no leading zero.
+
+    `%H'
+          The hour as a decimal number, using a 24-hour clock (in the
+          range `00' to `23').
+
+    `%I'
+          The hour as a decimal number, using a 12-hour clock (in the
+          range `01' to `12').
+
+    `%i'
+          The hour as a decimal number, using a 12-hour clock, but with
+          no leading zero.
+
+    `%j'
+          The day of the year as a decimal number (in the range `001'
+          to `366').
+
+    `%m'
+          The month as a decimal number (in the range `01' to `12').
+
+    `%M'
+          The minute as a decimal number.
+
+    `%p'
+          One of `AM' or `PM', according to the given time value; or
+          the corresponding strings for the current locale.
+
+    `%S'
+          The second as a decimal number.
+
+    `%U'
+          The week number of the current year as a decimal number,
+          starting with the first Sunday as the first day of the first
+          week.
+
+    `%W'
+          The week number of the current year as a decimal number,
+          starting with the first Monday as the first day of the first
+          week.
+
+    `%w'
+          The day of the week as a decimal number, Sunday being `0'.
+
+    `%x'
+          The preferred date representation for the current locale, but
+          without the time.
+
+    `%X'
+          The preferred time representation for the current locale, but
+          with no date.
+
+    `%y'
+          The year as a decimal number, but without a century (in the
+          range `00' to `99').
+
+    `%Y'
+          The year as a decimal number, including the century.
+
+    `%Z'
+          The time zone or name or abbreviation (empty if the time zone
+          cannot be determined).
+
+    `%%'
+          A literal `%' character.
+
+   *Example:*
+
+     VAR
+       c: SysClock.DateTime;
+       str: ARRAY 256 OF CHAR;
+     
+     (* c initialized to Wednesday, 25 Dec 1996, 15:30:00 *)
+     
+     Calendar.TimeToStr(c, "%A, %D %b %Y, %H:%M:%S", str);
+        => str = "Wednesday, 25 Dec 1996, 15:30:00"
+     Calendar.TimeToStr(c, "%a, %d/%m/%y, %H:%M:%S %Z", str);
+        => str = "Wed, 25/12/96, 15:30:00 UTC-0500"
+     Calendar.TimeToStr(c, "%A, %D %B %Y, %I:%M:%S %p", str);
+        => str = "Wednesday, 25 December 1996, 03:30:00 PM"
+     Calendar.TimeToStr(c, "%b %D, %Y is %A and the %jth day.", str);
+        => str = "Dec 25, 1996 is Wednesday and the 360th day."
+
+ - Function: StrToTime `(VAR C: SysClock.DateTime; DATESTR: ARRAY OF
+          CHAR; PATTERN: ARRAY OF CHAR): BOOLEAN'
+     This function converts the string DATESTR into a calendar C using
+     the format template PATTERN.  Allowable conversion specifiers for
+     PATTERN the same as in the `TimeToStr' procedure.  However, only
+     date and time components are used in the conversion; any other
+     information, such as the day of the week and the week number, are
+     ignored.
+
+     For names appearing in DATESTR, upper and lower-case distinctions
+     are ignored.
+
+     Unspecified time or date components are set to the lower-bound
+     value for that component (after adjustment for the current time
+     zone): For example, incomplete times will assume the zero time for
+     missing time elements; and missing date elements will assume the
+     corresponding date element from the reference date `1 Jan 1970'.
+
+     If DATESTR is successfully parsed into a valid calendar date
+     according to the PATTERN, `StrToTime' returns `TRUE'.  Otherwise,
+     it returns `FALSE'.
+
+   *Example:*
+
+     VAR
+       c: SysClock.DateTime;
+     
+     IF Calendar.StrToTime(c, "Sunday, Oct 12, 1995", "%A, %b %D, %Y") THEN
+        => TRUE, c = Thursday, 12 Oct 1995, 00:00:00
+             (* Note that day of week is ignored,
+                and correct value assigned to c *)
+     
+     IF Calendar.StrToTime(c, "jul 4, 1776", "%b %D, %Y") THEN
+        => TRUE, c = Thursday, 4 Jul 1776, 00:00:00
+     
+     IF Calendar.StrToTime(c, "3:30 pm, 25 December 96",
+                           "%i:%M %p, %D %B %y") THEN
+        => TRUE, c = Wednesday, 25 Dec 1996, 15:30:00
+     
+     IF Calendar.StrToTime(c, "1963 14:15:30", "%Y %H:%M:%S") THEN
+        => TRUE, c = Tuesday, 1 Jan 1963, 14:15:30
+     
+     IF Calendar.StrToTime(c, "05/30/97", "%m/%d/%y") THEN
+        => TRUE, c = Friday, 30 May 1997, 00:00:00
+     
+     IF Calendar.StrToTime(c, "31 Feb 1997", "%D %b %Y") THEN
+        => FALSE, c = undefined
+
+
+File: OOCref.info,  Node: Oakwood Compliant Modules,  Next: Exception Handling,  Prev: Date and Time,  Up: Top
+
+Oakwood Compliant Modules
+*************************
+
+   In order to support `the Oakwood Guildlines', OOC provides a set of
+basic library modules that comply with the Oakwood specification.  (Note
+that all Oakwood modules may not be available.)  All Oakwood compliant
+modules begin with the prefix "Oak".
+
+* Menu:
+
+* OakStrings::                  String manipulation.
+* OakFiles::                    File access.
+* OakIn::                       Basic functions for formatted input.
+* OakOut::                      Basic functions for formatted output.
+* OakMath and OakMathL::        Mathematical functions for `REAL'.
+                                  and `LONGREAL'.
+
+
+File: OOCref.info,  Node: OakStrings,  Next: OakFiles,  Up: Oakwood Compliant Modules
+
+Module OakStrings
+=================
+
+   Module Strings provides a set of operations on strings (i.e., on
+string constants and character arrays, both of which contain the
+character `0X' as a terminator).  All positions in strings start at `0'.
+
+   (`The Oakwood Guildlines' remark that string assignments and string
+comparisons are already supported by the language Oberon-2.)
+
+Procedures
+----------
+
+ - Function: Length `(S: ARRAY OF CHAR): INTEGER'
+     Returns the number of characters in S up to and excluding the first
+     `0X'.
+
+ - Procedure: Insert `(SRC: ARRAY OF CHAR; POS: INTEGER; VAR DST: ARRAY
+          OF CHAR)'
+     Inserts the string SRC into the string DST at position POS
+     (`0<=POS<=Length(DST)').  If `POS=Length(DST)', SRC is appended to
+     DST.  If the size of DST is not large enough to hold the result of
+     the operation, the result is truncated so that DST is always
+     terminated with a `0X'.
+
+ - Procedure: Append `(S: ARRAY OF CHAR; VAR DST: ARRAY OF CHAR)'
+     Has the same effect as `Insert(S, Length(DST), DST)'.
+
+ - Procedure: Delete `(VAR S: ARRAY OF CHAR; POS, N: INTEGER)'
+     Deletes N characters from S starting at position POS
+     (`0<=POS<=Length(S)').  If `N>Length(S)-POS', the new length of S
+     is POS.
+
+ - Procedure: Replace `(SRC: ARRAY OF CHAR; POS: INTEGER; VAR DST:
+          ARRAY OF CHAR)'
+     Has the same effect as `Delete(DST, POS, Length(SRC))' followed by
+     `Insert(SRC, POS, DST)'.
+
+ - Procedure: Extract `(SRC: ARRAY OF CHAR; POS, N: INTEGER; VAR DST:
+          ARRAY OF CHAR)'
+     Extracts a substring DST with N characters from position POS
+     (`0<=POS<= Length(SRC)') in SRC.  If `N>Length(SRC)-POS', DST is
+     only the part of SRC from POS to the end of SRC, i.e.
+     `Length(src)-1'.  If the size of DST is not large enough to hold
+     the result of the operation, the result is truncated so that DST
+     is always terminated with a `0X'.
+
+ - Function: Pos `(PAT, S: ARRAY OF CHAR; POS: INTEGER): INTEGER'
+     Returns the position of the first occurrence of PAT in S.
+     Searching starts at position POS.  If PAT is not found, `-1' is
+     returned.
+
+ - Procedure: Cap `(VAR S: ARRAY OF CHAR)'
+     Replaces each lower case letter within S by its upper case
+     equivalent.
+
+
+File: OOCref.info,  Node: OakFiles,  Next: OakIn,  Prev: OakStrings,  Up: Oakwood Compliant Modules
+
+Module OakFiles
+===============
+
+   Module `OakFiles' provides operations on files and the file
+directory.
+
+   `The Oakwood Guildlines' define the type `File' as representing a
+stream of bytes ususally stored on an external medium.  A `File' has a
+certain length as well as the date and time of its last modification.
+
+   A "file directory" is a mapping from file names to files.  A file
+that is not registered in the directory is considered temporary.
+
+   The type `Rider' holds a read/write position in a file (positions
+start with 0).  There may be multiple riders set to the same file.  The
+field `eof' is set to `TRUE' if an attempt was made to read beyond the
+end of the file.  The field `res' reports the success of `ReadBytes'
+and `WriteBytes' operations.  Writing data overwrites old data at the
+rider position.  When data is written beyond the end of the file, the
+file length increases.
+
+Operations for Unformatted Input and Output
+-------------------------------------------
+
+   In general, all operations must use the following format for external
+representation:
+
+   * "Little endian" representation (i.e., the least significant byte
+     of a word is the one with the lowest address on the file).
+
+   * Numbers: `SHORTINT' 1 byte, `INTEGER' 2 bytes, `LONGINT' 4 bytes
+
+   * Sets: 4 bytes, element 0 is the least significant bit
+
+   * Booleans: single byte with `FALSE' = 0, `TRUE' = 1
+
+   * Reals: IEEE standard; `REAL' 4 bytes, `LONGREAL' 8 bytes
+
+   * Strings: with terminating `0X'
+
+   *Example:*
+
+       VAR f: Files.File; r: Files.Rider; ch: CHAR;
+
+   Reading from an existing file:
+       f := Files.Old ("xxx");
+       IF f # NIL THEN
+         Files.Set (r, f, 0);
+         Files.Read (r, ch);
+         WHILE ~ r.eof DO
+           Files.Read (r, ch)
+         END
+       END
+
+   Writing to a new file yyy:
+       f := Files.New ("yyy");
+       Files.Set (r, f, 0);
+       Files.WriteInt (r, 8);
+       Files.WriteString (r, " bytes");
+       Files.Register (f)
+
+     *Please note:* This module implements virtual file descriptors;
+     that is, an unlimited number of files can be open at the same
+     time.  These files share the limited number of file descriptors
+     provided by the operating system.
+
+Remarks
+-------
+
+   `The Oakwood Guildlines' provide the following specifications:
+
+   `WriteNum' and `ReadNum', should use the following encoding
+algorithms for conversion to and from external format:
+
+     PROCEDURE WriteNum (VAR r: Rider; x: LONGINT);
+     BEGIN
+        WHILE (x < - 64) OR (x > 63) DO
+            Write(r, CHR(x MOD 128 + 128)); x := x DIV 128
+        END;
+        Write(r, CHR(x MOD 128))
+     END WriteNum;
+     
+     PROCEDURE ReadNum (VAR r: Rider; VAR x: LONGINT);
+        VAR s: SHORTINT; ch: CHAR; n: LONGINT;
+     BEGIN
+        s := 0; n := 0;
+        Read(r, ch);
+        WHILE ORD(ch) >= 128 DO
+           INC(n, ASH(ORD(ch) - 128, s) );
+           INC(s, 7);
+           Read(r, ch)
+        END;
+        x := n + ASH(ORD(ch) MOD 64 - ORD(ch) DIV 64 * 64, s)
+     END ReadNum;
+
+   The reason for the specification of the file name in the operation
+`New' is to allow allocation of the file on the correct medium from the
+beginning (if the operating system supports multiple media).
+
+   The operations `Read', `Write', `ReadBytes' and `WriteBytes' require
+the existence of a type `SYSTEM.BYTE' with the following
+characteristics:
+
+   * If a formal parameter is of type `SYSTEM.BYTE', the corresponding
+     actual parameter may be of type `CHAR', `SHORTINT', or
+     `SYSTEM.BYTE'.
+
+   * If a formal variable parameter is of type `ARRAY OF SYSTEM.BYTE',
+     the corresponding actual parameter may be of any type.  Note that
+     this feature is dangerous and inherently unportable.  Its use
+     should therefore be restricted to system-level modules.
+
+Types
+-----
+
+ - Data type: File = POINTER TO FileDesc
+
+ - Record: FileDesc = RECORD
+
+ - Record: Rider = RECORD
+    Field: eof-: `BOOLEAN'
+          Set to `TRUE' if an attempt was made to read beyond the end
+          of the file.
+
+    Field: res-: `INTEGER'
+          See `ReadBytes' and `WriteBytes' below for possible values of
+          `res'.
+
+Operations on Files and the File Directory
+------------------------------------------
+
+ - Function: Old `(NAME: ARRAY OF CHAR): File'
+     `Old(NAME)' searches for the NAME in the directory and returns the
+     corresponding file.  If the NAME is not found, it returns `NIL'.
+
+ - Function: New `(NAME: ARRAY OF CHAR): File'
+     `New(NAME)' creates and returns a new file.  The NAME is
+     remembered for the later use of the operation `Register'.  The
+     file is only entered into the directory when `Register' is called.
+
+ - Procedure: Register `(F: File)'
+     `Register(F)' enters the file F into the directory together with
+     the name provided in the operation `New' that created F.  The file
+     buffers are written back.  Any existing mapping of this name to
+     another file is overwritten.
+
+ - Procedure: Close `(VAR F: File)'
+     `Close(F)' writes back the file buffers of F.  The file is still
+     accessible by its handle F and the riders positioned on it.  If a
+     file is not modified, it is not necessary to close it.
+
+          *Please note:* The above holds only for
+          `permanentClose=FALSE'.  Otherwise, the buffers are flushed
+          and the file handle is deallocated (and F is set to `NIL');
+          at this time, all riders on this file become invalid.  This
+          behaviour, and the variable `permanentClose', are not part of
+          `The Oakwood Guidelines'.
+
+ - Procedure: Purge `(F: File)'
+     `Purge(F)' resets the length of file F to `0'.
+
+ - Procedure: Delete `(NAME: ARRAY OF CHAR; VAR RES: INTEGER)'
+     `Delete(NAME, RES)' removes the directory entry for the file
+     `name' without deleting the file.  If `res=0' the file has been
+     successfully deleted.  If there are variables referring to the file
+     while `Delete' is called, they can still be used.
+
+ - Procedure: Rename `(OLD, NEW: ARRAY OF CHAR; VAR RES: INTEGER)'
+     `Rename(OLD, NEW, RES)' renames the directory entry OLD to NEW.
+     If `res=0', the file has been successfully renamed.  If there are
+     variables referring to the file while `Rename' is called, they can
+     still be used.
+
+ - Function: Length `(F: File): LONGINT'
+     `Length(F)' returns the number of bytes in file F.
+
+ - Procedure: GetDate `(F: File; VAR T, D: LONGINT)'
+     `GetDate(F, T, D)' returns the time T and date D of the last
+     modification of file F.
+
+     The encoding is as follows:
+          hour = t DIV 4096;
+          minute = t DIV 64 MOD 64;
+          second = t MOD 64;
+          
+          year = d DIV 512;
+          month = d DIV 32 MOD 16;
+          day = d MOD 32.
+
+Operations on Riders
+--------------------
+
+ - Procedure: Set `(VAR R: Rider; F: File; POS: LONGINT)'
+     `Set(R, F, POS)' sets the rider R to position POS in file F.  The
+     field `r.eof' is set to FALSE.  The operation requires that `0 <=
+     pos <= Length(F)'.
+
+ - Function: Pos `(VAR R: Rider): LONGINT'
+     `Pos(R)' returns the position of the rider R.
+
+ - Function: Base `(VAR R: Rider): File'
+     `Base(R)' returns the file to which the rider R has been set.
+
+Reading
+.......
+
+ - Procedure: Read `(VAR R: Rider; VAR X: SYSTEM.BYTE)'
+     `Read(R, X)' reads the next byte X from rider R and advances R
+     accordingly.
+
+ - Procedure: ReadInt `(VAR R: Rider; VAR I: INTEGER)'
+     `ReadInt(R, I)' reads a integer number I from rider R and advances
+     R accordingly.
+
+ - Procedure: ReadLInt `(VAR R: Rider; VAR I: LONGINT)'
+     `ReadLInt(R, I)' reads a long integer number I from rider R and
+     advances R accordingly.
+
+ - Procedure: ReadReal `(VAR R: Rider; VAR X: REAL)'
+     `ReadReal(R, X)' reads a real number X from rider R and advances R
+     accordingly.
+
+ - Procedure: ReadLReal `(VAR R: Rider; VAR X: LONGREAL)'
+     `ReadLReal(R, X)' reads a long real number X from rider R and
+     advances R accordingly.
+
+ - Procedure: ReadNum `(VAR R: Rider; VAR I: LONGINT)'
+     `ReadNum(R, I' reads an integer number I from rider R and advances
+     R accordingly.  The number I is compactly encoded (see the
+     "Remarks" section above).
+
+ - Procedure: ReadString `(VAR R: Rider; VAR S: ARRAY OF CHAR)'
+     `ReadString(R, S)' reads a sequence of characters (including the
+     terminating `0X') from rider R and returns it in `s'.  The rider
+     is advanced accordingly.  The actual parameter corresponding to S
+     must be long enough to hold the character sequence plus the
+     terminating `0X'.
+
+ - Procedure: ReadSet `(VAR R: Rider; VAR S: SET)'
+     `ReadSet(R, S)' reads a set S from rider R and advances R
+     accordingly.
+
+ - Procedure: ReadBool `(VAR R: Rider; VAR B: BOOLEAN)'
+     `ReadBool(R, B)' reads a Boolean value B from rider R and advances
+     R accordingly.
+
+ - Procedure: ReadBytes `(VAR R: Rider; VAR BUF: ARRAY OF SYSTEM.BYTE;
+          N: LONGINT)'
+     `ReadBytes(R, BUF, N)' reads N bytes into buffer BUF starting at
+     the rider position R.  The rider is advanced accordingly.  If less
+     than N bytes could be read, `R.res' contains the number of
+     requested but unread bytes.
+
+Writing
+.......
+
+ - Procedure: Write `(VAR R: Rider; X: SYSTEM.BYTE)'
+     `Write(R, X)' writes the byte X to rider R and advances R
+     accordingly.
+
+ - Procedure: WriteInt `(VAR R: Rider; I: INTEGER)'
+     `WriteInt(R, I)' writes the integer number I to rider R and
+     advances R accordingly.
+
+ - Procedure: WriteLInt `(VAR R: Rider; I: LONGINT)'
+     `WriteLInt(R, I)' writes the long integer number I to rider R and
+     advances R accordingly.
+
+ - Procedure: WriteReal `(VAR R: Rider; X: REAL)'
+     `WriteReal(R, X)' writes the real number X to rider R and advances
+     R accordingly.
+
+ - Procedure: WriteLReal `(VAR R: Rider; X: LONGREAL)'
+     `WriteLReal(R, X)' write the long real number X to rider R and
+     advance R accordingly.
+
+ - Procedure: WriteNum `(VAR R: Rider; I: LONGINT)'
+     `WriteNum(R, I)' writes the integer number I to rider R and
+     advances R accordingly.  The number I is compactly encoded (see
+     the "Remarks" section above).
+
+ - Procedure: WriteString `(VAR R: Rider; S: ARRAY OF CHAR)'
+     `WriteString(R, S)' writes the sequence of characters S (including
+     the terminating `0X') to rider R and advances R accordingly.
+
+ - Procedure: WriteSet `(VAR R: Rider; S: SET)'
+     `WriteSet(R, S)' writes the set S to rider R and advances R
+     accordingly.
+
+ - Procedure: WriteBool `(VAR R: Rider; B: BOOLEAN)'
+     `WriteBool(R, B)' writes the Boolean value B to rider R and
+     advances R accordingly.
+
+ - Procedure: WriteBytes `(VAR R: Rider; VAR BUF: ARRAY OF SYSTEM.BYTE;
+          N: LONGINT)'
+     `WriteBytes(R, BUF, N)' writes the first N bytes from buf to rider
+     R and advances R accordingly.  `R.res' contains the number of
+     bytes that could not be written (e.g., due to a disk full error).
+

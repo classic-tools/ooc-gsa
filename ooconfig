@@ -1,0 +1,348 @@
+#!/bin/sh
+# This script manipulates OOC initialization files to install new packages.
+# 
+# Copyright (C) 1998, 1999  Michael van Acken
+# 
+# You can redistribute this file it and/or modify it under the terms
+# of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any
+# later version.
+
+
+# See usage description below for synopsis and list of commands.
+# 
+# Note: For this script to work, all section keywords and the keyword
+# END have to appear on a line of their own in the intialization file.
+# An INCLUDE section has to be written on a single line.
+
+
+if test $# = 0; then
+    cat <<\EOF
+usage: ooconfig.sh <file> [command]... 
+
+commands:
+--append-line <key> <value>  Insert the line <value> at the end of the section
+                             denoted by <key>.
+--prepend-line <key> <value> Insert the line <value> at the beginning of the 
+                             section denoted by <key>.
+--replace-line <key> <value> Replace line matching <key> with <value>.  Do 
+                             nothing if no matching line exists.
+--remove-line <wildcard>     Remove all lines whose key matches <wildcard>.
+--get-line <wildcard>        Retrieve all lines whose key matches <wildcard>.
+--get-value <key>            Retrieve the line whose key matches <key>, but 
+                             strip leading whitespace and key from output.
+--exists <wildcard>          Exit status is 0, if a line with a matching key 
+                             exists, and 1 otherwise.
+--define <key> <yes/no>      Append line "DEFINE PACKAGE_ID := TRUE/FALSE;".
+--fix-includes               Comment out any INCLUDE statements that include a
+                             relative path name, or a path name that depends on
+                             the current user.
+--stdout                     Do not modify file, and write result to stdout.
+--file <file>                Read commands from file.
+
+A <key> must be of the form `SECTION:PACKAGE:ID'.  Identifiers of a key must be
+composed of characters, underscore, or digits.  A <wildcard> can additionally 
+contain the characters `?' (matches any character) and `*' (matches an 
+arbitrary number of characters).
+EOF
+    exit 2
+fi
+
+if test -r "$1"; then
+    true
+else
+    echo "error: file $1 does not exist or is not readable"
+    exit 2
+fi
+
+########################################################################
+
+ws="[ 	]*" # whitespace regular expression
+
+
+set_key_parts ()
+{
+    key_section="$1"
+    key_package="$2"
+    key_id="$3"
+}
+
+split_key ()
+# Assign the parts of the key to the variables key_section, key_packges, amd
+# key_id.
+{
+    OLD_IFS="$IFS"
+    IFS=":"
+    set_key_parts $1
+    IFS="$OLD_IFS"
+}
+
+check_key ()
+# If $1 is no valid key, abort with an error message and exit code 2.
+{
+    ident="[a-zA-Z_][a-zA-Z0-9_]*"
+    if echo "$1" | grep "^$ident:$ident:$ident$" >/dev/null; then
+	return 0
+    else
+	echo "error: invalid key $1"
+	exit 2
+    fi
+}
+
+check_wildcard ()
+# If $1 is no valid wildcard, abort with an error message and exit code 2.
+{
+    wc="[a-zA-Z_*?][a-zA-Z0-9_*?]*"
+    if echo "$1" | grep "^$wc:$wc:$wc$" >/dev/null; then
+	return 0
+    else
+	echo "error: invalid wildcard $1"
+	exit 2
+    fi
+}
+
+transform_wildcard ()
+# Transform the wildcard string in $1 into a valid regular 
+# expression, then write it to stdout.
+{
+    echo "$1" | sed -e 's/\?/./g' -e 's/\*/.*/g' -e 's/^/##/g' -e 's/$/##/g'
+}
+
+
+append_line ()
+# Before end of section $1, insert line $2 with key $3.
+{
+    cat >conftest.sed <<EOF
+/^${ws}${1}${ws}$/,/^${ws}END${ws}$/{
+/^${ws}END${ws}$/!p
+/^${ws}END${ws}$/{
+i\\
+${2}  ##${3}##
+p
+}
+}
+/^${ws}${1}${ws}$/,/^${ws}END${ws}$/!p
+EOF
+    grep -v "##$3##" | sed -n -f conftest.sed
+    rm -f conftest.sed
+}
+
+prepend_line ()
+# At the beginning of section $1, insert line $2 with key $3.
+{
+    cat >conftest.sed <<EOF
+/^${ws}${1}${ws}$/{
+p
+i\\
+${2}  ##${3}##
+}
+/^${ws}${1}${ws}$/!p
+EOF
+    grep -v "##$3##" | sed -n -f conftest.sed
+    rm -f conftest.sed
+}
+
+replace_line ()
+# Replace line with key $2 with $1.  Do nothing if no matching line exists.
+{
+    sed -e "s/^[^#]*##${2}##${ws}$/  ${1}  ##${2}##/"
+}
+
+
+fix_includes ()
+# Comment out any INCLUDE statements that include a relative path name, or
+# a path name that depends on the current user.
+{
+    sed -e "/^${ws}INCLUDE${ws}~\\//s/^/#/" \
+        -e "/^${ws}INCLUDE${ws}\\.\//s/^/#/" \
+        -e "/^${ws}INCLUDE${ws}\\.\\.\//s/^/#/"
+}
+
+remove_line ()
+# Remove all lines that do no match the regular expression $1.
+{
+    grep -v "$1"
+}
+
+perform_operation ()
+# Perform operation $1 on the current file.
+{
+    if test "$curr_input" = "$init_file"; then
+	if cp "$init_file" "$acc_file"; then
+	    curr_input="$acc_file"
+	else
+	    echo "could not create file $acc_file"
+	    exit 2
+	fi
+    fi
+    
+    mv "${acc_file}" "${tmp_file}"
+    if $1 "$2" "$3" "$4" <"${tmp_file}" >"${acc_file}"; then
+	rm -f "$tmp_file"
+    else
+	exit 2
+    fi
+}
+
+########################################################################
+
+do_append_line ()
+{
+	check_key "$2"
+	split_key "$2"
+	perform_operation append_line "$key_section" "$3" "$2"
+}
+
+do_prepend_line ()
+{
+	check_key "$2"
+	split_key "$2"
+	perform_operation prepend_line "$key_section" "$3" "$2"
+}
+
+do_replace_line ()
+{
+	check_key "$2"
+	perform_operation replace_line "$3" "$2"
+}
+
+do_remove_line ()
+{
+	check_wildcard "$2"
+	perform_operation remove_line "`transform_wildcard "$2"`"
+}
+
+do_get_line ()
+{
+	check_wildcard "$2"
+	grep "`transform_wildcard "$2"`" "$curr_input"
+}
+
+do_get_value ()
+{
+	check_key "$2"
+	grep "$2" "$curr_input" | sed -e "s/^ *//g" -e "s/ *##$2##//g"
+}
+
+do_define ()
+{
+	check_key "$2"
+	split_key "$2"
+	if test x"$3" = xyes; then
+	    perform_operation append_line "$key_section" \
+		"DEFINE ${key_package}_${key_id} := TRUE;" "$2"
+	else
+	    perform_operation append_line "$key_section" \
+		"DEFINE ${key_package}_${key_id} := FALSE;" "$2"
+	fi
+}
+
+do_fix_includes ()
+{
+	perform_operation fix_includes
+}
+
+eval_line ()
+{
+    case $1 in
+    append-line)
+	do_append_line "$1" "$2" "$3" ;;
+    prepend-line)
+	do_prepend_line "$1" "$2" "$3" ;;
+    replace-line)
+	do_replace_line "$1" "$2" "$3" ;;
+    remove-line)
+	do_remove_line "$1" "$2" ;;
+    get-line)
+	do_get_line "$1" "$2" ;;
+    get-value)
+	do_get_value "$1" "$2" ;;
+    define)
+	do_define "$1" "$2" "$3" ;;
+    fix-includes)
+	do_fix_includes "$1" ;;
+    *)
+	echo "error: unknown command $1"
+	exit 2;;
+    esac
+}
+
+scan_file ()
+{
+    OLD_IFS="$IFS"
+    IFS="
+"
+    for i in `cat $1`; do
+	OLD_IFS="$IFS"
+        eval eval_line $i
+    done
+    IFS="$OLD_IFS"
+}
+
+########################################################################
+
+init_file="$1"
+shift
+
+acc_file="$init_file.acc"
+tmp_file="$init_file.tmp"
+curr_input="$init_file"
+write_stdout=no
+
+rm -f "$acc_file" "$tmp_file"
+
+while test $# != 0; do
+    case $1 in
+    --append-line)
+	do_append_line "$1" "$2" "$3"
+	shift 3 ;;
+    --prepend-line)
+	do_prepend_line "$1" "$2" "$3"
+	shift 3 ;;
+    --replace-line)
+	do_replace_line "$1" "$2" "$3"
+	shift 3 ;;
+    --remove-line)
+	do_remove_line "$1" "$2"
+	shift 2 ;;
+    --get-line)
+	do_get_line "$1" "$2"
+	shift 2 ;;
+    --get-value)
+	do_get_value "$1" "$2"
+	shift 2 ;;
+    --define)
+	do_define "$1" "$2" "$3"
+	shift 3 ;;
+    --fix-includes)
+	do_fix_includes "$1"
+	shift 1 ;;
+    --file)
+        scan_file "$2"
+        shift 2 ;;
+    --exists)
+	check_wildcard "$2"
+	grep "`transform_wildcard "$2"`" "$curr_input" >/dev/null
+	exit $? ;;
+    --stdout)
+	write_stdout=yes;
+	shift 1 ;;
+     *)
+	echo "error: unknown command $1"
+	exit 2 ;;
+    esac
+done
+
+if test "$curr_input" != "acc_file"; then  # file has been modified
+    if test $write_stdout = yes; then
+	cat "$acc_file"
+	rm -f "$acc_file"
+    else
+	mv "$init_file" "$init_file.orig"
+	mv "$acc_file" "$init_file"
+    fi
+elif test $write_stdout = yes; then  # no modification
+    cat "$init_file"
+fi
+
+exit 0

@@ -1,0 +1,62 @@
+# Note: The markers ##XXX## are used by the package helper script ooconfig;
+# do not edit them.
+
+OPTIONS
+  verbose := FALSE;
+  errorMessages := "%OOLIBDIR%/Errors.short";
+  optimize := FALSE;
+
+  cc := "%CC%";
+  cflags := "%CFLAGS%";
+  coptflags := "%COPTFLAGS%";
+  ldflags := "%LDFLAGS%";
+  gcflags := "@gc_flags@";
+  valueStack := @value_stack@;
+
+  libtoolCmd := "%LIBTOOL%";
+  installCmd := "%INSTALL_CMD%";
+  libpath := "%LIBPATH%";
+END
+
+PRAGMAS
+  Warnings := FALSE;
+  Assertions := TRUE;
+  Initialize := FALSE;
+  PoisonHeap := -1;
+  StackCheck := TRUE;
+  ConformantMode := FALSE;
+
+  CaseSelectCheck := TRUE;
+  IndexCheck := TRUE;
+  RangeCheck := TRUE;
+  DerefCheck := TRUE;
+  FunctResult := TRUE;
+  TypeGuard := TRUE;
+  OverflowCheck := FALSE;
+  IntDivCheck := TRUE;
+  RealOverflowCheck := TRUE;
+  RealDivCheck := TRUE;
+END
+
+
+# include user configuration; it can overide the variables defined above, and
+# the paths it specifies take precedence over the ones given below
+INCLUDE ~/.oo2crc END
+
+
+PATHS
+GET *.Mod [RCS] FROM
+  .;
+  %OOLIBDIR%/lib;  ##PATHS:OOC:LIB##
+
+# for all generated file types add `.' as source and destination path; the 
+# files will end up in the current directory (which is probably accessible), 
+# unless the user specifies other destinations in the INCLUDE above
+GET *.Sym, *.Lib FROM
+  .; 
+  %OOLIBDIR%/sym;  ##PATHS:OOC:SYM##
+GET *.h, *.d, *.c, *.o FROM
+  .;
+  %OOLIBDIR%/obj;  ##PATHS:OOC:OBJ##
+  %OOLIBDIR%/lib;
+END

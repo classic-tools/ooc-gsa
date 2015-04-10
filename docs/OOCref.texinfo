@@ -1,0 +1,498 @@
+\input texinfo                  @c -*- Texinfo -*-
+@comment %**start of header (This is for running Texinfo on a region.)
+@setfilename OOCref.info
+@settitle The OOC Reference Manual
+@setchapternewpage odd
+@comment %**end of header (This is for running Texinfo on a region.)
+
+@c This tells texinfo.tex to use the real section titles in xrefs in
+@c place of the node name, when no section title is explicitly given.
+@set xref-automatic-section-title
+@c @smallbook
+
+@set EDITION 0.09 DRAFT
+@set VERSION 1.4.5
+@set UPDATED 9 July 1999
+@set ISBN N/A
+
+@ifinfo
+This file documents the Optimizing Oberon-2 Compiler (OOC) and its library.
+
+This is Edition @value{EDITION}, last updated @value{UPDATED}, of @cite{The
+OOC Library Reference Manual}, for Version @value{VERSION} or later of oo2c.
+
+Copyright (C) 1997-1999 Eric Nikitin
+Part II Copyright (C) 1998, 1999 Michael van Acken
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+section entitled ``GNU General Public License'' is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that the text of the translation of the section entitled ``GNU
+General Public License'' must be approved for accuracy by the
+Foundation.
+@end ifinfo
+
+@iftex
+@comment @afourpaper 
+@shorttitlepage The OOC Reference Manual
+@end iftex
+@titlepage
+@center @titlefont{The OOC}
+@sp 1
+@center @titlefont{Reference Manual}
+@sp 2
+@center Eric Nikitin
+@sp 1
+@center with
+@sp 1
+@center Michael van Acken
+@sp 3
+@center Edition @value{EDITION}
+@sp 1
+@center last updated @value{UPDATED}
+@sp 1
+@center for version @value{VERSION} or later of oo2c.
+@page
+@vskip 0pt plus 1filll
+@format
+Copyright @copyright{} 1997-1999 Eric Nikitin
+Part II Copyright @copyright{} 1998, 1999 Michael van Acken
+@end format
+@sp 2
+@comment "Published by" info would go here 
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+section entitled ``GNU General Public License'' is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that the text of the translation of the section entitled ``GNU
+General Public License'' must be approved for accuracy by the
+Foundation.
+@end titlepage
+@page
+
+@ifinfo
+@node Top, Introduction, (dir), (dir)
+@top Main Menu
+This is Edition @value{EDITION}, last updated @value{UPDATED}, of @cite{The
+OOC Reference Manual}, for Version @value{VERSION} or later of oo2c.
+@end ifinfo
+
+
+@menu
+* Introduction::                Purpose of the OOC Reference Manual.
+
+Part I:  The OOC Library
+ 
+* OOC Library Overview::        An introduction to the OOC Library.  
+* Character & String Handling:: Character representation and testing, and
+                                 procedures for manipulating strings.
+* Integer/String Conversion::   Conversions between integer types and 
+                                 string representations of integers.
+* Real/String Conversion::      Conversions between real types and string
+                                 representations of reals.
+* I/O Subsystem::               Input/Output facilities and channel types.
+* Mathematics::                 Math functions and properties for real 
+                                 numeric types and complex number types.
+* Date and Time::               Functions for getting the date and time,
+                                 and for conversion between formats.
+* Oakwood Compliant Modules::   Modules which support the Oakwood 
+                                 Guildlines.
+* Exception Handling::          Run-time exception handling and signal 
+                                 handling.
+* Localization::                Facilities for enabling programs to run
+                                 internationally.
+
+Part II:  The OOC Compiler 
+
+* Language::                    Specification of the Oberon-2 language as 
+                                 used by the OOC compiler.  
+* Pragmas::                     Mechanisms for embedding code generation
+                                 directives.  
+* OO2C::                        Specifics of the oo2c implemetation of the
+                                 OOC compiler.  
+
+Appendices
+
+* Syntax of Text Tokens::       Syntactical definitions for the various 
+                                  text tokens. 
+* SYSTEM::                      Low-level operations particular to the OOC
+                                 compiler (may vary by implementation).  
+* OOC Error Messages::          A commented list of standard compiler error
+                                 messages.
+* Copying::                     The GNU General Public License describing
+                                 how you can copy and share OOC.
+
+Indices
+
+* Concept Index::               Index of concepts and names.
+* Type Index::                  Index of types and type qualifiers.
+* Procedure Index::             Index of procedures.
+* Variable & Constant Index::   Index of global variables and constants.
+* File Index::                  Index of programs and files.
+
+ --- The Detailed Node Listing ---
+
+OOC Library Overview
+
+* Standards::                   Standards followed by OOC and its library.  
+* Definition of Terms::         Terminology used in this part of the manual.  
+
+Character & String Handling
+
+* Ascii::                       Standard short character names for control 
+                                 chars. 
+* CharClass::                   Classification of values of type @code{CHAR}.
+* Strings::                     Facilities to manipulate strings.  
+
+Strings
+
+* Copying and Concatenation::   Procedures to copy the contents of strings.  
+* Compare & Searching Strings:: Comparison of strings and locating 
+                                 sub-strings.  
+* Misc. Strings Procedures::    Procedures @code{Length} and @code{Capitalize}.  
+
+Integer/String Conversion
+
+* ConvTypes::                   Common types used in the string conversion 
+                                 modules.
+* IntConv::                     Low-level integer/string conversions.
+* IntStr::                      Integer-number/string conversions.
+
+Real/String Conversion
+
+* RealConv::                    Low-level @code{REAL}/string conversions.
+* RealStr::                     @code{REAL}/string conversions.
+* LRealConv::                   Low-level @code{LONGREAL}/string conversions.
+* LRealStr::                    @code{LONGREAL}/string conversions.
+
+I/O Subsystem
+
+* Input/Output Overview::       An introduction to the basic concepts of
+                                 I/O in the OOC library.
+* Channels::                    Details of the various channel modules.
+* Standard Mappers::            Descriptions of the standard mapper types.
+* Standard I/O::                Simple interfaces to standard input, output
+                                 and error channels.
+
+Input/Output Overview
+
+* I/O Concepts::                Basic I/O concepts of the OOC library.  
+* Riders and Mappers::          Discussion of the functions of riders and
+                                 mappers.  
+* Locators & Opening Channels:: Description of the use of locators to 
+                                 open channels.  
+
+Channels
+
+* Channel::                     Defines abtract channel and rider types.
+* Files::                       File access.
+* StdChannels::                 Interface to standard in, out, and err 
+                                 channels.
+* ProgramArgs::                 Facilities to access program arguments.
+  
+Channel
+
+* Abstract Class Channel::      Elements of abtract channel types.  
+* Abstract Class Reader::       Elements of abstract reader types.  
+* Abstract Class Writer::       Elements of abstract writer types.  
+* Channel Procedures::          Free-standing procedures in module 
+                                 Channel.  
+* Summary of Channel Constants::Summarized list of constants in module
+                                 Channel.  
+
+Files  
+
+* Class File::                  Specific features of class File.  
+* Class Reader (for File)::     Specific features of the reader class 
+                                 associated with class File.  
+* Class Writer (for File)::     Specific features of the writer class 
+                                 associated with class File.  
+* File Locators::               Locators used for opening files.
+* Other File Operations::       Free-standing procedures in module Files.  
+* Summary of File Constants::   Summarized list of constants in module
+                                 Files.  
+
+Standard Mappers
+
+* Text Mappers::                Textual input from and output to channels.  
+* BinaryRider::                 Binary input from and output to channels.  
+
+Text Mappers
+
+* Rider::                       Abstract classes for text based I/0.
+* LongRider::                   Abstract classes with LONGCHAR support.
+* TextRider::                   ISO-Latin-1 (CHAR) text based I/0.
+* UnicodeRider::                Unicode (LONGCHAR) text based I/0.
+
+Rider
+
+* Class Reader (Rider)::        Abstract class defining text readers.
+* Class Writer (Rider)::        Abstract class defining text writers.
+* Class Scanner (Rider)::       Abstract class defining text scanners.
+
+LongRider
+
+* Class Reader (LongRider)::    Abstract class defining text readers.
+* Class Writer (LongRider)::    Abstract class defining text writers.
+* Class Scanner (LongRider)::   Abstract class defining text scanners.
+
+TextRider
+
+* Class Reader (TextRider)::    Class for reading text from channels.  
+* Class Writer (TextRider)::    Class for writing text to channels.  
+* Class Scanner (TextRider)::   Class for scanning text from channels.  
+* Connecting TextRiders::       Procedures to connect text readers, writers,
+                                  and scanners to channels.  
+* Summary of TextRider Constants:: Summarized list of constants in module
+                                  TextRider.  
+
+UnicodeRider
+
+* Class Reader (UnicodeRider):: Class for reading unicode text from channels.  
+* Class Writer (UnicodeRider):: Class for writing unicode text to channels.  
+* Class Scanner (UnicodeRider)::Class for scanning unicode text from 
+                                  channels.  
+* Connecting UnicodeRiders::    Procedures to connect (unicode) readers, 
+                                  writers, and scanners to channels.  
+* Summary of UnicodeRider Constants:: Summarized list of constants in module
+                                  UnicodeRider.  
+
+BinaryRider
+
+* Class Reader (BinaryRider)::  Class for reading binary data from channels.  
+* Class Writer (BinaryRider)::  Class for writing binary data to channels.  
+* Connecting BinaryRiders::     Procedures to connect binary readers and
+                                 writers to channels.  
+* Summary of BinaryRider Constants:: Summarized list of constants in module
+                                 BinaryRider.  
+
+Standard I/O
+
+* In::                          Simple interface to standard input.
+* Out::                         Simple interface to standard output.
+* Err::                         Simple interface to standard error channel.
+
+Mathematics
+
+* Low-level Numeric Properties:: Access to underlying properties of types 
+                                  @code{REAL} and @code{LONGREAL}.
+* Mathematical Functions::      Mathematical functions on @code{REAL}
+                                  and @code{LONGREAL} values.   
+* Arbitrary Precision Integers:: Arbitrary precision integer operations.
+* Complex Numbers::             Mathematical functions for types
+                                  @code{COMPLEX} and @code{LONGCOMPLEX}.
+* Random Numbers::              Psuedo-random number generators.
+  
+Date and Time
+
+* Time::                        Manipulation of time stamps and time 
+                                 intervals.
+* JulianDay::                   Convert between day/month/year and 
+                                 Modified Julian Days.
+* SysClock::                    Reading and setting the system clock.
+* Calendar::                    Conversions between calender dates, time 
+                                 stamps, and date/time string formats.
+
+Oakwood Compliant Modules
+
+* OakStrings::                  String manipulation.  
+* OakFiles::                    File access.  
+* OakIn::                       Basic functions for formatted input.
+* OakOut::                      Basic functions for formatted output.
+* OakMath and OakMathL::        Mathematical functions for @code{REAL}.
+                                  and @code{LONGREAL}.
+
+Exception Handling
+
+* Exception::                   Run-time exception handling.  
+* Signal::                      Installing signal handlers.
+
+Localization
+        
+* Locales::                     Localization information based on the
+                                  Posix/C facilities.
+* LocStrings::                  Character and string localization 
+                                  facilities.
+* LocNumConv::                  Localized number conversions. 
+* LocNumStr::                   Convert numbers to/from strings using 
+                                  locale information.
+* LocTextRider::                Localized text riders.
+* LocText::                     Text string localization facilities.
+
+Language
+
+* Specifications::              Specifications beyond the language report.  
+* Non-conformant Mode::         Deviations from the Language Report in 
+                                  "Non-conformant" Mode.  
+* Additional Data Types::       Additional basic data types used by OOC.  
+* Language Extensions::         Experimental extensions to the language.
+* Illegal Operations::          Illegal operations and their effects.  
+
+Language Extensions
+
+* ABSTRACT::                    Abstract classes and methods.
+* NO_COPY::                     Avoiding Local Copies of Value Parameters.
+
+Pragmas
+
+* Pragma Syntax::               Syntax for embedding pragmas.  
+* Predefined Pragma Variables:: How to use the predefined pragma variables.
+
+OO2C
+
+* OO2C Overview::               An introduction to the oo2c implementation.
+* Installing oo2c::             How to install oo2c. 
+* Invoking Programs::           Using compiler and tools.
+* Initialization Files::        How to configure the compiler.
+* Interfacing to C Code::       How to write interface and foreign modules. 
+* Limitations of oo2c::         Implementation limits of oo2c.
+* Large Arrays of Constants::   How oo2c deals with large arrays of
+                                 constants.  
+* Emacs Mode::                  How to install and use Emacs mode.  
+
+Installing oo2c
+
+* Preparing for Installation::  Optional add-on packages supported by oo2c.
+* Basic Installation::          The usual way to install oo2c on a system.
+* Compilers and Options::       Fine tuning the C compiler.
+* Installation Names::          Selecting destination dir and program names.
+* Installing with Run-Time Checks::  Adding debug code to library and compiler.
+
+Invoking Programs
+
+* oo2c options::                Oberon-2 to ANSI-C Translator
+* oob options::                 Symbol File Browser
+* oocn options::                Source Code Analysis and Transformation
+* ooef options::                Conversion Tool for Error Messages
+* oowhereis options::           File Finder
+
+oo2c options
+
+* oo2c primary operations::     Primary operations of the compiler.
+* oo2c std options::            Selecting translation variants.
+* oo2c C options::              Specifying the C compiler and its options.
+* oo2c libraries::              Creating shared or static libraries.
+* oo2c debugging options::      How to take a look at oo2c's internals.
+* oo2c files::                  Input and output files of oo2c.
+
+Initialization Files
+
+* Options and Pragmas::         Setting option and pragma variables.
+* Managing Files::              Specifying paths for input and output files.
+* Selecting Configuration::     Which initialization files are used?
+* Initialization Example::      The default initialization file as an example.
+
+Interfacing to C Code
+
+* Using Foreign Code::          Considerations about using foreign code.
+* System Flags::                Elements of non-standard interface modules.
+* INTERFACE Modules::           Interfacing to existing C code.
+* FOREIGN Modules::             Writing Oberon-2 modules in C.
+
+System Flags
+
+* Module Flags::                
+* Type Flags::                  
+* Declaration Flags::           
+
+Emacs Mode
+
+* o2-mode installation::        Integrating the new package with Emacs.
+* o2-mode functions::           Functions provided by Oberon-2 Mode
+* o2-mode hints::               Tips and tricks to improve things further.
+
+@end menu
+
+@include intro.texi
+
+@comment Includes individual chapters for part 1.
+@include libovw.texi
+@include string.texi
+@include int2str.texi
+@include real2str.texi
+@include io.texi
+@include channel.texi
+@include mappers.texi
+@include stdio.texi
+@include math.texi
+@include compmath.texi
+@include random.texi
+@include time.texi
+@include oakwood.texi
+@include except.texi
+@include locale.texi
+
+@comment Includes individual chapters for part 2.
+@include lang.texi
+@include pragmas.texi
+@include oo2c.texi
+
+@comment Includes of the appendices.
+@include texttok.texi
+@include system.texi
+@include ooc_errors.texi
+
+@node Copying, Concept Index, OOC Error Messages, Top
+@appendix Copying
+@comment @include gpl.texinfo
+For information regarding the @cite{GNU General Public License}, write to
+the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+02111-1307, USA.
+
+
+@node Concept Index, Type Index, Copying, Top
+@unnumbered Concept Index
+
+@printindex cp
+
+@node Type Index, Procedure Index, Concept Index, Top
+@unnumbered Type Index
+
+@printindex tp
+
+@node Procedure Index, Variable & Constant Index, Type Index, Top
+@unnumbered Procedure Index
+
+@printindex fn
+
+@node Variable & Constant Index, File Index, Procedure Index, Top
+@unnumbered Variable & Constant Index
+
+@printindex vr
+
+@node File Index, , Variable & Constant Index, Top
+@unnumbered Program and File Index
+
+@printindex pg
+
+
+@shortcontents
+@contents
+@bye

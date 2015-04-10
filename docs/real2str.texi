@@ -1,0 +1,502 @@
+@node Real/String Conversion, I/O Subsystem, Integer/String Conversion, Top
+@chapter Real/String Conversion
+
+The OOC Library supplies various procedures to convert between string values
+and numeric representation (@pxref{Integer/String Conversion}) The modules
+described in this chapter have procedures to convert both @code{REAL} and
+@code{LONGREAL} values to and from string format.
+
+The modules RealConv and LRealConv are both low-level and the average
+application programmer will most likely find modules RealStr and LRealStr
+more interesting and useful.
+
+(Also @pxref{ConvTypes})
+
+@quotation
+@strong{Please note}: When using the procedures described in this chapter,
+keep in mind that computer representations of @code{REAL} and @code{LONGREAL} 
+values are of @dfn{finite precision}.  That is, only a limited number of
+significant digits are stored.  
+@end quotation
+
+@menu
+* RealConv::                    Low-level @code{REAL}/string conversions.
+* RealStr::                     @code{REAL}/string conversions.
+* LRealConv::                   Low-level @code{LONGREAL}/string conversions.
+* LRealStr::                    @code{LONGREAL}/string conversions.
+@end menu
+
+@node RealConv, RealStr,  , Real/String Conversion
+@section Module RealConv
+@pindex RealConv
+@cindex real conversions, low level
+@cindex converting, reals
+
+Module RealConv provides low-level @code{REAL}/string conversions.  
+ 
+@defvr Constant SigFigs
+A value representing the accuracy of @code{REAL}s.
+@end defvr  
+ 
+@deftp {Data type} ConvResults
+@code{ConvResults} is a local equivalent to @code{ConvTypes.ConvResults}.
+This type has associated constants with the same meanings as in module
+ConvTypes (@pxref{ConvTypes})
+
+ Constants @code{strAllRight}, @code{strOutOfRange}, @code{strWrongFormat},
+and @code{strEmpty} are all valid values for @code{ConvResults}.
+@end deftp
+
+@deffn Procedure ScanReal @code{(VAR @var{inputCh}: CHAR; VAR @var{chClass}: Conv.ScanClass; VAR @var{nextState}: ConvTypes.ScanState)}
+Represents the start state of a finite state scanner for real
+numbers---assigns class of @var{inputCh} to @var{chClass} and a procedure
+representing the next state to @var{nextState} (@pxref{ConvTypes})
+@end deffn
+
+@deffn Function FormatReal @code{(VAR @var{str}: ARRAY OF CHAR): ConvResults}
+Returns the format of the string value for conversion to @code{REAL}.
+@end deffn
+
+@deffn Function ValueReal @code{(VAR @var{str}: ARRAY OF CHAR): REAL}
+If @var{str} is well-formed, returns the value corresponding to the real
+number represented by the string value @var{str}.  Otherwise, its behavior
+is undefined.
+@end deffn
+
+@deffn Function LengthFloatReal @code{(VAR @var{real}: REAL; VAR @var{sigFigs}: INTEGER): INTEGER}
+Returns the number of characters in the floating-point string representation
+of @var{real} with @var{sigFigs} significant figures.  This value
+corresponds to the capacity of an array @var{str} which is of the minimum
+capacity needed to avoid truncation of the result in the call
+
+@code{RealStr.RealToFloat(real,sigFigs,str)}  
+@end deffn
+
+@deffn Function LengthEngReal @code{(VAR @var{real}: REAL; VAR @var{sigFigs}: INTEGER): INTEGER}
+Returns the number of characters in the floating-point engineering string
+representation of @var{real} with @var{sigFigs} significant figures.  This
+value corresponds to the capacity of an array @var{str} which is of the
+minimum capacity needed to avoid truncation of the result in the call
+
+@code{RealStr.RealToEng(real,sigFigs,str)}  
+@end deffn
+
+@deffn Function LengthFixedReal @code{(VAR @var{real}: REAL; VAR @var{place}: INTEGER): INTEGER}
+Returns the number of characters in the fixed-point string representation of
+@var{real} rounded to the given @var{place} relative to the decimal point.
+This value corresponds to the capacity of an array @var{str} which is of the
+minimum capacity needed to avoid truncation of the result in the call
+
+@code{RealStr.RealToFixed(real,sigFigs,str)}
+@end deffn
+
+@deffn Function IsRConvException @code{(): BOOLEAN}
+This function returns @code{TRUE} if the current process is in the
+exceptional execution state because of the raising of the @code{RealConv}
+exception; otherwise, returns @code{FALSE}.
+@end deffn
+
+@node RealStr, LRealConv, RealConv, Real/String Conversion
+@section Module RealStr
+@pindex RealStr
+@cindex real conversions, strings
+@cindex strings, real conversions
+@cindex converting, reals/strings
+
+Module RealStr provides real number/ string conversions for @code{REAL}
+values.  Two text formats for real numbers are supported: @dfn{signed
+fixed-point real} and @dfn{signed floating-point} (@pxref{Syntax of Text
+Tokens})
+
+The valid string format of a signed fixed-point real number is
+
+@deftp {Data type} ConvResults
+@code{ConvResults} is a local equivalent to @code{ConvTypes.ConvResults}.
+This type has associated constants with the same meanings as in module
+ConvTypes (@pxref{ConvTypes}) 
+
+ Constants @code{strAllRight}, @code{strOutOfRange}, @code{strWrongFormat},
+and @code{strEmpty} are all valid values for @code{ConvResults}.
+@end deftp
+ 
+@deffn Procedure StrToReal @code{(VAR @var{str}: ARRAY OF CHAR; VAR @var{real}: REAL; VAR @var{res}: ConvResults)}
+This procedure converts a string to a real value.  @code{StrToReal} ignores
+any leading spaces in @var{str} and, depending on the subsequent characters
+in @var{str}, the values of @var{real} and @var{res} are set as follows:
+
+If @code{@var{res} = strAllRight}, @var{str} represents a complete signed
+real number in the range of @code{REAL}.  The value of this number is
+assigned to @var{real}.
+
+If @code{@var{res} = strOutOfRange}, @var{str} represents a complete signed
+real number, but its value is out of the range of @code{REAL}.
+@code{MAX(REAL)} or @code{MIN(REAL)} is assigned to @var{real} depending on
+the sign of the number.
+
+If @code{@var{res} = strWrongFormat}, @var{str} is not in the form of a
+complete signed real number.  The value of @var{real} is undefined.
+
+If @code{@var{res} = strEmpty}, there are no remaining characters in
+@var{str}.  The value of @var{real} is undefined.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR stringVar: ARRAY 36 OF CHAR; 
+    realVar:   REAL;
+    res:       RealStr.ConvResults;
+    
+stringVar := "   76.54321";
+RealStr.StrToReal(stringVar, realVar, res);
+   @result{} realVar = 76.54321, res = strAllRight
+
+stringVar := " 76.543E+100";
+RealStr.StrToReal(stringVar, realVar, res);
+   @result{} realVar is undefined, res = strOutOfRange
+
+stringVar := "76_54321";
+RealStr.StrToReal(stringVar, realVar, res);
+   @result{} realVar is undefined, res = strWrongFormat
+
+stringVar := "   ";
+RealStr.StrToReal(stringVar, realVar, res);
+   @result{} realVar is undefined, res = strEmpty
+@end smallexample
+
+@deffn Procedure RealToFloat @code{(VAR @var{real}: REAL; VAR @var{sigFigs}: INTEGER; VAR @var{str}: ARRAY OF CHAR)}
+@code{RealToFloat} converts the value of @var{real} to floating-point string
+format and copies the possibly truncated result to @var{str}.
+
+If the value of @var{sigFigs} is greater than 0, that number of significant
+digits is included.  Otherwise, an implementation-defined number of
+significant digits is included.  The decimal point is not included if there
+are no significant digits in the fractional part.
+
+The number is scaled with one digit in the whole number part.  A sign is
+included only for negative values.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR stringVar: ARRAY 32 OF CHAR; 
+    realVar:   REAL;
+    
+realVar := 3923009;
+RealStr.RealToFloat(realVar, 0, stringVar);
+   @result{} stringVar = "3.923009E+6"
+
+RealStr.RealToFloat(realVar, -1, stringVar);
+   @result{} stringVar = "3.923009E+6"
+
+RealStr.RealToFloat(realVar, 1, stringVar);
+   @result{} stringVar = "4E+6"
+RealStr.RealToFloat(realVar, 2, stringVar);
+   @result{} stringVar = "3.9E+6"
+RealStr.RealToFloat(realVar, 5, stringVar);
+   @result{} stringVar = "3.9230E+6"
+
+realVar := -39.23009;
+RealStr.RealToFloat(realVar, 1, stringVar);
+   @result{} stringVar = "-4E+1"
+RealStr.RealToFloat(realVar, 2, stringVar);
+   @result{} stringVar = "-3.9E+1"
+RealStr.RealToFloat(realVar, 5, stringVar);
+   @result{} stringVar = "-3.9230E+1"
+
+realVar := 0.0003923009;
+RealStr.RealToFloat(realVar, 1, stringVar);
+   @result{} stringVar = "4E-4"
+RealStr.RealToFloat(realVar, 2, stringVar);
+   @result{} stringVar = "3.9E-4"
+RealStr.RealToFloat(realVar, 5, stringVar);
+   @result{} stringVar = "3.9230E-4"
+@end smallexample
+
+@deffn Procedure RealToEng @code{(VAR @var{real}: REAL; VAR @var{sigFigs}: INTEGER; VAR @var{str}: ARRAY OF CHAR)}
+@code{RealToEng} converts the value of @var{real} to floating-point string
+format and copies the possibly truncated result to @var{str}.
+
+If the value of @var{sigFigs} is greater than 0, that number of significant
+digits is included.  Otherwise, an implementation-defined number of
+significant digits is included.  The decimal point is not included if there
+are no significant digits in the fractional part.
+
+The number is scaled with one to three digits in the whole number part and
+with an exponent that is a multiple of three.  A sign is included only for
+negative values.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR stringVar: ARRAY 32 OF CHAR; 
+    realVar:   REAL;
+    
+realVar := -3923009;
+RealStr.RealToEng(realVar, 1, stringVar);
+   @result{} stringVar = "-4E+6"
+RealStr.RealToEng(realVar, 2, stringVar);
+   @result{} stringVar = "-3.9E+6"
+RealStr.RealToEng(realVar, 5, stringVar);
+   @result{} stringVar = "-3.9230E+6" 
+
+realVar := 39.23009;
+RealStr.RealToEng(realVar, 1, stringVar);
+   @result{} stringVar = "40"
+RealStr.RealToEng(realVar, 2, stringVar);
+   @result{} stringVar = "39"
+RealStr.RealToEng(realVar, 5, stringVar);
+   @result{} stringVar = "39.230" 
+
+realVar := 0.0003923009;
+RealStr.RealToEng(realVar, 1, stringVar);
+   @result{} stringVar = "400E-6"
+RealStr.RealToEng(realVar, 2, stringVar);
+   @result{} stringVar = "390E-6"
+RealStr.RealToEng(realVar, 5, stringVar);
+   @result{} stringVar = "392.30E-6" 
+@end smallexample
+
+@deffn Procedure RealToFixed @code{(VAR @var{real}: REAL; VAR @var{place}: INTEGER; VAR @var{str}: ARRAY OF CHAR)}
+@code{RealToFixed} converts the value of @var{real} to fixed-point string
+format and copies the possibly truncated result to @var{str}.
+
+The value is rounded to the given value of @var{place} relative to the
+decimal point.  The decimal point is suppressed if @var{place} is less than
+0.
+
+The number will have at least one digit in the whole number part.  A sign is
+included only for negative values.  
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR stringVar: ARRAY 32 OF CHAR; 
+    realVar:   REAL;
+   
+realVar := 3923009;
+RealStr.RealToFixed(realVar, -5, stringVar);
+   @result{} stringVar = "3920000"  (* rounded to the ten-thousands place *)
+RealStr.RealToFixed(realVar, -2, stringVar);
+   @result{} stringVar = "3923010"  (* rounded to the tens place *)
+RealStr.RealToFixed(realVar, 1, stringVar);
+   @result{} stringVar = "3923009.0"
+RealStr.RealToFixed(realVar, 4, stringVar);
+   @result{} stringVar = "3923009.0000" 
+
+realVar := 3923.5;
+RealStr.RealToFixed(realVar, -1, stringVar);
+   @result{} stringVar = "3924"  (* rounded to the "ones" place *)
+RealStr.RealToFixed(realVar, 0, stringVar);
+   @result{} stringVar = "3924."  (* same as above, 
+                        but writes a decimal point *)
+
+realVar := -39.23009;
+RealStr.RealToFixed(realVar, 1, stringVar);
+   @result{} stringVar = "-39.2"
+RealStr.RealToFixed(realVar, 4, stringVar);
+   @result{} stringVar = "-39.2301"
+
+realVar := 0.0003923009;
+RealStr.RealToFixed(realVar, 1, stringVar);
+   @result{} stringVar = "0.0"
+RealStr.RealToFixed(realVar, 4, stringVar);
+   @result{} stringVar = "0.0004"
+@end smallexample
+
+@deffn Procedure RealToStr @code{(VAR @var{real}: REAL; VAR @var{str}: ARRAY OF CHAR)}
+@code{RealToStr} converts the value of @var{real} to string format and
+copies the possibly truncated result to @var{str}.
+
+If the sign and magnitude of @var{real} can be shown within the capacity of
+@var{str}, @code{RealToStr} behaves exactly the same as @code{RealToFixed}
+with a number of decimal places chosen to fill exactly the remainder of
+@var{str}.
+
+Otherwise, @code{RealToStr} behaves as @code{RealToFloat} with at least one
+significant digit.  The actual number of significant digits is limited to
+the number that can be included together with the sign and exponent part in
+@var{str}.  
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR str32Var: ARRAY 32 OF CHAR;
+    str10Var: ARRAY 10 OF CHAR;
+    realVar:   REAL;
+    
+realVar := 3.0;
+RealStr.RealToStr(realVar, str32Var);
+   @result{} str32Var = "3.00000000000000000000000000000"  
+RealStr.RealToStr(realVar, str10Var);
+   @result{} str10Var = "3.0000000"
+
+realVar := 3.1;
+RealStr.RealToStr(realVar, str32Var);
+   @result{} str32Var = "3.10000000000000000000000000000"  
+RealStr.RealToStr(realVar, str10Var);
+   @result{} str10Var = "3.1000000"
+
+realVar := 32923009999.;
+RealStr.RealToStr(realVar, str32Var);
+   @result{} str32Var = "3923010000.00000000000000000000"
+RealStr.RealToStr(realVar, str10Var);
+   @result{} str10Var = "3.9230E+9"
+
+realVar := -39.23009999E+30;  
+RealStr.RealToStr(realVar, str32Var);
+   @result{} str32Var = "-3.923010000000000000000000E+31"
+RealStr.RealToStr(realVar, str10Var);
+   @result{} str10Var = "-3.92E+31"
+
+realVar := 0.00032923009999;
+RealStr.RealToStr(realVar, str32Var);
+   @result{} str32Var = "0.00032923010000000000000000000"
+RealStr.RealToStr(realVar, str10Var);
+   @result{} str10Var = "3.9230E-4"
+@end smallexample
+
+@node LRealConv, LRealStr, RealStr, Real/String Conversion
+@section Module LRealConv
+@pindex LRealConv
+@cindex real conversions, low level
+@cindex converting, reals
+
+Module LRealConv provides low-level @code{LONGREAL}/string conversions.       
+
+@defvr Constant SigFigs
+A value representing the accuracy of @code{LONGREAL}s.
+@end defvr  
+ 
+@deftp {Data type} ConvResults
+@code{ConvResults} is a local equivalent to @code{ConvTypes.ConvResults}.
+This type has associated constants with the same meanings as in module
+ConvTypes (@pxref{ConvTypes})
+
+ Constants @code{strAllRight}, @code{strOutOfRange}, @code{strWrongFormat},
+and @code{strEmpty} are all valid values for @code{ConvResults}.
+@end deftp
+
+@deffn Procedure ScanReal @code{(VAR @var{inputCh}: CHAR; VAR @var{chClass}: Conv.ScanClass; VAR @var{nextState}: ConvTypes.ScanState)}
+Represents the start state of a finite state scanner for real numbers---
+assigns class of @var{inputCh} to @var{chClass} and a procedure representing
+the next state to @var{nextState} (@pxref{ConvTypes})
+@end deffn
+
+@deffn Function FormatReal @code{(VAR @var{str}: ARRAY OF CHAR): ConvResults}
+Returns the format of the string value for conversion to @code{LONGREAL}.
+@end deffn
+
+@deffn Function ValueReal @code{(VAR @var{str}: ARRAY OF CHAR): LONGREAL}
+If @var{str} is well-formed, returns the value corresponding to the real
+number represented by the string value @var{str}.  Otherwise, its behavior
+is undefined.
+@end deffn
+
+@deffn Function LengthFloatReal @code{(VAR @var{real}: LONGREAL; VAR @var{sigFigs}: INTEGER): INTEGER}
+Returns the number of characters in the floating-point string representation
+of @var{real} with @var{sigFigs} significant figures.  This value
+corresponds to the capacity of an array @var{str} which is of the minimum
+capacity needed to avoid truncation of the result in the call
+
+@code{LRealStr.RealToFloat(real,sigFigs,str)}
+@end deffn
+
+@deffn Function LengthEngReal @code{(VAR @var{real}: LONGREAL; VAR @var{sigFigs}: INTEGER): INTEGER}
+Returns the number of characters in the floating-point engineering string
+representation of @var{real} with @var{sigFigs} significant figures.  This
+value corresponds to the capacity of an array @var{str} which is of the
+minimum capacity needed to avoid truncation of the result in the call
+
+@code{LRealStr.RealToEng(real,sigFigs,str)}
+@end deffn
+
+@deffn Function LengthFixedReal @code{(VAR @var{real}: LONGREAL; VAR @var{place}: INTEGER): INTEGER}
+Returns the number of characters in the fixed-point string representation of
+@var{real} rounded to the given @var{place} relative to the decimal point.
+This value corresponds to the capacity of an array @var{str} which is of the
+minimum capacity needed to avoid truncation of the result in the call
+
+@code{LRealStr.RealToFixed(real,sigFigs,str)}
+@end deffn
+
+@deffn Function IsRConvException @code{(): BOOLEAN}
+This function returns @code{TRUE} if the current process is in the
+exceptional execution state because of the raising of the @code{LRealConv}
+exception; otherwise, it returns @code{FALSE}.
+@end deffn
+
+@node LRealStr,  , LRealConv, Real/String Conversion
+@section Module LRealStr
+@cindex real conversions, strings
+@cindex strings, real conversions
+@cindex converting, reals/strings
+
+@strong{Please note}: Because module LRealStr is very similar to module
+RealStr and in order to avoid redundancy, full descriptions of procedures
+and examples of their use are not provided in this section.  Refer back to
+module RealStr for more information (@pxref{RealStr})
+
+Module LRealStr provides real number/ string conversions for @code{LONGREAL}
+values.  Two text formats for real numbers are supported: @dfn{signed
+fixed-point real} and @dfn{signed floating-point} (@pxref{Syntax of Text
+Tokens})
+
+@deftp {Data type} ConvResults
+@code{ConvResults} is a local equivalent to @code{ConvTypes.ConvResults}.
+This type has associated constants with the same meanings as in module
+ConvTypes (@pxref{ConvTypes}) 
+
+ Constants @code{strAllRight}, @code{strOutOfRange}, @code{strWrongFormat},
+and @code{strEmpty} are all valid values for @code{ConvResults}.
+@end deftp
+ 
+@deffn Procedure StrToReal @code{(VAR @var{str}: ARRAY OF CHAR; VAR @var{real}: LONGREAL; VAR @var{res}: ConvResults)}
+This procedure converts a string to a real value.  @code{StrToReal} ignores
+any leading spaces in @var{str} and, if the subsequent characters in
+@var{str} are in the format of a signed real number, the value is assigned
+to @var{real}.  @var{res} is assigned a value indicating the format of
+@var{str}.  
+@end deffn
+
+@deffn Procedure RealToFloat @code{(VAR @var{real}: LONGREAL; VAR @var{sigFigs}: INTEGER; VAR @var{str}: ARRAY OF CHAR)}
+@code{RealToFloat} converts the value of @var{real} to floating-point string
+format, with @var{sigFigs} significant digits, and copies the possibly
+truncated result to @var{str}.
+@end deffn
+
+@deffn Procedure RealToEng @code{(VAR @var{real}: LONGREAL; VAR @var{sigFigs}: INTEGER; VAR @var{str}: ARRAY OF CHAR)}
+@code{RealToEng} converts the value of @var{real} to floating-point string
+format, with @var{sigFigs} significant digits, and copies the possibly
+truncated result to @var{str}.
+
+The number is scaled with one to three digits in the whole number part and
+with an exponent that is a multiple of three.  
+@end deffn
+
+@deffn Procedure RealToFixed @code{(VAR @var{real}: LONGREAL; VAR @var{place}: INTEGER; VAR @var{str}: ARRAY OF CHAR)}
+@code{RealToFixed} converts the value of @var{real} to fixed-point string
+format, rounded to the given value of @var{place} relative to the decimal
+point, and copies the possibly truncated result to @var{str}.
+
+The number will have at least one digit in the whole number part.  
+@end deffn
+
+@deffn Procedure RealToStr @code{(VAR @var{real}: LONGREAL; VAR @var{str}: ARRAY OF CHAR)}
+@code{RealToStr} converts the value of @var{real} to string format and
+copies the possibly truncated result to @var{str}.
+
+If the sign and magnitude of @var{real} can be shown within the capacity of
+@var{str}, @code{RealToStr} behaves exactly the same as @code{RealToFixed}
+with a number of decimal places chosen to fill exactly the remainder of
+@var{str}.
+
+Otherwise, @code{RealToStr} behaves as @code{RealToFloat} with at least one
+significant digit.  The actual number of significant digits is limited to
+the number that can be included together with the sign and exponent part in
+@var{str}.  
+@end deffn

@@ -1,0 +1,17 @@
+@node Introduction, OOC Library Overview, Top, Top
+@chapter Introduction
+
+The goal of OOC is to produce free (GPL), stand-alone (not part of an Oberon
+system), optimizing Oberon-2 compilers and libraries.  OOC stands for
+@dfn{Optimizing Oberon-2 Compiler}.  
+
+The purpose of this manual is to describe the OOC library and provide a
+reference for the use of these facilities with the OOC compiler.  There are
+also chapters discussing unique features of the OOC compiler and, in
+particular, the oo2c implementation of OOC.
+
+This manual assumes familiarity with the Oberon-2 programming language and
+basic programming concepts.  It is considered a reference as opposed to a
+tutorial, but examples will be provided to assist in understanding where
+they are appropriate. 
+

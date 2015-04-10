@@ -1,0 +1,130 @@
+Preparing Optional Packages
+===========================
+
+oo2c can utilize two add-on packages: Hans-J. Boehm's conservative
+garbage collector and GNU libtool (for support of static and shared
+libraries).  It is highly recommended to use the garbage collector.
+Note: If one of the packages is not available, configure will abort
+with an error; support for a package must explicitly disabled by
+setting --disable-gc or --disable-libs.
+
+  1. Preparing the garbage collector:
+
+     If gc is installed as a library on the system, configure will
+     detect this and use it automatically.
+
+     Otherwise, get the garbage collector sources from Boehm's server
+       http://reality.sgi.com/employees/boehm_mti/gc_source/
+     and unpack the tar file in oo2c's top-level directory.
+
+     Check the README and Makefile in the newly created subdirectory
+     `gc/', in case the gc package needs some special adjustments.
+     Note: The garbage collector subdirectory is not affected by running
+     oo2c's configure. 
+
+     oo2c's installation process will detect the gc sources.  They are
+     compiled and installed automatically.
+
+  2. Installing GNU libtool:
+
+     libtool can be obtained from any GNU server, e.g.
+       ftp://ftp.gnu.org/pub/gnu/
+     The packages's home page is
+       http://www.profitpress.com/libtool/
+
+     Follow the directions in the tar to install libtool.
+
+     oo2c's installation process will detect libtool.  It will be used
+     to create a static and, possibly, shared library with the OOC
+     standard modules.
+
+Basic Installation
+==================
+
+The simplest way to compile this package is:
+[check file PROBLEMS if it turns out to be not that simple]
+
+  1. `cd' to the directory containing the package's source code and type
+     `./configure' to configure the package for your system.  If you're
+     using `csh' on an old version of System V, you might need to type
+     `sh ./configure' instead to prevent `csh' from trying to execute
+     `configure' itself.
+
+     You must pass --disable-gc to configure, if you want to install
+     oo2c without garbage collector support, and --disable-libs, if
+     libtool is not available.
+
+     Running `configure' takes awhile.  While running, it prints some
+     messages telling which features it is checking for.
+
+  2. Type `make' to compile the package.
+
+  3. Type `make install' to install the programs and any data files and
+     documentation.  `make install-strip' will additionally remove any 
+     debug information from the installed executables.
+
+  4. You can remove the program binaries and object files from the
+     source code directory by typing `make clean'.  To also remove the
+     files that `configure' created (so you can compile the package for
+     a different kind of computer), type `make distclean'.  
+
+Compilers and Options
+=====================
+
+   Some systems require unusual options for compilation or linking that
+the `configure' script does not know about.  You can give `configure'
+initial values for variables by setting them in the environment.  Using
+a Bourne-compatible shell, you can do that on the command line like
+this:
+     CC=c89 CFLAGS=-O2 LIBS=-lposix ./configure
+
+Or on systems that have the `env' program, you can do it like this:
+     env CPPFLAGS=-I/usr/local/include LDFLAGS=-s ./configure
+
+Installation Names
+==================
+
+   By default, `make install' will install the package's files in
+`/usr/local/bin', `/usr/local/man', etc.  You can specify an
+installation prefix other than `/usr/local' by giving `configure' the
+option `--prefix=PATH'.
+
+   You can specify separate installation prefixes for
+architecture-specific files and architecture-independent files.  If you
+give `configure' the option `--exec-prefix=PATH', the package will use
+PATH as the prefix for installing programs and libraries.
+Documentation and other data files will still use the regular prefix.
+
+   In addition, if you use an unusual directory layout you can give
+options like `--bindir=PATH' to specify different values for particular
+kinds of files.  Run `configure --help' for a list of the directories
+you can set and what kinds of files go in them.
+
+Operation Controls
+==================
+
+   `configure' recognizes the following options to control how it
+operates.
+
+`--cache-file=FILE'
+     Use and save the results of the tests in FILE instead of
+     `./config.cache'.  Set FILE to `/dev/null' to disable caching, for
+     debugging `configure'.
+
+`--help'
+     Print a summary of the options to `configure', and exit.
+
+`--quiet'
+`--silent'
+`-q'
+     Do not print messages saying which checks are being made.
+
+`--srcdir=DIR'
+     Look for the package's source code in directory DIR.  Usually
+     `configure' can determine that directory automatically.
+
+`--version'
+     Print the version of Autoconf used to generate the `configure'
+     script, and exit.
+
+`configure' also accepts some other, not widely useful, options.

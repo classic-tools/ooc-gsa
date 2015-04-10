@@ -1,0 +1,59 @@
+.TH oob 1
+.UC 5
+.SH NAME
+oob \- OOC symbol file browser
+.SH SYNOPSIS
+.B oob
+.RI [ options ]
+.I <module-name>
+.SH DESCRIPTION
+.B oob
+displays the interface definition of a module as seen by the compiler.
+It accepts a single argument: the name of a module or a file name,
+which is stripped of its directory part and any suffix.  The symbol
+file for the resulting module name is located using the 
+.B PATHS
+sections from the initialization files.  Once found, the contents of
+the symbol file are written to
+.I stdout
+in a format resembling that of a module.  Note that the interface
+definition is not derived from the module's source code, but rather
+reconstructed from the module's symbol file.  In particular, the order
+of declarations and any comments in the original source file are not
+preserved.
+
+.SH OPTIONS
+.TP
+.B --extended, -x
+For record types, include the names of the base types, the inherited
+records fields, and the inherited type-bound procedures in the output.
+.TP
+.B --config <file>
+Use given file name for the primary initialization file.  An empty
+name disables parsing of the default initialization file.
+.TP
+.B --include-config <file>
+Include the given initialization file in addition to the default
+initialization file.
+.TP
+.B --version
+Write compiler version and exit.
+.TP
+.B --help, -h
+Write short usage summary and exit.
+.SH ENVIRONMENT
+.I OOC_HOME
+holds the name of the primary initialization file.
+.SH FILES
+.nf
+.ta \w'module.SymXXXXX'u
+module.Sym		symbol file
+.Sp
+.fi
+.SH DIAGNOSTICS
+Exit status is 0 on success, and 1 if a symbol file is missing or
+malformed.
+.SH SEE ALSO
+oo2c(1), OOC Reference Manual
+.SH AUTHOR
+Michael van Acken <acken@informatik.uni-kl.de>

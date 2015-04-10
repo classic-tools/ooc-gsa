@@ -1,0 +1,50 @@
+#	$Id: THISDIR,v 1.7 1996/05/20 15:10:15 oberon2 Exp $	
+Maintainer: Juergen Zimmermann
+
+This directory contains the modules that realise the target
+machine independent optimizations of the GSA code representation.
+
+AlgebraicTransformations.Mod
+  Perform algebraic transformations on the GSA code.
+
+CopyPropagation.Mod
+  Propagates all 'copy' statements through the GSA code 
+  and deletes them after propagation.
+
+ConstPropagation.Mod
+  Constant folding procedure `TryConstantFolding'.
+  Constant propagation and unreadchable code elimination.
+
+DeadCodeElimination.Mod
+  Eliminates dead code for a given region.
+
+DependenceAnalysis.Mod
+  Analyse dependencies between accesses and updates to `$store',
+  try to remove most of them. Also introduce explicit dependence
+  information for the so called `Anti-Dependencies'.
+
+
+GuardCond.Mod
+  Calculates some invariants of control flow through GSA code.  These 
+  assertions come in two forms: either `if region A is executed, then
+  region B is also executed' or `if region A is executed, then control
+  does not pass through region B'.  Used by GateReduction, GuardPropagation,
+  and when detecting uses of undefined variables.
+
+GateReduction.Mod
+  Uses control flow information provided by GuardCond to replace
+  references to gates by references to a single gate operand.
+
+GuardPropagation.Mod
+  Replaces occurences of guard operands by constants inside the guarded
+  region. 
+
+SimpleScheduler.Mod
+  Simple instruction scheduling.
+
+ValueNumbering.Mod
+  Common subexpression elimination.
+
+Worklist.Mod
+  Simple worklist implementation for Data.Info which is used in some
+  of the optimizer modules.

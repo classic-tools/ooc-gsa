@@ -1,0 +1,736 @@
+This is Info file OOCref.info, produced by Makeinfo version 1.68 from
+the input file OOCref.texinfo.
+
+   This file documents the Optimizing Oberon-2 Compiler (OOC) and its
+library.
+
+   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
+Library Reference Manual', for Version 1.4.5 or later of oo2c.
+
+   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
+1999 Michael van Acken
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the text of the translation of the section
+entitled "GNU General Public License" must be approved for accuracy by
+the Foundation.
+
+
+File: OOCref.info,  Node: Copying,  Next: Concept Index,  Prev: OOC Error Messages,  Up: Top
+
+Copying
+*******
+
+   For information regarding the `GNU General Public License', write to
+the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+02111-1307, USA.
+
+
+File: OOCref.info,  Node: Concept Index,  Next: Type Index,  Prev: Copying,  Up: Top
+
+Concept Index
+*************
+
+* Menu:
+
+* 64-bit data types:                     Additional Data Types.
+* abstract class:                        ABSTRACT.
+* abstract class (definition):           Definition of Terms.
+* ABSTRACT flag:                         ABSTRACT.
+* abstract method:                       ABSTRACT.
+* abstract riders <1>:                   LongRider.
+* abstract riders:                       Rider.
+* ADDRESS:                               Additional Data Types.
+* arbitrary precision integers:          Arbitrary Precision Integers.
+* ASCII:                                 Ascii.
+* ASCII characters:                      Ascii.
+* ASSERT:                                Specifications.
+* Assertions:                            Predefined Pragma Variables.
+* backspace:                             Ascii.
+* bell:                                  Ascii.
+* binary input:                          BinaryRider.
+* binary readers:                        Class Reader (BinaryRider).
+* binary riders, connecting to channels: Connecting BinaryRiders.
+* binary riders, constants:              Summary of BinaryRider Constants.
+* binary writers:                        Class Writer (BinaryRider).
+* browser:                               oob options.
+* carriage return:                       Ascii.
+* CaseSelectCheck:                       Predefined Pragma Variables.
+* channels:                              Channel.
+* channels, abstract class:              Abstract Class Channel.
+* channels, base type:                   Abstract Class Channel.
+* channels, binary input:                BinaryRider.
+* channels, constants:                   Summary of Channel Constants.
+* channels, error:                       Err.
+* channels, in:                          In.
+* channels, opening:                     Locators & Opening Channels.
+* channels, out:                         Out.
+* channels, procedures:                  Channel Procedures.
+* channels, standard:                    StdChannels.
+* channels, text input:                  Text Mappers.
+* character arrays:                      Strings.
+* character classification:              CharClass.
+* character testing:                     CharClass.
+* character types:                       Additional Data Types.
+* characters <1>:                        Ascii.
+* characters:                            CharClass.
+* class (definition):                    Definition of Terms.
+* classification of characters:          CharClass.
+* clock, system:                         SysClock.
+* code optimization:                     oo2c std options.
+* command line options:                  Invoking Programs.
+* compilation:                           oo2c primary operations.
+* COMPILER:                              Predefined Pragma Variables.
+* compiler operations:                   oo2c primary operations.
+* COMPILER_MAJOR:                        Predefined Pragma Variables.
+* COMPILER_MINOR:                        Predefined Pragma Variables.
+* COMPILER_VERSION:                      Predefined Pragma Variables.
+* complex numbers:                       Complex Numbers.
+* COMPLEX, mathematical functions:       Complex Numbers.
+* conformant mode:                       Non-conformant Mode.
+* ConformantMode:                        Predefined Pragma Variables.
+* connecting binary riders to channels:  Connecting BinaryRiders.
+* connecting text riders to channels:    Connecting TextRiders.
+* connecting unicode riders to channels: Connecting UnicodeRiders.
+* constants for binary riders:           Summary of BinaryRider Constants.
+* constants for text riders:             Summary of TextRider Constants.
+* constants for unicode riders:          Summary of UnicodeRider Constants.
+* constants, for files:                  Summary of File Constants.
+* control character:                     CharClass.
+* conventions:                           Standards.
+* converting, integers:                  IntConv.
+* converting, integers/strings:          IntStr.
+* converting, reals <1>:                 LRealConv.
+* converting, reals:                     RealConv.
+* converting, reals/strings <1>:         LRealStr.
+* converting, reals/strings:             RealStr.
+* converting, types:                     ConvTypes.
+* data type (definition):                Definition of Terms.
+* date conversions:                      Calendar.
+* days, julian:                          JulianDay.
+* DEC:                                   Non-conformant Mode.
+* delete:                                Ascii.
+* digit character:                       CharClass.
+* DIV:                                   Specifications.
+* Emacs:                                 Emacs Mode.
+* empty string:                          Specifications.
+* end of line character:                 CharClass.
+* error filter:                          ooef options.
+* error message format:                  ooef options.
+* error messages:                        OOC Error Messages.
+* escape:                                Ascii.
+* exception examples:                    Exception Examples.
+* exception facilities:                  Exception Facilities.
+* exception handling:                    Exception Handling.
+* exception sources, predefined:         Predefined Exception Sources.
+* external code:                         Using Foreign Code.
+* file finder:                           oowhereis options.
+* file paths:                            Managing Files.
+* files:                                 Files.
+* files, class:                          Class File.
+* files, constants:                      Summary of File Constants.
+* files, features:                       Class File.
+* files, locators:                       File Locators.
+* files, methods:                        Class File.
+* files, other operations:               Other File Operations.
+* files, reader:                         Class Reader (for File).
+* files, writer:                         Class Writer (for File).
+* FOREIGN module:                        FOREIGN Modules.
+* foreign modules:                       Using Foreign Code.
+* form feed:                             Ascii.
+* FunctResult:                           Predefined Pragma Variables.
+* garbage collector:                     Preparing for Installation.
+* gc:                                    Preparing for Installation.
+* HALT:                                  Specifications.
+* hexadecimal constants:                 Specifications.
+* horizontal tabulator:                  Ascii.
+* i/o concepts:                          I/O Concepts.
+* identifier length:                     Specifications.
+* IdentLength:                           Predefined Pragma Variables.
+* illegal operations:                    Illegal Operations.
+* INC:                                   Non-conformant Mode.
+* IndexCheck:                            Predefined Pragma Variables.
+* initialization file:                   Initialization Files.
+* Initialize:                            Predefined Pragma Variables.
+* IntDivCheck:                           Predefined Pragma Variables.
+* integer conversions, low level:        IntConv.
+* integer conversions, strings:          IntStr.
+* integers, arbitrary precision:         Arbitrary Precision Integers.
+* INTERFACE module:                      INTERFACE Modules.
+* interfacing with C code:               System Flags.
+* iso-latin-1:                           TextRider.
+* julian days:                           JulianDay.
+* language extensions:                   Language Extensions.
+* letter character:                      CharClass.
+* library:                               oo2c libraries.
+* libtool:                               Preparing for Installation.
+* line feed:                             Ascii.
+* locators:                              Locators & Opening Channels.
+* locators, for files:                   File Locators.
+* long strings:                          Additional Data Types.
+* LONGCHAR:                              Additional Data Types.
+* LONGCOMPLEX, mathematical functions:   Complex Numbers.
+* LONGREAL, low-level properties:        Low-level Numeric Properties.
+* LONGREAL, mathematical functions:      Mathematical Functions.
+* lower-case character:                  CharClass.
+* make:                                  oo2c primary operations.
+* makefile:                              oo2c primary operations.
+* mappers:                               Riders and Mappers.
+* mappers, standard:                     Standard Mappers.
+* mappers, text:                         Text Mappers.
+* mathematical functions <1>:            Mathematical Functions.
+* mathematical functions:                Complex Numbers.
+* method (definition):                   Definition of Terms.
+* MOD:                                   Specifications.
+* naming conventions:                    Standards.
+* NEW:                                   Specifications.
+* NO_COPY flag:                          NO_COPY.
+* non-conformant mode:                   Non-conformant Mode.
+* numeric character:                     CharClass.
+* Oberon-2 major mode:                   Emacs Mode.
+* oberon2.el:                            Emacs Mode.
+* object (definition):                   Definition of Terms.
+* object-oriented terms:                 Definition of Terms.
+* oo2c limitations:                      Limitations of oo2c.
+* oo2c, C compiler invocation:           oo2c C options.
+* oo2c, command line options:            oo2c options.
+* oo2c, configuration:                   Installing oo2c.
+* oo2c, debugging options:               oo2c debugging options.
+* oo2c, input files:                     oo2c files.
+* oo2c, installation:                    Installing oo2c.
+* oo2c, installation flags:              Compilers and Options.
+* oo2c, installation paths:              Installation Names.
+* oo2c, installing garbage collector:    Preparing for Installation.
+* oo2c, installing libraries:            oo2c libraries.
+* oo2c, installing libtool:              Preparing for Installation.
+* oo2c, installing with run-time checks: Installing with Run-Time Checks.
+* oo2c, intermediate files:              oo2c files.
+* oo2c, output files:                    oo2c files.
+* oo2c, system files:                    oo2c files.
+* OOC_EXTENSIONS flag:                   Language Extensions.
+* operations, on files:                  Other File Operations.
+* option variable:                       Options and Pragmas.
+* OPTIONS:                               Options and Pragmas.
+* OverflowCheck:                         Predefined Pragma Variables.
+* pragma variable:                       Options and Pragmas.
+* PRAGMAS:                               Options and Pragmas.
+* predefined pragmas:                    Predefined Pragma Variables.
+* predicates on characters:              CharClass.
+* procedure redefinition:                Non-conformant Mode.
+* procedure values:                      Non-conformant Mode.
+* program arguments:                     ProgramArgs.
+* program arguments channel:             ProgramArgs.
+* random numbers:                        Random Numbers.
+* RangeCheck:                            Predefined Pragma Variables.
+* reader, for files:                     Class Reader (for File).
+* readers, abstract class:               Abstract Class Reader.
+* readers, abstract text <1>:            Class Reader (LongRider).
+* readers, abstract text:                Class Reader (Rider).
+* readers, base type:                    Abstract Class Reader.
+* readers, binary:                       Class Reader (BinaryRider).
+* readers, text:                         Class Reader (TextRider).
+* readers, unicode:                      Class Reader (UnicodeRider).
+* real conversions, low level <1>:       LRealConv.
+* real conversions, low level:           RealConv.
+* real conversions, strings <1>:         RealStr.
+* real conversions, strings:             LRealStr.
+* REAL, low-level properties:            Low-level Numeric Properties.
+* REAL, mathematical functions:          Mathematical Functions.
+* RealDivCheck:                          Predefined Pragma Variables.
+* RealOverflowCheck:                     Predefined Pragma Variables.
+* record (definition):                   Definition of Terms.
+* redirection table:                     Managing Files.
+* riders:                                Riders and Mappers.
+* riders, abstract <1>:                  Rider.
+* riders, abstract:                      LongRider.
+* riders, binary:                        BinaryRider.
+* riders, long:                          LongRider.
+* riders, text <1>:                      Text Mappers.
+* riders, text:                          TextRider.
+* riders, unicode:                       UnicodeRider.
+* run-time checks:                       Illegal Operations.
+* runtime exception numbers:             Runtime Exception Numbers.
+* scanners, abstract text <1>:           Class Scanner (Rider).
+* scanners, abstract text:               Class Scanner (LongRider).
+* scanners, text:                        Class Scanner (TextRider).
+* scanners, unicode:                     Class Scanner (UnicodeRider).
+* set types:                             Additional Data Types.
+* shared library:                        oo2c libraries.
+* signals:                               Signal.
+* size of basic types:                   Specifications.
+* source code analysis:                  oocn options.
+* source code transformation:            oocn options.
+* StackCheck:                            Predefined Pragma Variables.
+* standard channels:                     StdChannels.
+* standard error channel:                StdChannels.
+* standard input channel:                StdChannels.
+* standard mappers:                      Standard Mappers.
+* standard output channel:               StdChannels.
+* standards:                             Standards.
+* static library:                        oo2c libraries.
+* string constants:                      Additional Data Types.
+* string conversion types:               ConvTypes.
+* string length:                         Specifications.
+* string terminator character:           Strings.
+* StringLength:                          Predefined Pragma Variables.
+* strings:                               Strings.
+* strings, capitalizing:                 Misc. Strings Procedures.
+* strings, comparing:                    Compare & Searching Strings.
+* strings, concatenation:                Copying and Concatenation.
+* strings, copying:                      Copying and Concatenation.
+* strings, integer conversions:          IntStr.
+* strings, length:                       Misc. Strings Procedures.
+* strings, long <1>:                     Strings.
+* strings, long:                         Additional Data Types.
+* strings, real conversions <1>:         LRealStr.
+* strings, real conversions:             RealStr.
+* strings, searching:                    Compare & Searching Strings.
+* symbol file:                           oob options.
+* syntax for text tokens:                Syntax of Text Tokens.
+* system flags:                          System Flags.
+* SYSTEM.MOVE:                           Specifications.
+* TARGET_ADDRESS:                        Predefined Pragma Variables.
+* TARGET_ARCH:                           Predefined Pragma Variables.
+* TARGET_ARCH_MINOR:                     Predefined Pragma Variables.
+* TARGET_BYTE_ORDER:                     Predefined Pragma Variables.
+* TARGET_INTEGER:                        Predefined Pragma Variables.
+* TARGET_OS:                             Predefined Pragma Variables.
+* text (unicode) riders, connecting to channels: Connecting UnicodeRiders.
+* text (unicode) riders, constants:      Summary of UnicodeRider Constants.
+* text input:                            Text Mappers.
+* text readers:                          Class Reader (TextRider).
+* text readers, abstract <1>:            Class Reader (Rider).
+* text readers, abstract:                Class Reader (LongRider).
+* text readers, long <1>:                Class Reader (LongRider).
+* text readers, long:                    Class Reader (UnicodeRider).
+* text riders, connecting to channels:   Connecting TextRiders.
+* text riders, constants:                Summary of TextRider Constants.
+* text scanners:                         Class Scanner (TextRider).
+* text scanners, abstract <1>:           Class Scanner (Rider).
+* text scanners, abstract:               Class Scanner (LongRider).
+* text scanners, long <1>:               Class Scanner (UnicodeRider).
+* text scanners, long:                   Class Scanner (LongRider).
+* text tokens, syntax:                   Syntax of Text Tokens.
+* text writers:                          Class Writer (TextRider).
+* text writers, abstract <1>:            Class Writer (Rider).
+* text writers, abstract:                Class Writer (LongRider).
+* text writers, long:                    Class Writer (UnicodeRider).
+* time conversions:                      Calendar.
+* time intervals:                        Time.
+* time stamps:                           Time.
+* TypeGuard:                             Predefined Pragma Variables.
+* unicode <1>:                           UnicodeRider.
+* unicode:                               Additional Data Types.
+* unicode (text) riders, connecting to channels: Connecting UnicodeRiders.
+* unicode (text) riders, constants:      Summary of UnicodeRider Constants.
+* upper-case character:                  CharClass.
+* vertical tabulator:                    Ascii.
+* Warnings:                              Predefined Pragma Variables.
+* whitespace character:                  CharClass.
+* WITH:                                  Non-conformant Mode.
+* writer, for files:                     Class Writer (for File).
+* writers, abstract class:               Abstract Class Writer.
+* writers, abstract text <1>:            Class Writer (LongRider).
+* writers, abstract text:                Class Writer (Rider).
+* writers, base type:                    Abstract Class Writer.
+* writers, binary:                       Class Writer (BinaryRider).
+* writers, text:                         Class Writer (TextRider).
+* writers, unicode:                      Class Writer (UnicodeRider).
+* zero-length arrays:                    Specifications.
+
+
+File: OOCref.info,  Node: Type Index,  Next: Procedure Index,  Prev: Concept Index,  Up: Top
+
+Type Index
+**********
+
+* Menu:
+
+* Channel <1>:                           Abstract Class Channel.
+* Channel:                               ProgramArgs.
+* CompareResults:                        Compare & Searching Strings.
+* COMPLEX:                               Complex Numbers.
+* ConvResults <1>:                       ConvTypes.
+* ConvResults <2>:                       IntConv.
+* ConvResults <3>:                       IntStr.
+* ConvResults <4>:                       RealConv.
+* ConvResults <5>:                       RealStr.
+* ConvResults <6>:                       LRealConv.
+* ConvResults:                           LRealStr.
+* DateTime:                              SysClock.
+* File <1>:                              Class File.
+* File:                                  OakFiles.
+* FileDesc:                              OakFiles.
+* Integer:                               Arbitrary Precision Integers.
+* Interval:                              Time.
+* LONGCOMPLEX:                           Complex Numbers.
+* LongString <1>:                        Class Scanner (UnicodeRider).
+* LongString:                            Class Scanner (LongRider).
+* Modes:                                 Low-level Numeric Properties.
+* Number:                                Exception Facilities.
+* Reader <1>:                            Class Reader (for File).
+* Reader <2>:                            Class Reader (TextRider).
+* Reader <3>:                            Class Reader (UnicodeRider).
+* Reader <4>:                            Class Reader (LongRider).
+* Reader <5>:                            Class Reader (BinaryRider).
+* Reader <6>:                            Class Reader (Rider).
+* Reader:                                Abstract Class Reader.
+* Rider:                                 OakFiles.
+* ScanClass:                             ConvTypes.
+* Scanner <1>:                           Class Scanner (LongRider).
+* Scanner <2>:                           Class Scanner (Rider).
+* Scanner <3>:                           Class Scanner (TextRider).
+* Scanner:                               Class Scanner (UnicodeRider).
+* ScanState:                             ConvTypes.
+* SigHandler:                            Signal.
+* SigNumber:                             Signal.
+* Source:                                Exception Facilities.
+* String <1>:                            Class Scanner (TextRider).
+* String:                                Class Scanner (Rider).
+* TimeStamp:                             Time.
+* Writer <1>:                            Class Writer (LongRider).
+* Writer <2>:                            Class Writer (TextRider).
+* Writer <3>:                            Class Writer (BinaryRider).
+* Writer <4>:                            Class Writer (Rider).
+* Writer <5>:                            Class Writer (UnicodeRider).
+* Writer <6>:                            Abstract Class Writer.
+* Writer:                                Class Writer (for File).
+
+
+File: OOCref.info,  Node: Procedure Index,  Next: Variable & Constant Index,  Prev: Type Index,  Up: Top
+
+Procedure Index
+***************
+
+* Menu:
+
+* abs:                                   Complex Numbers.
+* Abs:                                   Arbitrary Precision Integers.
+* abs:                                   Complex Numbers.
+* ACKNOWLEDGE:                           Exception Facilities.
+* add:                                   Complex Numbers.
+* AllocateSource:                        Exception Facilities.
+* Append <1>:                            Copying and Concatenation.
+* Append:                                OakStrings.
+* arccos <1>:                            Complex Numbers.
+* arccos <2>:                            OakMath and OakMathL.
+* arccos <3>:                            Mathematical Functions.
+* arccos <4>:                            Complex Numbers.
+* arccos <5>:                            Mathematical Functions.
+* arccos:                                OakMath and OakMathL.
+* arccosh:                               OakMath and OakMathL.
+* arcsin <1>:                            Mathematical Functions.
+* arcsin <2>:                            Complex Numbers.
+* arcsin <3>:                            OakMath and OakMathL.
+* arcsin <4>:                            Complex Numbers.
+* arcsin <5>:                            Mathematical Functions.
+* arcsin:                                OakMath and OakMathL.
+* arcsinh:                               OakMath and OakMathL.
+* arctan <1>:                            Complex Numbers.
+* arctan <2>:                            Mathematical Functions.
+* arctan <3>:                            Complex Numbers.
+* arctan <4>:                            Mathematical Functions.
+* arctan:                                OakMath and OakMathL.
+* arctan2:                               OakMath and OakMathL.
+* arctanh:                               OakMath and OakMathL.
+* arg:                                   Complex Numbers.
+* Assign:                                Copying and Concatenation.
+* Base:                                  OakFiles.
+* Bool <1>:                              In.
+* Bool:                                  Out.
+* CanAppendAll:                          Copying and Concatenation.
+* CanAssignAll:                          Copying and Concatenation.
+* CanConcatAll:                          Copying and Concatenation.
+* CanDeleteAll:                          Copying and Concatenation.
+* CanExtractAll:                         Copying and Concatenation.
+* CanGetClock:                           SysClock.
+* CanInsertAll:                          Copying and Concatenation.
+* CanReplaceAll:                         Copying and Concatenation.
+* CanSetClock:                           SysClock.
+* Cap:                                   OakStrings.
+* Capitalize:                            Misc. Strings Procedures.
+* Char <1>:                              OakOut.
+* Char <2>:                              OakIn.
+* Char <3>:                              Out.
+* Char:                                  In.
+* ClearError <1>:                        In.
+* ClearError:                            Out.
+* Close:                                 OakFiles.
+* CMPLX:                                 Complex Numbers.
+* Compare <1>:                           Arbitrary Precision Integers.
+* Compare:                               Compare & Searching Strings.
+* Concat:                                Copying and Concatenation.
+* conj:                                  Complex Numbers.
+* ConnectReader <1>:                     Connecting UnicodeRiders.
+* ConnectReader <2>:                     Connecting BinaryRiders.
+* ConnectReader:                         Connecting TextRiders.
+* ConnectScanner <1>:                    Connecting UnicodeRiders.
+* ConnectScanner:                        Connecting TextRiders.
+* ConnectWriter <1>:                     Connecting TextRiders.
+* ConnectWriter <2>:                     Connecting BinaryRiders.
+* ConnectWriter:                         Connecting UnicodeRiders.
+* ConvertFromString:                     Arbitrary Precision Integers.
+* ConvertToString:                       Arbitrary Precision Integers.
+* Copy:                                  Complex Numbers.
+* cos <1>:                               Mathematical Functions.
+* cos <2>:                               Complex Numbers.
+* cos <3>:                               OakMath and OakMathL.
+* cos <4>:                               Complex Numbers.
+* cos <5>:                               OakMath and OakMathL.
+* cos:                                   Mathematical Functions.
+* cosh:                                  OakMath and OakMathL.
+* currentMode:                           Low-level Numeric Properties.
+* CurrentNumber:                         Exception Facilities.
+* DateToDays:                            JulianDay.
+* DateToJD:                              JulianDay.
+* DateToTJD:                             JulianDay.
+* DayOfWeek:                             Calendar.
+* DayOfYear:                             Calendar.
+* DaysPerMonth:                          Calendar.
+* DaysToDate:                            JulianDay.
+* Delete <1>:                            OakFiles.
+* Delete <2>:                            Copying and Concatenation.
+* Delete <3>:                            OakStrings.
+* Delete:                                Copying and Concatenation.
+* Difference:                            Arbitrary Precision Integers.
+* Digits10Of:                            Arbitrary Precision Integers.
+* div:                                   Complex Numbers.
+* Done <1>:                              Out.
+* Done:                                  In.
+* Entier:                                Arbitrary Precision Integers.
+* Equal:                                 Compare & Searching Strings.
+* ErrorDescr <1>:                        Channel Procedures.
+* ErrorDescr:                            Other File Operations.
+* Exists:                                Other File Operations.
+* exp <1>:                               Complex Numbers.
+* exp <2>:                               Mathematical Functions.
+* exp <3>:                               OakMath and OakMathL.
+* exp:                                   Mathematical Functions.
+* exponent:                              Low-level Numeric Properties.
+* Externalize:                           Arbitrary Precision Integers.
+* Extract <1>:                           OakStrings.
+* Extract:                               Copying and Concatenation.
+* Factorial:                             Arbitrary Precision Integers.
+* FindDiff:                              Compare & Searching Strings.
+* FindNext:                              Compare & Searching Strings.
+* FindPrev:                              Compare & Searching Strings.
+* Float:                                 Arbitrary Precision Integers.
+* Flush:                                 Out.
+* FormatInt:                             IntConv.
+* FormatReal <1>:                        RealConv.
+* FormatReal:                            LRealConv.
+* fraction:                              Low-level Numeric Properties.
+* fractpart:                             Low-level Numeric Properties.
+* GCD:                                   Arbitrary Precision Integers.
+* GetClock:                              SysClock.
+* GetDate:                               OakFiles.
+* GetMessage:                            Exception Facilities.
+* GetModTime:                            Other File Operations.
+* GetSeed:                               Random Numbers.
+* GetTimeStamp:                          Calendar.
+* Hex <1>:                               Out.
+* Hex:                                   In.
+* Identifier:                            In.
+* ImagPart:                              Complex Numbers.
+* InitInterval:                          Time.
+* InitTimeStamp:                         Time.
+* Insert <1>:                            Copying and Concatenation.
+* Insert:                                OakStrings.
+* Int <1>:                               OakOut.
+* Int <2>:                               In.
+* Int <3>:                               OakIn.
+* Int:                                   Out.
+* Internalize:                           Arbitrary Precision Integers.
+* intpart:                               Low-level Numeric Properties.
+* IntToStr:                              IntStr.
+* IsCMathException:                      Complex Numbers.
+* IsControl:                             CharClass.
+* IsEOL:                                 CharClass.
+* IsExceptionalExecution:                Exception Facilities.
+* IsInfinity:                            Low-level Numeric Properties.
+* IsIntConvException:                    IntConv.
+* IsLeapYear:                            Calendar.
+* IsLetter:                              CharClass.
+* IsLower:                               CharClass.
+* IsLowException:                        Low-level Numeric Properties.
+* IsNaN:                                 Low-level Numeric Properties.
+* IsNumeric:                             CharClass.
+* IsRConvException <1>:                  RealConv.
+* IsRConvException:                      LRealConv.
+* IsRMathException:                      Mathematical Functions.
+* IsUpper:                               CharClass.
+* IsValidDateTime:                       SysClock.
+* IsWhiteSpace:                          CharClass.
+* JDToDate:                              JulianDay.
+* Length <1>:                            OakFiles.
+* Length <2>:                            OakStrings.
+* Length:                                Misc. Strings Procedures.
+* LengthEngReal <1>:                     LRealConv.
+* LengthEngReal:                         RealConv.
+* LengthFixedReal <1>:                   LRealConv.
+* LengthFixedReal:                       RealConv.
+* LengthFloatReal <1>:                   RealConv.
+* LengthFloatReal:                       LRealConv.
+* LengthInt:                             IntConv.
+* Line:                                  In.
+* ln:                                    Complex Numbers.
+* Ln <1>:                                Out.
+* Ln:                                    OakOut.
+* ln <1>:                                OakMath and OakMathL.
+* ln:                                    Mathematical Functions.
+* log:                                   OakMath and OakMathL.
+* Long:                                  Arbitrary Precision Integers.
+* LongInt <1>:                           OakIn.
+* LongInt <2>:                           In.
+* LongInt:                               Out.
+* LongReal <1>:                          OakOut.
+* LongReal <2>:                          OakIn.
+* LongReal <3>:                          Out.
+* LongReal:                              In.
+* LongRealEng:                           Out.
+* LongRealFix:                           Out.
+* MakeLocalTime:                         SysClock.
+* Map:                                   Signal.
+* mul:                                   Complex Numbers.
+* Name:                                  OakIn.
+* New <1>:                               OakFiles.
+* New:                                   File Locators.
+* Odd:                                   Arbitrary Precision Integers.
+* Old <1>:                               File Locators.
+* Old:                                   OakFiles.
+* Open <1>:                              OakIn.
+* Open:                                  OakOut.
+* polarToComplex:                        Complex Numbers.
+* POPCONTEXT:                            Exception Facilities.
+* Pos <1>:                               OakStrings.
+* Pos:                                   OakFiles.
+* power <1>:                             OakMath and OakMathL.
+* power <2>:                             Complex Numbers.
+* power:                                 Mathematical Functions.
+* Power:                                 Arbitrary Precision Integers.
+* pred:                                  Low-level Numeric Properties.
+* Product:                               Arbitrary Precision Integers.
+* Purge:                                 OakFiles.
+* PUSHCONTEXT:                           Exception Facilities.
+* PutSeed:                               Random Numbers.
+* QuoRem:                                Arbitrary Precision Integers.
+* Quotient:                              Arbitrary Precision Integers.
+* Raise:                                 Signal.
+* RAISE:                                 Exception Facilities.
+* Random:                                Random Numbers.
+* Read:                                  OakFiles.
+* ReadBool:                              OakFiles.
+* ReadBytes:                             OakFiles.
+* ReadInt:                               OakFiles.
+* ReadLInt:                              OakFiles.
+* ReadLReal:                             OakFiles.
+* ReadNum:                               OakFiles.
+* ReadReal:                              OakFiles.
+* ReadSet:                               OakFiles.
+* ReadString:                            OakFiles.
+* Real <1>:                              OakOut.
+* Real <2>:                              OakIn.
+* Real <3>:                              Out.
+* Real:                                  In.
+* RealEng:                               Out.
+* RealFix:                               Out.
+* RealPart:                              Complex Numbers.
+* RealToEng <1>:                         LRealStr.
+* RealToEng:                             RealStr.
+* RealToFixed <1>:                       LRealStr.
+* RealToFixed:                           RealStr.
+* RealToFloat <1>:                       LRealStr.
+* RealToFloat:                           RealStr.
+* RealToStr <1>:                         RealStr.
+* RealToStr:                             LRealStr.
+* Register:                              OakFiles.
+* Remainder:                             Arbitrary Precision Integers.
+* Rename:                                OakFiles.
+* Replace <1>:                           OakStrings.
+* Replace:                               Copying and Concatenation.
+* RETRY:                                 Exception Facilities.
+* RND:                                   Random Numbers.
+* round <1>:                             OakMath and OakMathL.
+* round <2>:                             Mathematical Functions.
+* round <3>:                             OakMath and OakMathL.
+* round:                                 Low-level Numeric Properties.
+* scalarMult:                            Complex Numbers.
+* scale:                                 Low-level Numeric Properties.
+* ScanInt:                               IntConv.
+* ScanReal <1>:                          RealConv.
+* ScanReal:                              LRealConv.
+* Set <1>:                               In.
+* Set <2>:                               Out.
+* Set:                                   OakFiles.
+* SetClock:                              SysClock.
+* SetGregorianStart:                     JulianDay.
+* SetHandler:                            Signal.
+* SetLocalTime:                          Calendar.
+* setMode:                               Low-level Numeric Properties.
+* SetModTime:                            Other File Operations.
+* SetReader:                             In.
+* SetTimeStamp:                          Calendar.
+* SetUTC:                                Calendar.
+* SetWriter:                             Out.
+* Short:                                 Arbitrary Precision Integers.
+* ShortInt <1>:                          In.
+* ShortInt:                              Out.
+* Sign:                                  Arbitrary Precision Integers.
+* sign:                                  Low-level Numeric Properties.
+* sin <1>:                               OakMath and OakMathL.
+* sin <2>:                               Complex Numbers.
+* sin:                                   Mathematical Functions.
+* sinh:                                  OakMath and OakMathL.
+* sqrt <1>:                              OakMath and OakMathL.
+* sqrt <2>:                              Complex Numbers.
+* sqrt:                                  Mathematical Functions.
+* String <1>:                            In.
+* String <2>:                            OakIn.
+* String <3>:                            Out.
+* String:                                OakOut.
+* StrToInt:                              IntStr.
+* StrToReal <1>:                         LRealStr.
+* StrToReal:                             RealStr.
+* StrToTime:                             Calendar.
+* sub:                                   Complex Numbers.
+* succ:                                  Low-level Numeric Properties.
+* Sum:                                   Arbitrary Precision Integers.
+* synthesize:                            Low-level Numeric Properties.
+* tan <1>:                               Mathematical Functions.
+* tan <2>:                               Complex Numbers.
+* tan <3>:                               OakMath and OakMathL.
+* tan:                                   Mathematical Functions.
+* tanh:                                  OakMath and OakMathL.
+* ThisDigit10:                           Arbitrary Precision Integers.
+* TimeToStr:                             Calendar.
+* TJDToDate:                             JulianDay.
+* Tmp:                                   File Locators.
+* trunc:                                 Low-level Numeric Properties.
+* ulp:                                   Low-level Numeric Properties.
+* ValueInt:                              IntConv.
+* ValueReal <1>:                         RealConv.
+* ValueReal:                             LRealConv.
+* WeekNumber:                            Calendar.
+* Write:                                 OakFiles.
+* WriteBool:                             OakFiles.
+* WriteBytes:                            OakFiles.
+* WriteInt:                              OakFiles.
+* WriteLInt:                             OakFiles.
+* WriteLReal:                            OakFiles.
+* WriteNum:                              OakFiles.
+* WriteReal:                             OakFiles.
+* WriteSet:                              OakFiles.
+* WriteString:                           OakFiles.
+

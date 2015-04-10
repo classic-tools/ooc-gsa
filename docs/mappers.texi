@@ -1,0 +1,3266 @@
+@node Standard Mappers, Standard I/O, Channels, I/O Subsystem
+@section Standard Mappers
+@cindex standard mappers
+@cindex mappers, standard
+
+Mappers are high-level riders, which are used to translate between a
+sequence of data items and an uninterpreted sequence of bytes (@pxref{Riders
+and Mappers}).  Thus, the reader and writer types in BinaryRider and
+TextRider are considered mappers.
+
+The @dfn{standard mappers}, defined in this section, use the basic riders
+associated with a particular channel type for reading and writing bytes.
+You'll notice that there are very few error code constants defined within
+either of these modules; error codes are dependant on the channel being
+read, and so you'll have to use the constant values for readers and writers
+that are declared within each particular channel module.
+
+Because OOC has both @code{CHAR} and @code{LONGCHAR} character types,
+mappers for textual data have been set up as a class hierarchy, with base
+classes in module @file{Rider} from which all other text mappers derive.
+
+@menu
+* Text Mappers::                Textual input from and output to channels.  
+* BinaryRider::                 Binary input from and output to channels.  
+@end menu
+
+
+@node Text Mappers, BinaryRider,  , Standard Mappers
+@subsection Text Mappers
+@cindex channels, text input
+@cindex mappers, text
+@cindex text input
+@cindex riders, text
+
+The text mapper modules (@file{Rider}, @file{LongRider}, @file{TextRider},
+and @file{UnicodeRider}) provide facilities for reading and writing values
+in @dfn{text format}.  Text format is delimited, or otherwise formatted,
+sequences of character values that can be interpreted as words, numbers,
+symbols, and so forth.  This corresponds to the way human beings read text,
+or perhaps how an Oberon-2 source file is parsed by a compiler.  Data in
+text format are generally refered to simply as @dfn{text}.
+
+Text can usually be interpreted in a limited number of ways.  For example,
+the number @code{2} can be read as an @code{INTEGER} value or as a
+@code{REAL}.  It could be an element of a @code{SET}, or perhaps even be
+part of an identifier such as @code{oo2c}.  The interpretation is based on
+context and the format of the characters rather than as a fixed number of
+bytes.
+
+Because the corresponding classes from the text mapper modules provide
+related facilities, they form a class hierarchy as follows:
+
+@example
+            Rider [ABSTRACT]
+            /    \
+          /        \
+        /            \
+   TextRider        LongRider [ABSTRACT]
+                         |
+                         |
+                         |
+                    UnicodeRider
+@end example
+
+@menu
+* Rider::                       Abstract classes for text based I/0.
+* LongRider::                   Abstract classes with LONGCHAR support.
+* TextRider::                   ISO-Latin-1 (CHAR) text based I/0.
+* UnicodeRider::                Unicode (LONGCHAR) text based I/0.
+@end menu
+
+
+@node Rider, LongRider,  , Text Mappers
+@subsection Module Rider
+@pindex Rider
+@cindex abstract riders
+@cindex riders, abstract
+
+Module @file{Rider} encapsulates the base classes for all other text mapper
+classes.  These base classes (@code{Reader}, @code{Writer}, and
+@code{Scanner}) are abstract classes that define the interface elements
+required for concrete classes derived from them.
+
+See the concrete text mapper classes for more detail and examples of usage
+(@ref{TextRider} and @ref{UnicodeRider}).  
+
+@c BEGIN Rider;
+
+@menu 
+* Class Reader (Rider)::        Abstract class defining text readers.
+* Class Writer (Rider)::        Abstract class defining text writers.
+* Class Scanner (Rider)::       Abstract class defining text scanners.
+@end menu
+
+@node Class Reader (Rider), Class Writer (Rider),  , Rider  
+@subsubsection Class Reader (Rider)
+@cindex readers, abstract text
+@cindex text readers, abstract
+
+@defvr Constant maxLengthEol
+The maximum number of characters allowed in @code{Reader.eol}.
+@end defvr
+
+@deftp {Abstract Class} Reader = POINTER TO ReaderDesc
+This class provides facilities for reading various kinds of text.  Note
+that this type does not inherit properties from any basic reader type;
+rather it uses the basic reader type associated with the channel it is
+attached to.
+
+Also note that, after any failed read operation, all further attempts to
+read will be ignored until the error is cleared using @code{ClearError}.
+
+@xref{Class Reader (TextRider)} for examples of usage.
+
+@table @asis
+@item Field: @b{opt}@minus{}: @code{SET}
+The current read options setting for the reader.
+
+@item Field: @b{base}@minus{}: @code{Channel.Channel}
+This field refers to the channel the reader is connected to.  
+@end table
+
+The following fields determine how the reader interprets end-of-line
+markers.  Note that the end-of-line marker may contain the character
+@samp{0X}, which means its length must be stored in a separate field.  The
+@code{eol} marker cannot be empty, and all characters must be an ASCII code
+in the range @code{00X..1FX}.
+
+@table @asis
+@item Field: @b{eol}@minus{}: @code{ARRAY maxLengthEol OF CHAR}
+The character sequence that represents an end-of-line marker.  Note that
+this is a character array, @emph{not} a string (i.e., it may contain the
+character @samp{0X}).
+
+@item Field: @b{eolLen}@minus{}: @code{INTEGER}
+The number of characters in @code{eol}.  The default value for this is
+@samp{-1}, which means that end-of-line is auto detected (see @code{SetEol}
+below).  Otherwise, this value is in the range @code{1 <= eolLen <=
+maxLengthEol}.
+@end table
+@end deftp
+
+The following methods can be used to check the status of a reader or, in
+some cases, change its state.  Some methods are fully described in the
+abstract reader section (@pxref{Abstract Class Reader}), so only brief
+descriptions of those are given here.
+
+@table @asis
+@item Method: @code{(@var{r}: Reader)} @b{Available} @code{() : LONGINT}
+Returns the number of bytes available for the next read operation.
+
+@item Method: @code{(@var{r}: Reader)} @b{ClearError}
+Clears error conditions on the reader @var{r}, re-enabling further read
+operations.
+
+@item Method: @code{(@var{r}: Reader)} @b{Eol} @code{(): BOOLEAN}
+This method returns @code{TRUE} if the reader is currently positioned at an
+end-of-line marker (see @code{SetEol} below).  This will also return
+@code{TRUE} if @code{@var{r}.Res() # done}.  Otherwise, @code{FALSE} is
+returned.
+
+@item Method: @code{(@var{r}: Reader)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
+Retrieves a descriptive error message string stating the reason why one of
+the previous operations failed. 
+
+@item Method: @code{(@var{r}: Reader)} @b{Pos} @code{(): LONGINT}
+Returns the current reading position associated with the reader @var{r} in
+channel @code{@var{r}.base}.
+
+@item Method: @code{(@var{r}: Reader)} @b{Res} @code{(): INTEGER}
+This method returns the status of the last read operation (e.g.,
+@code{ReadLine}, @code{ReadInt}, @code{SetPos}, etc.).  Note that unlike
+some other reader types, @code{Res()} is a method rather than a field; but
+otherwise, it performs equivalently.  
+
+Error codes are highly dependent on the channel being read, and therefore on
+the basic riders provided by that channel, so you must look at the result
+codes for a particular channel's reader type (e.g., Files.Reader error
+codes).  See the various channel types for details of these error codes
+(i.e., @ref{Files}, @ref{StdChannels}, or @ref{ProgramArgs}).
+
+Use method @code{ErrorDescr} to get a plain text error description of this
+error code.
+
+@item Method: @code{(@var{r}: Reader)} @b{SetEol} @code{(@var{marker}: ARRAY OF CHAR; @var{markerLen}: INTEGER)}
+This method sets the end-of-line marker; that is, what character(s) is used
+to mark the end of a line.  If the passed string @var{marker} does not fit
+into the field @code{eol}, or if it contains a character >= @samp{ }, then
+@code{@var{r}.Res()} is set to @code{invalidFormat}.
+
+A marker length @code{markerLen=-1} enables auto detection of the
+end-of-line convention used by the channel.  For auto detection to work, the
+channel is required to use one of the following @code{eol} markers:
+
+@table @samp
+@item LF
+used by Unix
+@item CR
+used by MacOS
+@item CR/LF
+used by MS-DOS and Windows
+@end table
+     
+@strong{Please note:} @code{ReadChar} is unaffected by the current
+@code{eol} setting.  That is, if the end-of-line marker consists of more
+than one character (like @samp{CR/LF}), each character is read separately.
+All other read operations view an end-of-line marker at an atomic entity
+when the channel is read sequentially.
+
+If auto detection is enabled, and the @code{eol} convention of the file is
+@samp{CR/LF}, then the first end-of-line marker is not skipped completely
+when reached by the reader (@code{@var{r}.Pos()} is at the @samp{LF}).  This
+is transparent to all reading procedures except @code{ReadChar} and
+@code{Pos}; the @samp{LF} will be skipped automatically on the next read.
+This positioning inconsistency only applies for the very first @code{eol}
+encountered.
+
+@strong{Pre-condition}: All of the following apply:
+@enumerate
+@item
+@code{r.Res() = done}, and 
+@item
+@code{(markerLen = -1) OR (1 <= markerLen < LEN (marker))}, and
+@item
+@code{markerLen <= maxLengthEol}, and
+@item
+for all @code{i}: @code{marker[i] < 20X}
+@end enumerate
+
+
+@item Method: @code{(@var{r}: Reader)} @b{SetOpts} @code{(@var{opts}: SET)}
+This method is used to set the reader options @code{@var{r}.opt}.  
+
+
+@item Method: @code{(@var{r}: Reader)} @b{SetPos} @code{(@var{newPos}: LONGINT)}
+Sets the reading position to @var{newPos}. 
+@end table
+
+The following methods read a value of the given type from the current
+position of the reader.  Most read operations skip leading whitespace before
+reading a token; there are only three methods that do not skip whitespace:
+@code{ReadChar}, @code{ReadLn}, and @code{ReadLine}.  
+
+When attempting to read, and if the value is not properly formatted for its
+type, @code{r.Res()} returns @code{invalidFormat}.  The reader remains
+positioned at the character which caused the @code{invalidFormat} error, but
+further reading can not take place until the error is cleared.
+
+If a number, or potential set element, is properly formatted, but has a
+value that is out of range of the target type, then a @code{valueOutOfRange}
+error occurs.  In this case, the reader is positioned @emph{after} the last
+character that was read.  Again, further reading can not take place until
+the error is cleared.
+
+A @code{valueOutOfRange} error also occurs for methods reading into an
+@code{ARRAY OF CHAR} (i.e., @code{ReadLine}, @code{ReadIdentifier}, and
+@code{ReadString}) if the character array is not large enough to hold the
+entire input.
+
+Otherwise, for any operation attempting to read when there are no characters
+left to be read, a read-after-end error occurs and @code{Reader.Res()}
+returns @code{readAfterEnd}.
+
+In any case, whenever an error occurs, it is safest to assume that @emph{no}
+value has been read.  That is, the variable being read into is left with an
+undefined value.
+
+All further calls of these read methods will be ignored if
+@code{@var{r}.Res()#done}.  That is, no new characters will be read if an
+error has occurred previously.
+
+@table @asis
+@item Method: @code{(@var{r}: Reader)} @b{ReadBool} @code{(VAR @var{bool}: BOOLEAN)}
+Reads in an identifier (see @code{ReadIdentifier} below), and if it is
+either of the tokens @code{TRUE} or @code{FALSE}, it is converted to a
+@code{BOOLEAN} value.  If this method encounters any other token, an
+@code{invalidFormat} error occurs and the value of @var{bool} is undefined.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadChar} @code{(VAR @var{ch}: CHAR)}
+Reads in a single character value and places it in @var{ch}.  
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadHex} @code{(VAR @var{lint}: LONGINT)}
+Reads in characters in the form of an unsigned hexadecimal number and
+converts them to a @code{LONGINT} value.  
+
+The first character must be a decimal digit (i.e., @samp{0..9}) and
+subsequent characters must be valid hexadecimal digits (i.e., @samp{0..9} or
+@samp{A..F}).  If the first non-whitespace character is not a digit, then an
+@code{invalidFormat} error occurs.
+
+If the input is properly formatted as an unsigned hex number, but the value
+is out of range for a @code{LONGINT}, then a @code{valueOutOfRange} error
+occurs.
+
+Upon encountering an error, the value of @var{lint} is undefined.
+
+@strong{Please note:} Because @code{LONGINT} values are signed, hex numbers
+in the range @samp{80000000H..FFFFFFFFH} are interpreted as negative
+@code{LONGINT} values.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadIdentifier} @code{(VAR @var{s}: ARRAY OF CHAR)}
+Reads an Oberon-2 style identifier into @var{s}.  An @dfn{identifier} is a
+sequence of letters and digits, which must begin with a letter.  
+
+Sequences not beginning with a letter produce an @code{invalidFormat}
+error.
+
+If @var{s} is not large enough to hold the entire input, a
+@code{valueOutOfRange} error occurs.
+
+Upon encountering an error, the value of @var{s} is undefined.
+
+ 
+@item Method: @code{(@var{r}: Reader)} @b{ReadInt} @code{(VAR @var{int}: INTEGER)}
+Reads in characters in the form of a signed whole number and converts them
+to an @code{INTEGER} value.
+
+If the first character is not a digit, a "@code{+}" sign, or a "@code{-}"
+sign, then an @code{invalidFormat} error occurs.
+
+If the input is properly formatted as a signed whole number, but the value
+is out of range for an @code{INTEGER}, then a @code{valueOutOfRange} error
+occurs.
+
+Upon encountering an error, the value of @var{int} is undefined.
+
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLInt} @code{(VAR @var{lint}: LONGINT)}
+This method provides the same facility as @code{ReadInt}, except that it
+deals with @code{LONGINT} values.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadSInt} @code{(VAR @var{sint}: SHORTINT)}
+This method provides the same facility as @code{ReadInt}, except that it
+deals with @code{SHORTINT} values.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLine} @code{(VAR @var{s}: ARRAY OF CHAR)}
+Reads a sequence of characters into @var{s}; reading continues until an
+end-of-line character is encountered, the array @var{s} is full, or @var{r}
+reaches the end of the channel.  The end-of-line character is discarded and
+@var{s} is always terminated with @code{0X}.
+
+If @var{r} is already positioned at an end-of-line character, @var{s}
+returns as an empty string.
+
+If @var{s} is not large enough to hold the entire input, a
+@code{valueOutOfRange} error occurs; @var{s} returns with the sequence of
+characters that have been read so far (terminated by @code{0X}).
+
+If @var{r} has already reached the end of the channel (i.e., there are no
+more characters left to read), a @code{readAfterEnd} error occurs and
+@var{s} returns as an empty string.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLn} 
+This method reads and discards all characters up to and including the next
+end-of-line character.  If the end of the channel is reached before
+encountering an end-of-line character, a @code{readAfterEnd} error occurs.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadString} @code{(VAR @var{s}: ARRAY OF CHAR)}
+Reads in a sequence of characters enclosed in single (@code{'}) or double
+(@code{"}) quote marks.  The opening quote must be the same as the closing
+quote and must not occur within the string.
+
+Characters will be read until the terminating quote mark is encountered, an
+invalid character is read (end-of-line is always considered invalid), there
+are no more characters available in the channel, or the string @var{s} is
+full.  @var{s} is always terminated with @code{0X}.
+
+Unquoted strings produce an @code{invalidFormat} error.  Strings with no
+terminating quote mark also result in an @code{invalidFormat} error.
+
+If @var{s} is not large enough to hold the entire input, a
+@code{valueOutOfRange} error occurs.
+
+Upon encountering an error, the value of @var{s} is undefined.
+
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadReal} @code{(VAR @var{real}: REAL)}
+Reads in characters in the form of a signed fixed or floating-point number
+and converts them to a @code{REAL} value.  
+
+If the first character is not a digit, a "@code{+}" sign, or a "@code{-}"
+sign, then an @code{invalidFormat} error occurs.
+
+If the input is properly formatted as a signed fixed or floating-point
+number, but the value is out of range for a @code{REAL}, then a
+@code{valueOutOfRange} error occurs.
+
+Upon encountering an error, the value of @var{real} is undefined.
+
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLReal} @code{(VAR @var{lreal}: LONGREAL)}
+This method provides the same facility as @code{ReadReal}, except that it
+deals with @code{LONGREAL} values.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadSet} @code{(VAR @var{s}: SET)}
+Reads in characters in the form of a set constructor and converts them to a
+@code{SET}.  
+
+If the sequence of characters does not form a valid set constructor, then an
+@code{invalidFormat} error occurs.
+
+If the input is properly formatted as a set constructor, but a set element
+has a value out of the range @code{0..MAX(SET)}, then a
+@code{valueOutOfRange} error occurs.
+
+Upon encountering an error, the value of @var{s} is undefined.
+@end table
+
+
+@node Class Writer (Rider), Class Scanner (Rider),  Class Reader (Rider), Rider
+@subsubsection Class Writer (Rider)
+@cindex writers, abstract text
+@cindex text writers, abstract
+
+@deftp {Abstract Class} Writer = POINTER TO WriterDesc
+This class provides facilities for writing various types of text.  Note that
+this type does not inherit properties from any basic writer type; rather it
+uses the basic writer type associated with the channel it is attached to.
+
+@xref{Class Writer (TextRider)} for examples of usage.
+
+@table @asis
+@item Field: @b{opt}@minus{}: @code{SET}
+The current write options setting for the writer.  See @ref{Summary of
+TextRider Constants} for possible option values.
+
+@item Field: @b{base}@minus{}: @code{Channel.Channel}
+This field refers to the channel the writer is connected to.  
+@end table
+@end deftp
+
+The following methods can be used to check the status of a writer or, in
+some cases, change its state.  Some methods are fully described in the
+abstract writer section (@pxref{Abstract Class Writer}), so only brief
+descriptions of those are given here.
+
+@table @asis
+@item Method: @code{(@var{w}: Writer)} @b{ClearError}
+Clears error conditions on the writer @var{w}, re-enabling further write
+operations.
+
+@item Method: @code{(@var{w}: Writer)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
+Retrieves a descriptive error message string stating the reason why one of
+the previous operations failed.
+
+@item Method: @code{(@var{w}: Writer)} @b{Pos} @code{() : LONGINT}
+Returns the current writing position associated with the writer @code{w} in
+channel @code{@var{w}.base}.
+
+@item Method: @code{(@var{w}: Writer)} @b{Res} @code{() : INTEGER}
+This method returns the status of the last write operation (e.g.,
+@code{WriteBytes}, @code{WriteInt}, @code{SetPos}, etc.)  Note that unlike
+some other writer types, @code{Res()} is a method rather than a field; but
+otherwise, it performs equivalently.
+
+Error codes are highly dependent on the channel being written to (and
+therefore on the basic riders provided for that channel), so you must look
+at the result codes for the basic writer that is associated with that
+particular channel (e.g., Files.Writer error codes).  See the various
+channel types for details of these error codes (i.e., @ref{Files},
+@ref{StdChannels}, @ref{ProgramArgs})
+
+Use @code{ErrorDescr} to get a plain text error description of this error
+code.
+
+@item Method: @code{(@var{w}: Writer)} @b{SetEol} @code{(@var{marker}: ARRAY OF CHAR; @var{markerLen}: INTEGER)}
+This method sets the end-of-line marker; that is, what character(s) is used
+to mark the end of a line.  If the passed string @var{marker} does not fit
+into the field @code{eol}, then @code{@var{w}.Res()} is set to
+@code{invalidFormat}.  The empty marker is permitted.  The default value for
+a newly created writer is @code{CharClass.systemEol}.
+
+@strong{Pre-condition}: All of the following apply:
+@enumerate
+@item
+@code{w.Res() = done}, and
+@item
+@code{0 <= markerLen < LEN (marker)}, and
+@item
+@code{markerLen <= maxLengthEol}.
+@end enumerate
+ 
+@item Method: @code{(@var{w}: Writer)} @b{SetOpts} @code{(@var{opts}: SET)}
+This method is used to set the writer options @code{@var{w}.opt}.
+
+@item Method: @code{(@var{w}: Writer)} @b{SetPos} @code{(@var{newPos}: LONGINT)}
+Sets the writing position to @var{newPos}.
+@end table
+
+The following writer methods are used to write values in text format to the
+underlying channel.  In some situations, it is possible for only part of the
+value to be actually written.
+
+@table @asis
+@item Method: @code{(@var{w}: Writer)} @b{WriteBool} @code{(@var{bool}: BOOLEAN)}
+Writes the value of @var{bool} as text.  That is, either @code{TRUE} or
+@code{FALSE}.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteChar} @code{(@var{ch}: CHAR)}
+Writes a single character value @var{ch}.  
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteHex} @code{(@var{lint}: LONGINT; @var{d}: LONGINT)}
+Writes the value of @var{lint} as an unsigned hexadecimal number with a
+minimum field width of @var{d}.  Leading zeros are written if the value of
+@var{lint} requires less than @var{d} places.  If @var{d} is less than or
+equal to zero, field width is 8.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteInt} @code{(@var{int}: INTEGER; @var{n}: LONGINT)}
+Writes the value of @var{int} as a decimal number with a minimum field width
+of @var{n}.  Leading spaces are written if the value of @var{int} requires
+less than @var{n} places.  A sign is written only for negative values.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteLInt} @code{(@var{lint}: LONGINT; @var{n}: LONGINT)}
+This method provides the same facility as @code{WriteInt}, except that it
+deals with @code{LONGINT} values.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteSInt} @code{(@var{sint}: SHORTINT; @var{n}: LONGINT)}
+This method provides the same facility as @code{WriteInt}, except that it
+deals with @code{SHORTINT} values.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteReal} @code{(@var{real}: REAL; @var{n}, @var{k}: LONGINT)} 
+Writes the value of @var{real} as a floating-point number with a minimum
+field width of @var{n}.
+
+If the value of @var{k} is greater than 0, that number of significant digits
+is included.  Otherwise, an implementation-defined number of significant
+digits is included.  The decimal point is not included if there are no
+significant digits in the fractional part.
+
+The number is scaled with one digit in the whole number part.  A sign is
+included only for negative values.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteLReal} @code{(@var{lreal}: LONGREAL; @var{n}, @var{k}: LONGINT)}
+This method provides the same facility as @code{WriteReal}, except that it
+deals with @code{LONGREAL} values.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteRealEng} @code{(@var{real}: REAL; @var{n}, @var{k}: LONGINT)}
+Writes the value of @var{real} as a floating-point number with a minimum
+field width of @var{n}.
+
+If the value of @var{k} is greater than 0, that number of significant digits
+is included.  Otherwise, an implementation-defined number of significant
+digits is included.  The decimal point is not included if there are no
+significant digits in the fractional part.
+
+The number is scaled with one to three digits in the whole number part and
+with an exponent that is a multiple of three.  A sign is included only for
+negative values.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteLRealEng} @code{(@var{lreal}: LONGREAL; @var{n}, @var{k}: LONGINT)}
+This method provides the same facility as @code{WriteRealEng}, except that
+it deals with @code{LONGREAL} values.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteRealFix} @code{(@var{real}: REAL; @var{n}, @var{k}: LONGINT)}
+Writes the value of @var{real} as a fixed-point number with a minimum field
+width of @var{n}.
+
+The value is rounded to the given value of @var{k} relative to the decimal
+point.  The decimal point is suppressed if @var{k} is less than 0.
+
+The number will have at least one digit in the whole number part.  A sign is
+included only for negative values.  
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteLRealFix} @code{(@var{lreal}: LONGREAL; @var{n}, @var{k}: LONGINT)}
+This method provides the same facility as @code{WriteRealFix}, except that
+it deals with @code{LONGREAL} values.
+ 
+@item Method: @code{(@var{w}: Writer)} @b{WriteSet} @code{(@var{s}: SET)}
+Writes the value of @var{s} as an Oberon-2 set constructor, including curly
+braces, commas, and range indicators ("@code{..}") where appropriate.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteString} @code{(@var{s}: ARRAY OF CHAR)}
+Writes a string value up to, but not including, the terminating @code{0X}
+character.  The behaviour of this method is undefined if @var{s} is an
+unterminated character array.  
+
+@strong{Please note:} @code{ReadString} and @code{WriteString} @emph{are
+not} symmetric.  That is, @code{WriteString} does not enclose the written
+string in quote marks; only the actual character values contained in @var{s}
+are written.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteLn}
+Writes an end-of-line marker (i.e., a "newline").  The default value for a
+newly created writer is @code{CharClass.systemEol} (see @code{SetEol}
+above).
+@end table
+
+
+@node Class Scanner (Rider),  , Class Writer (Rider), Rider  
+@subsubsection Class Scanner (Rider)
+@cindex scanners, abstract text
+@cindex text scanners, abstract
+
+A @dfn{text scanner} is a special type of reader, which is used to parse
+text for different kinds of tokens.  Integers, reals, strings, identifiers,
+set constructors, the boolean tokens @code{TRUE} and @code{FALSE}, and other
+special symbols are all tokens recognized by this kind of scanner.
+
+These tokens are scanned sequentially, converted to an appropriate type, and
+then returned in one of the scanner's fields.  The scanner's @code{type}
+field is then used to determine the type of token which has been scanned.
+
+Along with some typical reader methods, such as @code{SetPos}, the primary
+method of a scanner is @code{Scan}, which simply scans the next token based
+on the scanner's current options setting.  
+
+@xref{Class Scanner (TextRider)} for examples of usage.
+
+@deftp {Data type} String 
+A string type of pre-defined length for use within a scanner.  Note that
+because this type is of finite length, a scanner is limited in the length of
+string it can scan.
+
+@strong{Please note:} @code{LEN()} can be used on a variable of type
+@code{String} to determine the maximum size that can be held by a scanner
+string.  
+@end deftp
+
+@deftp {Abstract Class} Scanner = POINTER TO ScannerDesc
+This class provides facilities for scanning sequences of characters from a
+channel and parsing those characters into various tokens.  The tokens a
+scanner can recognize are defined by the constants provided for its
+@code{type} field (@ref{Summary of TextRider Constants}).
+
+Note that a scanner will not continue to read (via calls to @code{Scan}) if
+it has scanned an invalid token or an error occurs; @code{ClearError} must
+be called explicitly before scanning can continue.  The difference is that
+@code{invalid} means that the token could not be interpreted; a sequence of
+characters was read, but could not be interpreted as a valid token.  An
+@code{error} occurs when there is a problem with the underlying
+@code{Reader}; so, @code{error} is used to determine when you have reached
+end-of-text.
+
+@table @asis
+@item Field: @b{base}@minus{}: @code{Channel.Channel}
+This field refers to the channel the scanner is connected to.  
+
+@item Field: @b{lines}@minus{}: @code{LONGINT}
+Total number of lines (i.e., end-of-line characters) that have been scanned.
+This number is updated by @code{Scan}.
+
+@item Field: @b{opt}@minus{}: @code{SET} 
+The current read options setting for the scanner.  See @ref{Summary of
+TextRider Constants} for possible option values.
+
+@item Field: @b{pos}@minus{}: @code{LONGINT}
+Starting position of the most recently scanned token.  Note that this is
+@emph{not} the same as the value returned by the @code{Pos()} method.  
+
+This value may be useful when an @code{invalid} token is scanned, as it will
+point to the start of the @code{invalid} token (whereas @code{Pos()} would
+be positioned @emph{after} the invalid token).  You could, for example,
+reset the scanner options and re-position the scanner back at the invalid
+token to attempt a re-scan.
+
+@item Field: @b{type}@minus{}: @code{INTEGER}
+The type of the token that has been most recently scanned.  The constants
+@code{bool}, @code{char}, @code{error}, @code{int}, @code{invalid},
+@code{line}, @code{ident}, @code{real}, @code{set}, @code{string},
+@code{tab}, and @code{undefined} are possible values for @code{type}.  See
+also the related output fields listed below.
+@end table
+
+The following are the output fields within a scanner.  Before the first call
+to the @code{Scan} method, the values of these fields are undefined.  After
+each successive call to @code{Scan}, @code{type} is set and the matching
+output field contains the value of the scanned token.  The value of output
+fields not corresponding to @code{type} are undefined.
+
+@table @asis
+@item Field: @b{bool}@minus{}: @code{BOOLEAN}
+This field will contain a valid value only if the @code{interpretBools}
+option is set and one of the tokens @code{TRUE} or @code{FALSE} is scanned.
+
+@item Field: @b{char}@minus{}: @code{CHAR}
+Contains a value if @code{type} is @code{char}, @code{line}, or @code{tab}.
+
+@item Field: @b{int}@minus{}: @code{LONGINT}
+Contains a value if @code{type} is @code{int}.  
+
+@strong{Please note:} Valid integers are in either signed decimal or
+unsigned hexadecimal formats (hexadecimal tokens @emph{must} be terminated
+with an "@code{H}" character).
+
+@item Field: @b{real}@minus{}: @code{LONGREAL} 
+Contains a value if @code{type} is @code{real}.  
+
+@item Field: @b{set}@minus{}: SET;
+Contains a value if @code{type} is @code{set}.  
+
+@item Field: @b{string}@minus{}: String; 
+Contains a value if @code{type} is @code{string} or @code{ident}.  
+@end table
+@end deftp
+
+The following scanner methods are equivalent to the corresponding reader
+methods described in @ref{Class Reader (TextRider)}, so only brief
+descriptions are given here.
+
+@table @asis
+@item Method: @code{(@var{s}: Scanner)} @b{Available} @code{() : LONGINT}
+Returns the number of bytes available for the next scanning operation.
+
+@item Method: @code{(@var{s}: Scanner)} @b{ClearError}
+Clears error conditions on the scanner @var{s}, re-enabling further
+operations on @var{s}.
+
+@item Method: @code{(@var{s}: Scanner)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
+Retrieves a descriptive error message string stating the reason why one of
+the previous operations failed.
+
+@item Method: @code{(@var{s}: Scanner)} @b{Pos} @code{(): LONGINT}
+Returns the current reading position associated with the scanner @var{s} in
+channel @code{@var{s}.base}.  Note that the value returned by this method is
+different from the position indicated by the scanner's @code{pos} field.
+
+@item Method: @code{(@var{s}: Scanner)} @b{Res} @code{(): INTEGER}
+This method returns the status of the last read operation (e.g.,
+@code{Scan}, @code{SetPos}, etc.).  Note that @code{Res()} is a method
+rather than a field; but otherwise, it performs equivalently.
+
+Use method @code{ErrorDescr} to get a plain text error description of this
+error code.
+
+@item Method: @code{(@var{s}: Scanner)} @b{SetEol} @code{(@var{marker}: ARRAY OF CHAR; @var{markerLen}: INTEGER)}
+This method sets the end-of-line marker; it provides the same facility as
+@code{Reader.SetEol}.  A marker length @code{markerLen=-1} enables auto
+detection of the end-of-line convention used by the channel.
+
+@item Method: @code{(@var{s}: Scanner)} @b{SetOpts} @code{(@var{opts}: SET)}
+This method is used to set the scanner options @code{@var{s}.opt}.  See
+@ref{Summary of TextRider Constants} for possible option values.
+
+@item Method: @code{(@var{s}: Scanner)} @b{SetPos} @code{(@var{newPos}: LONGINT)}
+Sets the current scanning position to @var{newPos}.
+@end table
+
+@table @asis
+@item Method: @code{(@var{s}: Scanner)} @b{Scan}
+This method skips whitespace, and then scans for the next token as specified
+by the scanning options.  Based on the type of token scanned,
+@code{@var{s}.type} is set and the matching output field is assigned a
+value.  
+
+If the end of the valid text is reached, @code{@var{s}.type} is set to
+@code{error}.  (Note that @code{error} is set when the last available valid
+token is read, not necessarily by a @code{readAfterEnd} condition.)
+
+Valid tokens are described as follows:
+
+@table @asis
+@item @code{bool}
+If @code{interpretBools} is set as a scanner option, the text tokens
+@code{TRUE} or @code{FALSE} are read as @code{bool}.  (Otherwise, these
+tokens are read as type @code{ident}.)
+
+@item @code{char} 
+Normally, any printable characters other than a letter or number and any
+non-printable control character.  However, scanner options will affect what
+a scanner interprets to be a @code{char}:
+
+@itemize @bullet
+@item 
+If @code{interpretSets} is not set, elements of a set constructor,
+"@code{@{}", "@code{@}}", "@code{,}", are read as @code{char} (and the
+associated integer constants are read as separate tokens).
+
+@item 
+If @code{interpretStrings} is not set, quote characters are read as
+@code{char} (and string contents are then read as separate tokens).
+
+@item 
+If @code{useSignedNumbers} is not set, "@code{+}" and "@code{-}" are
+read as @code{char}.  (Otherwise, they are always considered part of a
+number.)
+@end itemize
+
+@item @code{int} 
+Any Oberon-2 integer constant.  (Note that hexadecimal numbers must be
+unsigned and be terminated with an "@code{H}".  Also, lower-case letters,
+@samp{a..f}, are not valid hex digits.)
+
+@item @code{line}
+If @code{returnCtrlChars} is set, an end-of-line character is read as
+@code{@var{s}.type = line}.  Otherwise, it is counted as whitespace.
+
+@item @code{ident}
+Any Oberon-2 identifier.  (Note that "@code{_}" is not considered as part of
+an identifier, nor is a selector "@code{.}".)
+
+@item @code{real} 
+Any Oberon-2 real number constant.  
+
+@item @code{set}
+Any Oberon-2 set constructor.
+
+@item @code{string}
+Any Oberon-2 string constant.
+
+@item @code{tab}
+If @code{returnCtrlChars} is set, a tab character is read as
+@code{@var{s}.type = tab}.  Otherwise, it is counted as whitespace.
+@end table
+@end table
+
+@c END Rider.
+
+@node LongRider, TextRider, Rider, Text Mappers
+@subsection Module LongRider
+@pindex LongRider
+@cindex abstract riders
+@cindex riders, abstract
+@cindex riders, long
+
+@c BEGIN LongRider;
+
+Module @file{LongRider} extends the classes of @file{Rider} to provide
+support for types @code{LONGCHAR} and @code{LongString}.  The classes of
+@file{LongRider} (@code{Reader}, @code{Writer}, and @code{Scanner}) are also
+abstract, and only extensions are described in this section; see @ref{Rider}
+for descriptions of other facilities.
+
+Also, see the concrete text mapper classes for more detail and examples of
+usage (@pxref{TextRider} and @ref{UnicodeRider}).
+
+@strong{Please note:} Care should be taken when using the method
+@code{SetPos} for classes based on @file{LongRider}.  Recall that
+@code{SetPos} operates just like the corresponding method from class
+@code{Channel}; that is, position is set directly within the byte stream.
+Setting the position is based on byte position rather than character
+position.
+
+Because @file{LongRider} based classes deal with multi-byte character
+encodings, which may be of variable width, and because @code{SetPos}
+positions a reader on a byte level, a user cannot necessarily set a rider to
+an arbitrary character position within a channel.  For practical purposes,
+variable width encodings may limit usage to saving the position of a reader
+based on a call like @code{pos := reader.Pos()}, which can later be restored
+via @code{reader.SetPos(pos)}.
+
+However, even in such a case, moving to a previously saved position might
+fail for encodings that use different states during decoding.  For example,
+if the encoding uses special byte sequences to switch between different
+mappings while decoding, the actual mapping in use at file position @samp{x}
+will not be reinstated correctly when calling @samp{SetPos(x)}.
+
+@menu 
+* Class Reader (LongRider)::    Abstract class defining text readers.
+* Class Writer (LongRider)::    Abstract class defining text writers.
+* Class Scanner (LongRider)::   Abstract class defining text scanners.
+@end menu
+
+@node Class Reader (LongRider), Class Writer (LongRider),  , LongRider  
+@subsubsection Class Reader (LongRider)
+@cindex readers, abstract text
+@cindex text readers, abstract
+@cindex text readers, long
+
+@deftp {Abstract Class} Reader = POINTER TO ReaderDesc
+This is an abstract subclass of @code{Rider.Reader} that provides support
+for @code{LONGCHAR} and @code{LongString}.  
+
+
+The specification for @code{ReadChar} is changed for @code{LongRider.Reader}
+in that it actually reads a @code{LONGCHAR} value (2 bytes) from the channel
+and then attempts to map it to a @code{CHAR} value (ISO-Latin-1).  If the
+value cannot be mapped, a @code{valueOutOfRange} error occurs.  Consequently
+for @file{LongRider}, @code{ReadLine}, @code{ReadIdentifier}, and
+@code{ReadString} produce the same error in similar situations.
+
+Also note that a @code{valueOutOfRange} error occurs for methods reading
+into an @code{ARRAY OF LONGCHAR} (i.e., @code{ReadLLine},
+@code{ReadLIdentifier}, and @code{ReadLString}) if the (long) character
+array is not large enough to hold the entire input.
+@end deftp
+
+
+@code{Reader} adds the following methods:
+
+@table @asis
+@item Method: @code{(@var{r}: Reader)} @b{ReadLChar} @code{(VAR @var{ch}: LONGCHAR)}
+Reads in a single (@code{LONGCHAR}) character value and places it in
+@var{ch}.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLIdentifier} @code{(VAR @var{s}: ARRAY OF LONGCHAR)}
+Reads an Oberon-2 style identifier into @var{s}.  An @dfn{identifier} is a
+sequence of letters and digits, which must begin with a letter.  
+
+Sequences not beginning with a letter produce an @code{invalidFormat}
+error.
+
+If @var{s} is not large enough to hold the entire input, a
+@code{valueOutOfRange} error occurs.
+
+Upon encountering an error, the value of @var{s} is undefined.
+
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLLine} @code{(VAR @var{s}: ARRAY OF LONGCHAR)}
+Reads a sequence of (@code{LONGCHAR}) characters into @var{s}; reading
+continues until an end-of-line character is encountered, the array @var{s}
+is full, or @var{r} reaches the end of the channel.  The end-of-line
+character is discarded and @var{s} is always terminated with @code{0X}.
+
+If @var{r} is already positioned at an end-of-line character, @var{s}
+returns as an empty string.
+
+If @var{s} is not large enough to hold the entire input, a
+@code{valueOutOfRange} error occurs; @var{s} returns with the sequence of
+characters that have been read so far (terminated by @code{0X}).
+
+If @var{r} has already reached the end of the channel (i.e., there are no
+more characters left to read), a @code{readAfterEnd} error occurs and
+@var{s} returns as an empty string.
+
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLString} @code{(VAR @var{s}: ARRAY OF CHAR)}
+Reads in a sequence of (@code{LONGCHAR}) characters enclosed in single
+(@code{'}) or double (@code{"}) quote marks.  The opening quote must be the
+same as the closing quote and must not occur within the string.
+
+Characters will be read until the terminating quote mark is encountered, an
+invalid character is read (end-of-line is always considered invalid), there
+are no more characters available in the channel, or the string @var{s} is
+full.  @var{s} is always terminated with @code{0X}.
+
+Unquoted strings produce an @code{invalidFormat} error.  Strings with no
+terminating quote mark also result in an @code{invalidFormat} error.
+
+If @var{s} is not large enough to hold the entire input, a
+@code{valueOutOfRange} error occurs.
+
+Upon encountering an error, the value of @var{s} is undefined.
+@end table
+
+
+@node Class Writer (LongRider), Class Scanner (LongRider),  Class Reader (LongRider), LongRider
+@subsubsection Class Writer (LongRider)
+@cindex writers, abstract text
+@cindex text writers, abstract
+
+@deftp {Abstract Class} Writer = POINTER TO WriterDesc
+This is an abstract subclass of @code{Rider.Writer} that provides support
+for @code{LONGCHAR} and @code{LongString}.
+@end deftp
+
+Note that the specification for @code{WriteChar} is changed for
+@code{LongRider.Writer} in that it actually writes 2 bytes at a time to the
+channel (i.e., @code{CHAR} values are actually written as Unicode values).
+@code{ReadLine}, @code{ReadIdentifier}, and @code{ReadString} behave
+similarly for @file{LongRider}.
+
+@code{LongRider.Writer} adds the following methods:
+
+@table @asis
+@item Method: @code{(@var{w}: Writer)} @b{WriteLChar} @code{(@var{ch}: LONGCHAR)}
+Writes a single (@code{LONGCHAR}) character value @var{ch}.
+
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteLString} @code{(@var{s}: ARRAY OF LONGCHAR)}
+Writes a long string value up to, but not including, the terminating
+@code{0X} character.  The behaviour of this method is undefined if @var{s}
+is an unterminated (@code{LONGCHAR}) character array.
+
+@strong{Please note:} @code{ReadLString} and @code{WriteLString} @emph{are
+not} symmetric.  That is, @code{WriteLString} does not enclose the written
+string in quote marks; only the actual (@code{LONGCHAR}) character values
+contained in @var{s} are written.
+@end table
+
+@node Class Scanner (LongRider),  , Class Writer (LongRider), LongRider  
+@subsubsection Class Scanner (LongRider)
+@cindex scanners, abstract text
+@cindex text scanners, abstract
+@cindex text scanners, long
+
+@deftp {Abstract Class} Scanner = POINTER TO ScannerDesc
+This is an abstract subclass of @code{Rider.Scanner} that provides support
+for @code{LONGCHAR} and @code{LongString}.
+
+@deftp {Data type} LongString 
+A (long) string type of pre-defined length for use within a scanner.  Note
+that because this type is of finite length, a scanner is limited in the
+length of string it can scan.
+
+@strong{Please note:} @code{LEN()} can be used on a variable of type
+@code{LongString} to determine the maximum size that can be held by a
+scanner string.
+@end deftp
+
+@table @asis
+@item Field: @b{type}@minus{}: @code{INTEGER}
+This is an inherited field, however, it now has the additional possible
+values: @code{lchar}, @code{lident}, @code{lline}, @code{lstring},
+@code{ltab}.
+
+@item Field: @b{lchar}@minus{}: @code{LONGCHAR}
+Contains a value if @code{type} is @code{lchar}, @code{lline}, or @code{ltab}.
+
+@item Field: @b{lstring}@minus{}: LongString; 
+Contains a value if @code{type} is @code{lstring} or @code{lident}.  
+@end table
+@end deftp
+
+@c END LongRider;
+
+@node TextRider, UnicodeRider, LongRider, Text Mappers
+@subsection Module TextRider
+@pindex TextRider
+@cindex iso-latin-1
+@cindex riders, text
+
+Module @file{TextRider} provides concrete classes derived from the abstract
+base classes of module @file{Rider}.  @file{TextRider} is used for reading
+and writing data as character type @code{CHAR} (i.e., interpreting byte
+streams as ISO-Latin-1 characters).  The descriptions below include details
+of the @file{TextRider} facilities (much of which is repeated from the
+section on module @file{Rider}) as well as many examples of use.
+
+The following program fragment gives an example of how you could use
+@file{TextRider} facilities to read the entire contents of a file, one line
+at a time, and echo each line to the screen (note that no error checking is
+done):
+
+@smallexample
+VAR r: TextRider.Reader;
+    f: Files.File;
+    str: ARRAY 256 OF CHAR;
+    res: INTEGER;
+    
+  f := Files.Old("Sample.txt", @{Files.read@}, res);
+  r := TextRider.ConnectReader(f); 
+
+  r.ReadLine(str);	
+  WHILE r.Res()=Files.done DO
+     Out.String(str); Out.Ln;
+     r.ReadLine(str);	
+  END;
+@end smallexample
+
+
+@menu 
+* Class Reader (TextRider)::    Class for reading text from channels.  
+* Class Writer (TextRider)::    Class for writing text to channels.  
+* Class Scanner (TextRider)::   Class for scanning text from channels.  
+* Connecting TextRiders::       Procedures to connect text readers, writers,
+                                  and scanners to channels.  
+* Summary of TextRider Constants:: Summarized list of constants in module
+                                  TextRider.  
+@end menu
+
+@node Class Reader (TextRider), Class Writer (TextRider),  , TextRider  
+@subsubsection Class Reader (TextRider)
+@cindex readers, text
+@cindex text readers
+
+@defvr Constant maxLengthEol
+The maximum number of characters allowed in @code{Reader.eol}.
+@end defvr
+
+@deftp {Class} Reader = POINTER TO ReaderDesc
+This is the concrete subclass of @code{Rider.Reader} that provides
+facilities for reading various kinds of text.  Note that this type does not
+inherit properties from any basic reader type; rather it uses the basic
+reader type associated with the channel it is attached to.
+
+Also note that, after any failed read operation, all further attempts to
+read will be ignored until the error is cleared using @code{ClearError}.
+
+@table @asis
+@item Field: @b{opt}@minus{}: @code{SET}
+The current read options setting for the reader.  See @ref{Summary of
+TextRider Constants} for possible option values.  
+
+@item Field: @b{base}@minus{}: @code{Channel.Channel}
+This field refers to the channel the reader is connected to.  
+@end table
+
+The following fields determine how the reader interprets end-of-line
+markers.  Note that the end-of-line marker may contain the character
+@samp{0X}, which means its length must be stored in a separate field.  The
+@code{eol} marker cannot be empty, and all characters must be an ASCII code
+in the range @code{00X..1FX}.
+
+@table @asis
+@item Field: @b{eol}@minus{}: @code{ARRAY maxLengthEol OF CHAR}
+The character sequence that represents an end-of-line marker.  Note that
+this is a character array, @emph{not} a string (i.e., it may contain the
+character @samp{0X}).
+
+@item Field: @b{eolLen}@minus{}: @code{INTEGER}
+The number of characters in @code{eol}.  The default value for this is
+@samp{-1}, which means that end-of-line is auto detected (see @code{SetEol}
+below).  Otherwise, this value is in the range @code{1 <= eolLen <=
+maxLengthEol}.
+@end table
+@end deftp
+
+The following methods can be used to check the status of a reader or, in
+some cases, change its state.  Some methods are fully described in the
+abstract reader section (@pxref{Abstract Class Reader}), so only brief
+descriptions of those are given here.
+
+@table @asis
+@item Method: @code{(@var{r}: Reader)} @b{Available} @code{() : LONGINT}
+Returns the number of bytes available for the next read operation.
+
+@item Method: @code{(@var{r}: Reader)} @b{ClearError}
+Clears error conditions on the reader @var{r}, re-enabling further read
+operations.
+
+@item Method: @code{(@var{r}: Reader)} @b{Eol} @code{(): BOOLEAN}
+This method returns @code{TRUE} if the reader is currently positioned at an
+end-of-line marker (see @code{SetEol} below).  This will also return
+@code{TRUE} if @code{@var{r}.Res() # done}.  Otherwise, @code{FALSE} is
+returned.
+
+@item Method: @code{(@var{r}: Reader)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
+Retrieves a descriptive error message string stating the reason why one of
+the previous operations failed. 
+
+@item Method: @code{(@var{r}: Reader)} @b{Pos} @code{(): LONGINT}
+Returns the current reading position associated with the reader @var{r} in
+channel @code{@var{r}.base}.
+
+@item Method: @code{(@var{r}: Reader)} @b{Res} @code{(): INTEGER}
+This method returns the status of the last read operation (e.g.,
+@code{ReadLine}, @code{ReadInt}, @code{SetPos}, etc.).  Note that unlike
+some other reader types, @code{Res()} is a method rather than a field; but
+otherwise, it performs equivalently.  
+
+Error codes are highly dependent on the channel being read, and therefore on
+the basic riders provided by that channel, so you must look at the result
+codes for a particular channel's reader type (e.g., Files.Reader error
+codes).  See the various channel types for details of these error codes
+(i.e., @ref{Files}, @ref{StdChannels}, or @ref{ProgramArgs}).
+
+Use method @code{ErrorDescr} to get a plain text error description of this
+error code.
+
+@item Method: @code{(@var{r}: Reader)} @b{SetEol} @code{(@var{marker}: ARRAY OF CHAR; @var{markerLen}: INTEGER)}
+This method sets the end-of-line marker; that is, what character(s) is used
+to mark the end of a line.  If the passed string @var{marker} does not fit
+into the field @code{eol}, or if it contains a character >= @samp{ }, then
+@code{@var{r}.Res()} is set to @code{invalidFormat}.
+
+A marker length @code{markerLen=-1} enables auto detection of the
+end-of-line convention used by the channel.  For auto detection to work, the
+channel is required to use one of the following @code{eol} markers:
+
+@table @samp
+@item LF
+used by Unix
+@item CR
+used by MacOS
+@item CR/LF
+used by MS-DOS and Windows
+@end table
+     
+@strong{Please note:} @code{ReadChar} is unaffected by the current
+@code{eol} setting.  That is, if the end-of-line marker consists of more
+than one character (like @samp{CR/LF}), each character is read separately.
+All other read operations view an end-of-line marker at an atomic entity
+when the channel is read sequentially.
+
+If auto detection is enabled, and the @code{eol} convention of the file is
+@samp{CR/LF}, then the first end-of-line marker is not skipped completely
+when reached by the reader (@code{@var{r}.Pos()} is at the @samp{LF}).  This
+is transparent to all reading procedures except @code{ReadChar} and
+@code{Pos}; the @samp{LF} will be skipped automatically on the next read.
+This positioning inconsistency only applies for the very first @code{eol}
+encountered.
+
+@strong{Pre-condition}: All of the following apply:
+@enumerate
+@item
+@code{r.Res() = done}, and 
+@item
+@code{(markerLen = -1) OR (1 <= markerLen < LEN (marker))}, and
+@item
+@code{markerLen <= maxLengthEol}, and
+@item
+for all @code{i}: @code{marker[i] < 20X}
+@end enumerate
+
+
+@item Method: @code{(@var{r}: Reader)} @b{SetOpts} @code{(@var{opts}: SET)}
+This method is used to set the reader options @code{@var{r}.opt}.  See
+@ref{Summary of TextRider Constants} for possible option values.
+
+@emph{Example:}
+
+@smallexample
+r.SetOpts(@{TextRider.returnCtrlChars@});
+   @result{} read operations using r do not treat EOL and TAB 
+        characters as whitespace.  
+r.SetOpts(TextRider.defReaderOptions);
+   @result{} reader options set to default values.
+@end smallexample
+
+@item Method: @code{(@var{r}: Reader)} @b{SetPos} @code{(@var{newPos}: LONGINT)}
+Sets the reading position to @var{newPos}. 
+@end table
+
+The following methods read a value of the given type from the current
+position of the reader.  Most read operations skip leading whitespace before
+reading a token; there are only three methods that do not skip whitespace:
+@code{ReadChar}, @code{ReadLn}, and @code{ReadLine}.  
+
+When attempting to read, and if the value is not properly formatted for its
+type, @code{r.Res()} returns @code{invalidFormat}.  The reader remains
+positioned at the character which caused the @code{invalidFormat} error, but
+further reading can not take place until the error is cleared.
+
+If a number, or potential set element, is properly formatted, but has a
+value that is out of range of the target type, then a @code{valueOutOfRange}
+error occurs.  In this case, the reader is positioned @emph{after} the last
+character that was read.  Again, further reading can not take place until
+the error is cleared.
+
+A @code{valueOutOfRange} error also occurs for methods reading into an
+@code{ARRAY OF CHAR} (i.e., @code{ReadLine}, @code{ReadIdentifier}, and
+@code{ReadString}) if the character array is not large enough to hold the
+entire input.
+
+Otherwise, for any operation attempting to read when there are no characters
+left to be read, a read-after-end error occurs and @code{Reader.Res()}
+returns @code{readAfterEnd}.
+
+In any case, whenever an error occurs, it is safest to assume that @emph{no}
+value has been read.  That is, the variable being read into is left with an
+undefined value.
+
+All further calls of these read methods will be ignored if
+@code{@var{r}.Res()#done}.  That is, no new characters will be read if an
+error has occurred previously.
+
+@table @asis
+@item Method: @code{(@var{r}: Reader)} @b{ReadBool} @code{(VAR @var{bool}: BOOLEAN)}
+Reads in an identifier (see @code{ReadIdentifier} below), and if it is
+either of the tokens @code{TRUE} or @code{FALSE}, it is converted to a
+@code{BOOLEAN} value.  If this method encounters any other token, an
+@code{invalidFormat} error occurs and the value of @var{bool} is undefined.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadChar} @code{(VAR @var{ch}: CHAR)}
+Reads in a single character value and places it in @var{ch}.  
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadHex} @code{(VAR @var{lint}: LONGINT)}
+Reads in characters in the form of an unsigned hexadecimal number and
+converts them to a @code{LONGINT} value.  
+
+The first character must be a decimal digit (i.e., @samp{0..9}) and
+subsequent characters must be valid hexadecimal digits (i.e., @samp{0..9} or
+@samp{A..F}).  If the first non-whitespace character is not a digit, then an
+@code{invalidFormat} error occurs.
+
+If the input is properly formatted as an unsigned hex number, but the value
+is out of range for a @code{LONGINT}, then a @code{valueOutOfRange} error
+occurs.
+
+Upon encountering an error, the value of @var{lint} is undefined.
+
+@strong{Please note:} Because @code{LONGINT} values are signed, hex numbers
+in the range @samp{80000000H..FFFFFFFFH} are interpreted as negative
+@code{LONGINT} values.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadIdentifier} @code{(VAR @var{s}: ARRAY OF CHAR)}
+Reads an Oberon-2 style identifier into @var{s}.  An @dfn{identifier} is a
+sequence of letters and digits, which must begin with a letter.  
+
+Sequences not beginning with a letter produce an @code{invalidFormat}
+error.
+
+If @var{s} is not large enough to hold the entire input, a
+@code{valueOutOfRange} error occurs.
+
+Upon encountering an error, the value of @var{s} is undefined.
+
+@emph{Example:}  
+
+@smallexample
+(* Input is as follows:  
+myIdentifier x y2 3z 
+*)
+
+VAR str: ARRAY 256 OF CHAR;
+
+r.ReadIdentifier(str)
+   @result{} str = "myIdentifier"
+r.ReadIdentifier(str)
+   @result{} str = "x"
+r.ReadIdentifier(str)
+   @result{} str = "y2"
+r.ReadIdentifier(str)
+   @result{} r.Res() = invalidFormat, str = undefined
+@end smallexample
+ 
+@item Method: @code{(@var{r}: Reader)} @b{ReadInt} @code{(VAR @var{int}: INTEGER)}
+Reads in characters in the form of a signed whole number and converts them
+to an @code{INTEGER} value.
+
+If the first character is not a digit, a "@code{+}" sign, or a "@code{-}"
+sign, then an @code{invalidFormat} error occurs.
+
+If the input is properly formatted as a signed whole number, but the value
+is out of range for an @code{INTEGER}, then a @code{valueOutOfRange} error
+occurs.
+
+Upon encountering an error, the value of @var{int} is undefined.
+
+@emph{Example:}  
+
+@smallexample
+(* Input is as follows:
+12345
+999999999999999
+forty-two
+*)
+
+VAR intVar: INTEGER;
+
+r.ReadInt(intVar);
+   @result{} intVar = 12345
+r.ReadInt(intVar);
+   @result{} r.Res() = valueOutOfRange, intVar = undefined
+r.ClearError;
+r.ReadInt(intVar); (* attempting to read `forty-two' *)
+   @result{} r.Res() = invalidFormat, intVar = undefined
+        (* r.Pos() is still at the `f' in `forty-two' *)
+@end smallexample
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLInt} @code{(VAR @var{lint}: LONGINT)}
+This method provides the same facility as @code{ReadInt}, except that it
+deals with @code{LONGINT} values.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadSInt} @code{(VAR @var{sint}: SHORTINT)}
+This method provides the same facility as @code{ReadInt}, except that it
+deals with @code{SHORTINT} values.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLine} @code{(VAR @var{s}: ARRAY OF CHAR)}
+Reads a sequence of characters into @var{s}; reading continues until an
+end-of-line character is encountered, the array @var{s} is full, or @var{r}
+reaches the end of the channel.  The end-of-line character is discarded and
+@var{s} is always terminated with @code{0X}.
+
+If @var{r} is already positioned at an end-of-line character, @var{s}
+returns as an empty string.
+
+If @var{s} is not large enough to hold the entire input, a
+@code{valueOutOfRange} error occurs; @var{s} returns with the sequence of
+characters that have been read so far (terminated by @code{0X}).
+
+If @var{r} has already reached the end of the channel (i.e., there are no
+more characters left to read), a @code{readAfterEnd} error occurs and
+@var{s} returns as an empty string.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLn} 
+This method reads and discards all characters up to and including the next
+end-of-line character.  If the end of the channel is reached before
+encountering an end-of-line character, a @code{readAfterEnd} error occurs.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadString} @code{(VAR @var{s}: ARRAY OF CHAR)}
+Reads in a sequence of characters enclosed in single (@code{'}) or double
+(@code{"}) quote marks.  The opening quote must be the same as the closing
+quote and must not occur within the string.
+
+Characters will be read until the terminating quote mark is encountered, an
+invalid character is read (end-of-line is always considered invalid), there
+are no more characters available in the channel, or the string @var{s} is
+full.  @var{s} is always terminated with @code{0X}.
+
+Unquoted strings produce an @code{invalidFormat} error.  Strings with no
+terminating quote mark also result in an @code{invalidFormat} error.
+
+If @var{s} is not large enough to hold the entire input, a
+@code{valueOutOfRange} error occurs.
+
+Upon encountering an error, the value of @var{s} is undefined.
+
+@emph{Example:}  
+
+@smallexample
+(* Input is as follows:
+"A well-formed string"
+'This is well-formed too'
+"Not well-formed
+because of line break"
+*)
+
+VAR str: ARRAY 256 OF CHAR;
+
+r.ReadString(str);
+   @result{} str = "A well-formed string"
+r.ReadString(str);
+   @result{} str = "This is well-formed too"
+r.ReadString(str);
+   @result{} r.Res() = invalidFormat, str = undefined
+        (* r.Pos() is now at the end of this line *)
+r.ClearError;
+r.ReadString(str);  
+   (* attempting to read `because of line break"' *)
+   @result{} r.Res() = invalidFormat, str = undefined
+@end smallexample
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadReal} @code{(VAR @var{real}: REAL)}
+Reads in characters in the form of a signed fixed or floating-point number
+and converts them to a @code{REAL} value.  
+
+If the first character is not a digit, a "@code{+}" sign, or a "@code{-}"
+sign, then an @code{invalidFormat} error occurs.
+
+If the input is properly formatted as a signed fixed or floating-point
+number, but the value is out of range for a @code{REAL}, then a
+@code{valueOutOfRange} error occurs.
+
+Upon encountering an error, the value of @var{real} is undefined.
+
+@emph{Example:}  
+
+@smallexample
+(* Input is as follows:
+-42
+3.1415
++54321E+30
+2.34E+56
++A
+_34.56
+*)
+
+VAR realVar: REAL;
+
+r.ReadReal(realVar);
+   @result{} realVar = -4.200000E+1
+r.ReadReal(realVar);
+   @result{} realVar = 3.141500
+r.ReadReal(realVar);
+   @result{} realVar = 5.432100E+34
+r.ReadReal(realVar);
+   @result{} r.Res() = valueOutOfRange, realVar = undefined
+r.ReadReal(realVar);
+   @result{} r.Res() = done, realVar = 0.000000
+        (* r.Pos() is now at `A' *)
+r.ClearError; r.ReadLn; 
+   @result{} Clear error and skip to the beginning of the next line 
+r.ReadReal(realVar);
+   @result{} r.Res() = invalidFormat, realVar = undefined
+        (* r.Pos() is still at the `_' in `_34.56' *)
+@end smallexample
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLReal} @code{(VAR @var{lreal}: LONGREAL)}
+This method provides the same facility as @code{ReadReal}, except that it
+deals with @code{LONGREAL} values.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadSet} @code{(VAR @var{s}: SET)}
+Reads in characters in the form of a set constructor and converts them to a
+@code{SET}.  
+
+If the sequence of characters does not form a valid set constructor, then an
+@code{invalidFormat} error occurs.
+
+If the input is properly formatted as a set constructor, but a set element
+has a value out of the range @code{0..MAX(SET)}, then a
+@code{valueOutOfRange} error occurs.
+
+Upon encountering an error, the value of @var{s} is undefined.
+
+@emph{Example:}  
+
+@smallexample
+(* Input is as follows:
+@{0, 1, 2, 3, 4, 5@}
+@{ 0..5 @}
+@{6, 7, 1024@}
+@{6, 7, W@}
+9..11
+@{13..12@}
+*)
+
+VAR setVar: SET;
+
+r.ReadSet(setVar);
+   @result{} setVar = @{0..5@}
+r.ReadSet(setVar);
+   @result{} setVar = @{0..5@}
+r.ReadSet(setVar);
+   @result{} r.Res() = valueOutOfRange, setVar = undefined
+        (* r.Pos() is now at the `@}' after the `1024' *)
+r.ClearError; r.ReadLn; 
+   @result{} Clear error and skip to the beginning of the next line 
+
+r.ReadSet(setVar);  (* attempt to read `@{6, 7, W@}' *)
+   @result{} r.Res() = invalidFormat, setVar = undefined
+        (* r.Pos() is now at `W' *)
+r.ClearError; r.ReadLn; 
+   @result{} Clear error and skip to the beginning of the next line 
+
+r.ReadSet(setVar);  (* attempt to read `9..11' *)
+   @result{} r.Res() = invalidFormat, setVar = undefined
+        (* r.Pos() is now at `9' *)
+r.ClearError; r.ReadLn; 
+   @result{} Clear error and skip to the beginning of the next line 
+
+r.ReadSet(setVar);  (* attempt to read `@{13..12@}' *)
+   @result{} r.Res() = invalidFormat, setVar = undefined
+        (* r.Pos() is now at the `@}' after the `12' *)
+@end smallexample
+@end table
+
+@node Class Writer (TextRider), Class Scanner (TextRider), Class Reader (TextRider), TextRider  
+@subsubsection Class Writer (TextRider)
+@cindex writers, text
+@cindex text writers
+
+@deftp {Class} Writer = POINTER TO WriterDesc
+This class provides facilities for writing various types of text.  Note that
+this type does not inherit properties from any basic writer type; rather it
+uses the basic writer type associated with the channel it is attached to.
+
+@table @asis
+@item Field: @b{opt}@minus{}: @code{SET}
+The current write options setting for the writer.  See @ref{Summary of
+TextRider Constants} for possible option values.
+
+@item Field: @b{base}@minus{}: @code{Channel.Channel}
+This field refers to the channel the writer is connected to.  
+@end table
+@end deftp
+
+The following methods can be used to check the status of a writer or, in
+some cases, change its state.  Some methods are fully described in the
+abstract writer section (@pxref{Abstract Class Writer}), so only brief
+descriptions of those are given here.
+
+@table @asis
+@item Method: @code{(@var{w}: Writer)} @b{ClearError}
+Clears error conditions on the writer @var{w}, re-enabling further write
+operations.
+
+@item Method: @code{(@var{w}: Writer)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
+Retrieves a descriptive error message string stating the reason why one of
+the previous operations failed.
+
+@item Method: @code{(@var{w}: Writer)} @b{Pos} @code{() : LONGINT}
+Returns the current writing position associated with the writer @code{w} in
+channel @code{@var{w}.base}.
+
+@item Method: @code{(@var{w}: Writer)} @b{Res} @code{() : INTEGER}
+This method returns the status of the last write operation (e.g.,
+@code{WriteBytes}, @code{WriteInt}, @code{SetPos}, etc.)  Note that unlike
+some other writer types, @code{Res()} is a method rather than a field; but
+otherwise, it performs equivalently.
+
+Error codes are highly dependent on the channel being written to (and
+therefore on the basic riders provided for that channel), so you must look
+at the result codes for the basic writer that is associated with that
+particular channel (e.g., Files.Writer error codes).  See the various
+channel types for details of these error codes (i.e., @ref{Files},
+@ref{StdChannels}, @ref{ProgramArgs})
+
+Use @code{ErrorDescr} to get a plain text error description of this error
+code.
+
+@item Method: @code{(@var{w}: Writer)} @b{SetEol} @code{(@var{marker}: ARRAY OF CHAR; @var{markerLen}: INTEGER)}
+This method sets the end-of-line marker; that is, what character(s) is used
+to mark the end of a line.  If the passed string @var{marker} does not fit
+into the field @code{eol}, then @code{@var{w}.Res()} is set to
+@code{invalidFormat}.  The empty marker is permitted.  The default value for
+a newly created writer is @code{CharClass.systemEol}.
+
+@strong{Pre-condition}: All of the following apply:
+@enumerate
+@item
+@code{w.Res() = done}, and
+@item
+@code{0 <= markerLen < LEN (marker)}, and
+@item
+@code{markerLen <= maxLengthEol}.
+@end enumerate
+ 
+@item Method: @code{(@var{w}: Writer)} @b{SetOpts} @code{(@var{opts}: SET)}
+This method is used to set the writer options @code{@var{w}.opt}.  See
+@ref{Summary of TextRider Constants} for possible option values.
+
+@emph{Example:}
+
+@smallexample
+w.SetOpts(@{TextRider.noBuffering@});
+   @result{} output is not buffered.
+w.SetOpts(TextRider.defWriterOptions);
+   @result{} writer options set to default values.
+@end smallexample
+
+@item Method: @code{(@var{w}: Writer)} @b{SetPos} @code{(@var{newPos}: LONGINT)}
+Sets the writing position to @var{newPos}.
+@end table
+
+The following writer methods are used to write values in text format to the
+underlying channel.  In some situations, it is possible for only part of the
+value to be actually written.
+
+@table @asis
+@item Method: @code{(@var{w}: Writer)} @b{WriteBool} @code{(@var{bool}: BOOLEAN)}
+Writes the value of @var{bool} as text.  That is, either @code{TRUE} or
+@code{FALSE}.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteChar} @code{(@var{ch}: CHAR)}
+Writes a single character value @var{ch}.  
+
+@emph{Example:}  
+
+@smallexample
+w.WriteChar("A");
+   @result{} writes one character = "A"
+@end smallexample
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteHex} @code{(@var{lint}: LONGINT; @var{d}: LONGINT)}
+Writes the value of @var{lint} as an unsigned hexadecimal number with a
+minimum field width of @var{d}.  Leading zeros are written if the value of
+@var{lint} requires less than @var{d} places.  If @var{d} is less than or
+equal to zero, field width is 8.
+
+@emph{Example:}  
+
+@smallexample
+w.WriteHex(127, 3);
+   @result{} writes "07F"  
+w.WriteHex(127, 0);
+   @result{} writes "0000007F"  
+w.WriteHex(-128, 0);
+   @result{} writes "FFFFFF80"
+@end smallexample
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteInt} @code{(@var{int}: INTEGER; @var{n}: LONGINT)}
+Writes the value of @var{int} as a decimal number with a minimum field width
+of @var{n}.  Leading spaces are written if the value of @var{int} requires
+less than @var{n} places.  A sign is written only for negative values.
+
+@emph{Example:}  
+
+@smallexample
+w.WriteInt(54321, 0);
+   @result{} writes "54321"
+w.WriteInt(54321, 10);
+   @result{} writes "     54321"
+@end smallexample
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteLInt} @code{(@var{lint}: LONGINT; @var{n}: LONGINT)}
+This method provides the same facility as @code{WriteInt}, except that it
+deals with @code{LONGINT} values.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteSInt} @code{(@var{sint}: SHORTINT; @var{n}: LONGINT)}
+This method provides the same facility as @code{WriteInt}, except that it
+deals with @code{SHORTINT} values.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteReal} @code{(@var{real}: REAL; @var{n}, @var{k}: LONGINT)} 
+Writes the value of @var{real} as a floating-point number with a minimum
+field width of @var{n}.
+
+If the value of @var{k} is greater than 0, that number of significant digits
+is included.  Otherwise, an implementation-defined number of significant
+digits is included.  The decimal point is not included if there are no
+significant digits in the fractional part.
+
+The number is scaled with one digit in the whole number part.  A sign is
+included only for negative values.
+
+@emph{Example:}  
+
+@smallexample
+w.WriteReal(3923009, 0, 0);
+   @result{} writes "3.923009E+6"
+w.WriteReal(3923009, 0, 1);
+   @result{} writes "4E+6"
+w.WriteReal(3923009, 0, 4);
+   @result{} writes "3.923E+6"
+w.WriteReal(3923009, 10, 1);
+   @result{} writes "      4E+6"
+
+w.WriteReal(-39.23009, 12, 2);
+   @result{} writes "     -3.9E+1"
+w.WriteReal(-39.23009, 1, 5);
+   @result{} writes "-3.9230E+1"
+
+w.WriteReal(0.0003923009, 6, 1);
+   @result{} writes "  4E-4"
+@end smallexample
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteLReal} @code{(@var{lreal}: LONGREAL; @var{n}, @var{k}: LONGINT)}
+This method provides the same facility as @code{WriteReal}, except that it
+deals with @code{LONGREAL} values.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteRealEng} @code{(@var{real}: REAL; @var{n}, @var{k}: LONGINT)}
+Writes the value of @var{real} as a floating-point number with a minimum
+field width of @var{n}.
+
+If the value of @var{k} is greater than 0, that number of significant digits
+is included.  Otherwise, an implementation-defined number of significant
+digits is included.  The decimal point is not included if there are no
+significant digits in the fractional part.
+
+The number is scaled with one to three digits in the whole number part and
+with an exponent that is a multiple of three.  A sign is included only for
+negative values.
+
+@emph{Example:}  
+
+@smallexample
+w.WriteRealEng(39.23009, 0, 1);
+   @result{} writes "40"
+w.WriteRealEng(39.23009, 5, 2);
+   @result{} writes "   39"
+w.WriteRealEng(39.23009, 10, 5);
+   @result{} writes "    39.230"
+
+w.WriteRealEng(-3923009, 13, 1);
+   @result{} writes "        -4E+6"
+w.WriteRealEng(-3923009, 7, 3);
+   @result{} writes " -3.92E+6"
+w.WriteRealEng(-3923009, 0, 6);
+   @result{} writes "-3.92301E+6"
+
+w.WriteRealEng(0.0003923009, 1, 1);
+   @result{} writes "400E-6"
+w.WriteRealEng(0.0003923009, 4, 2);
+   @result{} writes "  390E-6"
+w.WriteRealEng(0.0003923009, 16, 5);
+   @result{} writes "       392.30E-6"
+@end smallexample
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteLRealEng} @code{(@var{lreal}: LONGREAL; @var{n}, @var{k}: LONGINT)}
+This method provides the same facility as @code{WriteRealEng}, except that
+it deals with @code{LONGREAL} values.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteRealFix} @code{(@var{real}: REAL; @var{n}, @var{k}: LONGINT)}
+Writes the value of @var{real} as a fixed-point number with a minimum field
+width of @var{n}.
+
+The value is rounded to the given value of @var{k} relative to the decimal
+point.  The decimal point is suppressed if @var{k} is less than 0.
+
+The number will have at least one digit in the whole number part.  A sign is
+included only for negative values.  
+
+@emph{Example:}  
+
+@smallexample
+w.WriteRealFix(3923009, 0, -5);
+   @result{} writes "3920000"  (* rounded to the 
+                        ten-thousands place *)
+w.WriteRealFix(3923009, 0, 4);
+   @result{} writes "3923009.0000"
+
+w.WriteRealFix(3923.5, 0, -1);
+   @result{} writes "3924" (* rounded to the "ones" place *)
+w.WriteRealFix(3923.5, 0, 0);
+   @result{} writes "3924." (* same as above, 
+                        but writes a decimal point *)
+
+w.WriteRealFix(-39.23009, 10, 1);
+   @result{} writes "     -39.2"
+w.WriteRealFix(-39.23009, 20, 4);
+   @result{} writes "            -39.2301"
+
+w.WriteRealFix(0.0003923009, 5, 1);
+   @result{} writes "  0.0"
+w.WriteRealFix(0.0003923009, 11, 4);
+   @result{} writes "     0.0004"
+@end smallexample
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteLRealFix} @code{(@var{lreal}: LONGREAL; @var{n}, @var{k}: LONGINT)}
+This method provides the same facility as @code{WriteRealFix}, except that
+it deals with @code{LONGREAL} values.
+ 
+@item Method: @code{(@var{w}: Writer)} @b{WriteSet} @code{(@var{s}: SET)}
+Writes the value of @var{s} as an Oberon-2 set constructor, including curly
+braces, commas, and range indicators ("@code{..}") where appropriate.
+
+@emph{Example:}  
+
+@smallexample
+w.WriteSet(@{@});
+   @result{} writes "@{@}"
+w.WriteSet(@{1,6,10@});
+   @result{} writes "@{1, 6, 10@}"
+w.WriteSet(@{0, 1, 2, 3, 4, 5@});
+   @result{} writes "@{0..5@}"
+w.WriteSet(@{0, 2, 3, 4, 8@});
+   @result{} writes "@{0, 2..4, 8@}"
+w.WriteSet(@{0, 2..7, 8@});
+   @result{} writes "@{0, 2..8@}"
+w.WriteSet(@{0, 2, 4, 6@} + @{1, 3, 5, 7@});
+   @result{} writes "@{0..7@}"
+@end smallexample
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteString} @code{(@var{s}: ARRAY OF CHAR)}
+Writes a string value up to, but not including, the terminating @code{0X}
+character.  The behaviour of this method is undefined if @var{s} is an
+unterminated character array.  
+
+@strong{Please note:} @code{ReadString} and @code{WriteString} @emph{are
+not} symmetric.  That is, @code{WriteString} does not enclose the written
+string in quote marks; only the actual character values contained in @var{s}
+are written.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteLn}
+Writes an end-of-line marker (i.e., a "newline").  The default value for a
+newly created writer is @code{CharClass.systemEol} (see @code{SetEol}
+above).
+@end table
+
+
+@node Class Scanner (TextRider), Connecting TextRiders, Class Writer (TextRider), TextRider  
+@subsubsection Class Scanner (TextRider)
+@cindex scanners, text
+@cindex text scanners
+
+A @dfn{text scanner} is a special type of reader, which is used to parse
+text for different kinds of tokens.  Integers, reals, strings, identifiers,
+set constructors, the boolean tokens @code{TRUE} and @code{FALSE}, and other
+special symbols are all tokens recognized by this kind of scanner.
+
+These tokens are scanned sequentially, converted to an appropriate type, and
+then returned in one of the scanner's fields.  The scanner's @code{type}
+field is then used to determine the type of token which has been scanned.
+
+Along with some typical reader methods, such as @code{SetPos}, the primary
+method of a scanner is @code{Scan}, which simply scans the next token based
+on the scanner's current options setting.  A typical use of a scanner might
+look similar the following program fragment:
+
+@emph{Example:}  
+
+@smallexample
+VAR s: TextRider.Scanner;
+    f: Files.File;
+    res: INTEGER;
+    
+  f := Files.Old("Sample.txt", @{Files.read@}, res);
+  s := TextRider.ConnectScanner(f); 
+
+  s.Scan;
+  WHILE s.type # TextRider.error DO
+     IF s.type = TextRider.string THEN
+        ... (* Process string tokens *)
+     ELSIF s.type = TextRider.ident THEN
+        ... (* Process identifier tokens *)
+     ELSIF s.type = TextRider.int THEN   
+        ... (* Process integer tokens *)
+     ELSIF ...
+        ... (* Process other token types *)
+     END; 
+     s.Scan;
+  END;
+
+  Out.String("Total lines scanned="); 
+  Out.LongInt(s.lines, 0); Out.Ln;
+@end smallexample
+
+@deftp {Data type} String 
+A string type of pre-defined length for use within a scanner.  Note that
+because this type is of finite length, a scanner is limited in the length of
+string it can scan.
+
+@strong{Please note:} @code{LEN()} can be used on a variable of type
+@code{String} to determine the maximum size that can be held by a scanner
+string.  
+@end deftp
+
+@deftp {Class} Scanner = POINTER TO ScannerDesc
+This class provides facilities for scanning sequences of characters from a
+channel and parsing those characters into various tokens.  The tokens a
+scanner can recognize are defined by the constants provided for its
+@code{type} field (@ref{Summary of TextRider Constants}).
+
+Note that a scanner will not continue to read (via calls to @code{Scan}) if
+it has scanned an invalid token or an error occurs; @code{ClearError} must
+be called explicitly before scanning can continue.  The difference is that
+@code{invalid} means that the token could not be interpreted; a sequence of
+characters was read, but could not be interpreted as a valid token.  An
+@code{error} occurs when there is a problem with the underlying
+@code{Reader}; so, @code{error} is used to determine when you have reached
+end-of-text.
+
+@table @asis
+@item Field: @b{base}@minus{}: @code{Channel.Channel}
+This field refers to the channel the scanner is connected to.  
+
+@item Field: @b{lines}@minus{}: @code{LONGINT}
+Total number of lines (i.e., end-of-line characters) that have been scanned.
+This number is updated by @code{Scan}.
+
+@item Field: @b{opt}@minus{}: @code{SET} 
+The current read options setting for the scanner.  See @ref{Summary of
+TextRider Constants} for possible option values.
+
+@item Field: @b{pos}@minus{}: @code{LONGINT}
+Starting position of the most recently scanned token.  Note that this is
+@emph{not} the same as the value returned by the @code{Pos()} method.  
+
+This value may be useful when an @code{invalid} token is scanned, as it will
+point to the start of the @code{invalid} token (whereas @code{Pos()} would
+be positioned @emph{after} the invalid token).  You could, for example,
+reset the scanner options and re-position the scanner back at the invalid
+token to attempt a re-scan.
+
+@item Field: @b{type}@minus{}: @code{INTEGER}
+The type of the token that has been most recently scanned.  The constants
+@code{bool}, @code{char}, @code{error}, @code{int}, @code{invalid},
+@code{line}, @code{ident}, @code{real}, @code{set}, @code{string},
+@code{tab}, and @code{undefined} are possible values for @code{type}.  See
+also the related output fields listed below.
+@end table
+
+The following are the output fields within a scanner.  Before the first call
+to the @code{Scan} method, the values of these fields are undefined.  After
+each successive call to @code{Scan}, @code{type} is set and the matching
+output field contains the value of the scanned token.  The value of output
+fields not corresponding to @code{type} are undefined.
+
+@table @asis
+@item Field: @b{bool}@minus{}: @code{BOOLEAN}
+This field will contain a valid value only if the @code{interpretBools}
+option is set and one of the tokens @code{TRUE} or @code{FALSE} is scanned.
+
+@item Field: @b{char}@minus{}: @code{CHAR}
+Contains a value if @code{type} is @code{char}, @code{line}, or @code{tab}.
+
+@item Field: @b{int}@minus{}: @code{LONGINT}
+Contains a value if @code{type} is @code{int}.  
+
+@strong{Please note:} Valid integers are in either signed decimal or
+unsigned hexadecimal formats (hexadecimal tokens @emph{must} be terminated
+with an "@code{H}" character).
+
+@item Field: @b{real}@minus{}: @code{LONGREAL} 
+Contains a value if @code{type} is @code{real}.  
+
+@item Field: @b{set}@minus{}: SET;
+Contains a value if @code{type} is @code{set}.  
+
+@item Field: @b{string}@minus{}: String; 
+Contains a value if @code{type} is @code{string} or @code{ident}.  
+@end table
+@end deftp
+
+The following scanner methods are equivalent to the corresponding reader
+methods described in @ref{Class Reader (TextRider)}, so only brief
+descriptions are given here.
+
+@quotation
+@strong{Please note:} Normally when scanning text, a program will monitor a
+scanner's @code{type} field and check for @code{invalid} tokens and the
+occurance of @code{error}.  The @code{Res()} or @code{ErrorDescr} methods
+need to be checked only to find out error details (and then, possibly, the
+@code{ClearError} method can be used to clear the error).
+
+@emph{Example:}  
+
+@smallexample
+VAR s: TextRider.Scanner;
+    f: Files.File;
+    res: INTEGER;
+    str: ARRAY 256 OF CHAR;
+    
+f := Files.Old("Sample.txt", @{Files.read@}, res);
+s := TextRider.ConnectScanner(f); 
+
+f.Close;
+s.Scan;
+   @result{} s.type = error
+s.ErrorDescr(str);
+   @result{} str = "File has been closed"
+@end smallexample
+@end quotation
+
+@table @asis
+@item Method: @code{(@var{s}: Scanner)} @b{Available} @code{() : LONGINT}
+Returns the number of bytes available for the next scanning operation.
+
+@item Method: @code{(@var{s}: Scanner)} @b{ClearError}
+Clears error conditions on the scanner @var{s}, re-enabling further
+operations on @var{s}.
+
+@item Method: @code{(@var{s}: Scanner)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
+Retrieves a descriptive error message string stating the reason why one of
+the previous operations failed.
+
+@item Method: @code{(@var{s}: Scanner)} @b{Pos} @code{(): LONGINT}
+Returns the current reading position associated with the scanner @var{s} in
+channel @code{@var{s}.base}.  Note that the value returned by this method is
+different from the position indicated by the scanner's @code{pos} field.
+
+@item Method: @code{(@var{s}: Scanner)} @b{Res} @code{(): INTEGER}
+This method returns the status of the last read operation (e.g.,
+@code{Scan}, @code{SetPos}, etc.).  Note that @code{Res()} is a method
+rather than a field; but otherwise, it performs equivalently.
+
+Use method @code{ErrorDescr} to get a plain text error description of this
+error code.
+
+@item Method: @code{(@var{s}: Scanner)} @b{SetEol} @code{(@var{marker}: ARRAY OF CHAR; @var{markerLen}: INTEGER)}
+This method sets the end-of-line marker; it provides the same facility as
+@code{Reader.SetEol}.  A marker length @code{markerLen=-1} enables auto
+detection of the end-of-line convention used by the channel.
+
+@item Method: @code{(@var{s}: Scanner)} @b{SetOpts} @code{(@var{opts}: SET)}
+This method is used to set the scanner options @code{@var{s}.opt}.  See
+@ref{Summary of TextRider Constants} for possible option values.
+
+@emph{Example:}
+
+@smallexample
+s.SetOpts(@{TextRider.returnCtrlChars, 
+        TextRider.useSignedNumbers@});
+   @result{} s.opt = @{returnCtrlChars, useSignedNumbers@}
+s.SetOpts(s.opt + @{TextRider.interpretBools@});
+   @result{} s.opt = @{interpretBools, returnCtrlChars, 
+        useSignedNumbers@}
+s.SetOpts(TextRider.defScannerOptions);
+   @result{} scanner options set to default values.
+@end smallexample
+
+@item Method: @code{(@var{s}: Scanner)} @b{SetPos} @code{(@var{newPos}: LONGINT)}
+Sets the current scanning position to @var{newPos}.
+@end table
+
+@table @asis
+@item Method: @code{(@var{s}: Scanner)} @b{Scan}
+This method skips whitespace, and then scans for the next token as specified
+by the scanning options.  Based on the type of token scanned,
+@code{@var{s}.type} is set and the matching output field is assigned a
+value.  
+
+If the end of the valid text is reached, @code{@var{s}.type} is set to
+@code{error}.  (Note that @code{error} is set when the last available valid
+token is read, not necessarily by a @code{readAfterEnd} condition.)
+
+Valid tokens are described as follows:
+
+@table @asis
+@item @code{bool}
+If @code{interpretBools} is set as a scanner option, the text tokens
+@code{TRUE} or @code{FALSE} are read as @code{bool}.  (Otherwise, these
+tokens are read as type @code{ident}.)
+
+@item @code{char} 
+Normally, any printable characters other than a letter or number and any
+non-printable control character.  However, scanner options will affect what
+a scanner interprets to be a @code{char}:
+
+@itemize @bullet
+@item 
+If @code{interpretSets} is not set, elements of a set constructor,
+"@code{@{}", "@code{@}}", "@code{,}", are read as @code{char} (and the
+associated integer constants are read as separate tokens).
+
+@item 
+If @code{interpretStrings} is not set, quote characters are read as
+@code{char} (and string contents are then read as separate tokens).
+
+@item 
+If @code{useSignedNumbers} is not set, "@code{+}" and "@code{-}" are
+read as @code{char}.  (Otherwise, they are always considered part of a
+number.)
+@end itemize
+
+@item @code{int} 
+Any Oberon-2 integer constant.  (Note that hexadecimal numbers must be
+unsigned and be terminated with an "@code{H}".  Also, lower-case letters,
+@samp{a..f}, are not valid hex digits.)
+
+@item @code{line}
+If @code{returnCtrlChars} is set, an end-of-line character is read as
+@code{@var{s}.type = line}.  Otherwise, it is counted as whitespace.
+
+@item @code{ident}
+Any Oberon-2 identifier.  (Note that "@code{_}" is not considered as part of
+an identifier, nor is a selector "@code{.}".)
+
+@item @code{real} 
+Any Oberon-2 real number constant.  
+
+@item @code{set}
+Any Oberon-2 set constructor.
+
+@item @code{string}
+Any Oberon-2 string constant.
+
+@item @code{tab}
+If @code{returnCtrlChars} is set, a tab character is read as
+@code{@var{s}.type = tab}.  Otherwise, it is counted as whitespace.
+@end table
+@end table
+
+@node Connecting TextRiders, Summary of TextRider Constants, Class Scanner (TextRider), TextRider
+@subsubsection Connecting TextRiders to Channels
+@cindex text riders, connecting to channels
+@cindex connecting text riders to channels
+
+The following procedures are provided for creating instances of
+@file{TextRider} objects and connecting them to a channel.  If the channel
+being passed as an argument to any of these functions has a value of
+@code{NIL}, behavior is undefined.
+
+Also, for any of these functions, the returned rider is positioned at the
+beginning of the channel for positionable channels and at the current
+position for non-positionable channels.
+
+@deffn Function ConnectReader @code{(@var{ch}: Channel.Channel): Reader}
+This function creates a new reader and attaches it to the channel @var{ch}.
+@code{@var{ch}.res} is set to @code{done} on success and the new reader is
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
+to indicate the error cause.
+@end deffn
+
+@deffn Function ConnectWriter @code{(@var{ch}: Channel.Channel): Writer}
+This function creates a new writer and attaches it to the channel @var{ch}.
+@code{@var{ch}.res} is set to @code{done} on success and the new writer is
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
+to indicate the error cause.  
+@end deffn
+
+@deffn Function ConnectScanner @code{(@var{ch}: Channel.Channel): Scanner}
+This function creates a new scanner and attaches it to the channel @var{ch}.
+@code{@var{ch}.res} is set to @code{done} on success and the new scanner is
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
+to indicate the error cause.
+@end deffn
+
+@emph{Example:}
+
+@smallexample
+VAR
+  r: TextRider.Reader;
+  f: Files.File;
+  res: INTEGER;
+  
+  f := Files.Old("test.dat", @{Files.read@}, res);
+  IF (res # Files.done) THEN (* error processing *) END;
+  
+  r := TextRider.ConnectReader(f);
+  IF (r = NIL) THEN (* error processing *) END;
+@end smallexample
+
+@node Summary of TextRider Constants,  , Connecting TextRiders, TextRider  
+@subsubsection Summary of TextRider Constants
+@cindex constants for text riders 
+@cindex text riders, constants 
+
+@defvr Constant maxLengthEol
+The maximum number of characters allowed in @code{Reader.eol}.
+@end defvr
+
+For other constant values that may be applicable when using module
+@file{TextRider}, see the specific channel implementation that you are
+reading to or writing from, such as @ref{Files}, @ref{StdChannels}, or
+@ref{ProgramArgs}.
+
+The following are possible return values for @code{Res()} methods:
+
+@defvr Constant done
+This indicates successful completion of the last operation.  
+@end defvr
+
+@defvr Constant invalidFormat
+Indicates that the text at the current reading (or scanning) position
+is not properly formatted as the requested type.
+@end defvr
+
+@defvr Constant valueOutOfRange
+Indicates that a number, or potential set element, is in the proper format,
+but has a value that is out of range of the target type.
+@end defvr
+
+The following are all possible values for a scanner's @code{type} field:
+
+@defvr Constant bool
+The scanner has read a valid boolean value.  This can only be set when the
+scanner's options include @code{interpretBools}.
+@end defvr 
+
+@defvr Constant char
+The scanner has read a valid character value.
+@end defvr 
+
+@defvr Constant error
+Indicates that an error has occured while scanning.  This could be an error
+condition resulting from one of the scanner's own operations (for example,
+an attempt to @code{Scan} when the scanner has reached the end of available
+text), or a result of a lower level error (say, an error occured in the
+underlying channel).
+@end defvr 
+
+@defvr Constant ident
+The scanner has read a valid (Oberon-2) identifier.
+@end defvr 
+
+@defvr Constant int
+The scanner has read a valid integer value.
+@end defvr 
+
+@defvr Constant invalid
+The scanner has read an invalid value.  Note that when @code{type =
+invalid}, the contents of all of the scanner's output fields are undefined.
+@end defvr 
+
+@defvr Constant line
+The scanner has read a valid end-of-line character.  This can only be set
+when the scanner's options include @code{returnCtrlChars}.
+@end defvr 
+
+@defvr Constant real
+The scanner has read a valid real number value.
+@end defvr 
+
+@defvr Constant set
+The scanner has read a valid set constructor value.  This can only be set
+when the scanner's options include @code{interpretSets}.
+@end defvr 
+
+@defvr Constant string
+The scanner has read a valid (Oberon-2) string value.  This can only be set
+when the scanner's options include @code{interpretStrings}.
+@end defvr 
+
+@defvr Constant tab
+The scanner has read a valid tab character.  This can only be set when the
+scanner's options include @code{returnCtrlChars}.
+@end defvr 
+
+@defvr Constant undefined
+This is the initial value of @code{Scanner.type} after @code{ConnectScanner}
+or @code{ClearError} (before any calls to @code{Scan}).
+@end defvr 
+
+The following is a possible writer option (i.e., a valid setting for the
+writer's @code{opt} field):
+
+@defvr Constant noBuffering
+When this option is set for a writer, output is not buffered.  This allows,
+for example, for interactive output prompts to appear as soon as they are
+written.
+@end defvr
+
+The following is a possible reader or scanner option (i.e., a valid setting
+for the @code{opt} field):
+
+@defvr Constant returnCtrlChars
+When this option is set, end-of-line and tab characters are @emph{not}
+counted as whitespace.
+@end defvr 
+                           
+Scanners also permit the following additional options:
+
+@defvr Constant interpretBools
+When this option is set, the text tokens @code{TRUE} or @code{FALSE} are
+read as boolean values (i.e., @code{scanner.type = bool}).  Otherwise, these
+tokens are read as identifiers (i.e., @code{scanner.type = ident}.)
+@end defvr
+
+@defvr Constant interpretSets
+When set, text in the form a set constructor (with "@code{@{}", "@code{@}}",
+"@code{,}", and associated integer constants) are read as @code{SET} values.
+Otherwise, these are read as separate tokens.
+@end defvr
+
+@defvr Constant interpretStrings
+When set, quoted character sequences are read as string values.  Otherwise,
+quote characters and string contents are read as separate tokens.
+@end defvr
+
+@defvr Constant useSignedNumbers
+When set, "@code{+}" and "@code{-}" characters are always considered part of
+a number.  Otherwise, they are read as separate characters.
+@end defvr
+
+@defvr Constant defReaderOptions
+The default reader options setting, which is equivalent to having no options
+set (i.e., @code{@{@}}).
+@end defvr
+
+@defvr Constant defWriterOptions
+The default writer options setting, which is equivalent to having no options
+set (i.e., @code{@{@}}).
+@end defvr
+
+@defvr Constant defScannerOptions
+The default scanner options setting, which is equivalent to setting the
+options @code{interpretBools}, @code{interpretSets},
+@code{interpretStrings}, and @* @code{useSignedNumbers}.
+@end defvr
+
+
+@node UnicodeRider,  , TextRider, Text Mappers
+@subsection Module UnicodeRider
+@pindex UnicodeRider
+@cindex unicode
+@cindex riders, unicode
+
+@c BEGIN UnicodeRider
+
+Module @file{UnicodeRider} provides concrete classes derived from the
+abstract base classes of module @file{LongRider}.  @file{UnicodeRider} is
+used for reading and writing data as (long) character type @code{LONGCHAR}
+(i.e., interpreting byte streams as Unicode characters).  The following
+sections describe only @file{UnicodeRider} specific facilities; see
+@ref{TextRider} for examples of usage and descriptions of facilities
+inherited from @ref{Rider}.  
+
+@menu 
+* Class Reader (UnicodeRider):: Class for reading unicode text from channels.  
+* Class Writer (UnicodeRider):: Class for writing unicode text to channels.  
+* Class Scanner (UnicodeRider)::Class for scanning unicode text from 
+                                  channels.  
+* Connecting UnicodeRiders::    Procedures to connect (unicode) readers, 
+                                  writers, and scanners to channels.  
+* Summary of UnicodeRider Constants:: Summarized list of constants in module
+                                  UnicodeRider.  
+@end menu
+
+@node Class Reader (UnicodeRider), Class Writer (UnicodeRider),  , UnicodeRider  
+@subsubsection Class Reader (UnicodeRider)
+@cindex readers, unicode
+@cindex text readers, long
+
+@deftp {Class} Reader = POINTER TO ReaderDesc
+This is the concrete subclass of @code{LongRider.Reader} that provides
+facilities for reading various kinds of unicode text.
+
+Note that, in @code{UnicodeRider.Reader}, @code{ReadChar} actually reads a
+@code{LONGCHAR} value (2 bytes) from the channel and then attempts to map it
+to a @code{CHAR} value (ISO-Latin-1).  If the value cannot be mapped, a
+@code{valueOutOfRange} error occurs.  Consequently for @file{UnicodeRider},
+@code{ReadLine}, @code{ReadIdentifier}, and @code{ReadString} produce the
+same error in similar situations.
+
+Also note that a @code{valueOutOfRange} error occurs for methods reading
+into an @code{ARRAY OF LONGCHAR} (i.e., @code{ReadLLine},
+@code{ReadLIdentifier}, and @code{ReadLString}) if the (long) character
+array is not large enough to hold the entire input.
+@end deftp
+
+@code{UnicodeRider.Reader} adds the following methods:
+
+@table @asis
+@item Method: @code{(@var{r}: Reader)} @b{ReadLChar} @code{(VAR @var{ch}: LONGCHAR)}
+Reads in a single (@code{LONGCHAR}) character value and places it in
+@var{ch}.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLIdentifier} @code{(VAR @var{s}: ARRAY OF LONGCHAR)}
+Reads an Oberon-2 style identifier into @var{s}.  An @dfn{identifier} is a
+sequence of letters and digits, which must begin with a letter.  
+
+Sequences not beginning with a letter produce an @code{invalidFormat}
+error.
+
+If @var{s} is not large enough to hold the entire input, a
+@code{valueOutOfRange} error occurs.
+
+Upon encountering an error, the value of @var{s} is undefined.
+
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLLine} @code{(VAR @var{s}: ARRAY OF LONGCHAR)}
+Reads a sequence of (@code{LONGCHAR}) characters into @var{s}; reading
+continues until an end-of-line character is encountered, the array @var{s}
+is full, or @var{r} reaches the end of the channel.  The end-of-line
+character is discarded and @var{s} is always terminated with @code{0X}.
+
+If @var{r} is already positioned at an end-of-line character, @var{s}
+returns as an empty string.
+
+If @var{s} is not large enough to hold the entire input, a
+@code{valueOutOfRange} error occurs; @var{s} returns with the sequence of
+characters that have been read so far (terminated by @code{0X}).
+
+If @var{r} has already reached the end of the channel (i.e., there are no
+more characters left to read), a @code{readAfterEnd} error occurs and
+@var{s} returns as an empty string.
+
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLString} @code{(VAR @var{s}: ARRAY OF CHAR)}
+Reads in a sequence of (@code{LONGCHAR}) characters enclosed in single
+(@code{'}) or double (@code{"}) quote marks.  The opening quote must be the
+same as the closing quote and must not occur within the string.
+
+Characters will be read until the terminating quote mark is encountered, an
+invalid character is read (end-of-line is always considered invalid), there
+are no more characters available in the channel, or the string @var{s} is
+full.  @var{s} is always terminated with @code{0X}.
+
+Unquoted strings produce an @code{invalidFormat} error.  Strings with no
+terminating quote mark also result in an @code{invalidFormat} error.
+
+If @var{s} is not large enough to hold the entire input, a
+@code{valueOutOfRange} error occurs.
+
+Upon encountering an error, the value of @var{s} is undefined.
+@end table
+
+
+@node Class Writer (UnicodeRider), Class Scanner (UnicodeRider),  Class Reader (UnicodeRider), UnicodeRider
+@subsubsection Class Writer (UnicodeRider)
+@cindex writers, unicode
+@cindex text writers, long
+
+@deftp {Class} Writer = POINTER TO WriterDesc
+This is the concrete subclass of @code{LongRider.Writer} that provides
+facilities for writing various kinds of unicode text.
+@end deftp
+
+For @code{UnicodeRider.Writer}, note that @code{WriteChar} actually writes 2
+bytes at a time to the channel (i.e., @code{CHAR} values are actually
+written as Unicode values).  @code{ReadLine}, @code{ReadIdentifier}, and
+@code{ReadString} behave similarly for @file{LongRider}.
+
+@code{UnicodeRider.Writer} adds the following methods:
+
+@table @asis
+@item Method: @code{(@var{w}: Writer)} @b{WriteLChar} @code{(@var{ch}: LONGCHAR)}
+Writes a single (@code{LONGCHAR}) character value @var{ch}.
+
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteLString} @code{(@var{s}: ARRAY OF LONGCHAR)}
+Writes a long string value up to, but not including, the terminating
+@code{0X} character.  The behaviour of this method is undefined if @var{s}
+is an unterminated (@code{LONGCHAR}) character array.
+
+@strong{Please note:} @code{ReadLString} and @code{WriteLString} @emph{are
+not} symmetric.  That is, @code{WriteLString} does not enclose the written
+string in quote marks; only the actual (@code{LONGCHAR}) character values
+contained in @var{s} are written.
+@end table
+
+
+@node Class Scanner (UnicodeRider),  Connecting UnicodeRiders, Class Writer (UnicodeRider), UnicodeRider  
+@subsubsection Class Scanner (UnicodeRider)
+@cindex scanners, unicode
+@cindex text scanners, long
+
+@deftp {Class} Scanner = POINTER TO ScannerDesc
+This is the concrete subclass of @code{LongRider.Scanner} that provides
+facilities for scanning sequences of (long) characters from a channel and
+parsing those characters into various tokens.  The tokens a scanner can
+recognize are defined by the constants provided for its @code{type} field
+(@ref{Summary of UnicodeRider Constants}).
+
+@deftp {Data type} LongString 
+A (long) string type of pre-defined length for use within a scanner.  Note
+that because this type is of finite length, a scanner is limited in the
+length of string it can scan.
+
+@strong{Please note:} @code{LEN()} can be used on a variable of type
+@code{LongString} to determine the maximum size that can be held by a
+scanner string.
+@end deftp
+
+@table @asis
+@item Field: @b{type}@minus{}: @code{INTEGER}
+This is an inherited field, however, it now has the additional possible
+values: @code{lchar}, @code{lident}, @code{lline}, @code{lstring},
+@code{ltab}.
+
+@item Field: @b{lchar}@minus{}: @code{LONGCHAR}
+Contains a value if @code{type} is @code{lchar}, @code{lline}, or @code{ltab}.
+
+@item Field: @b{lstring}@minus{}: LongString; 
+Contains a value if @code{type} is @code{lstring} or @code{lident}.  
+@end table
+@end deftp
+
+@strong{Please note:} After a call to @code{Scan}, the @code{type} field of
+@code{UnicodeRider.Scanner} is never expected to contain any of the
+following values: @code{char}, @code{ident}, @code{line}, @code{string},
+@code{tab}.  But rather, the ``long'' versions of these type values are set
+as appropriate.
+
+
+@node Connecting UnicodeRiders, Summary of UnicodeRider Constants, Class Scanner (UnicodeRider), UnicodeRider
+@subsubsection Connecting UnicodeRiders to Channels
+@cindex text (unicode) riders, connecting to channels
+@cindex unicode (text) riders, connecting to channels
+@cindex connecting unicode riders to channels
+
+The following procedures are provided for creating instances of
+@file{UnicodeRider} objects and connecting them to a channel.  If the
+channel being passed as an argument to any of these functions has a value of
+@code{NIL}, behavior is undefined.
+
+Also, for any of these functions, the returned rider is positioned at the
+beginning of the channel for positionable channels and at the current
+position for non-positionable channels.
+
+@deffn Function ConnectReader @code{(@var{ch}: Channel.Channel): Reader}
+This function creates a new reader and attaches it to the channel @var{ch}.
+@code{@var{ch}.res} is set to @code{done} on success and the new reader is
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
+to indicate the error cause.
+@end deffn
+
+@deffn Function ConnectWriter @code{(@var{ch}: Channel.Channel): Writer}
+This function creates a new writer and attaches it to the channel @var{ch}.
+@code{@var{ch}.res} is set to @code{done} on success and the new writer is
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
+to indicate the error cause.  
+@end deffn
+
+@deffn Function ConnectScanner @code{(@var{ch}: Channel.Channel): Scanner}
+This function creates a new scanner and attaches it to the channel @var{ch}.
+@code{@var{ch}.res} is set to @code{done} on success and the new scanner is
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
+to indicate the error cause.
+@end deffn
+
+
+@node Summary of UnicodeRider Constants,  , Connecting UnicodeRiders, UnicodeRider  
+@subsubsection Summary of UnicodeRider Constants
+@cindex constants for unicode riders 
+@cindex text (unicode) riders, constants 
+@cindex unicode (text) riders, constants 
+
+@defvr Constant maxLengthEol
+The maximum number of characters allowed in @code{Reader.eol}.
+@end defvr
+
+For other constant values that may be applicable when using module
+@file{UnicodeRider}, see the specific channel implementation that you are
+reading to or writing from, such as @ref{Files}, @ref{StdChannels}, or
+@ref{ProgramArgs}.
+
+The following are possible return values for @code{Res()} methods:
+
+@defvr Constant done
+This indicates successful completion of the last operation.  
+@end defvr
+
+@defvr Constant invalidFormat
+Indicates that the text at the current reading (or scanning) position
+is not properly formatted as the requested type.
+@end defvr
+
+@defvr Constant valueOutOfRange
+Indicates that a number, or potential set element, is in the proper format,
+but has a value that is out of range of the target type.
+@end defvr
+
+The following are all possible values for a scanner's @code{type} field:
+
+@defvr Constant bool
+The scanner has read a valid boolean value.  This can only be set when the
+scanner's options include @code{interpretBools}.
+@end defvr 
+
+@defvr Constant char
+The scanner has read a valid character value.  
+
+(For @file{UnicodeRider}, @code{type} is never expected to contain this
+value.  But rather, the ``long'' version is set when appropriate.)
+@end defvr 
+
+@defvr Constant lchar
+The scanner has read a valid (long) character value.
+@end defvr 
+
+@defvr Constant error
+Indicates that an error has occured while scanning.  This could be an error
+condition resulting from one of the scanner's own operations (for example,
+an attempt to @code{Scan} when the scanner has reached the end of available
+text), or a result of a lower level error (say, an error occured in the
+underlying channel).
+@end defvr 
+
+@defvr Constant ident
+The scanner has read a valid (Oberon-2) identifier.
+
+(For @file{UnicodeRider}, @code{type} is never expected to contain this
+value.  But rather, the ``long'' version is set when appropriate.)
+@end defvr 
+
+@defvr Constant lident
+The scanner has read a valid (Oberon-2) identifier (as a @code{LongString}).
+@end defvr 
+
+@defvr Constant int
+The scanner has read a valid integer value.
+@end defvr 
+
+@defvr Constant invalid
+The scanner has read an invalid value.  Note that when @code{type =
+invalid}, the contents of all of the scanner's output fields are undefined.
+@end defvr 
+
+@defvr Constant line
+The scanner has read a valid end-of-line character.  This can only be set
+when the scanner's options include @code{returnCtrlChars}.
+
+(For @file{UnicodeRider}, @code{type} is never expected to contain this
+value.  But rather, the ``long'' version is set when appropriate.)
+@end defvr 
+
+@defvr Constant lline
+The scanner has read a valid (long) end-of-line character.  This can only be
+set when the scanner's options include @code{returnCtrlChars}.
+@end defvr 
+
+@defvr Constant real
+The scanner has read a valid real number value.
+@end defvr 
+
+@defvr Constant set
+The scanner has read a valid set constructor value.  This can only be set
+when the scanner's options include @code{interpretSets}.
+@end defvr 
+
+@defvr Constant string
+The scanner has read a valid (Oberon-2) string value.  This can only be set
+when the scanner's options include @code{interpretStrings}.
+
+(For @file{UnicodeRider}, @code{type} is never expected to contain this
+value.  But rather, the ``long'' version is set when appropriate.)
+@end defvr 
+
+@defvr Constant lstring
+The scanner has read a valid (Oberon-2) (long) string value.  This can only
+be set when the scanner's options include @code{interpretStrings}.
+@end defvr 
+
+@defvr Constant tab
+The scanner has read a valid (long) tab character.  This can only be set
+when the scanner's options include @code{returnCtrlChars}.
+
+(For @file{UnicodeRider}, @code{type} is never expected to contain this
+value.  But rather, the ``long'' version is set when appropriate.)
+@end defvr 
+
+@defvr Constant ltab
+The scanner has read a valid tab character.  This can only be set when the
+scanner's options include @code{returnCtrlChars}.
+@end defvr
+
+@defvr Constant undefined
+This is the initial value of @code{Scanner.type} after @code{ConnectScanner}
+or @code{ClearError} (before any calls to @code{Scan}).
+@end defvr 
+
+The following is a possible writer option (i.e., a valid setting for the
+writer's @code{opt} field):
+
+@defvr Constant noBuffering
+When this option is set for a writer, output is not buffered.  This allows,
+for example, for interactive output prompts to appear as soon as they are
+written.
+@end defvr
+
+The following is a possible reader or scanner option (i.e., a valid setting
+for the @code{opt} field):
+
+@defvr Constant returnCtrlChars
+When this option is set, end-of-line and tab characters are @emph{not}
+counted as whitespace.
+@end defvr 
+                           
+Scanners also permit the following additional options:
+
+@defvr Constant interpretBools
+When this option is set, the text tokens @code{TRUE} or @code{FALSE} are
+read as boolean values (i.e., @code{scanner.type = bool}).  Otherwise, these
+tokens are read as identifiers (i.e., @code{scanner.type = ident}.)
+@end defvr
+
+@defvr Constant interpretSets
+When set, text in the form a set constructor (with "@code{@{}", "@code{@}}",
+"@code{,}", and associated integer constants) are read as @code{SET} values.
+Otherwise, these are read as separate tokens.
+@end defvr
+
+@defvr Constant interpretStrings
+When set, quoted character sequences are read as string values.  Otherwise,
+quote characters and string contents are read as separate tokens.
+@end defvr
+
+@defvr Constant useSignedNumbers
+When set, "@code{+}" and "@code{-}" characters are always considered part of
+a number.  Otherwise, they are read as separate characters.
+@end defvr
+
+@defvr Constant defReaderOptions
+The default reader options setting, which is equivalent to having no options
+set (i.e., @code{@{@}}).
+@end defvr
+
+@defvr Constant defWriterOptions
+The default writer options setting, which is equivalent to having no options
+set (i.e., @code{@{@}}).
+@end defvr
+
+@defvr Constant defScannerOptions
+The default scanner options setting, which is equivalent to setting the
+options @code{interpretBools}, @code{interpretSets},
+@code{interpretStrings}, and @* @code{useSignedNumbers}.
+@end defvr
+
+@c END UnicodeRider
+
+
+@node BinaryRider,  , Text Mappers, Standard Mappers
+@subsection Module BinaryRider
+@pindex BinaryRider
+@cindex channels, binary input
+@cindex binary input
+@cindex riders, binary
+
+Module BinaryRider provides facilities for reading and writing @dfn{binary
+data}.  Binary data are simple sequences of byte values that may be
+interpreted in any number of ways.  This corresponds closely to the way
+information is stored within a running program.  Values are stored as a
+fixed number of bytes rather than as a delimited sequence of characters.
+For example, if @code{SIZE(INTEGER) = 2}, then an @code{INTEGER} value is
+always stored as 2 bytes.  If @code{SIZE(LONGINT) = 4}, then a
+@code{LONGINT} is stored as 4 bytes.
+
+The following program fragment gives an example of how you could read the
+entire contents of a file and echo each character to the screen (note that
+no error checking is done):
+
+@smallexample
+VAR r: BinaryRider.Reader;
+    f: Files.File;
+    ch: CHAR;
+    res: INTEGER;
+    
+  f := Files.Old("Sample.txt", @{Files.read@}, res);
+  r := BinaryRider.ConnectReader(f); 
+
+  r.ReadChar(ch);	
+  WHILE r.Res()=Files.done DO
+     Out.Char(ch);
+     r.ReadChar(ch);	
+  END;
+@end smallexample
+
+@quotation
+@strong{Please note}: Different kinds of computers use different conventions
+for the ordering of bytes within a word.  Some computers put the most
+significant byte within a word first (this is called @dfn{big-endian}
+order), and others put it last (@dfn{little-endian} order).  A small number
+of systems use different byte order schemes; they aren't supported by this
+module (yet).  Operations provided by BinaryRider default to the
+little-endian byte order.  However, byte order can be specified using the
+@code{SetByteOrder} methods provided by classes @code{Reader} and
+@code{Writer}.
+
+Thus, programs can be written that produce files that are portable to
+machines with different byte orderings.  It should be noted, however, that
+file I/O using the native byte order provides better speed efficiency.
+@end quotation
+
+@menu 
+* Class Reader (BinaryRider)::  Class for reading binary data from channels.  
+* Class Writer (BinaryRider)::  Class for writing binary data to channels.  
+* Connecting BinaryRiders::     Procedures to connect binary readers and
+                                 writers to channels.  
+* Summary of BinaryRider Constants:: Summarized list of constants in module
+                                 BinaryRider.  
+@end menu
+
+@node Class Reader (BinaryRider), Class Writer (BinaryRider),  , BinaryRider  
+@subsubsection Class Reader (BinaryRider)
+@cindex readers, binary
+@cindex binary readers
+
+@deftp {Class} Reader = POINTER TO ReaderDesc
+This class provides facilities for reading various types of data in binary
+format.  Note that this type does not inherit properties from any basic
+reader type; rather it uses the basic reader type associated with the
+channel it is attached to.
+
+@quotation
+@strong{Please note}: Many of the methods for @code{BinaryRider.Reader}
+perform typical @code{Reader} operations.  Rather than duplicate
+descriptions of those methods here, a reference to the abstract reader type
+is provided instead.
+@end quotation
+
+@table @asis
+@item Field: @b{byteOrder}@minus{}: @code{SHORTINT}
+The current endian (byte order) setting for the reader.  
+
+@item Field: @b{base}@minus{}: @code{Channel.Channel}
+This field refers to the channel the reader is connected to.  
+@end table
+@end deftp
+
+The following methods are all fully described in the section on abstract
+readers (@pxref{Abstract Class Reader}), so only brief descriptions are
+given here.
+
+@table @asis
+@item Method: @code{(@var{r}: Reader)} @b{Available} @code{() : LONGINT}
+Returns the number of bytes available for the next reading operation.  
+
+@item Method: @code{(@var{r}: Reader)} @b{ClearError}
+Clears error conditions on the reader @var{r}, re-enabling further read
+operations.
+
+@item Method: @code{(@var{r}: Reader)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
+Retrieves a descriptive error message string stating the reason why one of
+the previous operations failed.  
+
+@item Method: @code{(@var{r}: Reader)} @b{Pos} @code{() : LONGINT}
+Returns the current reading position associated with the reader @var{r} in
+channel @code{@var{r}.base}.
+
+@item Method: @code{(@var{r}: Reader)} @b{Res} @code{() : INTEGER}
+This method returns the status of the last read operation.  Note that unlike
+some other reader types, @code{Res()} is a method rather than a field; but
+otherwise, it performs equivalently.
+
+Error codes are highly dependent on the channel being read, and therefore
+on the basic riders provided by that channel, so you must look at the result
+codes for a particular channel's reader type. 
+
+Use method @code{ErrorDescr} to get a plain text error description of this
+error code.
+
+@item Method: @code{(@var{r}: Reader)} @b{SetByteOrder} @code{(@var{order}: SHORTINT)}
+Sets @code{byteOrder} in reader @var{r} to @var{order}.  This affects the
+interpretation of byte values for applicable read operations.  
+
+@strong{Pre-condition}: @var{order} is one of @code{nativeEndian},
+@code{littleEndian}, or @code{bigEndian}.
+
+@emph{Example:}  
+
+@smallexample
+VAR rBig, rLittle, r: BinaryRider.Reader;
+    f: Files.File;
+    
+f := Files.Old("test.dat", @{Files.read@}, res);
+
+r := BinaryRider.ConnectReader(f);
+   @result{} r reads from f using the default byte order 
+        (i.e., little endian)
+
+rBig := BinaryRider.ConnectReader(f);
+rBig.SetByteOrder(BinaryRider.bigEndian);
+   @result{} rBig reads from f using big endian byte order
+
+rLittle := BinaryRider.ConnectReader(f);
+rLittle.SetByteOrder(BinaryRider.littleEndian);
+   @result{} rLittle reads from f using little endian byte order
+@end smallexample
+
+@item Method: @code{(@var{r}: Reader)} @b{SetPos} @code{(@var{newPos}: LONGINT)}
+Sets the reading position to @var{newPos}.  
+@end table
+
+The following methods read a value of the given type from the current
+position of the Reader.  If the value is invalid for its type,
+@code{Reader.Res()} returns @code{invalidFormat}.
+
+Otherwise, if there aren't enough bytes to satisfy the request,
+@code{Reader.Res()} returns @code{readAfterEnd}.
+
+@table @asis
+@item Method: @code{(@var{r}: Reader)} @b{ReadBool} @code{(VAR @var{bool}: BOOLEAN)}
+Reads in a single byte and interprets it as a @code{BOOLEAN} value.  Zero
+values are read as @code{FALSE} and non-zero values are read as @code{TRUE}.
+
+@emph{Example:}  
+
+@smallexample
+VAR bool: BOOLEAN;
+
+r.ReadBool(bool);
+   @result{} if byte read = 0, then bool = FALSE; 
+        otherwise, bool = TRUE
+@end smallexample
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadBytes} @code{(VAR @var{x}: ARRAY OF SYSTEM.BYTE;  @var{start}, @var{n}: LONGINT)}
+Read @var{n} bytes from the channel @code{@var{r}.base} according to the
+native machine byte order.  That is, @code{ReadBytes} is not affected by
+calls to @code{SetByteOrder}.  Thus this method is equivalent to any basic
+rider @code{Reader.ReadBytes} method (@pxref{Abstract Class Reader})
+
+@emph{Example:}  
+
+@smallexample
+VAR byteArr: ARRAY 256 OF CHAR;
+
+r.ReadBytes(byteArr, 0, 16);
+   @result{} reads the next 16 bytes from r.base 
+        into byteArr[0..15]  
+
+r.ReadBytes(byteArr, 16, 100);
+   @result{} reads the next 100 bytes from r.base 
+        into byteArr[16..115]  
+@end smallexample
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadChar} @code{(VAR @var{ch}: CHAR)}
+Reads in a single character value and places it in @var{ch}.  
+
+@strong{Please note}: OOC assumes that @code{SIZE(SYSTEM.BYTE) =
+SIZE(CHAR)}.
+
+@emph{Example:}  
+
+@smallexample
+VAR ch: CHAR;
+
+r.ReadChar(ch);
+   @result{} reads one byte and assigns it to ch
+@end smallexample
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLChar} @code{(VAR @var{ch}: LONGCHAR)}
+Reads in a single (long) character value and places it in @var{ch}.
+@code{SIZE(LONGCHAR)} bytes are read and interpreted based on the current
+byte order setting for reader @var{r} (see @code{SetByteOrder}).
+
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadInt} @code{(VAR @var{int}: INTEGER)}
+Reads in an @code{INTEGER} value.  @code{SIZE(INTEGER)} bytes are read and
+interpreted based on the current byte order setting for reader @var{r} (see
+@code{SetByteOrder}).
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLInt} @code{(VAR @var{lint}: LONGINT)}
+Reads in a @code{LONGINT} value.  @code{SIZE(LONGINT)} bytes are read and
+interpreted based on the current byte order setting for reader @var{r}.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLReal} @code{(VAR @var{lreal}: LONGREAL)}
+Reads in a @code{LONGREAL} value.  @code{SIZE(LONGREAL)} bytes are read and
+interpreted based on the current byte order setting for reader @var{r}.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadNum} @code{(VAR @var{num}: LONGINT)}
+Reads an integer value in a compressed and portable format.  This format is
+the same no matter what the @code{byteOrder} setting.  Therefore,
+@code{ReadNum} is not affected by calls to @code{SetByteOrder}.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadReal} @code{(VAR @var{real}: REAL)}
+Reads in a @code{REAL} value.  @code{SIZE(REAL)} bytes are read and
+interpreted based on the current byte order setting for reader @var{r}.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadSet} @code{(VAR @var{s}: SET)}
+Reads in a @code{SET} value.  @code{SIZE(SET)} bytes are read and
+interpreted based on the current byte order setting for reader @var{r}.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadSInt} @code{(VAR @var{sint}: SHORTINT)}
+Reads in a @code{SHORTINT} value.  
+
+@strong{Please note}: OOC assumes that @code{SIZE(SYSTEM.BYTE) =
+SIZE(SHORTINT)} so that the current byte order setting for reader @var{r}
+(see @code{SetByteOrder}) does not matter for calls to @code{ReadSInt}.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadString} @code{(VAR @var{s}: ARRAY OF CHAR)}
+Reads in a sequence of characters until either the string terminator
+@code{0X} is encountered, there are no more characters available in the
+channel, or the string @var{s} is full.  @var{s} is always terminated with
+@code{0X}.
+
+@emph{Example:}  
+
+@smallexample
+VAR str: ARRAY 256 OF CHAR;
+
+r.ReadString(str);
+   @result{} reads up to 256 characters, stops when encounters 0X
+@end smallexample
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadLString} @code{(VAR @var{s}: ARRAY OF LONGCHAR)}
+Reads in a sequence of (long) characters until either the string terminator
+@code{0X} is encountered, there are no more characters available in the
+channel, or the string @var{s} is full.  @var{s} is always terminated with
+@code{0X}.  For each character, @code{SIZE(LONGCHAR)} bytes are read and
+interpreted based on the current byte order setting for reader @var{r} (see
+@code{SetByteOrder}).
+@end table
+
+
+@node Class Writer (BinaryRider), Connecting BinaryRiders, Class Reader (BinaryRider), BinaryRider  
+@subsubsection Class Writer (BinaryRider)
+@cindex writers, binary
+@cindex binary writers
+
+@deftp {Class} Writer = POINTER TO WriterDesc
+This class provides facilities for writing various types of data in binary
+format.  Note that this type does not inherit properties from any basic
+writer type; rather it uses the basic writer type associated with the
+channel it is attached to.
+
+@quotation
+@strong{Please note}: Many of the methods for @code{BinaryRider.Writer}
+perform typical @code{Writer} operations.  Rather than duplicate
+descriptions of those methods here, a reference to the abstract writer type
+is provided instead.
+@end quotation
+
+@table @asis
+@item Field: @b{base}@minus{}: @code{Channel.Channel}
+This field refers to the channel the writer is connected to.  
+
+@item Field: @b{byteOrder}@minus{}: @code{SHORTINT}
+The current endian (byte order) setting for the writer.  
+@end table
+@end deftp
+
+The following methods are all fully described in the section on abstract
+writers (@pxref{Abstract Class Writer}), so only brief descriptions are
+given here.
+
+@table @asis
+@item Method: @code{(@var{w}: Writer)} @b{ClearError}
+Clears error conditions on the writer @var{w}, re-enabling further write
+operations.
+
+@item Method: @code{(@var{w}: Writer)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
+Retrieves a descriptive error message string stating the reason why one of
+the previous operations failed.
+
+@item Method: @code{(@var{w}: Writer)} @b{Pos} @code{() : LONGINT}
+Returns the current writing position associated with the writer @code{w} in
+channel @code{@var{w}.base}.
+
+@item Method: @code{(@var{w}: Writer)} @b{Res} @code{() : INTEGER}
+This method returns the status of the last write operation.  Note that
+unlike some other writer types, @code{Res()} is a method rather than a
+field; but otherwise, it performs equivalently.
+
+Error codes are highly dependent on the channel being written to (and
+therefore on the basic riders provided for that channel), so you must look
+at the result codes for the basic writer that is associated with that
+particular channel.
+
+Use @code{ErrorDescr} to get a plain text error description of this error
+code.
+
+@item Method: @code{(@var{w}: Writer)} @b{SetPos} @code{(@var{newPos}: LONGINT)}
+Sets the writing position to @var{newPos}.
+@end table
+
+The following writer methods are used to write values to the underlying
+channel.  In some situations, it is possible for only part of the value to
+be written.
+
+@table @asis
+@item Method: @code{(@var{w}: Writer)} @b{WriteBytes} @code{(VAR @var{x}: ARRAY OF SYSTEM.BYTE;  @var{start}, @var{n}: LONGINT)}
+Write @var{n} bytes to the channel @code{@var{w}.base} according to the
+native machine byte order (i.e., @code{WriteBytes} is not affected by calls
+to @code{SetByteOrder}).  Thus this method is equivalent to any basic rider
+@code{Writer.WriteBytes} method (@pxref{Abstract Class Writer})
+
+@emph{Example:}  
+
+@smallexample
+VAR byteArr: ARRAY 256 OF CHAR;
+
+w.WriteBytes(byteArr, 0, 16);
+   @result{} writes the values of byteArr[0..15] 
+        to the current writing position of w
+
+w.WriteBytes(byteArr, 16, 100);
+   @result{} writes the values of byteArr[16..115] 
+        to the current writing position of w
+@end smallexample
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteBool} @code{(@var{bool}: BOOLEAN)}
+Writes a @code{BOOLEAN} value as a single byte.  @code{FALSE} is written as
+@code{0} and @code{TRUE} is written as @var{1}.
+
+@emph{Example:}  
+
+@smallexample
+w.WriteBool(TRUE);
+   @result{} writes one byte = 01H
+
+w.WriteBool(FALSE);
+   @result{} writes one byte = 00H
+@end smallexample
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteChar} @code{(@var{ch}: CHAR)}
+Writes the character value @var{ch} as a single byte.  
+
+@strong{Please note}: OOC assumes that @code{SIZE(SYSTEM.BYTE) =
+SIZE(CHAR)}.
+
+@emph{Example:}  
+
+@smallexample
+VAR ch: CHAR:
+
+w.WriteChar("A");
+   @result{} writes one byte = "A"
+
+ch := 41X;
+w.WriteChar(ch);
+   @result{} writes one byte = 41X (i.e., "A" in ASCII)
+@end smallexample
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteLChar} @code{(@var{ch}: LONGCHAR)}
+Writes the (long) character value @var{ch} as @code{SIZE(LONGCHAR)} bytes
+based on the current byte order setting for writer @var{w} (see
+@code{SetByteOrder}).
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteString} @code{(@var{s}: ARRAY OF CHAR)}
+Writes the string value of @var{s} (recall that a string is a character
+array containing @code{0X} as an embedded terminator).  The terminating
+@code{0X} is also written.
+
+@emph{Example:}  
+
+@smallexample
+VAR str: ARRAY 256 OF CHAR;
+
+w.WriteString("abcdefg");
+   @result{} writes a total of 8 characters including 0X
+
+str := "hijkl";
+w.WriteString(str);
+   @result{} writes a total of 6 characters including 0X
+@end smallexample
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteLString} @code{(@var{s}: ARRAY OF LONGCHAR)}
+Writes the string value of @var{s} including the terminating @code{0X}
+character.  Each character is written as @code{SIZE(LONGCHAR)} bytes based
+on the current byte order setting for writer @var{w} (see
+@code{SetByteOrder}).
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteSInt} @code{(@var{sint}: SHORTINT)}
+Writes a @code{SHORTINT} value.  
+
+@strong{Please note}: OOC assumes that @code{SIZE(SYSTEM.BYTE) =
+SIZE(SHORTINT)} so that the current byte order setting for writer @var{w}
+(see @code{SetByteOrder}) does not matter for calls to @code{WriteSInt}.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteInt} @code{(@var{int}: INTEGER)}
+Writes an @code{INTEGER} value.  @code{SIZE(INTEGER)} bytes are written
+based on the current byte order setting for writer @var{w} (see
+@code{SetByteOrder}).
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteLInt} @code{(@var{lint}: LONGINT)}
+Writes a @code{LONGINT} value.  @code{SIZE(LONGINT)} bytes are written based
+on the current byte order setting for writer @var{w}.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteNum} @code{(@var{lint}: LONGINT)}
+Write an integer value in a compressed and portable format.  This format is
+the same no matter what the @code{byteOrder} setting.  Therefore,
+@code{WriteNum} is not affected by calls to @code{SetByteOrder}.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteReal} @code{(@var{real}: REAL)}
+Writes a @code{REAL} value.  @code{SIZE(REAL)} bytes are written based on
+the current byte order setting for writer @var{w}.
+
+@item Method: @code{(VAR @var{w}: Writer)} @b{WriteLReal} @code{(VAR @var{lreal}: LONGREAL)}
+Writes a @code{LONGREAL} value.  @code{SIZE(LONGREAL)} bytes are written
+based on the current byte order setting for writer @var{w}.
+
+@item Method: @code{(VAR @var{w}: Writer)} @b{WriteSet} @code{(VAR @var{s}: SET)}
+Writes a @code{SET} value.  @code{SIZE(SET)} bytes are written based on the
+current byte order setting for writer @var{w}.
+
+@item Method: @code{(VAR @var{w}: Writer)} @b{SetByteOrder} @code{(VAR @var{order}: SHORTINT)}
+Sets @code{byteOrder} in writer @var{w} to @var{order}.  This affects the
+interpretation of byte values for applicable write operations.  
+
+@strong{Pre-condition}: @var{order} is one of @code{nativeEndian},
+@code{littleEndian}, or @code{bigEndian}.
+
+@emph{Example:}  
+
+@smallexample
+VAR wBig, wLittle, w: BinaryRider.Writer;
+    f: Files.File;
+    
+f := Files.Old("test.dat", @{Files.write@}, res);
+
+w := BinaryRider.ConnectWriter(f);
+   @result{} w writes to f using native byte order
+
+wBig := BinaryRider.ConnectWriter(f);
+wBig.SetByteOrder(BinaryRider.bigEndian);
+   @result{} wBig writes to f using big endian byte order
+
+wLittle := BinaryRider.ConnectWriter(f);
+wLittle.SetByteOrder(BinaryRider.littleEndian);
+   @result{} wLittle writes to f using little endian byte order
+@end smallexample
+@end table
+
+@node Connecting BinaryRiders, Summary of BinaryRider Constants, Class Writer (BinaryRider), BinaryRider
+@subsubsection Connecting BinaryRiders to Channels
+@cindex binary riders, connecting to channels
+@cindex connecting binary riders to channels
+
+Functions are provided by module BinaryRider to connect readers and writers
+to open channels.  If the channel being passed as an argument to either of
+these functions has a value of @code{NIL}, behavior is undefined.
+
+Also, for either of these functions, the returned rider is positioned at the
+beginning of the channel for positionable channels and at the current
+position for non-positionable channels.
+
+@deffn Function ConnectReader @code{(VAR @var{ch}: Channel.Channel): Reader}
+This function creates a new reader and attaches it to the channel @var{ch}.
+@code{@var{ch}.res} is set to @code{done} on success and the new reader is
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
+to indicate the error cause.
+@end deffn
+
+@deffn Function ConnectWriter @code{(VAR @var{ch}: Channel.Channel): Writer}
+This function creates a new writer and attaches it to the channel @var{ch}.
+@code{@var{ch}.res} is set to @code{done} on success and the new writer is
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
+to indicate the error cause.  
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR
+  f: Files.File;
+  r: BinaryRider.Reader;
+  res: INTEGER;
+  
+  f := Files.Old("test.dat", @{Files.read, Files.write@}, res);
+  IF (res # Files.done) THEN (* error processing *) END;
+  
+  r := BinaryRider.ConnectReader(f);
+  IF (r = NIL) THEN (* error processing *) END;
+@end smallexample
+
+@node Summary of BinaryRider Constants,  , Connecting BinaryRiders, BinaryRider  
+@subsubsection Summary of BinaryRider Constants
+@cindex constants for binary riders 
+@cindex binary riders, constants 
+
+For other constant values that may be applicable when using module
+BinaryRider, see the specific channel implementation that you are reading to
+or writing from.
+
+The following are possible return values for @code{Res()} methods:
+
+@defvr Constant done
+This indicates successful completion of the last operation.  
+@end defvr
+
+@defvr Constant invalidFormat
+Indicates that the data at the current reading position is not properly
+formatted as the requested type.
+@end defvr
+
+@defvr Constant readAfterEnd
+A read operation has tried to access a byte beyond the end of the channel.
+This means that there weren't enough bytes available or the read operation
+started at (or after) the end.
+@end defvr 
+
+The following are possible endian (byte order) settings:  
+
+@defvr Constant nativeEndian
+Use the host machine's byte order.  
+@end defvr 
+
+@defvr Constant littleEndian
+Read/write least significant byte first.
+@end defvr 
+
+@defvr Constant bigEndian
+Read/write most significant byte first.
+@end defvr 

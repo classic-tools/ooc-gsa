@@ -1,0 +1,297 @@
+.TH oocn 1
+.UC 5
+.SH NAME
+oocn \- The OOC Code Navigator
+.SH SYNOPSIS
+.B oocn
+.I <mode>
+.RI [ options ]
+.IR <module> ...
+.SH NOTE
+This document is a subset of corresponding chapter of the 
+.B OOC Reference 
+.BR Manual .
+For a more detailed description and examples, the reader is referred
+to the reference manual (see below).
+.SH DESCRIPTION
+The tool
+.B oocn
+operates on the source code of Oberon-2 modules to produce various
+manipulations of the text.
+
+The 
+.I <mode>
+argument determines the operation performed by
+.BR oocn ;
+for example, 
+.B --html
+sets the mode to translate to HTML.  No more than one mode can be
+specified at at time.
+
+The 
+.IR <module> ...
+argument is a list of one or more modules, or file names of modules.
+If it is a file name, the directory part and extension are discarded.
+Modules are then located by means of the
+.I PATHS
+section of the compiler's initialization file.
+.SH MODES
+.TP
+.B --modules, -M
+List the names of all modules that are directly or indirectly imported
+by the given modules (and also list the given modules themselves).
+
+The modules are written in an order defined by the 
+.B IMPORT
+relation; that is, module
+.I Bar
+is written before module 
+.I Foo
+if
+.I Foo
+depends on
+.IR Bar .
+For example, the invocation 
+.B oocn --module Foo
+lists the names of all modules that are used to build the program
+.IR Foo ,
+writing the name of the most basic module first, and 
+.I Foo
+last.  With option 
+.BR --no-internal ,
+the pseudo module 
+.B SYSTEM
+is omitted from the output.
+
+This function implicitly adds the option
+.BR --closure .
+
+.TP
+.B -d
+Write the interface of the given modules to
+.IR stdout .
+Here the term "interface" means the module's source text stripped of
+all private declarations and all procedure bodies.  Comments in the
+remaining text are preserved.
+
+.TP
+.B --html, -H
+Convert the given set of modules to HTML text.  For every module
+.IR Foo ,
+a file 
+.I <output-dir>/Foo.html
+is created.  The default output directory is the current working
+directory.  The HTML text preserves the format of the source text, but
+adds colours for keywords, comments, strings, and procedure
+declarations.  Identifiers of exported declaration are set in bold.
+Hyper-links are inserted from the point of use of an object to its
+declaration.  Note that links to all record fields and type-bound
+procedures can be inserted only if
+.B oocn
+was called with the option
+.BR --closure.
+
+.TP
+.B --xref, -X
+Create cross-reference information for the given set of modules.
+This mode creates a set of HTML files, just like 
+.BR --html ,
+and adds hyper-links from every declaration into a companion file
+.IR <output-dir>/Foo_xref.html .
+The cross-reference file lists all uses of each declaration in the
+scope of the scanned modules.  For a redefining type-bound procedure,
+it includes a link to the base definition, and for an original
+type-bound procedure definition, it lists all redefinitions and their
+uses.
+
+This function implicitly adds the option
+.BR --closure .
+
+.TP
+.B --uses <decl>, -U <decl>
+The mode 
+.B --uses
+acts as a command line interface to the cross-reference data.  That
+is, it locates all references to the specified object and writes them
+to 
+.I stdout
+in the format of
+.BR oo2c 's
+error messages.  The argument 
+.I <decl>
+is a string describing a declared object; the string must be the name
+of a predefined object, or a module name followed by a (possibly
+empty) sequence of names, with the names separated by dots.
+
+If the designated object is a type-bound procedure, 
+.B --uses
+lists the base definition of the procedure, all of its redefinitions,
+and all calls to the type-bound procedure in the scope of the
+inspected modules.
+
+This function implicitly adds the option
+.BR --closure .
+
+.TP
+.B --def-txt, --def-html, --def-xref
+Using the specified format, write the interface of the given modules
+to a file in the current output directory.  The output format is
+either plain text in file 
+.IR Foo_def.txt ,
+HTML text in 
+.IR Foo_def.html ,
+or cross-referenced HTML text in 
+.I Foo_def.html
+and
+.IR Foo_def_xref.html .
+The output directory can be changed using option
+.I -o
+.IR <dir> .
+
+.TP
+.B --def-texi
+Create draft version of the public interface of the modules in Texinfo
+format.  The output file is named 
+.IR Foo_def.texi .
+Unlike the other 
+.B --def-*
+variants, the output has little resemblance to the original input
+text, and it will probably need manual intervention to turn it into
+something more readable.
+
+.TP
+.B --filter, -F
+Copy the Oberon-2 source code from the input module 
+.I Foo.Mod
+to the file
+.I Foo.txt
+ in the output directory, possibly applying some code transformation
+on the way.  All symbols are copied as is, without any change to their
+textual representation.  This includes text in comments, pragmas, and
+program code in inactive conditional compilation clauses.  Outside
+these special symbols, horizontal tabulators are converted to spaces,
+using a tabulator width of 8.  All trailing whitespace is removed from
+lines, as are any empty lines at the end of the module.
+
+This mode is usually used in conjunction with one or several of
+the code transformation options, like 
+.B --strip-pragmas
+or
+.BR --mod2foreign .
+.SH OPTIONS
+.TP
+.B -o <dir>
+Set the output directory for all commands that write to files.
+The name 
+.I -
+specifies 
+.IR stdout .
+.TP
+.B -v
+Select verbose mode.  This writes the names of input and output files
+to
+.IR stdout .
+.TP
+.B --closure, -C
+Operate on all modules that are imported, either directly or
+indirectly, by the modules given on the command line.  For some modes,
+the option
+.B --closure
+is enabled by default.
+.TP
+.B --no-internal
+Omit all pseudo modules that are internal to the compiler from the
+output of 
+.BR --modules .
+At the moment, this means that 
+.I SYSTEM
+does not appear in the module list.
+.TP
+.B --line-num
+Prepend the line number from the original source file to every line of
+output.  This option affects all commands that produce text or HTML
+directly from the source code.
+.TP
+.B --colors <name>
+Select color set to use when writing HTML text.  Currently available
+variants: 
+.I hilit
+(default) and 
+.IR font-lock .
+.TP
+.B --strip-comments
+Remove all comments from the source text before processing it.
+Comments starting with 
+.B (**
+are not discarded, use option
+.B --strip-doc-strings
+for this.
+.TP 
+.B --strip-doc-strings
+Remove all documentation strings, that is, comments starting with
+.BR (** ,
+from the source text.
+.TP
+.B --strip-pragmas
+Remove all pragmas from the source text.  Any program text appearing
+in inactive conditional compilation clauses is also discarded.  The
+evaluation of the guards of conditional compilation clauses uses the
+current values of the pragma variables.  Therefore, applying this
+filter reduces the source file to the program text that is actually
+seen by the compiler when translating the module, assuming that the
+same settings are used for the pragma variables.
+.TP
+.B --strip-system-flags
+Remove all system flags from the source text.  If, for example, a
+module uses any of the flags that are enabled by 
+.BR OOC_EXTENSIONS ,
+applying this filter reduces the module to standard Oberon-2 code.
+.TP
+.B --mod2foreign
+This code transformation is intended for advanced users, who want to
+write 
+.B FOREIGN
+modules.  It turns any Oberon-2 module into a 
+.B FOREIGN
+module, by removing all procedures bodies and the module's
+initialization code, and by adding appropriate default system flags to
+the module's header.
+.TP
+.B --foreign2mod
+This is the reverse operation to 
+.BR --mod2foreign .
+It adds empty bodies to all procedures in the module, and replaces the
+module's system flags with 
+.BR [OOC_EXTENSIONS] .
+.TP
+.B --config <file>
+Use given file name for the primary initialization file.  An empty
+name disables parsing of the default initialization file.
+.TP
+.B --include-config <file>
+Include the given initialization file in addition to the default
+initialization file.
+.TP
+.B --options <string>
+Add the given string to the initialization file section
+.IR OPTIONS .
+.TP
+.B --pragmas <string>
+Add the given string to the initialization file section 
+.IR PRAGMAS .
+.TP
+.B --version
+Write compiler version and exit.
+.TP
+.B --help, -h
+Write short usage summary and exit.
+.SH DIAGNOSTICS
+The exit status is zero after successful completion.
+.SH SEE ALSO
+oo2c(1), oob(1), ooef(1), oowhereis(1), OOC Reference Manual
+
+The OOC Reference Manual can be obtained from the OOC Home Page at
+http://www.uni-kl.de/OOC/.  It is available in info, Postscript, HTML,
+and texinfo format.
+.SH AUTHOR
+Michael van Acken <acken@informatik.uni-kl.de>

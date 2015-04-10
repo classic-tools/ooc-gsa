@@ -1,0 +1,217 @@
+This is Info file OOCref.info, produced by Makeinfo version 1.68 from
+the input file OOCref.texinfo.
+
+   This file documents the Optimizing Oberon-2 Compiler (OOC) and its
+library.
+
+   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
+Library Reference Manual', for Version 1.4.5 or later of oo2c.
+
+   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
+1999 Michael van Acken
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the text of the translation of the section
+entitled "GNU General Public License" must be approved for accuracy by
+the Foundation.
+
+
+Indirect:
+OOCref.info-1: 1228
+OOCref.info-2: 43490
+OOCref.info-3: 90003
+OOCref.info-4: 138931
+OOCref.info-5: 187346
+OOCref.info-6: 236985
+OOCref.info-7: 286917
+OOCref.info-8: 333135
+OOCref.info-9: 380142
+OOCref.info-10: 430064
+OOCref.info-11: 478973
+OOCref.info-12: 526400
+OOCref.info-13: 576360
+OOCref.info-14: 606810
+OOCref.info-15: 658031
+OOCref.info-16: 698163
+
+Tag Table:
+(Indirect)
+Node: Top1228
+Node: Introduction15442
+Node: OOC Library Overview16258
+Node: Standards17707
+Node: Definition of Terms19316
+Node: Character & String Handling21773
+Node: Ascii22535
+Node: CharClass24438
+Node: Strings27959
+Node: Copying and Concatenation29837
+Node: Compare & Searching Strings43490
+Node: Misc. Strings Procedures52122
+Node: Integer/String Conversion53511
+Node: ConvTypes54316
+Node: IntConv56040
+Node: IntStr57912
+Node: Real/String Conversion60047
+Node: RealConv61221
+Node: RealStr64010
+Node: LRealConv73224
+Node: LRealStr76075
+Node: I/O Subsystem79132
+Node: Input/Output Overview80072
+Node: I/O Concepts81523
+Node: Riders and Mappers83608
+Node: Locators & Opening Channels85510
+Node: Channels87833
+Node: Channel88543
+Node: Abstract Class Channel90003
+Node: Abstract Class Reader95169
+Node: Abstract Class Writer101300
+Node: Channel Procedures106382
+Node: Summary of Channel Constants107316
+Node: Files111068
+Node: Class File113645
+Node: Class Reader (for File)122302
+Node: Class Writer (for File)129071
+Node: File Locators136036
+Node: Other File Operations138931
+Node: Summary of File Constants141248
+Node: StdChannels147753
+Node: ProgramArgs150399
+Node: Standard Mappers154956
+Node: Text Mappers156140
+Node: Rider157794
+Node: Class Reader (Rider)158484
+Node: Class Writer (Rider)171186
+Node: Class Scanner (Rider)178610
+Node: LongRider187346
+Node: Class Reader (LongRider)189272
+Node: Class Writer (LongRider)192546
+Node: Class Scanner (LongRider)193837
+Node: TextRider194950
+Node: Class Reader (TextRider)196545
+Node: Class Writer (TextRider)213687
+Node: Class Scanner (TextRider)224415
+Node: Connecting TextRiders235136
+Node: Summary of TextRider Constants236985
+Node: UnicodeRider241667
+Node: Class Reader (UnicodeRider)242770
+Node: Class Writer (UnicodeRider)246049
+Node: Class Scanner (UnicodeRider)247331
+Node: Connecting UnicodeRiders248991
+Node: Summary of UnicodeRider Constants250544
+Node: BinaryRider256616
+Node: Class Reader (BinaryRider)259016
+Node: Class Writer (BinaryRider)266651
+Node: Connecting BinaryRiders273903
+Node: Summary of BinaryRider Constants275468
+Node: Standard I/O276599
+Node: In278208
+Node: Out286917
+Node: Err293797
+Node: Mathematics294342
+Node: Low-level Numeric Properties296757
+Node: Mathematical Functions307949
+Node: Arbitrary Precision Integers311972
+Node: Complex Numbers321998
+Node: Random Numbers328699
+Node: Date and Time332383
+Node: Time333135
+Node: JulianDay341075
+Node: SysClock348400
+Node: Calendar354236
+Node: Oakwood Compliant Modules365943
+Node: OakStrings366727
+Node: OakFiles369085
+Node: OakIn380142
+Node: OakOut383188
+Node: OakMath and OakMathL384997
+Node: Exception Handling389160
+Node: Exception390333
+Node: Exception Facilities392543
+Node: Restrictions on PUSHCONTEXT398452
+Node: Predefined Exception Sources400992
+Node: Runtime Exception Numbers401801
+Node: Exception Examples403472
+Node: Signal415062
+Node: Localization429015
+Node: Locales429694
+Node: LocStrings429800
+Node: LocNumConv429931
+Node: LocNumStr430064
+Node: LocTextRider430197
+Node: LocText430333
+Node: Language430441
+Node: Specifications431850
+Node: Non-conformant Mode440377
+Node: Additional Data Types446109
+Node: Language Extensions457405
+Node: ABSTRACT458306
+Node: NO_COPY462566
+Node: Illegal Operations464566
+Node: Pragmas470781
+Node: Pragma Syntax472088
+Node: Pragma Semantics474565
+Node: Predefined Pragma Variables478973
+Node: OO2C486568
+Node: OO2C Overview487247
+Node: Installing oo2c490978
+Node: Preparing for Installation491497
+Node: Basic Installation494603
+Node: Compilers and Options497146
+Node: Installation Names498153
+Node: Installing with Run-Time Checks499706
+Node: Invoking Programs501747
+Node: oo2c options504360
+Node: oo2c primary operations505037
+Node: oo2c std options509635
+Node: oo2c C options511939
+Node: oo2c libraries515256
+Node: oo2c debugging options520974
+Node: oo2c files525144
+Node: oob options526400
+Node: oocn options529175
+Node: ooef options542043
+Node: oowhereis options545283
+Node: Initialization Files546319
+Node: Options and Pragmas547858
+Node: Managing Files550815
+Node: Selecting Configuration556484
+Node: Initialization Example559088
+Node: Interfacing to C Code561104
+Node: Using Foreign Code562050
+Node: System Flags564195
+Node: Module Flags566404
+Node: Type Flags572821
+Node: Declaration Flags576360
+Node: INTERFACE Modules580677
+Node: FOREIGN Modules586865
+Node: Large Arrays of Constants589072
+Node: Limitations of oo2c591933
+Node: Emacs Mode593351
+Node: o2-mode installation594358
+Node: o2-mode functions596504
+Node: o2-mode hints601165
+Node: Syntax of Text Tokens604532
+Node: SYSTEM606669
+Node: OOC Error Messages606810
+Node: Copying658031
+Node: Concept Index658304
+Node: Type Index676736
+Node: Procedure Index679820
+Node: Variable & Constant Index698163
+Node: File Index716027
+
+End Tag Table

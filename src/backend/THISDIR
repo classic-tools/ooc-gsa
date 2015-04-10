@@ -1,0 +1,96 @@
+#	$Id: THISDIR,v 1.9 1997/11/22 15:46:00 acken Exp $	
+Maintainer: Michael van Acken
+
+This directory contains files that implement an ANSI-C back-end for
+the OOC compiler, and implementations of the target dependent library
+modules.  They require a POSIX style C library.
+
+
+code/
+  Holds generated C code.  Should be empty in the distributed tar
+  files.
+
+Test/
+  Simple modules to test translation, e.g. of type expressions.  Also
+  contains a shell script to see if bootstrapping works.
+
+lib/
+  Library modules.  They are target dependent and extend
+  resp. supersede the files in the global library directory ooc/lib/. 
+
+oo2crc
+  Configuration file.  Refer to doc/oo2c for a complete list of
+  supported options and pragmas.  The format of the sections OPTIONS,
+  PRAGMAS, and PATHS is also described in their corresponding modules
+  frontend/ParamXXX.Mod.
+
+
+Config.Mod
+  Defines back-end dependent parameters of the front-end.
+
+StdTypes.Mod
+  Provides minimum and maximum values of the standard types.  Provides
+  procedures to map Oberon-2 types to ANSI-C.
+
+External.Mod
+  Most of the code dealing with external C files or libraries is here.
+
+SystemFlags.Mod
+  Handles back-end specific information that can be added to types and
+  declarations.  Provides procedures to parse those info, and to
+  write it into the symbol file.
+
+FileData.Mod
+  Auxiliary module to manage file names and data associated to them.
+  Used to avoid unnecessary searches for files that have accessed
+  already.
+
+WriteGSAvC.Mod
+  Writes GSA code to stdout, including the information added by
+  Classify and Allocate.  Activated with command line option --gsa,
+  --gsa-loc adds location information.
+
+
+GenConst.Mod
+  Translates GSA constants to ANSI-C.
+
+GenDecl.Mod
+  Builds C declarations for the various Oberon-2 objects and the
+  module and type descriptors.
+
+GenInclude.Mod
+  Does name mangling for names of included files.
+
+Classify.Mod
+  Adds flags to every instruction describing which kind of output the
+  instruction generates (result type, statement, or no output at
+  all). 
+
+Schedule.Mod
+  Instruction scheduler.  Converts the GSA half order of instructions
+  into a strict sequence.
+
+Allocate.Mod
+  Adds location attributes to GSA code, based on the flags set by
+  Classify.  Uses a hierarchical graph coloring algorithm.
+
+ControlFlow.Mod
+  Transforms flow of control a la GSA (guards & merges) into a linear
+  sequence of instructions with jumps and branches.
+
+GenStatm.Mod
+  Emits C expressions and statements.
+
+
+Build.Mod
+  Interface to the C compiler.  Compiles generated C code and calls
+  linker.  Also contains the code to write makefiles.
+
+CodeGen.Mod
+  Called from oo2c and the parser, takes the GSA code as emitted by
+  the front-end and converts it into C code, calling some
+  optimizations in between.
+
+oo2c.Mod
+  Main program.  Parses command line, runs a `make' resp. calls the
+  parser.

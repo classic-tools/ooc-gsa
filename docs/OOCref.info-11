@@ -1,0 +1,1084 @@
+This is Info file OOCref.info, produced by Makeinfo version 1.68 from
+the input file OOCref.texinfo.
+
+   This file documents the Optimizing Oberon-2 Compiler (OOC) and its
+library.
+
+   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
+Library Reference Manual', for Version 1.4.5 or later of oo2c.
+
+   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
+1999 Michael van Acken
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the text of the translation of the section
+entitled "GNU General Public License" must be approved for accuracy by
+the Foundation.
+
+
+File: OOCref.info,  Node: Predefined Pragma Variables,  Prev: Pragma Semantics,  Up: Pragmas
+
+Predefined Pragma Variables
+===========================
+
+   Every implementation of OOC predefines a number of pragma variables.
+These
+
+   * control the generation of run-time checks and assertions,
+
+   * select language options,
+
+   * identify the compiler being used, and
+
+   * provide information about the target system.
+
+   The compiler provides safe defaults for all predefined variables.
+That is, all useful run-time checks are enabled and all compiler
+specific options are disabled.  These values can be redefined in the
+initialization file, and by command line options.  Predefined variables
+can also be changed through pragma assignments.
+
+   Example:
+
+     <* IndexCheck := TRUE *>
+       generate code for index check
+     <* RangeCheck := FALSE *>
+       switch off detection of invalid set elements
+
+   All run-time checks supported by the particular compiler are enabled
+by default.  The compiler issues a warning when an attempt is made to
+
+   * enable an unsupported check (e.g., because the compiler cannot
+     generate code for that specific check), or
+
+   * disable a check that cannot be turned off (e.g., because checking
+     is always done by hardware)
+
+   The following tables lists the pragma variables that control the
+generation of run-time checks by the compiler.  All variables are of
+type boolean.  Setting such a variable to `TRUE' enables the
+appropriate run-time check; this means that code is inserted to raise
+an exception if the tested condition fails.  Setting the variable to
+`FALSE' disables the checks.
+
+`CaseSelectCheck'
+     Raise an exception if the value of the selection expression of a
+     `CASE' statement does not match any of the labels and no `ELSE'
+     part is specified.
+
+`IndexCheck'
+     Raise an exception if the value of an array index is not in the
+     range `0 <= index < LEN(array)'.
+
+`DerefCheck'
+     Raise an exception if a pointer of value `NIL' is dereferenced.
+     Note that applying a type test or type guard to `NIL', or an
+     attempt to activate a procedure value of NIL, also triggers this
+     exception.
+
+`FunctResult'
+     Raise an exception if the end of a function procedure is reached
+     without executing a `RETURN' statement.
+
+`RealOverflowCheck'
+     Raise an exception if a real number operation overflows.
+
+`RealDivCheck'
+     Raise an exception when attempting to divide a real number by zero.
+
+`RangeCheck'
+     Raise an exception if a set element is outside the range of
+     possible values for the applicable set type.  This applies to
+     `INCL()', `EXCL()', `IN', and the set constructor `{a..b}'.
+
+`OverflowCheck'
+     Raise an exception if the result of an integer operation overflows.
+
+`IntDivCheck'
+     Raise an exception when attempting to divide an integer number by
+     zero.  Note that this applies to both `DIV' and `MOD'.
+
+`TypeGuard'
+     Raise an exception if a type guard fails.
+
+`StackCheck'
+     Raise an exception on stack overflow.  More precisely, if
+     `StackCheck = TRUE', stack overflows are detected when entering a
+     procedure body `B'.
+
+     Note that, even if `B' is compiled with `StackCheck = TRUE',
+     procedures called from `B' might still overflow the stack
+     undetected, unless they have also been compiled with this run-time
+     check enabled.  On most systems, stack overflows are detected by
+     the operating system without any need for special software stack
+     checks by the program.
+
+   The following pragma variables adjust semantical checks and code
+generation of the compiler:
+
+`ConformantMode'
+     Selects one of two slightly different language variants.  Setting
+     this to `TRUE' enables conformant mode, which tells the compiler
+     to behave like an ETH compiler; modules compiled with conformant
+     mode enabled should generally work with any compiler.  Changing
+     the variable to `FALSE' (the default) produces results that more
+     closely match the language report.  *Note Non-conformant Mode::,
+     for reasons why non-conformant mode is considered preferable.
+
+`IdentLength'
+     An integer value that determines the maximum number of characters
+     allowed in an identifier.  Negative values produce warnings
+     (whereas positive values generate errors) when `Length(ident) >
+     ABS(IdentLength)'.  The default value is `MIN(LONGINT)' (i.e., no
+     length restriction at all).  The Oakwood Guidelines suggest that
+     compilers should support a minimum of 23 significant characters.
+
+`StringLength'
+     An integer value that sets the maximum number of characters
+     allowed in a literal string.  This works like `IdentLength'.
+
+`Assertions'
+     If set to `FALSE', all `ASSERT' statements are discarded.  The
+     default value is `TRUE'.  *Caution*: Disabling assertions also
+     discards the boolean expression being asserted, including all its
+     side-effects.  Therefore, tested expressions in assertions should
+     never produce side-effects.
+
+`Initialize'
+     If set to `TRUE', variables and memory blocks are automatically
+     initialized to zero.  The default is `FALSE'.
+
+`Warnings'
+     Tells the compiler whether to generate warnings.  The default is
+     `FALSE', which disables warning messages.
+
+   Pragma variables with the name prefix `COMPILER' identify the
+compiler in use.  Unlike the variables above, changing them has no
+effect on the compilation process.  They should be considered read-only
+variables, and never be modified by the user.
+
+`COMPILER'
+     A string describing the compiler or family of compilers.  All
+     implementations of OOC define this to `"OOC"'.
+
+`COMPILER_VERSION'
+     A string containing the compiler version, for example `"1.4.5"'.
+
+`COMPILER_MAJOR'
+     Major version number of the compiler.  That is, the first number
+     from the version string in integer representation.
+
+`COMPILER_MINOR'
+     Minor version number of the compiler.  That is, the second number
+     from the version string in integer representation.
+
+   Information about the target system is provided by variables with
+the name prefix `TARGET'.  In this context the term "target system"
+refers to the run-time environment for the execution of a compiled
+program.
+
+`TARGET_OS'
+     This string describes the target operating system, for example
+     `"Unix"'.
+
+`TARGET_ARCH'
+     The value of this variable identifiers the target architecture,
+     that is, the CPU family.  Examples are `"ix86"', `"PPC"',
+     `"Alpha"', or, for `oo2c', `"ANSI-C"'.
+
+`TARGET_ARCH_MINOR'
+     If the compiler is set to emit code that only runs on a subclass
+     of the general CPU family, this variable names that subset of the
+     family.  For example, the `"ix86"' family could be subdivided into
+     `"i386"', `"i486"', and so on.  If the generated code works for
+     all members of the target architecture, this variable holds the
+     empty string.
+
+`TARGET_INTEGER'
+     This is the number of bits in the largest integer type supported
+     for the target.  The basic types `HUGEINT' and `SET64' are
+     supported if it is `64' or more.
+
+`TARGET_ADDRESS'
+     Number of bits used to represent a memory address of the target
+     architecture.
+
+`TARGET_BYTE_ORDER'
+     This string describes the byte order convention used by the target
+     system.  For a little endian target, like `"ix86"', this is
+     `"0123"', for a big endian target, like `"m68k"', it is `"3210"'.
+     If the byte order is not known beforehand, as is the case with
+     `oo2c', the variable is set to `"unknown"'.
+
+
+File: OOCref.info,  Node: OO2C,  Next: Syntax of Text Tokens,  Prev: Pragmas,  Up: Top
+
+OO2C
+****
+
+* Menu:
+
+* OO2C Overview::               An introduction to the oo2c implementation.
+* Installing oo2c::             How to install oo2c.
+* Invoking Programs::           Using compiler and tools.
+* Initialization Files::        How to configure the compiler.
+* Interfacing to C Code::       How to write interface and foreign modules.
+* Limitations of oo2c::         Implementation limits of oo2c.
+* Large Arrays of Constants::   How oo2c deals with large arrays of
+                                 constants.
+* Emacs Mode::                  How to install and use Emacs mode.
+
+
+File: OOCref.info,  Node: OO2C Overview,  Next: Installing oo2c,  Prev: OO2C,  Up: OO2C
+
+What is `oo2c'?
+===============
+
+   `oo2c' is the first complete working compiler of the OOC project.
+Instead of translating Oberon-2 modules to machine code, it generates
+code for the most portable assembler in existence: ANSI-C.  The
+compiler was initially intended as a prototype backend for OOC, which
+could then be used to evaluate and debug the frontend and the
+optimization modules.  However, it is now a full-fledged development
+system, and among other things, it is being used to develop native code
+OOC backends.
+
+   The choice of a high-level language as intermediate code has one
+distinct advantage: portability.  Given a working ANSI-C compiler,
+`oo2c' runs on most modern Unix workstations; porting it to other
+platforms is possible with minimal effort.  With `oo2c', programs can
+be developed that run without modification on all major Unix brands.
+Differences between the systems are masked by the implementation of
+low-level modules, which take system peculiarities into account.
+
+   The special pre-compiler nature of `oo2c' also has its disadvantages.
+The user should be aware of these points:
+
+   * `oo2c' depends on an existing ANSI-C compiler.  Without such a
+     compiler, `oo2c' cannot be used.  In particular, a K&R compiler is
+     not sufficient.  Additionally, the C compiler has to support long
+     identifiers; typical identifiers in the intermediate code are much
+     longer than the minimum requirements stated in the ANSI-C
+     specification.  This should not generally be a problem because
+     most C compilers and linkers are packaged with a C++ compiler, and
+     C++ does not limit the length of identifiers.
+
+   * `oo2c' depends on a third party garbage collector.  Because it uses
+     Hans-J. Boehm's excellent conservative garbage collector, this is
+     not strictly a disadvantage.  But in environments where this
+     garbage collector does not work, both the compiler and programs
+     build with it are somewhat hampered (*note Preparing for
+     Installation::.).
+
+   * Code generated by `oo2c' is only portable within limits.  While
+     `oo2c' emits true ANSI-C code and works with standard C types
+     (structs, arrays, and the like), it is doing all address
+     calculations for structure and array accesses itself.  There are
+     no field or element selectors in the code, just plain memory
+     accesses.  Therefore, `oo2c' requires that all basic types have
+     the expected size, and that the C compiler arranges structures and
+     arrays in the expected way.  For this reason, there are different
+     versions of `oo2c' for 32 and 64 bit systems.
+
+   * Creating object files takes a comparatively long time in
+     comparison to other compilers.  Translating a module is a two step
+     process: it is converted into C code by `oo2c', and then it is
+     translated into an object file by the C compiler.  The second step
+     usually takes much longer than the first, and therefore, the speed
+     of the C compiler has great influence on the time it takes to
+     build an object file.  The impact of this is lessened by an
+     intelligent make facility that tries to minimize recompilations.
+
+   * Only a limited set of run-time checks is supported.  Every
+     run-time check is done by inserting appropriate test code into
+     `oo2c''s C output.  Doing such elementary checks by means of a
+     high level language like C has a large impact on the executable
+     program's size and execution time.  For this reason, not all
+     possible run-time checks are supported; `oo2c' does not support
+     detection of integer overflows, nor most kinds of real overflows.
+
+
+File: OOCref.info,  Node: Installing oo2c,  Next: Invoking Programs,  Prev: OO2C Overview,  Up: OO2C
+
+Installing `oo2c'
+=================
+
+* Menu:
+
+* Preparing for Installation::  Optional add-on packages supported by oo2c.
+* Basic Installation::          The usual way to install oo2c on a system.
+* Compilers and Options::       Fine tuning the C compiler.
+* Installation Names::          Selecting destination dir and program names.
+* Installing with Run-Time Checks::  Adding debug code to library and compiler.
+
+
+File: OOCref.info,  Node: Preparing for Installation,  Next: Basic Installation,  Prev: Installing oo2c,  Up: Installing oo2c
+
+Preparing for Installation
+--------------------------
+
+   `oo2c' can use two add-on packages to expand its own capabilities:
+Hans-J. Boehm's conservative garbage collector `gc' and GNU `libtool'.
+The garbage collector extends `oo2c''s run-time system with the ability
+to free unused heap objects.  With the help of `libtool', `oo2c' can
+create shared and static libraries from a set of modules.
+
+   Although both packages are optional, their use is highly
+recommended.  If either one of these packages is not available,
+`configure' will abort with an error.  To install oo2c without them,
+each package must be explicitly disabled by setting `--disable-gc' or
+`--disable-libs'.
+
+Preparing the garbage collector
+-------------------------------
+
+   If `gc' is installed as a library on the system, `configure' detects
+this and uses it automatically.
+
+   Otherwise, get the garbage collector sources from Boehm's server
+`http://reality.sgi.com/employees/boehm_mti/gc_source/'
+
+and unpack the tar file in `oo2c''s top-level directory.
+
+   Check the files `README' and `Makefile' in the newly created
+subdirectory `gc' in case the `gc' package needs some special
+adjustments.  When installing `oo2c', the garbage collector sources are
+detected, and are compiled and installed automatically.  *Please note*:
+The garbage collector subdirectory is not affected by running `oo2c''s
+`configure' script; only the environment variable `CC' is overridden
+when calling `make'.
+
+   To install `oo2c' without a garbage collector, the option
+`--disable-gc' must be passed to `configure'.  The drawback is, of
+course, that programs cannot free memory that has been dynamically
+allocated using `NEW'.  For short running programs, which request only
+a small amount of memory, this is not a severe problem.  However,
+process size for long running, memory intensive programs can grow
+without bound until memory resources are exhausted.
+
+   During the installation process, a long running, memory intensive
+program is started: `oo2c' is used to compile all of its own sources in
+a single run.  The process size of such a bootstrap without garbage
+collection can grow beyond 100MB.  The process might run out of memory,
+or you might decide to kill it with `Ctrl-C' because the system
+thrashes wildly.  In this case, simply start `make' again to finish the
+job.  `oo2c' detects files that have already been compiled
+successfully, and does not try to compile them again.  This way, `oo2c'
+can be installed on any system without garbage collection.
+
+Installing GNU libtool
+----------------------
+
+   `libtool' can be obtained from any GNU server, e.g.
+`ftp://ftp.gnu.org/pub/gnu/'.  The package's home page is
+`http://www.profitpress.com/libtool/'.
+
+   Unpack the tar file and follow the directions in the file `INSTALL'
+to install `libtool' on your system.  `oo2c''s installation process
+detects `libtool', and uses it to create a static and, if possible, a
+shared library for the OOC standard modules.
+
+
+File: OOCref.info,  Node: Basic Installation,  Next: Compilers and Options,  Prev: Preparing for Installation,  Up: Installing oo2c
+
+Basic Installation Procedure
+----------------------------
+
+   The basic way to build and install the `oo2c' package is as follows:
+
+  1. `cd' to the directory containing the package's source code and type
+     `./configure' to configure `oo2c' for your system.  If you're using
+     `csh' on an old version of System V, you might need to type `sh
+     ./configure' instead to prevent `csh' from trying to execute
+     `configure' itself.
+
+     If you want to install oo2c without garbage collector support, run
+     `configure' using the option `--disable-gc', and if `libtool' is
+     not available, use `--disable-libs'.
+
+     Running `configure' takes awhile.  While running, it prints some
+     messages telling which features it is checking for.
+
+  2. Type `make' to compile the package.
+
+  3. Type `make install' to install the programs and any data files and
+     documentation.  `make install-strip' additionally removes any debug
+     information from the installed executable programs.
+
+  4. You can remove the program binaries and object files from the
+     source code directory by typing `make clean'.  To also remove the
+     files that `configure' created, type `make distclean'.
+
+   If all went well, you should now have a working Oberon-2 compiler.
+Since ancient times, this joyous event is celebrated by writing a
+little program saying "Hello World!".  Tradition is important, so here
+is a step-by-step description of how to do it:
+
+  1. Change to a directory of your choice, preferably an empty one.
+
+  2. Create a file `Hello.Mod' with the following contents:
+          MODULE Hello;
+          (* Author: Anonymous; program believed to be in the public domain *)
+          IMPORT Out;
+          BEGIN
+            Out.String ("Hello World!"); Out.Ln
+          END Hello.
+
+  3. Type `oo2c -Mv Hello'.  The option `-M' tells `oo2c' to make an
+     executable program, and `-v' tells it to be more verbose with
+     messages while doing this.  Now, you should have quite a few files
+     in the directory: `Hello.Mod', `Hello.Sym', `Hello', and some
+     files ending in `.c', `.h', `.d', or `.o'.  See *Note
+     Initialization Files:: on how to automatically move these
+     intermediate files into other directories.
+
+  4. Run the program by typing `./Hello'.  If you do not see the
+     traditional compiler birth cry of `Hello World!' on your screen,
+     something is obviously wrong.
+
+
+File: OOCref.info,  Node: Compilers and Options,  Next: Installation Names,  Prev: Basic Installation,  Up: Installing oo2c
+
+Specifying C Compiler and Options
+---------------------------------
+
+   Some systems require unusual options for compiling or linking that
+the `configure' script cannot address.  You can give `configure'
+initial values for variables by setting them in the environment.  Using
+a Bourne-compatible shell, this can be done at the command line as
+follows:
+
+   `CC=c89 CFLAGS=-O2 LIBS=-lposix ./configure'
+
+   Or on systems that have the `env' program,
+
+   `env LDFLAGS=-s ./configure'
+
+   If `gcc' is not available on your system, and `cc' is a K&R
+compiler, try passing `CC=c89' to configure.  Some systems provide a
+separate ANSI-C compliant compiler under this name.
+
+   The values of `CC' (the C compiler), `CFLAGS' (additional command
+line options to the C compiler), and `LDFLAGS' (additional linker
+flags) determined by `configure' are used by `oo2c' as its default
+settings.
+
+
+File: OOCref.info,  Node: Installation Names,  Next: Installing with Run-Time Checks,  Prev: Compilers and Options,  Up: Installing oo2c
+
+Setting Installation Paths and Program Names
+--------------------------------------------
+
+   By default, `make install' installs the package's files in the
+directories `/usr/local/bin', `/usr/local/man', and so forth.  You can
+specify an installation prefix, other than `/usr/local', by giving
+`configure' the option `--prefix=PATH'.
+
+   You can specify separate installation prefixes for architecture
+specific files and architecture independent files.  If you give
+`configure' the option `--exec-prefix=PATH', the package uses `PATH' as
+the prefix for installing programs and libraries.  If only
+`--exec-prefix' is set, documentation and other data files will still
+use the regular prefix.
+
+   In addition, if you use an unusual directory layout, you can give
+options such as `--bindir=PATH' to specify different values for
+particular kinds of files.  Run `configure --help' for a list of the
+directories that can be set, and what kinds of files go in them.
+
+   Program names and the name of the installation directory can be
+changed upon installation.  This is achieved by giving `configure' the
+option `--program-prefix=PREFIX' or `--program-suffix=SUFFIX'.  For
+example, after
+
+   `./configure --prefix=/usr --program-suffix=-1.4.5'
+
+   `make install' would install the binaries as `oo2c-1.4.5',
+`oob-1.4.5', and so on in `/usr/bin', and the rest of the compiler's
+files are put into `/usr/lib/oo2c-1.4.5'.
+
+
+File: OOCref.info,  Node: Installing with Run-Time Checks,  Prev: Installation Names,  Up: Installing oo2c
+
+Installing with Run-Time Checks
+-------------------------------
+
+   For performance reasons, run-time checks and assertions are disabled
+for all library modules and binaries built during installation.
+
+   The drawback to this is that any error in the compiler will most
+likely show itself as a core dump rather than the usual run-time error
+message.  Likewise, programs that pass invalid parameters to one of the
+library modules might either crash, show strange results, or even, in
+some cases, work as expected by sheer luck.
+
+   As an example of invalid input giving "expected" results, consider an
+unterminated character array (an `ARRAY OF CHAR' that is not terminated
+by `0X') passed as an input parameter to one of the procedures of
+module `Strings'.  If run-time checks are enabled, the procedure stops
+with an error message when it tries to access an index past the end of
+the array.  Without run-time checks, it simply continues to process
+characters beyond the end of the array until it reaches a `0X'
+somewhere in memory.  Under these circumstances, the procedure's result
+is undefined.
+
+   To install `oo2c' with full run-time checks enabled, remove the whole
+section `PRAGMAS ... END' from `oo2crc.stage1.mk.in' in the top-level
+directory *before* running `configure'.  This builds the library
+modules and executable programs with run-time checks and assertions
+enabled.  Please note that this has no affect on foreign modules
+written in C, like `Files', `Exception', `Types', and so forth.
+
+   A simple way to ensure that a single program, say `foo', is created
+with full run-time checks is to build it once with `oo2c --make --all
+foo'.  This compiles all modules imported directly or indirectly by
+module `foo', including the library modules it uses (*note oo2c
+options::.).  Afterwards, the newly created object files take
+precedence over the ones built during installation, and will be linked
+into all programs.
+
+
+File: OOCref.info,  Node: Invoking Programs,  Next: Initialization Files,  Prev: Installing oo2c,  Up: OO2C
+
+Command Line Options for Compiler and Tools
+===========================================
+
+   The following sections summarize the command line options accepted
+by the programs of the `oo2c' package (`oo2c', `oob', `ooef', and
+`oowhereis').  Some options have two equivalent names: one is a single
+letter preceded by `-', and the other is a long name preceded by `--'.
+Multiple single letter options (unless they take an argument) can be
+combined into a single command line word; for example, `-MA' is
+equivalent to `-M -A'.  The special option `--' denotes the end of the
+option list.  That is, any argument after `--' is not treated as an
+option even if it begins with `-'.
+
+   Each of these programs first evaluates the global initialization
+file, and then parses the command line options from left to right.  In
+the default installation, the global initialization file is
+`/usr/local/lib/oo2c/oo2crc'.  This can be changed by setting the
+environment variable OOC_CONFIG or using the option `--config'.  How an
+environment variable is set depends on the shell:
+
+       bash: export OOC_CONFIG=my_config_file
+       csh : setenv OOC_CONFIG my_config_file
+
+   The option `--config <file>' supersedes both the hard coded file name
+and the value in the environment variable OOC_CONFIG.  This option
+takes effect *before* the initialization file is read, which is
+different from all other options.  There should be at most one
+`--config' statement.  However, by using the option `--include-config
+<file>', it is possible to specify additional files to be evaluated for
+configuration.  Specifying the empty string as initialization file
+(e.g., with `--config ""') disables parsing of all default files.
+
+   All programs use the same initialization file.  Most of the
+configuration data pertains just to the compiler, but the `PATHS'
+section is also utilized by the other tools.  `PATHS' defines a list of
+file patterns and paths describing where the programs should look for
+files, and destination directories for any files that are created.  For
+details on file name resolution see *Note Initialization Files::.
+Except for the compiler, all programs accept the option `--help' (or
+`-h' for short).
+
+* Menu:
+
+* oo2c options::                Oberon-2 to ANSI-C Translator
+* oob options::                 Symbol File Browser
+* oocn options::                Source Code Analysis and Transformation
+* ooef options::                Conversion Tool for Error Messages
+* oowhereis options::           File Finder
+
+
+File: OOCref.info,  Node: oo2c options,  Next: oob options,  Up: Invoking Programs
+
+Invoking the Compiler
+---------------------
+
+   The compiler `oo2c' performs a number of different functions
+depending on the command line options it was invoked with.
+
+* Menu:
+
+* oo2c primary operations::     Primary operations of the compiler.
+* oo2c std options::            Selecting translation variants.
+* oo2c C options::              Specifying the C compiler and its options.
+* oo2c libraries::              Creating shared or static libraries.
+* oo2c debugging options::      How to take a look at oo2c's internals.
+* oo2c files::                  Input and output files of oo2c.
+
+
+File: OOCref.info,  Node: oo2c primary operations,  Next: oo2c std options,  Prev: oo2c options,  Up: oo2c options
+
+Primary compiler operations
+...........................
+
+   The primary functions of the compiler and the options that trigger
+them are listed below.
+
+`oo2c [options] <module>...'
+     Compile one or more modules.  That is, do syntactical and
+     semantical checks and translate the listed files from Oberon-2
+     source code to ANSI-C.
+
+`oo2c (--make|-M) [options] <module>'
+     Make an executable program.  That is, create up to date versions
+     of all the necessary object files, which contribute to the given
+     main module, and link them into an executable program.
+
+`oo2c (--make-lib|--install-lib) [options] <module>'
+     Turn a set of modules into a single static or shared library, and
+     install the new library in the applicable target directory.  Note
+     that both the static and shared library can be created at the same
+     time, depending on the configuration of `libtool'.  *Note oo2c
+     libraries::.
+
+`oo2c --makefile <file-name> [options] <module>'
+     Write a `Makefile' that tells `make' how to perform the necessary
+     steps to create an executable program from a set of intermediate C
+     files.
+
+   If none of the special flags listed above is present, `oo2c' assumes
+that all arguments are names of source files and tries to compile them
+to ANSI-C code.  Compiling a single module in this way can be used to
+check the syntax of a module, or selectively force recompilation of
+modules.  If a file name argument has no directory part, the compiler
+searches in the directories listed in the `PATHS' sections of the
+initialization files (*note Managing Files::.).  Any errors encountered
+while parsing a source file are written to `stdout' like this:
+
+     In file foo.Mod:
+     <pos>: <num> <error message>
+
+Here <POS> refers to the position of the error in the file (the first
+character has position 0), <NUM> is the error number, and the rest is a
+plain text error message.  The message format can be changed with the
+filter program `ooef' (*note ooef options::.).
+
+   The option `--make' (or `-M' for short) turns a set of Oberon-2
+modules into an executable program.  The single argument can be either
+the name of a module or a module's file name.  Again, the compiler
+searches the directories in `PATHS' if the file name has no directory
+part.  The compiler inspects all modules imported directly or
+indirectly by the given main module.  For every module that is
+compiled, the compiler decides whether it needs to be translated to C
+or not.  A module is compiled (or recompiled) if
+
+   * there is no symbol file, or
+
+   * the interface of one of its imported modules has changed, or
+
+   * one of the intermediate C files is missing.
+
+   In the next step, all necessary object files are generated by
+invoking the C compiler.  Typically, this is the most time consuming
+part of the translation process.  The final step links object files and
+libraries into an executable program with the same name as the main
+module.  Note that, unlike the Oberon System, there is no notion of
+*commands* (i.e., parameterless exported procedures, which can be
+activated directly by the user).  Instead, the module body of the main
+module specifies the program's execution sequence.
+
+   Sometimes, it is desirable to recompile all modules contributing to a
+program because, for example, some intermediate files were corrupted or
+a different set of options needs to be applied to all modules.  In this
+case, the option `--all' (or `-A' for short) should be used together
+with `--make'.  This forces `oo2c' to recompile every module, from
+scratch, that is part of the program and whose source code is available.
+Another option modifying the behaviour of `--make' is `--no-build',
+which causes the make process to stop after the C code is written, but
+before the C compiler is invoked to create the object files.
+
+   With `--makefile <file-name>', a so-called `Makefile' is written to
+the specified file.  This option takes a single argument: the name of a
+module or a file name.  The generated file contains the rules necessary
+to use the `make' utility to build an executable program for the main
+module from existing C code.  This feature is typically used to
+transfer a program to a system on which `oo2c' is not installed.  By
+default, the file contains only rules to compile C code into an
+executable program.  Specifying `--oc-rules' also writes rules that
+will run `oo2c' and produce, one at a time, the necessary C files from
+their Oberon-2 code.
+
+
+File: OOCref.info,  Node: oo2c std options,  Next: oo2c C options,  Prev: oo2c primary operations,  Up: oo2c options
+
+Standard Command Line Options
+.............................
+
+   The following command line options can be used with every mode of
+operation for `oo2c'.  The variable names shown with some of the
+options refer to the configuration variable associated with that option
+(*note Options and Pragmas::.).
+
+`--optimize' or `-O', option variable: `optimize'
+     Try harder to optimize the intermediate code.  In addition to the
+     usual code improving transformations, further time consuming
+     optimizations are enabled, and certain optimizations are run more
+     than once.  Also, add the contents of `coptflags' to C compiler
+     invocations.
+
+`--no-rtc'
+     Remove all run-time checks from the generated code.  This speeds
+     up programs considerably.  On the other hand, illegal program
+     states might go by unnoticed or lead to program termination in the
+     form of a core dump.  For the list of supported run-time checks,
+     see *Note Options and Pragmas::.
+
+`--version'
+     Write program version and exit.
+
+`--write-config'
+     Write current configuration data to `stdout' and exit.  Note that
+     the configuration data also includes the effects of command line
+     options.
+
+`--verbose' or `-v', option variable: `verbose'
+     Be more verbose during compilation.  In particular, the name of
+     the file currently compiled, changes in symbol files, and all
+     external program invocations are written to `stdout'.
+
+`--warnings' or `-w', pragma variable: `Warnings'
+     Include warnings in error listings.
+
+`--options <string>'
+     Add the given string to the initialization file section `OPTIONS'.
+     Example: `--options "optimize:=TRUE; verbose:=FALSE"'.  *Note
+     Options and Pragmas::.
+
+`--pragmas <string>'
+     Add the given string to the initialization file section `PRAGMAS'.
+     Example: `--pragmas "Warnings:=TRUE; Assertions:=FALSE"'.  *Note
+     Options and Pragmas::.
+
+`--define <string>'
+     Define a new variable for the initialization file section
+     `PRAGMAS'.  This introduces a new variable and sets it to the
+     given value.  Example: `--define "FooVar:=TRUE"', which is
+     equivalent to `--pragmas "DEFINE FooVar:=TRUE"'.
+
+
+File: OOCref.info,  Node: oo2c C options,  Next: oo2c libraries,  Prev: oo2c std options,  Up: oo2c options
+
+C Compiler Options
+..................
+
+   `oo2c' needs a C compiler to translate its ANSI-C code to object
+files, and to link object files and libraries into an executable
+program.  The following options specify the name of the C compiler and
+the options that are passed to it.  Every command line option modifies
+the value of a variable of the initialization section `OPTIONS'.  For
+example, writing `--cc gcc' in the command line is equivalent to adding
+the assignment `cc := "gcc"' to the `OPTIONS' section.  The default
+values for the various variables are set by `configure' when installing
+the compiler.  With the exception of `gcflags' and `valueStack', the
+variables listed here have no effect as long as `oo2c' is only called
+to translate single modules.  They are the building blocks for the
+argument list passed to the C compiler when generating an object file,
+linking a program or a library, or writing a makefile.
+
+`--cc <string>', option variable: `cc'
+     The name of the C compiler.
+
+`--cflags <string>', option variable: `cflags'
+     These flags are added to the C compiler's argument list when
+     translating a C file into an object file.
+
+`--coptflags <string>', option variable: `coptflags'
+     Like `--cflags' these flags are added to the argument list, but
+     only if the option `--optimize' is set.  This lets the user request
+     activation of time consuming optimization flags of the C compiler
+     only when such optimizations are desired.
+
+`--ldflags <string>', option variable: `ldflags'
+     The value of this string is appended to the link command.
+
+`--gcflags <string>', option variable: `gcflags'
+     This specifies the linker command that adds the garbage collector
+     code to the executable program.  Garbage collection is disabled by
+     setting the variable to the empty string.  This variable affects
+     both C code generation and linkage.
+
+option variable: `valueStack' (integer)
+     `oo2c' supports two mechanisms to allocate space for a procedure's
+     value parameters of open array type.  The first works with a fixed
+     block of heap memory as auxiliary stack, and the second uses the
+     function `alloca()' to reserve the necessary space on the normal
+     stack.  The advantages of `alloca()' are efficiency, elegance,
+     and, in practice, unlimited stack space.  The disadvantage is that
+     it is not an ANSI-C function, but rather a BSD extension, which is
+     not available on some systems.  The `alloca()' variant is chosen
+     by setting `valueStack' to `-1'.
+
+     Specifying a positive integer value for `valueStack' tells `oo2c'
+     to allocate a block of heap memory of the given size to store open
+     array value parameters.  The size is then hard coded into the
+     program and is fixed throughout program execution; this size must
+     be chosen carefully in order to avoid stack overflows.  If the C
+     compiler doesn't support `alloca()', the default value of
+     `valueStack' is 64KB.  All modules contributing to a program
+     should be compiled using one of these two mechanisms: either for
+     `alloca()' or for the auxiliary stack.  It is not recommended that
+     they be mixed within the same program.
+
+
+File: OOCref.info,  Node: oo2c libraries,  Next: oo2c debugging options,  Prev: oo2c C options,  Up: oo2c options
+
+Creating Shared or Static Libraries
+...................................
+
+   A "library file" (or simply *library*) is a type of file archive,
+which contains a group of object files.  Library files may be either
+*static* or *shared*.
+
+   `oo2c' depends on `GNU libtool' for the creation and installation of
+libraries.  This package is available for a wide variety of systems,
+and it handles all system specific details of libraries.  Support for
+particular systems may vary, but in practice `libtool' supports static
+libraries on all systems, and shared libraries on most systems.  The
+`oo2c' package includes `libtool'.  If necessary, it is automatically
+installed, under the name `oolibtool'.  If a version of `libtool'
+already exists on the system, it is used instead of `oolibtool' by
+default.
+
+   "Static libraries" are used by the link editor, which combines
+libraries with other object files to create a single executable program.
+
+   On the other hand, "shared libraries" (also called "dynamic
+libraries") are not stored in the executable program file itself, but
+are loaded into memory by the run-time loader just prior to execution
+of a program.  Only one instance of a shared library needs to be loaded
+into memory at any particular time, even when more than one program is
+using it.  This can be beneficial especially if several programs share
+a large number of modules, as it can provide a substantial savings in
+both memory usage and disk space.  But keep in mind that `libtool', and
+therefore `oo2c', does not support shared libraries on all systems.
+
+   The `--make-lib' function of `oo2c' turns a set of modules into a
+library.  Just like `--make', it takes a single argument: the name of a
+module or a file name.  The main module must look like this:
+
+     MODULE FooLib [LIBRARY "foo" "1:2:3"; INTERFACE "C"];
+     IMPORT ...;
+     END FooLib.
+
+This creates a library `foo' with version number `1.2.3' from all
+modules imported directly or indirectly by module `FooLib'.  Modules
+that are already a part of another library are not be included in
+`foo'.  Both a shared library and a static library are built, or, if
+the system does not support shared libraries, just the static version.
+For information about the version number and how it has to be
+maintained, see *Note Library Interface Versions:
+(libtool.info)Versioning.  To install a newly created library use
+`--install-lib'.  This command takes the same arguments as
+`--make-lib', and invokes `libtool' to install the library in the
+target directory.
+
+   Subsequent import of any module that is part of the library causes
+`oo2c' to link against the library file instead of the module's object
+file.  Note that recompilation of such a module, either through an
+explicit command or during a make, will undo this.  The compiled module
+and all modules importing it will then be linked against the object
+files.
+
+   Linking against libraries that haven't yet been moved to their final
+destination is slightly tricky.  Some systems encode the absolute path
+to the shared library directly in the executable program, and `libtool'
+has to do some special magic to produce a program that works both before
+and after the libraries have been installed.
+
+   To link against uninstalled libraries, the option `--libtool-link'
+must be used.  This modifies the linker invocation to link against
+`libtool' libraries from the current directory (for example
+`libfoo.la'), instead of the library itself.  The resulting command
+string is then passed to `libtool'.
+
+   If uninstalled shared libraries are involved, `libtool' places the
+executable program in the directory `./.libs', and a wrapper script of
+the same name is placed in the current directory.  Until the libraries
+are installed, only the wrapper script can be executed.  If only static
+libraries are involved, the program is placed directly in the current
+directory.  When installing the program, the user should take the file
+from `./.libs' if it exists, and the one in the current directory
+otherwise.
+
+   Use of `libtool' and the installation path can be adjusted with these
+options:
+
+`--lib-path <string>', option variable: `libpath'
+     Specify the directory where the libraries should be installed.
+     Note that the same destination directory has to be used for both
+     library creation (with `--make-lib') and library installation (with
+     `--install-lib').  The reason is that some systems hard code the
+     path to a shared library into the library binary itself.  The
+     default path is the same `lib' directory used when installing the
+     compiler.
+
+`--libtool-cmd <string>', option variable: `libtoolCmd'
+     Set the name of the `libtool' script, which is used with
+     `--make-lib' and `--install-lib'.  Note that the default value of
+     `libtoolCmd' depends on how `libtool' was installed on the system:
+     If `libtool' was installed prior to the `oo2c' package, its path
+     is used for `libtoolCmd'; otherwise, `libtoolCmd' is set to
+     `oolibtool'.
+
+`--install-cmd <string>', option variable: `installCmd'
+     Set the command prefix to be used when installing files with
+     `--install-lib'.  If the system offers an `install' command, the
+     default prefix is defined to be something like `/usr/bin/install
+     -c -m 644'.  Otherwise, `oo2c' uses a replacement script with
+     similar functionality.
+
+`--libtool-link', option variable: `libtoolLink'
+     When used with `--make', invoke `libtool' to do final linking.
+     This option is provided for linking against libraries that have
+     not yet been moved to their final destination.
+
+
+File: OOCref.info,  Node: oo2c debugging options,  Next: oo2c files,  Prev: oo2c libraries,  Up: oo2c options
+
+Debugging Options
+.................
+
+   There are a number of ways to inspect the inner workings of the
+compiler during the optimization steps and in the backend.  The
+following command switches are specific to `oo2c'; it is unlikely that
+other implementations of OOC will share even a subset of them.
+
+`--checks', option variable: `checks'
+     Do some consistency checks after every optimization.  This is used
+     to discover invalid code transformations that violate structural
+     requirements of the intermediate code.
+
+`--stupid', option variable: `stupidCodeGen'
+     Disable all code transformations.  Feed output of frontend
+     directly to backend.
+
+`--translate proc|gproc|module|program', option variable: `translationBasis'
+     Specify how much source code is read before running optimizations
+     and generating code.  Setting a higher structural level of the
+     translation basis allows for more optimizations to be run.  `proc'
+     reads a single procedure at a time, `gproc' a single global
+     procedure including all its nested procedures, `module' a whole
+     module, and `program' the entire set of program code.  `gproc' is
+     the default setting for `oo2c', `proc' and `program' are not
+     supported yet, and (at the moment) `module' has no noticeable
+     benefits compared to `gproc'.
+
+`--opt <string>', option variable: `optimizers'
+     Set the sequence of code transformations.  Every character in the
+     given string represents a transformation.  (To get the entire list
+     of available choices use some illegal selection, like `--opt .'.)
+     Without the special value `0', a final dead code elimination is
+     done before the code is given to the backend.  The character `?'
+     writes the intermediate code to `stdout'.  For example, the
+     command line arguments `--opt "?CD?"' write the code as emitted by
+     the frontend, run common subexpression elimination and dead code
+     elimination, and write the resulting code to `stdout' again.
+
+     The following options modify the output format of the intermediate
+     code:
+
+    `--gsa-qnames', option variable: `writeQualNames'
+          Include qualified names in the output.
+
+    `--gsa-opnd-pos', option variable: `writeOpndPos'
+          As much as possible, print source file positions of operands.
+          Note that many operands do not correspond directly to file
+          positions.
+
+    `--gsa-instr-pos', option variable: `writeInstrPos'
+          Print source file positions of instructions.
+
+    `--gsa-assign', option variable: `writeAssignHints'
+          Try to show how the intermediate code reflects assignments in
+          the source code.  This is only useful as long as no
+          optimizations are enabled; that is, together with `--opt
+          "?"'.  Note that setting this option might utterly confuse
+          the backend, and result in corrupted C code.
+
+    `--gsa-gate-old', option variable: `writeGateOld'
+          Extend the output of `gate' instructions to include their
+          `oldValue' field.  Very useful when debugging certain parts
+          of the frontend; otherwise, it serves no purpose.
+
+`--cgsa', option variable: `writeGSAC'
+     Write intermediate code annotated by backend specific information
+     to `stdout'.  This is done just before control flow of the
+     intermediate code is converted from guarded commands to the more
+     conventional form of explicit jumps and branches.  After this
+     final transformation, the ANSI-C files are written.
+
+     The output can be adjusted with the following options:
+
+    `--cgsa-qnames', option variable: `writeLocC'
+          Include qualified names in the output.
+
+    `--cgsa-loc', option variable: `writeQualNamesC'
+          Add location values (i.e., variable names) to statements.
+          This makes it considerably easier to match fragments of
+          intermediate code with emitted C code.
+
+   Note that the above table is not exhaustive; other undocumented
+options may exist that are of interest only to the compiler writers.
+
+
+File: OOCref.info,  Node: oo2c files,  Prev: oo2c debugging options,  Up: oo2c options
+
+Files used by the Compiler
+..........................
+
+   The location of global files depends on the installation.  The file
+names below assume that the default setting `--prefix=/usr/local' was
+used.
+
+`/usr/local/lib/oo2c/oo2crc'
+     Default path to primary initialization file.
+
+`~/.oo2crc'
+     Default user level initialization file.  Included from the primary
+     initialization file.
+
+`.Mod'
+     Source code of an Oberon-2 module.
+
+`.Sym'
+     Symbol file describing the public interface of a compiled module.
+
+`.h'
+     Header file describing the interface of a module on C level.
+
+`.c'
+
+`.d'
+     Translated ANSI-C code of a module.  The file `.d' holds global
+     definitions, `.c' the C functions.
+
+`.o'
+     Object file derived from `.d' and `.c' by the C compiler.
+
+`.Lib'
+     Library description with information about inter-library
+     dependencies.
+
+`/usr/local/lib/oo2c/Errors.short'
+     List of error messages.
+
+`/usr/local/lib/oo2c/lib/__*.c'
+`/usr/local/lib/oo2c/lib/__*.h'
+     Auxiliary files with C definitions.  These need to reside in one
+     of the paths listed in the initialization files or compilation of
+     C code will fail.
+

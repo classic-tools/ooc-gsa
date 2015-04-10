@@ -1,0 +1,81 @@
+@node Syntax of Text Tokens, SYSTEM, OO2C, Top  
+@appendix Syntax of Text Tokens
+@cindex syntax for text tokens
+@cindex text tokens, syntax 
+
+This section describes the accepted syntax for text tokens used by the
+various modules within the OOC library.  These definitions apply to read
+operations on text, and to modules like @ref{IntStr}, @ref{RealStr}, and
+@ref{LRealStr}, which convert between string values and numeric
+representation.
+
+These may also apply to write operations for text, but there are some cases
+(like @code{writer.WriteString} in @ref{Class Writer (TextRider)}) that do
+not strictly adhere to these definitions.  Also note that internal
+representation of strings is different from text representation of strings.
+
+An @dfn{identifier}, sometimes referred to as a @dfn{name}, has the form
+
+@smallexample
+  letter @{letter | decimal_digit@}
+@end smallexample
+
+(Note that an underscore @samp{_} is not considered to be part of an
+identifier, nor is a selector @samp{.})
+
+A @dfn{string} has the form
+
+@smallexample
+  """ @{non_control_char@} """ |
+  "'" @{non_control_char@} "'".
+@end smallexample
+
+where a @dfn{non-control char} is any character with an ordinal value
+greater than or equal to a space character (i.e.,
+@samp{non_control_char >= 20X}).
+
+A @dfn{signed whole number} (used to represent an integer value) has the
+form
+
+@smallexample
+  ["+" | "-"] decimal_digit @{decimal_digit@}.
+@end smallexample
+
+An @dfn{unsigned hexadecimal number} (used to represent an integer value)
+has the form
+
+@smallexample
+  ["+" | "-"] decimal_digit @{hex_digit@}.
+@end smallexample
+
+where a @dfn{hex digit} is one of @samp{0..9} or @samp{A..F}. (Note that
+lower-case letters, @samp{a..f}, are not valid hex digits.)
+
+A @dfn{signed fixed-point real number} has the form
+
+@smallexample
+  ["+" | "-"] decimal_digit @{decimal_digit@} ["." @{decimal_digit@}].
+@end smallexample
+
+A @dfn{signed floating-point real number} has the form 
+
+@smallexample
+  ["+" | "-"] decimal_digit @{decimal_digit@} ["." @{decimal_digit@}]
+              ("E" | "e") ["+" | "-"] decimal_digit @{decimal_digit@}.
+@end smallexample
+
+A @dfn{set constructor} has the form 
+
+@smallexample
+  "@{" [set_element @{"," set_element@}] "@}".
+@end smallexample
+
+where a @dfn{set element} has the form
+
+@smallexample
+  set_value [".." set_value].
+@end smallexample
+
+with @dfn{set value} being an integer number in the range
+@samp{0..MAX(SET)}.
+

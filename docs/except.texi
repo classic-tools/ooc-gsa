@@ -1,0 +1,1186 @@
+@node Exception Handling, Localization, Oakwood Compliant Modules, Top
+@chapter Exception Handling
+@cindex exception handling
+
+An @dfn{exception} is an event that may require special processing by a user
+program (or by the underlying implementation).  Exceptions may be raised by
+the computer's error-detection mechanisms, explicit activations (e.g.,
+@code{HALT} and @code{ASSERT}), failed runtime checks, or by actions
+external to the program.  The pair of modules @file{Exception} and
+@file{Signal} give the programmer control over the handling of these
+exceptions.  @file{Exception} provides the basic exception handling
+mechanism for user programs, whereas @file{Signal} provides the means to
+connect signal handlers to that mechanism.
+
+A @dfn{signal} is an externally generated software interrupt delivered to a
+process (or program).  These are generally produced by the underlying
+operating system as a means of reporting exceptional situations to executing
+processes.  However, it is also possible for one process to signal another
+process.
+
+@menu
+* Exception::                   Run-time exception handling.  
+* Signal::                      Installing signal handlers.
+@end menu
+
+
+@node Exception, Signal,  , Exception Handling
+@section Module Exception
+
+The primary use of this module is to provide error handling and to allow
+programmer control over both system and language (@code{HALT} and
+@code{ASSERT}) exception handling.  The programmer may define handlers,
+which can be used in place of those defined by the implementation.
+
+There are two states of program execution: normal and exceptional.  A
+program remains in the normal execution state until an exception is raised
+by a call to @code{RAISE}, @code{HALT}, or @code{ASSERT}, or after a failed
+run-time check.  After that, the program remains in the exceptional
+execution state until @code{ACKNOWLEDGE} or @code{RETRY} is called.
+
+An exception affects the control flow of a program; raising an exception
+implies transfer of control to some sort of handler, even across procedure
+invocations.  An @dfn{exception handler} is a statement sequence that is
+executed when an exception occurs.  In OOC, an exception handler is set up
+as part of an execution context.  Both normal and exceptional execution
+blocks can be set up within the same procedure, or exceptions can be allowed
+to propogate up the call stack and handled by a calling procedure.  A
+execution context, and exception handler, is typically set up like
+
+@smallexample
+Exception.PUSHCONTEXT (e);
+IF (e = NIL) THEN
+  (* normal execution *)
+ELSE  (* an exception was raised *)
+  (* handle the exception raised during normal execution *)
+END;
+Exception.POPCONTEXT;
+@end smallexample
+
+@quotation
+@strong{Please note:} Wherever the word ``thread'' appears below, it should
+be read as ``program'' for the moment.  Multi-threading isn't supported yet.
+@end quotation
+
+@menu
+* Exception Facilities::        Exception sources and associated operations.
+* Restrictions on PUSHCONTEXT:: Restrictions and cautions when setting
+                                 exception contexts.
+* Predefined Exception Sources::Exception sources defined in module
+                                 @code{Exception}. 
+* Runtime Exception Numbers::   Exception numbers associated with source
+                                 @code{runtime}.
+* Exception Examples::          Several detailed examples using @code{Exception}.
+@end menu
+
+
+@node Exception Facilities, Restrictions on PUSHCONTEXT,  , Exception
+@subsection Exception Facilities
+@cindex exception facilities
+
+The facilities provided by module @file{Exception} allow the user to raise
+exceptions and query the current execution state (normal or exceptional).
+Exceptions are identified uniquely by a pair (@code{Source}, @code{Number}).
+
+The programmer is responsible for managing the stack of exception handlers;
+this is because Oberon-2 does not provide direct language support for
+exceptions, and therefore exception handling in OOC is done through a
+library module.  The stack is manipulated primarily through the procedures
+@code{PUSHCONTEXT} and @code{POPCONTEXT}.  The only other action that
+changes the stack is raising an exception while the program is an
+exceptional execution state; this pops the topmost context (that was
+responsible for the exception) from the stack before moving control to the
+then topmost execution context.  Raising an exception in the state of normal
+execution does @emph{not} change the stack.
+
+@deftp {Data type} Number = LONGINT
+Values of this type are used to distinguish between different exceptions
+from the same source.  
+@end deftp
+
+@deftp {Data type} Source = POINTER TO SourceDesc
+Values of this type are used to identify the source of exceptions raised;
+that is, a @code{Source} is defined and allocated to establish a particular
+set of exceptions.
+@end deftp
+
+
+@deffn Procedure PUSHCONTEXT @code{(VAR @var{source}: Source)}
+This procedure pushes the current execution context onto the exception
+handler stack and sets @var{source} to @code{NIL}; if the context is later
+reactivated by raising an exception, @var{source} is set to the exception's
+source (@pxref{Exception Examples}).  At most one context can be pushed per
+procedure at a time.  During a single procedure evaluation, two successive
+calls to @code{PUSHCONTEXT} without a @code{POPCONTEXT} in between are not
+allowed and result in undefined program behaviour.
+
+@strong{Please note:} When the context is activated again (by raising an
+exception), the value of non-global variables of enclosing procedures that
+were modified after the initial call to @code{PUSHCONTEXT} are undefined.
+@end deffn
+
+
+@deffn Procedure POPCONTEXT @code{}
+This procedure removes the exception handler from the top of the stack; if
+the stack is empty an exception is raised.  If the program is in an
+exceptional execution state at the point where @code{POPCONTEXT} is called,
+the exception is raised again, thereby passing it along to the next higher
+exception handler.  During the execution of a procedure, the dynamic number
+of calls to @code{POPCONTEXT} has to balance the ones to @code{PUSHCONTEXT}.
+@end deffn
+
+
+@deffn Procedure RETRY @code{}
+If the current thread is in the exceptional execution state, a call to this
+procedure reactivates the context on top of the stack of exception handlers,
+and resets the execution state to normal.  This looks as if the
+corresponding call of @code{PUSHCONTEXT} returns again, with the parameter
+@var{source} set to @code{NIL}.  This allows the ``normal'' part to be
+re-executed.  Be very careful when using this because all local variables of
+the enclosing procedure(s) that were modified after the initial call to
+@code{PUSHCONTEXT} are undefined when activating the context again.
+
+If the current thread is in the normal execution state, calling @code{RETRY}
+raises an exception.
+@end deffn
+
+
+@deffn Procedure ACKNOWLEDGE @code{}
+If the current thread is in the exceptional execution state, a call to this
+procedure places it back in the state of normal execution.  Calling this
+procedure indicates that an exception has been handled without retrying the
+``normal'' part.
+
+If the current thread is in the normal execution state, calling
+@code{ACKNOWLEDGE} raises an exception.
+@end deffn
+
+
+@deffn Procedure AllocateSource @code{(VAR @var{newSource}: Source)}
+This procedure allocates a unique value of type @code{Source}.  If an unique
+value cannot be allocated, an exception is raised.
+@end deffn
+
+
+@deffn Procedure RAISE @code{(@var{source}: Source; @var{number}: Number; @var{message}: ARRAY OF CHAR)}
+A call to this procedure associates the given values of @var{source},
+@var{number}, and @var{message} with the current context and raises an
+exception.  This means that the current thread switches into the exceptional
+execution state and activates an execution context from the stack of
+exception handlers.  If the program is in the normal execution state at the
+time of the call to @code{RAISE}, the context on top of the stack is
+activated; if it was already in the exceptional execution state, the stack
+is popped before activating the context.  Activating the execution context
+looks as if the corresponding call to @code{PUSHCONTEXT} returns a second
+time, except this time returning with @var{source} (of @code{PUSHCONTEXT})
+set to @var{source} (of @code{RAISE}) (@pxref{Exception Examples}).
+
+Using a value of @code{NIL} for @var{source} raises an exception.
+
+The @var{message} should have the format "@code{[<module>] <description>}";
+it may be truncated by @code{RAISE} to an implementation-defined length.
+@end deffn
+
+
+@deffn Function CurrentNumber @code{(@var{source}: Source): Number}
+If the current thread is in the exceptional execution state because of the
+raising of an exception from @var{source}, this function returns the
+corresponding number; otherwise, it raises an exception.
+@end deffn 
+
+
+@deffn Procedure GetMessage @code{(VAR @var{text}: ARRAY OF CHAR)}
+If the current thread is in the exceptional execution state, this procedure
+returns the (possibly truncated) string associated with the current context.
+Otherwise, in normal execution state, it returns the empty string.
+@end deffn
+
+
+@deffn Function IsExceptionalExecution @code{(): BOOLEAN}
+If the current thread is in the exceptional execution state because of the
+raising of an exception, this function returns @code{TRUE}; otherwise, it
+returns @code{FALSE}.
+@end deffn
+
+
+@node Restrictions on PUSHCONTEXT, Predefined Exception Sources, Exception Facilities, Exception
+@subsection Restrictions on PUSHCONTEXT
+
+There are a number of important restrictions on the use of
+@code{PUSHCONTEXT}:
+
+@enumerate
+@item
+Within a procedure, at most one context can be active at a time (i.e.,
+contexts cannot be nested).  This allows for an efficient implementation of
+the context stack without falling back on heap objects.  If nested contexts
+are required, local procedures can be used to set up a new exception
+context.
+
+@item 
+The state of all non-global variables that were modified after a
+@code{PUSHCONTEXT} is undefined if the context is activated again by raising
+an exception or calling @code{RETRY}.  The reason is that, while the
+compiler ensures that the evaluation of a piece of code delivers the correct
+results in the end, it does not ensure that the state of an interrupted
+computation is correctly reflected by the memory contents at the time of the
+interruption.
+
+@item
+For exceptions that are not initiated by an explicit call to @code{RAISE}
+(i.e., failed run-time checks and external signals), the place where the
+exception was raised is undefined.  That is, the programmer cannot be
+certain of the exact set of intructions that were completed before the
+exception was raised.  The reason is that a sequence of instructions as
+specified in the source code may be evaluated in a different order or in an
+overlapped fashion in the emitted machine code.
+
+@item
+Every call to @code{PUSHCONTEXT} must have exactly one matching call to
+@code{POPCONTEXT} within the same procedure, assuming that the program parts
+in between are completed without raising an exception.  
+
+If a stack underflow occurs when @code{POPCONTEXT} is called, an exception
+is raised.  If an execution context is left on the stack that doesn't
+correspond to a valid procedure (i.e., a procedure doing a
+@code{PUSHCONTEXT} returns without doing a matching @code{POPCONTEXT}),
+activating the context by raising an exception transfers the program into a
+completely undefined state.  Most likely, the program abort due to a
+segmentation violation or a comparable error, or the stack of execution
+contexts is rolled back until a valid context is reached.  There is no way
+to check for such a situation.  Any programmer should be aware that an
+invalid context stack can cause considerable grief.
+@end enumerate
+
+
+@node Predefined Exception Sources, Runtime Exception Numbers, Restrictions on PUSHCONTEXT, Exception
+@subsection Predefined Exception Sources
+@cindex exception sources, predefined
+
+Several exception sources are predefined in module @file{Exception}.  These
+are available for handling exceptions generated through Oberon-2 language
+constructs and other run-time exceptions.
+
+@defvr {Read-only Variable} halt: @code{Source}
+@end defvr
+@defvr {Read-only Variable} assert: @code{Source}
+These two exception variables are associated to the standard predefined
+procedures @code{HALT} and @code{ASSERT}; @code{HALT(n)} is equivalent to
+@code{RAISE (halt, n, "")}, and @code{ASSERT(FALSE, n)} to @code{RAISE
+(assert, n, "")}.
+@end defvr
+
+@defvr {Read-only Variable} runtime: @code{Source}
+This exception source is used to report failed run-time checks.
+@end defvr
+
+
+@node Runtime Exception Numbers, Exception Examples, Predefined Exception Sources, Exception
+@subsection Runtime Exception Numbers
+@cindex runtime exception numbers
+
+The source @code{runtime} is used to report failed run-time checks, and the
+following exception numbers are associated with it.  These numbers signify
+the corresponding failed run-time checks, which are described fully in
+@ref{Illegal Operations}.
+
+@defvr Constant derefOfNIL
+A dereference of @code{NIL} or type test on @code{NIL}.
+@end defvr
+
+@defvr Constant realDivByZero
+Real division by zero.
+@end defvr
+
+@defvr Constant integerDivByZero
+Integer division by zero.
+@end defvr
+
+@defvr Constant realOverflow
+Real overflow (during either conversion or arithmetic operation).
+@end defvr
+
+@defvr Constant integerOverflow
+Integer overflow (during either conversion or arithmetic operation).
+@end defvr
+
+@defvr Constant illegalLength
+@code{NEW} was called with a negative length for an open array pointer type.
+@end defvr
+
+@defvr Constant outOfMemory
+@code{NEW} could not allocate the requested memory.
+@end defvr
+
+@defvr Constant indexOutOfRange
+Array index out of range.
+@end defvr
+
+@defvr Constant elementOutOfRange
+Set element out of range.
+@end defvr
+
+@defvr Constant endOfFunction
+The end of a function procedure is reached without encountering a
+@code{RETURN} statement.
+@end defvr
+
+@defvr Constant noMatchingLabel
+No matching label in @code{CASE} construct, and there is no @code{ELSE}
+part.
+@end defvr
+
+@defvr Constant noValidGuard
+All guards of @code{WITH} failed, and there is no @code{ELSE} part.
+@end defvr
+
+@defvr Constant typeGuardFailed
+Type guard failed.
+@end defvr
+
+@defvr Constant typeAssertFailed
+The target of a record assignment does not have compatible type.
+@end defvr
+
+@defvr Constant stackOverflow
+Stack overflow.
+@end defvr
+
+
+@node Exception Examples,  , Runtime Exception Numbers, Exception
+@subsection Exception Examples
+@cindex exception examples
+
+Typically, one exception source is defined per module.  Exception numbers
+are then used to distinguish between the actual exceptions raised against
+that source.  Those exceptions can then be handled either within that module
+itself, as is generally the case in OOC Library modules that use
+@file{Exception}, or the source and related constants can be exported and
+then handled externally.  Because exception sources @code{assert},
+@code{halt}, and @code{runtime} are defined within @file{Exception}, failed
+assertions, and so forth, can be handled just like any other exception.
+
+@subsubheading A Simple Example
+
+The following example is meant to show how to define and use an exception
+source.  Two instances are given where exceptions are raised against that
+source; note that the exception is handled in only one of these.
+
+@smallexample
+MODULE SimpleException;
+ 
+IMPORT  Exception, Err;
+ 
+CONST
+  genericException = 1;
+
+VAR  src: Exception.Source;
+  
+  PROCEDURE RaiseIt;
+  BEGIN
+    Exception.RAISE (src, genericException, 
+                     "[SimpleException] An exception is raised")
+  END RaiseIt;
+ 
+  PROCEDURE HandleIt;
+    VAR e: Exception.Source;
+  BEGIN
+    Exception.PUSHCONTEXT (e);
+    IF (e = NIL) THEN  (* normal execution *)
+      RaiseIt
+    ELSE  (* an exception was raised *)
+      Err.String ("Caught the exception."); Err.Ln;
+      Exception.ACKNOWLEDGE
+    END;
+    Exception.POPCONTEXT;
+  END HandleIt;
+ 
+  PROCEDURE LetItGo;
+  BEGIN
+    RaiseIt
+  END LetItGo;
+  
+BEGIN
+  Exception.AllocateSource (src);
+  HandleIt;
+  LetItGo;
+END SimpleException.
+@end smallexample
+
+The exception source @code{src} is allocated (and initialized) by the call
+to @code{AllocateSource} in the body of the module.  Procedure
+@code{RaiseIt} raises an exception against that source.
+
+In procedure @code{HandleIt}, an exception context is established, and then
+any exceptions that are raised in the scope of that context are handled.
+Note the use of @code{ACKNOWLEDGE} to indicate the exception was handled,
+and @code{POPCONTEXT} to end the context and clean up after it.
+
+In procedure @code{LetItGo}, the raised exception is not handled, so the
+exception propagates up the call stack, and finding no enclosing context
+handler, finally terminates the program.  The output of this program should
+look something like
+
+@smallexample
+Caught the exception.
+##
+## Unhandled exception (#1):
+## [SimpleException] An exception is raised
+##
+@end smallexample
+
+
+@subsubheading Differentiating Exceptions
+
+To identify different exceptions, and provide different handling depending
+on the exception raised, both the exception @code{Source} and @code{Number}
+need to be considered.  The pair (@code{Source}, @code{Number}) uniquely
+identify the exception that has been raised.  For example,
+
+@smallexample
+MODULE MultiExcept;
+ 
+IMPORT
+  Exception, Out;
+ 
+CONST
+  genericException = 1;
+  zeroException = 2;
+  negativeException = 3;
+  
+VAR
+  src: Exception.Source;
+  
+  PROCEDURE RaiseIt;
+  BEGIN
+    Exception.RAISE (src, genericException, 
+                     "[MultiExcept] An exception is raised")
+  END RaiseIt;
+ 
+  PROCEDURE Test (c: INTEGER);
+  BEGIN
+    Out.String ("Testing value="); Out.Int (c, 0); Out.Ln;
+    IF (c = 0) THEN
+      Exception.RAISE (src, zeroException, 
+                       "[MultiExcept] Value is zero")
+    ELSIF (c < 0) THEN
+      Exception.RAISE (src, negativeException, 
+                       "[MultiExcept] Value less than zero")
+    ELSE
+      RaiseIt
+    END;
+  END Test;
+ 
+  PROCEDURE p (i: INTEGER);
+     VAR
+       e: Exception.Source;
+       str: ARRAY 256 OF CHAR;
+   BEGIN
+     Exception.PUSHCONTEXT (e);
+     IF (e = NIL) THEN
+       Test(i);
+     ELSE
+       IF (e = src) THEN (* identify the exception source *) 
+         IF (Exception.CurrentNumber(e) = zeroException) THEN
+           Exception.GetMessage(str);
+           Out.String ("Caught exception: "); Out.String(str); Out.Ln;
+           Exception.ACKNOWLEDGE
+         ELSIF (Exception.CurrentNumber(e) = negativeException) THEN
+           Exception.GetMessage(str);
+           Out.String ("Caught exception: "); Out.String(str); Out.Ln;
+           Exception.ACKNOWLEDGE
+         END;
+       END;  (* Note: No ELSE part; *)
+     END;    (* all other exceptions are re-raised. *)
+     Exception.POPCONTEXT;
+   END p;
+
+BEGIN
+  Exception.AllocateSource (src);
+  p(-4);
+  p(0);
+  p(3); 
+END MultiExcept.
+@end smallexample
+
+Exception numbers @code{genericException}, @code{zeroException}, and
+@code{negativeException} are defined for @code{src}.  In procedure @code{p},
+two of these exceptions are handled, and all other exceptions, including
+@code{genericException}, are simply re-raised.  The output of this program
+looks like
+
+@smallexample
+Testing value=-4
+Caught exception: [MultiExcept] Value less than zero
+Testing value=0
+Caught exception: [MultiExcept] Value is zero
+Testing value=3
+##
+## Unhandled exception (#1):
+## [MultiExcept] An exception is raised
+##
+@end smallexample
+
+
+@subsubheading Assertions and Exceptions
+
+The previous two examples are somewhat contrived; you probably wouldn't use
+exceptions quite that way.  Those examples were meant to show how the
+exception mechanisms work, not necessarily how you would use them in a real
+situation.  So for this next set of examples, let us look at a more
+practical problem.  Consider the following module, which performs a typical
+programming task: reading from one file, processing the information, and
+writing the result out to another file.  Note that, in this version, no
+error checking is done.
+
+@smallexample
+MODULE FileFilter;
+
+IMPORT Files, TextRider;
+
+  PROCEDURE Process(inFileName:  ARRAY OF CHAR; 
+                    outFileName: ARRAY OF CHAR);
+    VAR r: TextRider.Reader;
+        w: TextRider.Writer;
+        fin, fout: Files.File;
+        res: INTEGER;
+  BEGIN
+    fin := Files.Old(inFileName, @{Files.read@}, res);
+    r := TextRider.ConnectReader(fin); 
+
+    fout := Files.New(outFileName, @{Files.write@}, res);
+    w := TextRider.ConnectWriter(fout); 
+
+    (* Process the files... *)
+    
+    fin.Close; 
+    fout.Close;
+  END Process;
+  
+BEGIN
+  Process("in.txt", "out.txt");
+END FileFilter.
+@end smallexample
+
+There are a number of places where things might go wrong.  For instance,
+suppose @file{in.txt} does not exist; running the program would result in
+the following output:
+
+@smallexample
+##
+## Unhandled exception (#1) in module TextRider at pos 45930:
+## Dereference of NIL
+##
+@end smallexample
+
+@quotation
+@strong{Please note:} The exception is only raised if @file{TextRider} was
+compiled with run-time checks enabled; they are disabled by default.  In
+general, it is not a good idea to assume that library modules raise
+``proper'' exceptions when they are fed illegal values.  For instance,
+nstead of a deref-of-nil exception, they might cause the OS to signal a
+@code{SIGSEGV} (or something similar).  Some modules (everything implemented
+in C) cannot be forced to handle run-time checks gracefully at all.
+@end quotation
+
+This exception occurs because @code{Files.Old} failed and returned a value
+of @code{NIL}, and that value was passed to @code{ConnectReader}.  This
+situation should be checked for; Oberon-2 provides a predefined procedure
+@code{ASSERT} that could be used in this situation.  The following version
+adds error checking to the program:
+
+@smallexample
+  PROCEDURE Process(inFileName:  ARRAY OF CHAR; 
+                    outFileName: ARRAY OF CHAR);
+    VAR r: TextRider.Reader;
+        w: TextRider.Writer;
+        fin, fout: Files.File;
+        res: INTEGER;
+  BEGIN
+    fin := Files.Old(inFileName, @{Files.read@}, res);
+    ASSERT(res = Files.done);
+    
+    r := TextRider.ConnectReader(fin); 
+    ASSERT(r # NIL);
+
+    fout := Files.New(outFileName, @{Files.write@}, res);
+    ASSERT(res = Files.done);
+
+    w := TextRider.ConnectWriter(fout); 
+    ASSERT(w # NIL);
+
+    (* Process the files... *)
+    
+    IF fin # NIL THEN fin.Close END; 
+    IF fout # NIL THEN fout.Close END;
+  END Process;
+@end smallexample
+
+Running this program under the same conditions (i.e., @file{in.txt} does not
+exist) produces the following result:
+
+@smallexample
+##
+## Unhandled exception (#1) in module FileFilter2 at pos 299:
+## Assertion failed
+##
+@end smallexample
+
+This is slightly better than the first version; at least the unhandled
+exception message now shows the relative location of the exception in the
+source text.  But, it would be even better, especially if this kind of file
+processing were done from an interactive program, if there were a way to
+recover from this situation.  The next version shows how failed assertions
+can be caught:
+
+@smallexample
+  PROCEDURE Process(inFileName:  ARRAY OF CHAR; 
+                    outFileName: ARRAY OF CHAR);
+    CONST
+        finError = 1; rError = 2; foutError = 3; wError = 4;
+    VAR r: TextRider.Reader;
+        w: TextRider.Writer;
+        fin, fout: Files.File;
+        res: INTEGER;
+        e: Exception.Source;
+  BEGIN
+    fin := NIL; fout := NIL;
+    Exception.PUSHCONTEXT (e);
+    IF (e = NIL) THEN    
+      fin := Files.Old(inFileName, @{Files.read@}, res);
+      ASSERT(res = Files.done, finError);
+    
+      r := TextRider.ConnectReader(fin); 
+      ASSERT(r # NIL, rError);
+
+      fout := Files.New(outFileName, @{Files.write@}, res);
+      ASSERT(res = Files.done, foutError);
+
+      w := TextRider.ConnectWriter(fout); 
+      ASSERT(w # NIL, wError);
+
+    (* Process the files... *)
+    ELSE
+      IF e = Exception.assert THEN
+        CASE Exception.CurrentNumber(e) OF
+          finError: 
+            (* ... *)
+            Exception.ACKNOWLEDGE
+        | rError: 
+            (* ... *)
+            Exception.ACKNOWLEDGE
+        | foutError: 
+            (* ... *)
+            Exception.ACKNOWLEDGE
+        | wError:
+            (* ... *)
+            Exception.ACKNOWLEDGE
+        ELSE  (* exception is not acknowledged otherwise. *)
+        END;        
+      END;  (* all other exceptions are re-raised. *)
+    END;
+    Exception.POPCONTEXT;
+    
+    IF fin # NIL THEN fin.Close END; 
+    IF fout # NIL THEN fout.Close END;
+  END Process;
+@end smallexample
+
+When an exception occurs (indicated by a failed assertion) special
+processing can be done based on the exception number: @code{finError},
+@code{rError}, @code{foutError}, or @code{wError}.  Note that the calls to
+@code{Close} occur outside of the exception context, so that the files can
+still be closed when an exception occurs (as long as they are not
+@code{NIL}).  An else clause is included as part of the @code{CASE} to
+prevent a misleading @code{noMatchingLabel} exception.
+
+This example shows how the exception mechanism can be used in conjunction
+with @code{ASSERT}.  If more fine-grained control is required, an exception
+source can be defined and calls to @code{RAISE} used in place of
+@code{ASSERT}.
+
+
+@node Signal,  , Exception, Exception Handling
+@section Module Signal
+@cindex signals
+
+The module @file{Signal} provides the means to connect signals to the
+exception handling mechanism defined by module @file{Exception}.  A signal
+reports the occurrence of an exceptional event to an executing program; that
+is, a signal is an externally generated software interrupt.  The following
+are examples of events that can generate a signal: Program or operation
+errors, or external events such as alarms or job control events; one process
+can also send a signal to another process.
+
+Full coverage of the use of signals is beyond the scope of this manual.  To
+learn more about signals, most books on the Unix operating system have
+sections describing signals.  Otherwise, @cite{The GNU C Library Reference
+Manual} (available to download in various formats---say, as ``info''
+files---or in print with ISBN 1-882114-53-1) is an excellent source of
+information on the use of signals.
+
+Signals can also be set up to be handled independently of exceptions.  The
+procedure @code{SetHandler} is used to install a handler procedure for when
+a specific signal occurs.  The procedure @code{Raise} can be used to raise a
+particular signal, which is then handled in the same way as system generated
+signals (i.e., either an exception is raised or the signal's action is
+activated).
+
+A signal's action can be set to @code{handlerException}, which means that an
+occurance of the given signal raises an exception.  Unless specified
+otherwise, signals trigger their respective default actions.
+
+A generic handler, which could be used to handle different kinds of signals,
+might look something like this:
+
+@smallexample
+PROCEDURE GenericHandler(sigNum: Signal.SigNumber);
+  VAR dummy: Signal.SigHandler;
+BEGIN
+  Err.String("Handling signal="); Err.LongInt(sigNum, 0); Err.Ln;
+  
+  dummy := Signal.SetHandler(sigNum, GenericHandler);
+    (* sigNum's action might be reset by the system to  
+     * `handlerDefault', so we explicitly reset our own 
+     *  signal action here.  See note below.  *)
+
+  IF sigNum = Signal.Map(Signal.sigint) THEN
+    (* Actions applicable to `sigint'. *)
+  ELSIF sigNum = Signal.Map(Signal.sigsegv) THEN
+    (* Actions applicable to `sigsegv'.  
+     * HALT() would probably be good here. *)
+  ELSIF sigNum = ...
+    ...
+  ELSE
+    (* For other signals that have this procedure as their action,
+     * but are not handled by an ELSIF branch, reset the action
+     * as default, and raise it again. *) 
+    dummy := Signal.SetHandler(sigNum, Signal.handlerDefault);
+    Signal.Raise(sigNum)
+  END;
+END GenericHandler;
+@end smallexample
+
+@quotation
+@strong{Please note:} Resetting the signal's action to the current handler
+is only necessary for System V systems.  For BSD or POSIX, the current
+signal handler is kept.  Also note that with System V there is a race
+condition: There is no guarantee that the signal isn't raised again after
+the handler is cleared by the system, but before the called handler has
+reinstalled itself.
+@end quotation
+
+This handler would be installed for various signals (probably in a module's
+BEGIN block) as follows:
+
+@smallexample
+oldHandler := Signal.SetHandler(Signal.Map(Signal.sigint), 
+                                GenericHandler);
+oldHandler := Signal.SetHandler(Signal.Map(Signal.sigsegv), 
+                                GenericHandler);
+...
+@end smallexample
+
+
+@subheading Signal Facilities
+
+@subsubheading Constants
+The following constants define symbolic names for signals.  Because signal
+numbers vary from system to system, the numbers below cannot be passed
+directly to a system call; a number has to be mapped to the system's
+numbering scheme first by the function @code{Map}.  Multiple names can be
+mapped to a single signal number; for example on most systems, the signals
+@code{sigiot} and @code{sigabrt} are aliases.  Not all signals are available
+on all systems.  If a signal is not defined for the current system,
+@code{Map} will return the value @code{unknownSignal}.
+
+@noindent
+@emph{Program error signals:}
+
+@defvr {Constant} sigfpe
+Fatal arithmetic error.
+@end defvr
+
+@defvr {Constant} sigill
+Illegal instruction.
+@end defvr
+
+@defvr {Constant} sigsegv
+Segmentation violation.
+@end defvr
+
+@defvr {Constant} sigbus
+Bus error.
+@end defvr
+
+@defvr {Constant} sigabrt
+Program abortion.
+@end defvr
+
+@defvr {Constant} sigiot
+I/O trap, usually just another name for sigabrt.
+@end defvr
+
+@defvr {Constant} sigtrap
+Program breakpoint.
+@end defvr
+
+@defvr {Constant} sigemt
+Emulator trap.
+@end defvr
+
+@defvr {Constant} sigsys
+Bad system call.
+@end defvr
+
+@defvr {Constant} sigstkflt
+Stack fault.
+@end defvr
+
+@noindent
+@emph{Termination signals:}
+
+@defvr {Constant} sigterm
+Generic way to cause program termination.
+@end defvr
+
+@defvr {Constant} sigint
+Program interrupt (usually caused by @kbd{C-c}).
+@end defvr
+
+@defvr {Constant} sigquit
+Program interrupt (usually caused by @kbd{C-\}).
+@end defvr
+
+@defvr {Constant} sigkill
+Immediate program termination.
+@end defvr
+
+@defvr {Constant} sighup
+"Hang-up" signal.
+@end defvr
+
+@noindent
+@emph{Alarm signals:}
+
+@defvr {Constant} sigalrm
+Typically indicates expiration of a timer.
+@end defvr
+
+@defvr {Constant} sigvtalrm
+Virtual timerO.
+@end defvr
+
+@defvr {Constant} sigio
+File descriptor is ready to perform input or output.
+@end defvr
+
+@defvr {Constant} sigurg
+"Urgent" or out-of-band data arrived at socket.
+@end defvr
+
+@defvr {Constant} sigpoll
+System V signal name, similar to sigio.
+@end defvr
+
+@noindent
+@emph{Job control signals:}
+
+@defvr {Constant} sigchld
+Child process terminates or stops.
+@end defvr
+
+@defvr {Constant} sigcld
+Obsolete name for sigchld.
+@end defvr
+
+@defvr {Constant} sigcont
+Continue process.
+@end defvr
+
+@defvr {Constant} sigstop
+Stop process.
+@end defvr
+
+@defvr {Constant} sigtstp
+Interactive stop signal.
+@end defvr
+
+@defvr {Constant} sigttin
+Background process reads from terminal.
+@end defvr
+
+@defvr {Constant} sigttou
+Background process writes to terminal.
+@end defvr
+
+@noindent
+@emph{Operation error signals:}
+
+@defvr {Constant} sigpipe
+Broken pipe.
+@end defvr
+
+@defvr {Constant} siglost
+Resource lost.
+@end defvr
+
+@defvr {Constant} sigxcpu
+CPU time limit exceeded.
+@end defvr
+
+@defvr {Constant} sigxfsz
+File size limit exceeded.
+@end defvr
+
+@defvr {Constant} sigpwr
+Power state indication.
+@end defvr
+
+@noindent
+@emph{Miscellaneous signals:}
+
+@defvr {Constant} sigusr1
+User defined signal 1.
+@end defvr
+
+@defvr {Constant} sigusr2
+User defined signal 2.
+@end defvr
+
+@defvr {Constant} sigwinch
+Window size change.
+@end defvr
+
+@defvr {Constant} siginfo
+Information request.
+@end defvr
+
+@defvr {Constant} sigdil
+???
+@end defvr
+
+@noindent
+@emph{Other:}
+
+@defvr Constant unknownSignal
+Result of @code{Map} for invalid signal names.
+@end defvr
+
+
+@subsubheading Types
+The following types are declared in module @file{Signal}:
+
+@deftp {Data type} SigNumber
+A system dependant integer type used to represent signal numbers.
+@end deftp
+
+@deftp {Procedure type} SigHandler = @code{PROCEDURE (@var{signum}: SigNumber)}
+The procedure type used as the signature of a signal handler, which is
+installed with the procedure @code{SetHandler}.  A procedure variable of
+this type is activated upon the arrival of the signal, and the system
+dependent signal number is passed to the @var{signum} parameter.
+@end deftp
+
+
+@subsubheading Variables
+The following variables are defined for use with facilities provided in
+module @file{Signal}:
+
+@defvr {Read-only Variable} handlerDefault: SigHandler
+Setting a signal's action to this handler specifies that the signal should
+invoke the default action when raised.
+@end defvr
+
+@defvr {Read-only Variable} handlerIgnore: SigHandler
+Setting a signal's action to this handler specifies that the signal should
+be ignored.  Note that, the signals @code{sigkill} and @code{sigstop} cannot
+be ignored.
+@end defvr
+
+@defvr {Read-only Variable} handlerError: SigHandler
+The value of this variable is returned from from @code{SetHandler} to
+indicate an error.
+@end defvr
+
+
+@defvr {Read-only Variable} handlerException: SigHandler
+Setting a signal's action to this handler specifies that the signal should
+raise an exception.  Upon arrival of the signal @code{signum}, the handler
+will install itself again as action for the given signal number, and then
+activate @code{Exception.RAISE} with @code{Signal.exception} as source, the
+message string @samp{[Signal] Caught signal number <signum>}, and the system
+dependent value of @code{signum} as exception number.  
+
+If the exception isn't handled by the user, the default exception handler
+will print the usual message to @code{stderr}, reset the signal's handler to
+the default action, and raise the signal again.  If the latter doesn't
+terminate the program, the default handler will terminate the program like a
+failed run-time check.
+@end defvr
+
+@defvr {Read-only Variable} exception: Exception.Source
+This is used as the exception source for signals that are set to raise an
+exception via @code{handlerException}.
+@end defvr
+
+
+@subsubheading Procedures
+The following procedures are provided for setting signal handlers and
+raising signals:
+
+@deffn Function Map @code{(@var{signum}: SigNumber): SigNumber}
+Maps a signal name from the above list onto the system dependent signal
+number associated with that name.  If the signal isn't defined for the
+system, @code{unknownSignal} is returned.  More than one signal may be
+mapped onto the same number.
+@end deffn
+
+@deffn Function SetHandler @code{(@var{signum}: SigNumber; @var{action}: SigHandler): SigHandler}
+Installs the signal handler @var{action} for the signal number @var{signum}.
+The signal number must be mapped to the system's number scheme first; that
+is, the names defined above can't be used directly, but have to be passed
+through @code{Map} first.  The behaviour of this procedure is undefined if
+the given number does not correspond to a legal signal.
+
+If the signal can be handled, the next occurence of the given signal will
+activate the procedure in @var{action}, passing the system specific signal
+number via the procedure's @var{signum} parameter.  Calling this procedure
+with @code{@var{action} = NIL} is equivalent to calling it with
+@code{@var{action} = handlerDefault}.  The system might, as in the case of
+System V systems, reset the signal handler to the default action before
+calling @var{action}.  On other systems, notably POSIX and BSD, the current
+action is kept.  So, it is generally a good idea to explicitly set the
+signal handler again as part of @var{action}.
+
+On success, the @code{SetHandler} function returns the action that was
+previously in effect for the specified @var{signum}.  This value can be
+saved and later restored by calling @code{SetHandler} again.
+
+On failure, the value @code{handlerError} is returned.  Possible errors are an
+invalid @var{signum}, or an attempt to ignore or provide a handler for the
+signals @code{sigkill} or @code{sigstop}.
+
+@quotation
+@strong{Please note:} In @code{oo2c}, this function is just a wrapper around
+the C function @code{signal}.  For more details, check the specification of
+this function (e.g., its man page or the relevant chapter of libc info).
+@end quotation
+@end deffn
+
+@deffn Procedure Raise @code{(@var{signum}: SigNumber)}
+Raises a signal associated with @var{signum} for the current process.  See
+@code{SetHandler} for the restrictions regarding the values of @var{signum}.
+@end deffn
+
+
+Initial actions for all signals within a program are usually either
+@code{handlerDefault} or @code{handlerIgnore}.  A check should be done when
+establishing new signal handlers to be sure that the original action was not
+@code{handlerIgnore}.
+
+@emph{Example:}  
+
+@smallexample
+MODULE SigTest;
+
+IMPORT Signal, ...;
+
+VAR
+  oldHandler: Signal.SigHandler;
+  
+  PROCEDURE CleanUp(sigNum: Signal.SigNumber);
+  (* Set the handler back to default, clean up (e.g., close 
+   * files), and then resend the signal.  *)
+  BEGIN
+    oldHandler := Signal.SetHandler(sigNum, Signal.handlerDefault);
+    (* Do the clean up stuff. *)
+    Signal.Raise(sigNum);
+  END CleanUp;
+
+BEGIN
+  oldHandler := Signal.SetHandler(Signal.Map(Signal.sigint), CleanUp);
+
+  (* Check to make sure the signal was not set to be ignored.  *)
+  IF oldHandler = Signal.handlerIgnore THEN
+    oldHandler := Signal.SetHandler(Signal.Map(Signal.sigint), 
+                                    Signal.handlerIgnore);
+  END;  
+
+  ...   (* Other program termination signals, like sighup and 
+         * sigterm, might also be set to do the CleanUp action.  
+         *)
+END SigTest.
+@end smallexample
+
+
+Certain signals might not occur when normal run-time checks are enabled.
+For example, index checks are normally done when accessing array elements,
+so a segmentation violation should never occur because of accessing
+out-of-bounds array elements.  However, if these run-time checks are
+disabled, appropriate signal handlers can be set up to capture error
+conditions.
+
+@emph{Example:}  
+
+@smallexample
+<* IndexCheck := FALSE *>
+...
+
+PROCEDURE PrintIt(sigNum: Signal.SigNumber);
+BEGIN
+  oldHandler := Signal.SetHandler(sigNum, PrintIt);
+  Err.String("Resetting program and exiting...");  Err.Ln;
+  (* Cleanup stuff *)
+  HALT(1);
+END PrintIt;
+
+...
+
+oldHandler := Signal.SetHandler(Signal.Map(Signal.sigsegv), PrintIt);
+@end smallexample
+
+
+It is often very difficult to recover from serious events that trigger
+signals.  This is why the exception handling module @file{Exception} has
+been tied into @file{Signal}; a program can be set up to handle the error
+via an exception handler.
+
+@emph{Example:}  
+
+@smallexample
+MODULE SigExcept;
+<* IndexCheck := FALSE *>
+
+IMPORT Signal, Exception, ...;
+
+VAR
+  oldHandler: Signal.SigHandler;
+  
+  PROCEDURE RunIt;
+    VAR 
+        ...
+        e: Exception.Source;
+  BEGIN
+    Exception.PUSHCONTEXT (e);
+    IF (e = NIL) THEN    
+      ...  (* Normal excecution part *)
+    ELSE
+      IF e = Signal.exception THEN
+        IF Exception.CurrentNumber(e) = Signal.Map(Signal.sigsegv) THEN
+            ...
+            Exception.ACKNOWLEDGE
+        ELSE
+        END
+      END
+    END
+    Exception.POPCONTEXT;
+  END RunIt;
+
+BEGIN
+  oldHandler := Signal.SetHandler(Signal.Map(Signal.sigsegv), 
+                                  Signal.handlerException);
+  ...
+  RunIt
+END SigExcept.
+@end smallexample

@@ -1,0 +1,109 @@
+@node Random Numbers,  , Complex Numbers, Mathematics
+@section Random Numbers
+@pindex RandomNumbers
+@cindex random numbers
+
+"Random number" generating routines, like those provided in module
+@file{RandomNumbers}, are more correctly called @dfn{pseudo-random number
+generators} because they have only the appearance of randomness, and
+actually exhibit a specific, repeatable pattern.  However, the generated
+sequence of numbers should pass certain statistical tests @emph{as if} it
+were a truly random sequence.
+
+The algorithm implemented by @file{RandomNumbers} is "good" in the sense
+that it passes many of these statistical tests, but it is not necessarily
+useful in all cases.  A different algorithm might be better suited to a
+particular application simply because the inherent structure of the
+generated number sequence better satisfies the application's required
+properties.
+
+Because of the deterministic quality of random number generators, the user
+is required to specify an initial value, or @dfn{seed}.  Sequences generated
+using the same seed (and the same algorithm) will always produce the same
+results.  To get a different sequence, simply use a different seed.  A
+common way to generate different seeds is to initialize using the system's
+clock time.  (This is not done directly within @file{RandomNumbers} because
+then it is not possible to reproduce results, which could cause difficulties
+during, say, testing and debugging.)
+
+Also note that sequences @emph{will} repeat themselves eventually.  In this
+case, a sequence will start to repeat after, at most, @code{modulo-1}
+elements, and possibly much sooner than that.
+
+A complete discussion of random number generating algorithms is beyond the
+scope of this manual.  For more information about the algorithm used in this
+module, and other random number generators, consult the following
+references:
+
+@format 
+@cite{Random number generators: good ones are hard to find}
+S.K. Park and K.W. Miller
+Communications of the ACM, Vol. 31, No. 10, October 1988, pp. 1192-1201
+
+@cite{The Art Of Computer Programming:
+Volume 2, Seminumerical Algorithms, Second Edition}
+Donald E. Knuth
+Addison-Wesley Publishing Co., January 1981
+@end format
+
+
+@defvr Constant modulo
+The determing parameter of the linear congruential generator being used
+by @file{RandomNumbers}.  
+@end defvr
+
+@deffn Procedure GetSeed @code{(VAR @var{seed}: LONGINT)}
+This procedure gets the seed value currently in use by routines in module
+@file{RandomNumbers}.
+@end deffn
+
+@deffn Procedure PutSeed @code{(@var{seed}: LONGINT)}
+This procedure sets @var{seed} as the new seed value for routines in
+@file{RandomNumbers}.  Any value for @var{seed} is allowed, but all values
+will be mapped into the range @code{[1..modulo-1]}.
+@end deffn
+
+@deffn Function RND @code{(@var{range}: LONGINT): LONGINT}
+This function calculates a new "random" number.  @var{range} has to be in
+the range @code{[1..modulo-1]}, and the result is a number in the interval
+@code{[0, @var{range}-1]}.
+@end deffn
+
+@deffn Function Random @code{(): REAL}
+This function calculates a new "random" number.  The result is a number in
+the interval @code{[0, 1)}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR l: LONGINT;
+    r: REAL;
+
+RandomNumbers.PutSeed(314159);
+
+l := RandomNumbers.RND(100);
+   @result{} l = 19
+l := RandomNumbers.RND(10000);
+   @result{} l = 5610
+l := RandomNumbers.RND(9999999);
+   @result{} l = 6158792
+l := RandomNumbers.RND(365);
+   @result{} l = 54
+
+RandomNumbers.GetSeed(l);
+   @result{} l = 143441039
+
+r := RandomNumbers.Random();
+   @result{} r = 0.6225381
+r := RandomNumbers.Random();
+   @result{} r = 0.9990177
+r := RandomNumbers.Random();
+   @result{} r = 0.4895853
+r := RandomNumbers.Random();
+   @result{} r = 0.4605866
+
+RandomNumbers.GetSeed(l);
+   @result{} l = 989102265
+@end smallexample
+

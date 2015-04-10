@@ -1,0 +1,1037 @@
+@node OOC Error Messages, Copying, SYSTEM, Top
+@appendix OOC Error Messages
+@cindex error messages
+
+All implementations of OOC try to provide error messages that are as helpful
+as possible; the problem causing the message should be readily identifiable.
+Counter examples to this approach are most C compilers.  They combine a
+cryptic error text with a line number and leave it to the programmer to find
+out what might be wrong.
+
+OOC tries to precisely mark the faulty construct triggering an error.  It
+provides an exact position in the given piece of source code.  The error
+message has to interpreted relative to the context of this file position.
+Without knowing the reference point, most error messages don't make sense.
+Therefore, we strongly suggest to use an editor or other tool to display
+errors together with their context.
+
+Compilation continues after errors.  This usually works quite well, but
+sometimes error recovery will fail and many meaningless error messages will
+be emitted in succession.  Certain kinds of syntax errors can send the
+compiler down a completely wrong path.  In such cases, all but the very
+first error message should be ignored.
+
+Some of the error texts listed below contain the placeholder character
+@samp{%}.  The compiler will replace the placeholders with identifiers,
+numbers, or text fragments.
+
+Implementations of OOC may introduce their own errors and warnings, starting
+at number 500 and ending at 998.
+
+
+@table @samp
+@item   1: Comment not terminated
+While reading the source code, the scanner found a @samp{(*} with no
+matching @samp{*)}, even after searching to the end of the file.
+
+@item   2: Illegal character in string
+An unprintable ASCII control code appears in the string.  That is, a
+character with an ASCII code in the range @samp{00X..1FX}.  This restriction
+isn't explicitly stated in the Oberon-2 report, but it is implemented this
+way by the ETH compilers.  @strong{Please note}: The character @samp{0X} is
+actually interpreted as end of file marker by the scanner and a string
+containing it will generate the message @samp{String not terminated}.
+
+@item   3: String not terminated
+No terminating quote character was found before reaching the end of the
+line, which matched the one that started the string.  Keep in mind that it
+is not possible to embed the string's quote character in the string (i.e., a
+@samp{"} cannot occur in @samp{"@dots{}"}, nor @samp{'} in @samp{'@dots{}'})
+and that a string can't stretch over multiple lines.  @strong{Please note}:
+This message will also be generated if the string contains the ASCII
+character @samp{0X}, which the scanner uses to mark the end of the file.
+
+@item   4: No comment started
+The character sequence @samp{*)} was found outside a comment.  Because no
+legal Oberon-2 program can contain this as a symbol sequence, it is assumed
+that it was intended to terminate a comment.
+
+@item   5: Illegal cipher
+Any symbol starting with a decimal cipher is considered to be a number.  It
+extends to the first character not in the ranges @samp{0..9} or @samp{A..F},
+plus a possible suffix @samp{X} or @samp{H}.  Without one of those suffixes,
+only decimal digits are allowed and any character from @samp{A..F} will be
+considered as an invalid cipher.  For a real number's exponent, only the
+characters @samp{0..9} are valid.
+
+@item   6: Number out of range
+The value of the numeric constant is too large to be converted into the
+internal representation.  Four cases have to be distinguished:
+
+@itemize @bullet
+@item A decimal integer constant (or a real number's exponent) has to be
+less or equal to @code{MAX(LONGINT)}
+@item A hex number has to be in the range @samp{0H..0FFFFFFFFH}
+@item A @code{REAL} number (i.e., a real constant without any exponent or with
+the exponent symbol @samp{E}) has to be less than or equal to
+@code{MAX(REAL)}
+@item A @code{LONGREAL} number (i.e., a real constant with the exponent symbol
+@samp{D}) has to be less or equal to @code{MAX(LONGREAL)}
+@end itemize
+
+@strong{Caution}: Hex constants in the range @samp{08000000H..0FFFFFFFFH}
+would exceed @code{MAX(LONGINT)} when interpreted as positive and are
+actually mapped onto negative values in the range @samp{MIN(LONGINT)..-1}
+matching the bit pattern of the unsigned constant.
+
+@item   7: Not a valid character constant
+Character constants have to be in the range @samp{0X} to @samp{0FFX}.
+
+@item   8: Illegal symbol
+All characters that have no special meaning in Oberon-2 (such as @samp{!},
+@samp{%}, etc.) cause this error message when they appear in the symbol
+stream.  They are only permitted as part of comments or string constants.
+
+@item   9: Illegal exponent format
+The exponent following the mantissa of a real number has to comply to the
+syntax @samp{[D|E][+|-]digit@{digit@}}.  This means the exponent marker
+(@samp{D} for @code{LONGREAL}, @samp{E} for @code{REAL}) must be followed by
+an optional sign and a non-empty sequence of decimal digits.
+
+@item  10: Illegal character
+An underscore cannot be used in identifiers except for within @code{INTERFACE}
+modules and when refering to objects declared in @code{INTERFACE} modules.
+
+@item 11: No pragma command started
+The character sequence @samp{*>} was found without a preceding @samp{<*}.
+
+@item  12: Nested @samp{<*} not allowed
+The token @samp{<*} was found inside a pragma, although a pragma inside
+another pragma is not permitted.
+
+@item  13: @code{IF} statement lacks @code{END}
+An @code{IF} statement appears inside a pragma, but there is no matching
+@code{END} before the end of the file.
+
+@item  14: No open @code{IF} statement
+An @code{ELSIF}, @code{ELSE}, or @code{END} statement appears inside a
+pragma without any preceding (and still open) @code{IF} statement.
+
+@item  15: @code{ELSE} part already defined
+The indicated @code{ELSIF} or @code{ELSE} statement is part of an @code{IF}
+statement that already defines an @code{ELSE} statement.
+
+@item  16: Pragma stack empty
+At the place of the @code{POP} statement, the stack of pragma variables is
+empty.  In order to do a @code{POP}, a @code{PUSH} has to be done
+beforehand.  Having more @code{PUSH}s than @code{POP}s is allowed, but the
+reverse isn't true.
+
+@item  17: Undeclared pragma variable
+A pragma variable has to be defined before being used in an expression or
+for the left hand side of a (non-defining) assignment. Such a definition can
+be done in the configuration file, or in a pragma, by prefixing an
+assignment statement with the keyword @code{DEFINE}.  There is also a
+command line option to introduce defines.
+
+@item  18: Pragma variable already defined
+Each pragma variable can only be defined exactly once.  After its
+definition, all subsequent assignments have to be non-defining ones. That
+is, they must not be prefixed with @code{DEFINE}.
+
+@item  19: Value cannot be assigned to % variable
+The initial definition of a pragma variable assigns a type (boolean,
+integer, or string) to it.  All subsequent assignments have to assign values
+of the same type.
+
+@item  20: Boolean expression expected
+The expression at the indicated location must evaluate to a boolean value.
+
+@item  21: Illegal variable name
+The pragma keywords @code{TRUE}, @code{FALSE}, @code{PUSH}, @code{POP}, and
+@code{DEFINE} cannot be used as names of pragma variables.
+
+@item  30: String too long (maximum is % characters)
+The given string value exceeds the hard limit the compiler imposes on the
+length of string constants.  You'll have to split the constant into several
+smaller ones and concatenate them together in a character array variable.
+
+@item  31: Warning: String longer than % characters
+The given string value exceeds the soft limit for the length of string
+constants.  Check the documentation of your particular compiler
+implementation for the implications.
+
+@item  32: Identifier too long (maximum is % characters)
+The indicated identifier exceeds the hard limit the compiler imposes on the
+length of identifiers.  Replace the name with a smaller one.
+
+@item  33: Warning: Identifier longer than % characters
+The indicated identifier exceeds the soft limit for the length of
+identifiers.  Check the documentation of your particular compiler
+implementation for the implications.
+
+@item  34: Warning: Hexadecimal constant is mapped to negative value
+When hexadecimal constants are greater than the maximum value of the largest
+integer type, they are mapped onto negative values.  For example, if the
+compiler does not support the @code{HUGEINT} type, hex constants in the
+range @samp{08000000H..0FFFFFFFFH} are mapped onto negative values in the
+range @samp{MIN(LONGINT)..-1} matching the bit pattern of the constant.  If
+@code{HUGEINT} constants are available they are mapped onto the positive
+@code{HUGEINT} values @samp{2^31..2^32-1}.  This means that the
+interpretation of such constants depends on the compiler.  Without special
+precautions modules using them are not portable to systems that support
+additional, larger integer types.
+
+@item  35: Malformed module identifier
+A module identifier with a non-empty path prefix must satisfy the
+regular expression @samp{[a-zA-Z][a-zA-Z0-9]*(:[a-zA-Z][a-zA-Z0-9]*)*}.
+@end table
+
+
+The following error messages indicate that the compiler expected a different
+symbol at the indicated position than it actually got.  In other words, the
+current symbol doesn't fit into the current syntactical context.
+
+@table @samp
+@item 100: Identifier expected
+@item 109: @samp{=} expected
+@item 118: @samp{.} expected
+@item 119: @samp{,} expected
+@item 120: @samp{:} expected
+@item 122: @samp{)} expected
+@item 123: @samp{]} expected
+@item 124: @samp{@}} expected
+@item 125: @code{OF} expected
+@item 126: @code{THEN} expected
+@item 127: @code{DO} expected
+@item 128: @code{TO} expected
+@item 130: @samp{(} expected
+@item 134: @samp{:=} expected
+@item 137: String expected
+@item 139: @samp{;} expected
+@item 141: @code{END} expected
+@item 144: @code{UNTIL} expected
+@item 163: @code{MODULE} expected
+@item 166: @samp{*>} expected
+@item 180: Unexpected symbol
+@item 181: Factor starts with illegal symbol
+@item 182: Data type expected
+@item 183: Statement expected
+
+@item 197: Undeclared identifier
+The indicated identifier is not associated to any definition.  With the
+exception of names used as pointer base types (e.g., the name @samp{T} in
+@samp{POINTER TO T}), all identifiers have to be declared prior to their
+use.  This declaration has to appear in the local scope or in one of the
+enclosing scopes textually before any using occurrence of the name.
+
+@item 198: Identifier @samp{%} expected
+The identifier given at the end of a procedure or module has to be the same
+as the name that was assigned to the respective procedure or module in its
+heading.
+
+@item 199: %
+This error message can be filled by the compiler with arbitrary text.
+
+@item 200: Export only possible on top level
+Only declarations on a module's top level can be part of the public interface
+of the module.  All names defined inside a procedure are local to their
+respective procedure and are not visible outside.
+
+@item 201: Can only be exported with @samp{*}
+Constants, types, and procedures cannot be exported with @samp{-} because
+the notion of a restricted, read-only access doesn't make sense for these
+objects.
+
+@item 202: Has to be exported like inherited declaration
+A redefinition of a type-bound procedure in an extended type has to be
+exported if the base definition was marked as exported.  In other words, if
+the type-bound procedure @samp{P} in @samp{T} is exported, then all
+redefinitions of @samp{P} in extensions of @samp{T} have to be exported as
+well.
+
+@item 203: Can't use type constructor here
+Oberon-2 type rules prevent calls of a procedure whose parameter's type is
+defined by a type constructor.  Such a formal parameter won't match any
+actual parameter.  The only exception to this rule is open array parameters,
+where the actual parameter is required to be array compatible (see Appendix
+A of the language report) with the formal one.
+
+@item 204: Receiver has to be a record or a record pointer
+The type of the receiver parameter of a type-bound procedure is restricted
+to record or record pointer types.  In the former case, the receiver has to
+be a variable parameter, and a value parameter in the latter.
+
+@item 205: Illegal type for function result
+An Oberon-2 function cannot return a structured result.  If a procedure has
+to pass a record or array value back to the caller, a variable parameter has
+to be used instead.
+
+@item 206: Can't use type constructor here
+The type expression denoting the result type of a function procedure has to
+be the name of an unstructured type.  Otherwise, the Oberon-2 type rules
+would prevent the use of the function as part of an expression.
+
+@item 207: Illegal pointer base type
+Pointers can only refer to record or array types.  An open array can be used
+as pointer base type.  It is not possible to define a pointer to one of the
+predefined types, to a procedure type, or another pointer.
+
+@item 208: Open array can't be used here
+Oberon-2 imposes certain restrictions on the use of open array types.  Such
+a type can only appear as type of a procedure parameter (to relax the rules
+for passing array values to procedures), as pointer base type (to be able to
+allocate arrays of arbitrary size on the heap), and as element type of
+another open array (to implement multi-dimensional open arrays).  All other
+applications of open arrays are illegal.  An open array type can have a
+name.  That is, a declaration of the form @samp{TYPE S=ARRAY OF CHAR;} is
+legal.
+
+@item 209: This has to be an integer constant
+This applies to two cases: 
+
+@itemize @bullet
+@item 
+The length of a fixed size array type has to be a positive integer constant.
+@item 
+The increment value of a @code{FOR} loop has to be a non-zero integer
+constant.  
+@end itemize
+
+Note that wherever a constant value is required, a constant expression can
+be used.
+
+@item 210: Arrays of negative length are not allowed
+The length specified for a dimension of an array type has to be a
+non-negative integer value.  A length of zero is allowed even though it
+isn't possible to access an element of such a variable.
+
+@item 211: Data type expected
+The name at the indicated location has to refer to a type definition.
+
+@item 212: This record type cannot be extended
+The given name refers to a record type that cannot serve as a base type for
+extension.  This usually means that the record was defined as part of an
+interface module for another language (e.g., C).  Such a foreign type is not
+associated with any kind of meta information (i.e., type descriptor), which
+is necessary to implement type extension.
+
+@item 213: This has to be a record type
+The name given inside parenthesis after the keyword @samp{RECORD} has to
+refer to a record type.
+
+@item 214: Receiver of pointer type has to be a value parameter
+If the type of the receiver of a type-bound procedure is a record pointer,
+it has to be defined as a value parameter.
+
+@item 215: Receiver of record type has to be a variable parameter
+If the type of the receiver of a type-bound procedure is a record, it has to
+be defined as a variable parameter.
+
+@item 216: Illegal receiver type
+The type of a receiver parameter is restricted to record or pointer to
+record.
+
+@item 217: This has to be a top level type
+Any record type serving as an anchor to a type-bound procedure has to be
+defined on the top level of the current module.  It cannot be imported
+because this would imply a modification of the interface of a type that
+isn't defined in (and under the control of) the local module.  Also, a
+record defined inside a procedure cannot serve as receiver type because all
+type-bound procedures have to be global.  This is required for the same
+reason that only global procedures can be assigned to variables: a nested
+procedure can only be executed in the context of its enclosing procedure,
+whereas type-bound procedures (and procedure variables) can be activated
+anywhere.
+
+@item 218: Type-bound procedure has to be declared on top level
+A type-bound procedure has to be declared on the global level of the module
+that defines its anchor record.  This is required for the same reason that
+only global procedures can be assigned to variables: a nested procedure can
+only be executed in the context of its enclosing procedure, whereas
+type-bound procedures and procedure variables can be activated anywhere.
+
+@item 219: Multiple forward declaration of same name
+A procedure is forward declared multiple times.
+
+@item 220: Formal parameters don't match forward declaration
+The formal parameters of the procedure definition do not match the ones of
+the previous forward declaration.  This means that there is a difference in
+the number of parameters, one of the parameter types or mode (i.e., value or
+variable), or the result type.
+
+@item 221: Receiver doesn't match forward declaration
+The receiver type of the procedure definition does not match the previous
+forward declaration.  With the language restrictions on receivers, this can
+only mean that the forward declaration uses a pointer receiver and the
+declaration a record, or vice versa; both must use the same kind of
+receiver.
+
+@item 222: Export mark differs from forward declaration
+The export status of a procedure definition has to match the forward
+declaration (if present).  Either both of them must have an export mark, or
+neither.
+
+@item 223: Formal parameters don't match inherited declaration
+One of the base types of the type-bound procedure's anchor record declares a
+procedure of the same name, but the formal parameters of both procedures do
+not match.  If the current declaration is intended to be a redefinition of
+the previous procedure, it is necessary to adjust the formal parameter list.
+If it is intended as a new procedure, the name has to be changed.
+
+@item 224: Receiver doesn't match inherited declaration
+One of the base types of the type-bound procedure's anchor record declares a
+procedure of the same name, but with a receiver of a different mode.  With
+the restrictions on receivers, this can only mean that the base declaration
+uses a pointer receiver and the current declaration a record, or vice versa.
+Both must use the same kind of receiver.
+
+@item 225: Field of this name already declared in extension @samp{%}
+The name of the indicated type-bound procedure conflicts with that of a
+field defined in one of the extensions of its receiver's anchor record.  In
+other words, the type-bound procedure @samp{P} is bound to the record
+@samp{R} and a record @samp{R0} extending @samp{R} (in the local module)
+defines a field that is also called @samp{P}.  This would imply that the
+record @samp{R0} actually contains two objects called @samp{P}: its own
+record field and an inherited type-bound procedure.  This violates the rule
+that an identifier has to refer to an unique object in its scope.
+
+@item 226: This procedure has already been declared in extension @samp{%}
+The name of the indicated type-bound procedure conflicts with that of a
+previously declared procedure bound to one of the extensions of its
+receiver's anchor record.  In other words, the type-bound procedure @samp{P}
+is bound to the record @samp{R} and a record @samp{R0} extending @samp{R}
+(in the local module) also defines a type-bound procedure @samp{P}, but the
+latter procedure is declared first.  If the order of declaration of the two
+procedures is reversed (i.e., the procedure bound to the extension declared
+after the one of the base type), the former would be recognized as a
+redefinition of the latter and everything would be fine.  But when written
+in the wrong sequence, the single-pass compiler cannot handle this properly
+and flags it as error.
+
+@item 227: Not a record (is @code{%})
+The left side of a field or type-bound procedure selector has to be a record
+or a record pointer value.
+
+@item 228: Not a pointer (is @code{%})
+The left side of a dereference operator has to be a pointer value.
+
+@item 229: @samp{%} has no base type
+For a super call of the form @samp{x.P^()}, the type of @samp{x} has to be a
+true extension of another type that also defines the type-bound procedure
+@samp{P}.
+
+@item 230: Procedure @samp{%} not declared in base type
+For a super call of the form @samp{x.P^()}, the type of @samp{x} has to be a
+true extension of another type, which provides the the original definition
+of the type-bound procedure @samp{P}.
+
+@item 231: Operator not applicable to type @samp{%}
+The indicated operator cannot take a value of the given type as an operand.
+
+@item 232: Value expected instead of a data type
+The name given as an operand refers to a type instead of a value.  Type
+names are only applicable in type constructors, variable and parameter
+declarations, and certain predefined functions like @code{MIN}, @code{MAX},
+@code{SIZE}, and @code{SYSTEM.VAL}.
+
+@item 233: Operand incompatible to left hand side @samp{%}
+The operator is not applicable to values of the given types.  See Appendix A
+of the language report for a list of legal argument types for the operator.
+
+@item 234: % expression expected (instead of @code{%})
+This applies to the following cases: 
+
+@itemize @bullet
+@item 
+The index of an array selector has to be an integer value.
+@item
+A set element has to be an integer value.
+@item
+The guard of an @code{IF}, @code{WHILE}, or @code{REPEAT} statement has to
+be a boolean expression.
+@end itemize
+
+@item 235: This item has no memory address
+@code{SYSTEM.ADR} is only applicable to variables, procedure names, and
+string constants.
+
+@item 236: Lower bound has to be less or equal to upper bound
+If both bounds @samp{a} and @samp{b} of a set constructor @samp{@{a..b@}}
+are constant, then @samp{a <= b} has to hold.  The compiler assumes @samp{a
+> b} to be an error because otherwise the result would be the empty set
+@samp{@{@}}---which is most likely not what the programmer wanted in the
+first place.  The same holds for a range of labels in a @code{CASE}
+statement.
+
+@item 237: This has to be a character constant
+If the select expression of a @code{CASE} statement is a character
+value, then the labels of the case branches have to be character
+constants.
+
+@item 238: This has to be a constant expression
+The language requires constant values to be used for the right side of a
+constant declaration, an array's length, the step constant of a @code{FOR}
+statement, and the labels of a @code{CASE} statement.  A constant expression
+may contain constant values and applications of predefined operators and
+functions.  For example, the declaration @samp{CONST m=10*MAX(SET);} would
+be legal and equivalent to @samp{m=310}.  Note that every integer constant
+expression is assigned the smallest integer type containing the given value
+@emph{after} the whole expression has been evaluated.  For the above
+example, @samp{m} would be of type @code{INTEGER}.
+
+@item 239: Not assignment compatible to type @samp{%}
+The referenced expression is not assignment compatible to a variable of the
+indicated type.  The right side of an assignment statement has to be
+assignment compatible with the variable on the left side, an argument of a
+procedure call corresponding to formal value parameter has to be assignment
+compatible with the type of the parameter, and the argument of an
+@code{RETURN} statement has to be assignment compatible with the result type
+of its function.  Appendix A of the language report lists the rules for
+assignment compatibility.
+
+@item 240: This isn't a function procedure
+The definition of proper procedure cannot contain @code{RETURN} statements
+with an argument.
+
+@item 241: Missing function result
+Every @code{RETURN} statement appearing as part of the definition of a
+function procedure has to have an argument describing the function's result
+value.  The argument has to be assignment compatible to the function's
+result type.
+
+@item 242: @code{EXIT} not within a @code{LOOP}
+The indicated @code{EXIT} statement is not part of a @code{LOOP} statement.
+@code{EXIT} can only be used inside a @code{LOOP}, although it may be nested
+arbitrarily deep into other statements.  An @code{EXIT} always refers to the
+nearest enclosing @code{LOOP}.
+
+@item 243: Not an array (is @code{%})
+The element selector @samp{[@dots{}]} may not be used on a variable
+designator that isn't of array or array pointer type.
+
+@item 244: This isn't a variable designator
+This applies to the following cases: 
+
+@itemize @bullet
+@item 
+Only a modifiable variable designator may appear on the left side of an
+assignment statement.  The variable designator may not refer to a variable
+or record field that has been exported as read-only.
+@item 
+The control variable of a @code{FOR} statement has to be an unqualified
+(i.e., local) variable identifier.
+@end itemize
+
+Note that dereferencing a read-only pointer variable will grant unrestricted
+access to the pointer's contents.
+
+@item 245: This is imported read-only
+This applies to the left side of an assignment statement and to variables
+passed to a @code{VAR} parameter as part of a procedure call.  This means
+that the destination variable (or designator) has to be either
+
+@enumerate
+@item
+imported as read-write (and no following selector accesses a read-only
+record field), or
+@item
+the value of a dereferenced pointer variable.
+@end enumerate
+
+Contrary to a pointer dereference, an element of a read-only array is
+read-only, just like a field of a read-only record variable.
+
+@item 246: Too many parameters (maximum is %)
+The number of declared parameters exceeds the compiler's limit.  You will
+have to reduce their number; for example, by moving some of the parameters
+into a single record, and passing this record to the callee.
+
+@item 247: Not a procedure (is @code{%})
+The designator to the left of an argument list does not denote a procedure
+or a procedure variable.
+
+@item 248: More actual than formal parameters
+The argument list of the procedure call contains more parameters than
+specified in the procedure's formal parameter list.
+
+@item 249: Parameter expected
+The argument list of the procedure call contains fewer parameters than
+specified in the procedure's formal parameter list.
+
+@item 250: Not array compatible to formal parameter @samp{%}
+The actual parameter of the procedure call is not array compatible to the
+formal value parameter specified in the procedure heading.  The formal and
+actual parameter must either
+
+@enumerate
+@item 
+have the same type, or
+@item 
+the formal parameter is an open array and their element types are array
+compatible, or
+@item 
+the formal parameter is an @code{ARRAY OF CHAR} and the actual parameter a
+string constant.
+@end enumerate
+
+Note that a character constant (e.g., @code{"a"} or @samp{41X}) is also a
+string constant.  For details see Appendix A of the language report.
+
+@item 251: Not compatible to formal variable parameter @samp{%}
+The indicated argument cannot be passed to the corresponding formal variable
+parameter specified in the procedure heading.  For the type of the formal
+parameter @var{Tf} and the type of the actual parameter @var{Ta} one of the
+following statements has to hold:
+
+@itemize @bullet
+@item both are of the same type
+@item @var{Tf} is a record, and @var{Ta} is an extension of @var{Tf}
+@item @var{Tf} is an open array, and @var{Ta} is array compatible with it
+@item @var{Tf} is @code{SYSTEM.BYTE}, and @var{Ta} is @code{CHAR}, @code{SHORTINT}, or @code{SYSTEM.SET8}
+@item @var{Tf} is @code{SYSTEM.PTR}, and @var{Ta} is a pointer type
+@end itemize
+
+Note that special rules apply for the arguments of predefined procedures of
+the language.
+
+@item 252: This isn't a proper procedure
+A function procedure cannot be activated as if it were a proper procedure.
+That is, unlike C, Oberon-2 does not discard the function's result
+automatically.  In such a case, the result may be discarded by assigning it
+to an unused variable.
+
+@item 253: This isn't a function procedure
+A proper procedure cannot be activated as if it were a function.
+
+@item 254: This has to be a simple identifier
+The control variable of a @code{FOR} statement is restricted to local
+variables (or parameters) of the current procedure, of enclosing procedures,
+or the module.  It is not possible to use an imported variable or a variable
+designator containing any selectors.
+
+@item 255: Has to be a nonzero integer constant
+The increment value of a @code{FOR} statement must be a nonzero constant
+value.
+
+@item 256: Too large with respect to control variable of type @samp{%}
+The increment value of a @code{FOR} statement has to be included within the
+range of the type of the control variable.
+
+@item 257: This variable has no dynamic type
+A type test is only applicable to variables whose dynamic type (i.e., the
+type during run time) may differ from their static one (i.e., the type
+specified when compiling).  This means that the variable either has to be a
+record pointer, a dereferenced record pointer, or a variable parameter of
+record type.  Note that record types defined as part of an interface module
+for another language will lack any Oberon-2 run-time type information.  Those
+records (and pointer types derived from them) cannot be subjected to type
+tests or type guards.
+
+@item 258: This isn't a record pointer
+Only record pointers (and variable parameters of record type) can be
+subjected to type tests or type guards.
+
+@item 259: This type is no extension of the variable's type
+A type used for a type test or type guard has to be an extension of the
+tested variable's type.  For a record, this means that the variable's type
+has to be a direct or indirect base type of the given type.  For a pointer,
+this relation has to hold for the pointer base types.  Note that testing a
+variable against its own type is possible, but redundant.
+
+@item 260: Integer or character expression expected
+The select expression of a @code{CASE} statement must be either of type
+integer, or of type character; boolean, real, or complex expressions are
+not allowed.
+
+@item 261: Case label not included in type of case selector
+The case label lies outside the range of values the select expression can
+possibly assume.
+
+@item 262: Case labels (%..%) already used
+The given range of values is already assigned to another @code{CASE} branch.
+The labels of any two branches have to be distinct.
+
+@item 263: Has to be a (qualified) identifier
+The language only allows application of a regional type guard to simple
+variables.  Complex designators (variables followed by a nonempty list of
+selectors) are not permitted.  However, the variable can be imported from
+another module.
+
+@item 264: This type has no @code{MIN}/@code{MAX} value
+The predefined functions @code{MIN} and @code{MAX} are only applicable to
+integer, real, and set types.  For the numeric types, they return,
+respectively, the smallest and largest values a variable of the given type
+can assume.  For set types, they return the smallest and largest valid set
+elements.
+
+@item 265: Value incompatible with variable
+The second argument of an activation of @code{INC} or @code{DEC} must be a
+value that is included in the type of the first argument.  If conformant
+mode is enabled, and the second argument is a non-constant expression, the
+second argument has to have the same type as the first argument.
+
+@item 266: This type has no fixed size
+The predefined function @code{SIZE} cannot be applied to open array types
+because these types represent a set of arbitrarily sized variable
+instantiations during run time.  In other words, such types don't have a
+size.  Variables of those types do have a fixed size, but @code{SIZE} is not
+applicable to variables.  To get the size of an open array variable, you
+would have to multiply the size of the array element type by the array's
+length.
+
+@item 267: Illegal definition for a previously used pointer base type
+If the base type @samp{T} of a type @samp{POINTER TO T} is defined later in
+the text, @samp{T} has to be declared as a legal pointer base type.  That
+is, it must be a record or an array type.
+
+@item 268: Cannot copy this value to `%'
+The predefined procedure @code{COPY} cannot copy a string composed of
+@code{LONGCHAR} characters to an array of @code{CHAR} elements.  It can copy
+towards an array using the same character type, and to a larger character
+type.  In the latter case the function @code{LONG} is applied to every
+character.
+
+@item 269: Cannot modify value parameter that has no local copy
+For an open array value parameter with @samp{NO_LENGTH_TAG}, the compiler
+cannot create a local copy of the array argument.  This means that it cannot
+guarantee the normal semantics of value parameters.  (Recall that value
+parameters normally follow these rules: local modifications to the parameter
+stay local, and modifications to the variable that was passed to the
+parameter are not reflected in the parameter's local value.)
+
+In this case, instead of the standard behaviour, the compiler treats the
+parameter like a read-only variable and prevents @emph{local changes} to the
+parameter's value.  However, any changes to the original @emph{array
+variable}, which was passed to the parameter in the first place, are
+reflected by the parameter's value.  This resembles the semantics of the
+keyword @code{const} when applied to C pointer types.
+
+
+@comment these errors can appear in connection with non-Oberon types:
+@item 280: No information on length of variable available
+It is attempted to perform an operation on an array variable that needs to
+compute the array's length.  This error can occur only in connection with
+types or procedures defined in interface modules to other languages.
+
+@item 281: This type has no type descriptor
+An attempted operation on a record variable needs to compute the record's
+dynamic type, and that type information is not available.  This error can
+occur only in connection with types or procedures defined in interface
+modules to other languages.
+
+@item 282: NEW cannot allocate memory for this type
+The predefined function @code{NEW} is not applicable to non-standard types;
+that is, types that do not follow the rules of Oberon-2.  Such types are
+usually introduced by interface modules providing access to programs written
+in other languages.  If the interface does not provide a way to allocate
+heap objects of this type, you will have to use @code{SYSTEM.NEW}.
+
+@comment errors detected by the symbol table:
+@item 300: Unresolved forward declaration
+This applies to both forward declarations of procedures, and to base types
+of pointers.  Every forward declaration of a procedure has to be resolved by
+a procedure definition of the same name within the same scope.  The
+definition's formal parameters must match the ones of the forward
+declaration, and both declarations have to share the same export status.
+For every undeclared type @samp{T} appearing as base type of a @samp{POINTER
+TO T}, there has to be a definition of @code{T} as a record or array type
+within the same scope.
+
+@item 301: Multiple declaration of same name
+Within a single scope multiple declarations share the same name.  This
+conflicts with the Oberon-2 rule that every object has an unique name within
+its scope.
+
+@item 302: @samp{%} imports @samp{%} with illegal key
+The symbol file of the first module contains a key for second module that
+differs from the one read from the second's symbol file.  This usually means
+that these symbol files are out of sync.  Normally, the make facility
+ensures that the exported and the imported interfaces match, although direct
+manipulations of the (compiler generated) files and problems with files'
+time stamps may defeat it.  The latter case can happen when different clocks
+apply for source files and generated files; for example, when the sources
+are read over NFS and the compiler generated files are put onto a local hard
+disk.  If nothing else helps, the compiler should be run with @samp{--make
+--all}, forcing recompilation of all files whose sources are available.
+
+@item 303: Can't open/read symbol file of module @samp{%}
+The symbol file for this module either does not exist, or the user has no
+read permissions for it.  In the first case, it can be compiled by hand, or
+by telling the compiler to do a make.  The latter case probably means that
+something is amiss in the compiler installation (contact the person who
+installed your compiler) or the local setup (check the configuration files
+and compiler options).
+
+@item 304: Symbol file @samp{%} starts with illegal key
+The compiler found a file that should contain a module's exported interface,
+but the file does not start with the required magic number.  The file was
+probabably corrupted and should be deleted.
+
+@item 305: Unexpected end of symbol file @samp{%}
+The symbol file ends without containing all the data expected by the
+compiler.  The file was probably corrupted and should be deleted.
+
+@item 306: A module cannot import itself
+The name of a module cannot appear as part of its own import list.
+
+@item 307: Can't find module @samp{%}
+During a make, the indicated module name appears in an import list, but
+neither the module's symbol file nor its sources can be found.
+
+@item 308: Invalid symbol file format (format id is %)
+The format identifier of the symbol file is not supported by the compiler.
+This usually means that symbol files of compilers for different target
+architectures have been mixed up.
+
+@item 309: This name is already defined in base type @samp{%}
+The field name conflicts with the name of a field or type-bound procedure
+inherited from one of the record's base types.  Note that multiple fields,
+and type-bound procedures, can share the same name as long as their
+declarations in the base type are not visible within the current module.
+That is, when the base type is defined in another module and the
+declarations in question aren't exported.
+
+@item 310: Invalid symbol file version (version is %)
+The version number of the symbol file format doesn't match the compiler.
+This usually means that the symbol file was written with an older version of
+the compiler and that the new compiler has changed the file format.  The
+out-of-date symbol file should be deleted.
+
+
+@comment errors detected during constant folding:
+@item 350: Overflow during constant folding
+Evaluation of the constant expression resulted in a value that cannot be
+represented by the compiler.  For an integer expression, this means that the
+result is not a valid @code{LONGINT} (or possibly @code{HUGEINT}) value.  If
+it is a real expression, then the resulting value isn't representable for
+the given real type.
+
+@item 351: Division by zero
+A constant expression (real or integer) divides by zero.
+
+@item 352: Constant not representable as @code{%}
+An attempt is made to convert a constant expression to a type that cannot
+hold the expression's value.
+
+@item 353: Set element out of range %
+Any element index of a set operation has to satisfy the relation
+@samp{MIN(S) <= e <= MAX(S)}, where @samp{S} is the applicable set type.
+Such errors are detected during compilation if the element index is a
+constant expression.  Otherwise, the compiler inserts appropriate run-time
+checks (unless disabled).
+
+@item 354: Index out of range %
+The constant index doesn't denote a valid array element.
+
+@item 355: Constant parameter out of range %
+A constant value in a valid range is required by the predefined procedures
+@code{LEN} for its dimension argument, and @code{ASSERT} and @code{HALT} for
+their trap number argument.  For @code{LEN}, the constant has to satisfy
+@samp{0 <= c < dim(T)}, where @samp{T} is the type of the array variable.
+For @code{HALT} and @code{ASSERT}, the limits depend on the target system.
+@end table
+
+
+The following items are warnings generated by the compiler.  The only
+difference to errors is that a warning will not cause termination of a make.
+
+@quotation
+Some explanations regarding warnings about uninitialized variables should be
+considered: The compiler will try to detect possible uses of a variable in a
+procedure or module body where the variable has an undefined value.  This
+means that the variable could take on different values depending on the
+program state and environment, causing the program to behave randomly.  In
+this case, a warning is emitted based upon examination of the possible paths
+through the statement sequence.  The warning is not necessarily appropriate
+because the analysis does not take guards of conditional statements into
+account, but rather assumes that every path through an conditional statement
+can be combined with all paths through any of the subsequent statements.
+Note that the compiler only checks the data flow of scalar values this way;
+record and array variables are ignored.  The compiler also ignores variable
+definitions by means of @code{SYSTEM.MOVE} when looking for uninitialized
+variables.
+@end quotation
+
+@comment warnings.  not strictly errors, but probably not intended by the
+@comment programmer:
+@table @samp
+@item 400: Warning: Module name differs from file name @samp{%}
+Although strict correspondence between a module's name and the name of its
+source file is not required, a name mismatch might lead to confusion.  The
+name given in a module's header determines the names for the generated
+(symbol and object) files.  Also, when the make facility parses an import
+list, it uses the name from the list to derive the file name.  A name
+mismatch might lead to the situation that a module called @samp{X} is
+imported as module @samp{Y}.  It is advisable to keep module and file names
+the same.
+
+@item 401: Warning: Symbol file imported as @samp{%} calls itself @samp{%}
+While reading a symbol file for a module @samp{X}, it is discovered that the
+imported module as been compiled with the name @samp{Y}.  See warning
+@samp{400} for reasons to avoid such a name conflict.
+
+@item 402: Warning: Ignoring last % bytes of file @samp{%}
+The symbol file has been parsed successfully, but there are still bytes left
+in the file.  The file has probably been corrupted and should be deleted.
+
+@item 403: Warning: Parameter name differs from forward declaration
+The language report states that formal parameters of a forward declaration
+must match that of the procedure definition.  However, corresponding
+parameter @emph{names} are not required to match.  A warning is issued
+because using different names might lead to confusion.
+
+@item 404: Warning: Variable is used uninitialized
+The compiler detected the use of a variable that has not been assigned a
+value beforehand.
+
+@item 405: Warning: Variable may be used uninitialized
+The compiler detected the potential use of a variable that might not have
+been assigned a value beforehand.
+
+@item 406: Warning: Function procedure contains no @code{RETURN} statement
+If a function procedure does not contain a @code{RETURN} statement, it
+cannot be left in a legal way.  Reaching the end of the function will
+trigger a run-time check (unless disabled).
+
+@item 407: Warning: Control reaches end of function procedure
+The compiler detected a potential path through a function procedure that
+does not end in a @code{RETURN} statement.  This means that under certain
+circumstances the end of the function could be reached without a proper
+return value.  Like warnings about undefined variables, this message might
+not be totally accurate.
+
+@item 408: Warning: Loop will never terminate
+The @code{LOOP} statement does not have any associated @code{EXIT}
+statement, and it also does not contain a @code{RETURN} statement.  This
+means that the loop will never terminate unless the program as a whole is
+aborted.
+
+@item 409: Warning: Redundant type guard
+This type guard is the same as the static type of the variable.  Because the
+guard asserts that the variable's dynamic type is the same as its static
+type (or an extension of the static type), this will always be true (unless
+the variable's value is @code{NIL}).  In these cases, the type guard can
+usually be safely removed.
+
+@item 410: Warning: Type test always evaluates to @code{TRUE}
+This type test is the same as the static type of the variable.  Because the
+type test asserts that the variable's dynamic type is the same as its static
+type (or an extension of the static type), this will always evaluate to
+@code{TRUE} (unless the variable's value is @code{NIL}).
+
+@item 411: Warning: Formal parameter type modified by @code{WITH} statement
+This warning is emitted only if conformant mode is enabled.  In this case,
+care must be taken when a regional type guard is applied to a formal
+parameter.  The @code{WITH} statement will not only change the parameter's
+type locally, but also its type in the procedure's formal parameter list.
+This in turn might break recursive calls to the procedure from within the
+regional type guard that depend on the type of the parameter as stated in
+the procedure heading.  Note that this is implemented in OOC because OP2
+based ETH compilers handle it this way.  (This strange behaviour is not
+warranted by the language report in our opinion.)  Disabling conformant mode
+will restrict effects of @code{WITH} statements to the inside of the
+statement without modifying any formal parameter list.
+
+@item 412: Warning: Guard never reached
+Whenever testing a variable successively with a regional type guard, it is
+easy to construct one with branches that will never be reached.  Example:
+@samp{WITH v: P1 DO @dots{} | v: P2 DO @dots{} END}, where @samp{P2} is an
+extension of @samp{P1}.  Because @samp{v IS P2} implies @samp{v IS P1}, a
+variable of dynamic type @samp{P2} will always take the first branch and
+never reach the second.  Simply swapping the branches, writing the one that
+tests for the most special case first, will fix this.
+
+@item 413: Warning: Cast converts between types of different size
+The results are unpredictable if a type cast (i.e., @code{SYSTEM.VAL}) casts
+between types of different sizes.  Such a cast depends on the storage layout
+and the byte ordering of the target system and generally should be avoided.
+
+@item 414: Warning: Procedure may read uninitialized @samp{%} 
+The compiler detected the potential use of a local variable during the
+activation of a nested procedure that might not have been assigned a value
+beforehand.  [NOTE: This warning has been disabled because it is also
+emitted if a local procedure writes to a variable of the caller that isn't
+defined at the place of the call, even if the called procedure never reads
+this undefined variable.  For technical reasons the compiler can't currently
+suppress this misleading warning.]
+
+@item 415: Warning: Variable parameter may be used uninitialized
+The compiler detected the potential use of a local variable through a
+variable parameter that might not have been assigned a value beforehand.
+
+@item 416: Warning: Call may change guarded variable @samp{%}
+It is possible to circumvent a regional type guard by calling a procedure
+that has direct access (through the scoping rules) to the guarded variable.
+Because the called procedure may assign any value to the variable, it can
+change its dynamic type at will, invalidating the guard after the procedure
+call.  The compiler is able to detect that the call of a nested procedure
+changes a guarded variable and issues this warning.  It normally does not
+recognize such a situation if the called procedure has been imported from
+another module.
+
+@item 417: Warning: Cast converts to type with higher alignment
+Casting a variable of, say, alignment 2, to a type with an alignment of 4 may
+cause a run-time error if the variable is only 2-aligned by chance and the
+target architecture does not allow misaligned accesses.  Generally such a
+situation should be avoided.
+
+@item 418: Warning: Defining an array of size zero
+The indicated type definition specifies a length of zero for one of the
+array dimensions.  This will create an array of size zero.  While such an
+array variable is legal, it isn't possible to access an element of a
+variable of this type.  However, such a variable can be passed to an open
+array parameter.
+
+@item 419: Warning: Allocating an array of size zero
+The indicated call to @code{NEW} allocates an array with a length of zero
+for the given dimension.  This will allocate an array of size zero.  While
+this isn't considered an error, it isn't possible to access an element of a
+heap object of this type.  However, such an object can be passed to an open
+array parameter.
+
+@item 420: Warning: Unused object
+The designated name is never used anywhere in the program.  Therefore, its
+declaration can safely be removed without invalidating the module.  Note
+that the compiler only checks that there is no using occurrence of the name
+anywhere.  If one exists, the declaration is assumed to be used.  For this
+reason, recursive data types are never marked as unused because the record
+type refers to the pointer type and vice versa, providing uses for both the
+record and the pointer type even if they don't appear anywhere else.
+
+
+@comment error messages of experimental language extensions:
+@item 450: Type must not be abstract
+The indicated type is abstract and cannot be instantiated. Abstract types
+cannot be used for variable, record field, or array type declarations.  A
+pointer to an abstract type cannot be used as an argument to the @code{NEW}
+procedure.
+
+@item 451: Type-bound procedure `%' still abstract
+The indicated type is concrete and has not implemented the named inherited
+abstract method.  Concrete types must implement all inherited abstract
+methods.
+
+@item 452: Receiver type is not declared "abstract"
+The indicated procedure is declared abstract, but is bound to a concrete
+type.  Abstract procedures may only be bound to abstract types.
+
+@item 453: No BEGIN section permitted in abstract procedure
+The indicated @samp{BEGIN} statement is illegal because it occurs in an
+abstract procedure.  Abstract procedures cannot contain an implementation.
+
+@item 454: Super call to abstract procedure
+The indicated procedure is abstract in the base class.  It is illegal to
+call an abstract method via a super call.
+
+@item 455: Abstract procedure must be exported
+All abstract procedures must be declared with an export mark.
+
+
+@item 999: Unexpected compiler termination
+Either the process was killed by an external signal, or the compiler aborted
+due to an internal run-time error.  The latter case should not happen; but if
+it does, check the compiler's @file{README} file for information how to
+report such a bug to the authors.
+@end table
+

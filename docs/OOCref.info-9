@@ -1,0 +1,1405 @@
+This is Info file OOCref.info, produced by Makeinfo version 1.68 from
+the input file OOCref.texinfo.
+
+   This file documents the Optimizing Oberon-2 Compiler (OOC) and its
+library.
+
+   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
+Library Reference Manual', for Version 1.4.5 or later of oo2c.
+
+   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
+1999 Michael van Acken
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the text of the translation of the section
+entitled "GNU General Public License" must be approved for accuracy by
+the Foundation.
+
+
+File: OOCref.info,  Node: OakIn,  Next: OakOut,  Prev: OakFiles,  Up: Oakwood Compliant Modules
+
+Module OakIn
+============
+
+   Module `In' provides a set of basic routines for formatted input of
+characters, character sequences, numbers, and names.  It assumes a
+standard input stream with a current position that can be reset to the
+beginning of the stream.  A call to procedure `Open' initializes module
+`In' and sets it to read from the standard input channel
+`StdChannels.stdin' (*note StdChannels::.)
+
+   Module `In' has a concept of a "current position", which is the
+character position in the input stream from where the next symbol is
+read.  `Open' (re)sets it to the beginning of the input stream.  After
+reading a symbol, the current position is set to the position
+immediately after this symbol.  Before the first call to `Open', the
+current position is undefined.
+
+Variables
+---------
+
+ - Read-only Variable: Done: BOOLEAN
+     Indicates the success of an input operation.  If `Done' is `TRUE'
+     after an input operation, the operation was successful and its
+     result is valid.  An unsuccessful input operation sets `Done' to
+     `FALSE'; it remains `FALSE' until the next call to `Open'.  In
+     particular, `Done' is set to `FALSE' if an attempt is made to read
+     beyond the end of the input stream.
+
+Procedures
+----------
+
+ - Procedure: Open
+     (Re)sets the current position to the beginning of the input stream.
+     `Done' indicates if the operation was successful.
+
+ - Procedure: Char `(VAR CH: CHAR)'
+     Returns the character CH at the current position.
+
+ - Procedure: LongInt `(VAR N: LONGINT)'
+     Returns the long integer constant N at the current position
+     according to the format:
+          IntConst = digit {digit} | digit {hexDigit} "H".
+
+ - Procedure: Int `(VAR N: INTEGER)'
+     Returns the integer constant N at the current position according to
+     the format:
+          IntConst = digit {digit} | digit {hexDigit} "H".
+
+ - Procedure: LongReal `(VAR N: LONGREAL)'
+     Returns the long real constant N at the current position according
+     to the format:
+          LongRealConst = digit {digit} ["." {digit}
+                          [("D" | "E") ("+" | "-") digit {digit}]].
+
+ - Procedure: Real `(VAR N: REAL)'
+     Returns the real constant N at the current position according to
+     the format:
+          RealConst = digit {digit} ["." {digit}
+                      ["E" ("+" | "-") digit {digit}]].
+
+ - Procedure: String `(VAR S: ARRAY OF CHAR)'
+     Returns the string S at the current position according to the
+     format:
+          StringConst = '"' char {char} '"'.
+     The string must not contain characters less than blank such as
+     `EOL' or `TAB'.
+
+ - Procedure: Name `(VAR S: ARRAY OF CHAR)'
+     Returns the name S at the current position according to the file
+     name format of the underlying operating system (e.g., "lib/My.Mod"
+     under Unix).  Note: This implementation defines a name as `Name =
+     char {char}', where `char' is any character greater than blank.
+
+
+File: OOCref.info,  Node: OakOut,  Next: OakMath and OakMathL,  Prev: OakIn,  Up: Oakwood Compliant Modules
+
+Module OakOut
+=============
+
+   Module `Out' provides a set of basic routines for formatted output of
+characters, numbers, and strings.  It assumes a standard output stream
+to which the symbols are written.
+
+ - Procedure: Open
+     Initializes the output stream.
+
+ - Procedure: Char `(CH: CHAR)'
+     Writes the character CH to the end of the output stream.
+
+ - Procedure: String `(S: ARRAY OF CHAR)'
+     Writes the null-terminated character sequence S to the end of the
+     output stream (without `0X').
+
+ - Procedure: Int `(I, N: LONGINT)'
+     Writes the integer number I to the end of the output stream.  If
+     the textual representation of I requires `m' characters, I is
+     right adjusted in a field of `Max(N, m)' characters padded with
+     blanks at the left end.  A plus sign is not written.
+
+ - Procedure: Real `(X: REAL; N: INTEGER)'
+     Writes the real number X to the end of the output stream using an
+     exponential form.  If the textual representation of X requires `m'
+     characters (including a two-digit signed exponent), X is right
+     adjusted in a field of `Max(n, m)' characters padded with blanks
+     at the left end.  A plus sign of the mantissa is not written.
+
+ - Procedure: LongReal `(X: LONGREAL; N: INTEGER)'
+     Writes the long real number X to the end of the output stream
+     using an exponential form.  If the textual representation of X
+     requires `m' characters (including a three-digit signed exponent),
+     X is right adjusted in a field of `Max(n, m)' characters padded
+     with blanks at the left end.  A plus sign of the mantissa is not
+     written.
+
+ - Procedure: Ln
+     Writes an end-of-line symbol to the end of the output stream.
+
+
+File: OOCref.info,  Node: OakMath and OakMathL,  Prev: OakOut,  Up: Oakwood Compliant Modules
+
+Modules OakMath and OakMathL
+============================
+
+Constants
+---------
+
+   `The Oakwood Guildlines' requires the definition of the following
+mathematical constants (i.e., implementation-defined approximations):
+
+ - Constant: pi
+
+ - Constant: e
+
+Procedures
+----------
+
+ - Function: sqrt `(X: REAL): REAL'
+
+ - Function: sqrt `(X: LONGREAL): LONGREAL'
+     `sqrt(X)' returns the square root of X, where X must be positive.
+
+ - Function: sin `(X: REAL): REAL'
+
+ - Function: sin `(X: LONGREAL): LONGREAL'
+     `sin(X)' returns the sine value of X, where X is in radians.
+
+ - Function: cos `(X: REAL): REAL'
+
+ - Function: cos `(X: LONGREAL): LONGREAL'
+     `cos(X)' returns the cosine value of X, where X is in radians.
+
+ - Function: tan `(X: REAL): REAL'
+
+ - Function: tan `(X: LONGREAL): LONGREAL'
+     `tan(X)' returns the tangent value of X, where X is in radians.
+
+ - Function: arcsin `(X: REAL): REAL'
+
+ - Function: arcsin `(X: LONGREAL): LONGREAL'
+     `arcsin(X)' returns the arcsine value in radians of X, where X is
+     in the sine value.
+
+ - Function: arccos `(X: REAL): REAL'
+
+ - Function: arccos `(X: LONGREAL): LONGREAL'
+     `arcos(X)' returns the arcos value in radians of X, where X is in
+     the cosine value.
+
+ - Function: arctan `(X: REAL): REAL'
+
+ - Function: arctan `(X: LONGREAL): LONGREAL'
+     `arctan(X)' returns the arctan value in radians of X, where X is
+     in the tangent value.
+
+ - Function: power `(X, BASE: REAL): REAL'
+
+ - Function: power `(X, BASE: LONGREAL): LONGREAL'
+     `power(X, BASE)' returns the X to the power BASE.
+
+ - Function: round `(X: REAL): REAL'
+
+ - Function: round `(X: LONGREAL): LONGREAL'
+     `round(X)' if fraction part of X is in range `0.0' to `0.5', then
+     the result is the largest integer not greater than X, otherwise
+     the result is X rounded up to the next highest whole number.  Note
+     that integer values cannot always be exactly represented in
+     `LONGREAL' or `REAL' format.
+
+ - Function: ln `(X: REAL): REAL'
+
+ - Function: ln `(X: LONGREAL): LONGREAL'
+     `ln(X)' returns the natural logarithm (base e) of X.
+
+ - Function: exp `(X: REAL): REAL'
+
+ - Function: exp `(X: LONGREAL): LONGREAL'
+     `exp(X)' is the exponential of X base e.  X must not be so small
+     that this exponential underflows nor so large that it overflows.
+
+ - Function: log `(X, BASE: REAL): REAL'
+
+ - Function: log `(X, BASE: LONGREAL): LONGREAL'
+     `log(X, BASE)' is the logarithm of X base BASE.  All positive
+     arguments are allowed.  The base BASE must be positive.
+
+ - Function: arctan2 `(XN, XD: REAL): REAL'
+
+ - Function: arctan2 `(XN, XD: LONGREAL): LONGREAL'
+     `arctan2(XN,XD)' is the quadrant-correct arc tangent
+     `atan(XN/XD)'.  If the denominator XD is zero, then the numerator
+     XN must not be zero.  All arguments are legal except `XN = XD = 0'.
+
+ - Function: sinh `(X: REAL): REAL'
+
+ - Function: sinh `(X: LONGREAL): LONGREAL'
+     `sinh(X)' is the hyperbolic sine of X.  The argument X must not be
+     so large that `exp(|X|)' overflows.
+
+ - Function: cosh `(X: REAL): REAL'
+
+ - Function: cosh `(X: LONGREAL): LONGREAL'
+     `cosh(X)' is the hyperbolic cosine of X.  The argument X must not
+     be so large that `exp(|X|)' overflows.
+
+ - Function: tanh `(X: REAL): REAL'
+
+ - Function: tanh `(X: LONGREAL): LONGREAL'
+     `tanh(X)' is the hyperbolic tangent of X.  All arguments are legal.
+
+ - Function: arcsinh `(X: REAL): REAL'
+
+ - Function: arcsinh `(X: LONGREAL): LONGREAL'
+     `arcsinh(X)' is the arc hyperbolic sine of X.  All arguments are
+     legal.
+
+ - Function: arccosh `(X: REAL): REAL'
+
+ - Function: arccosh `(X: LONGREAL): LONGREAL'
+     `arccosh(X)' is the arc hyperbolic cosine of X.  All arguments
+     greater than or equal to `1' are legal.
+
+ - Function: arctanh `(X: REAL): REAL'
+
+ - Function: arctanh `(X: LONGREAL): LONGREAL'
+     `arctanh(X)' is the arc hyperbolic tangent of X.  `|X| < 1 -
+     sqrt(em)', where `em' is machine epsilon.  Note that `|X|' must
+     not be so close to `1' that the result is less accurate than half
+     precision.
+
+
+File: OOCref.info,  Node: Exception Handling,  Next: Localization,  Prev: Oakwood Compliant Modules,  Up: Top
+
+Exception Handling
+******************
+
+   An "exception" is an event that may require special processing by a
+user program (or by the underlying implementation).  Exceptions may be
+raised by the computer's error-detection mechanisms, explicit
+activations (e.g., `HALT' and `ASSERT'), failed runtime checks, or by
+actions external to the program.  The pair of modules `Exception' and
+`Signal' give the programmer control over the handling of these
+exceptions.  `Exception' provides the basic exception handling
+mechanism for user programs, whereas `Signal' provides the means to
+connect signal handlers to that mechanism.
+
+   A "signal" is an externally generated software interrupt delivered
+to a process (or program).  These are generally produced by the
+underlying operating system as a means of reporting exceptional
+situations to executing processes.  However, it is also possible for
+one process to signal another process.
+
+* Menu:
+
+* Exception::                   Run-time exception handling.
+* Signal::                      Installing signal handlers.
+
+
+File: OOCref.info,  Node: Exception,  Next: Signal,  Up: Exception Handling
+
+Module Exception
+================
+
+   The primary use of this module is to provide error handling and to
+allow programmer control over both system and language (`HALT' and
+`ASSERT') exception handling.  The programmer may define handlers,
+which can be used in place of those defined by the implementation.
+
+   There are two states of program execution: normal and exceptional.  A
+program remains in the normal execution state until an exception is
+raised by a call to `RAISE', `HALT', or `ASSERT', or after a failed
+run-time check.  After that, the program remains in the exceptional
+execution state until `ACKNOWLEDGE' or `RETRY' is called.
+
+   An exception affects the control flow of a program; raising an
+exception implies transfer of control to some sort of handler, even
+across procedure invocations.  An "exception handler" is a statement
+sequence that is executed when an exception occurs.  In OOC, an
+exception handler is set up as part of an execution context.  Both
+normal and exceptional execution blocks can be set up within the same
+procedure, or exceptions can be allowed to propogate up the call stack
+and handled by a calling procedure.  A execution context, and exception
+handler, is typically set up like
+
+     Exception.PUSHCONTEXT (e);
+     IF (e = NIL) THEN
+       (* normal execution *)
+     ELSE  (* an exception was raised *)
+       (* handle the exception raised during normal execution *)
+     END;
+     Exception.POPCONTEXT;
+
+     *Please note:* Wherever the word "thread" appears below, it should
+     be read as "program" for the moment.  Multi-threading isn't
+     supported yet.
+
+* Menu:
+
+* Exception Facilities::        Exception sources and associated operations.
+* Restrictions on PUSHCONTEXT:: Restrictions and cautions when setting
+                                 exception contexts.
+* Predefined Exception Sources::Exception sources defined in module
+                                 `Exception'.
+* Runtime Exception Numbers::   Exception numbers associated with source
+                                 `runtime'.
+* Exception Examples::          Several detailed examples using `Exception'.
+
+
+File: OOCref.info,  Node: Exception Facilities,  Next: Restrictions on PUSHCONTEXT,  Up: Exception
+
+Exception Facilities
+--------------------
+
+   The facilities provided by module `Exception' allow the user to raise
+exceptions and query the current execution state (normal or
+exceptional).  Exceptions are identified uniquely by a pair (`Source',
+`Number').
+
+   The programmer is responsible for managing the stack of exception
+handlers; this is because Oberon-2 does not provide direct language
+support for exceptions, and therefore exception handling in OOC is done
+through a library module.  The stack is manipulated primarily through
+the procedures `PUSHCONTEXT' and `POPCONTEXT'.  The only other action
+that changes the stack is raising an exception while the program is an
+exceptional execution state; this pops the topmost context (that was
+responsible for the exception) from the stack before moving control to
+the then topmost execution context.  Raising an exception in the state
+of normal execution does *not* change the stack.
+
+ - Data type: Number = LONGINT
+     Values of this type are used to distinguish between different
+     exceptions from the same source.
+
+ - Data type: Source = POINTER TO SourceDesc
+     Values of this type are used to identify the source of exceptions
+     raised; that is, a `Source' is defined and allocated to establish
+     a particular set of exceptions.
+
+ - Procedure: PUSHCONTEXT `(VAR SOURCE: Source)'
+     This procedure pushes the current execution context onto the
+     exception handler stack and sets SOURCE to `NIL'; if the context
+     is later reactivated by raising an exception, SOURCE is set to the
+     exception's source (*note Exception Examples::.).  At most one
+     context can be pushed per procedure at a time.  During a single
+     procedure evaluation, two successive calls to `PUSHCONTEXT'
+     without a `POPCONTEXT' in between are not allowed and result in
+     undefined program behaviour.
+
+     *Please note:* When the context is activated again (by raising an
+     exception), the value of non-global variables of enclosing
+     procedures that were modified after the initial call to
+     `PUSHCONTEXT' are undefined.
+
+ - Procedure: POPCONTEXT `'
+     This procedure removes the exception handler from the top of the
+     stack; if the stack is empty an exception is raised.  If the
+     program is in an exceptional execution state at the point where
+     `POPCONTEXT' is called, the exception is raised again, thereby
+     passing it along to the next higher exception handler.  During the
+     execution of a procedure, the dynamic number of calls to
+     `POPCONTEXT' has to balance the ones to `PUSHCONTEXT'.
+
+ - Procedure: RETRY `'
+     If the current thread is in the exceptional execution state, a
+     call to this procedure reactivates the context on top of the stack
+     of exception handlers, and resets the execution state to normal.
+     This looks as if the corresponding call of `PUSHCONTEXT' returns
+     again, with the parameter SOURCE set to `NIL'.  This allows the
+     "normal" part to be re-executed.  Be very careful when using this
+     because all local variables of the enclosing procedure(s) that
+     were modified after the initial call to `PUSHCONTEXT' are
+     undefined when activating the context again.
+
+     If the current thread is in the normal execution state, calling
+     `RETRY' raises an exception.
+
+ - Procedure: ACKNOWLEDGE `'
+     If the current thread is in the exceptional execution state, a
+     call to this procedure places it back in the state of normal
+     execution.  Calling this procedure indicates that an exception has
+     been handled without retrying the "normal" part.
+
+     If the current thread is in the normal execution state, calling
+     `ACKNOWLEDGE' raises an exception.
+
+ - Procedure: AllocateSource `(VAR NEWSOURCE: Source)'
+     This procedure allocates a unique value of type `Source'.  If an
+     unique value cannot be allocated, an exception is raised.
+
+ - Procedure: RAISE `(SOURCE: Source; NUMBER: Number; MESSAGE: ARRAY OF
+          CHAR)'
+     A call to this procedure associates the given values of SOURCE,
+     NUMBER, and MESSAGE with the current context and raises an
+     exception.  This means that the current thread switches into the
+     exceptional execution state and activates an execution context
+     from the stack of exception handlers.  If the program is in the
+     normal execution state at the time of the call to `RAISE', the
+     context on top of the stack is activated; if it was already in the
+     exceptional execution state, the stack is popped before activating
+     the context.  Activating the execution context looks as if the
+     corresponding call to `PUSHCONTEXT' returns a second time, except
+     this time returning with SOURCE (of `PUSHCONTEXT') set to SOURCE
+     (of `RAISE') (*note Exception Examples::.).
+
+     Using a value of `NIL' for SOURCE raises an exception.
+
+     The MESSAGE should have the format "`[<module>] <description>'";
+     it may be truncated by `RAISE' to an implementation-defined length.
+
+ - Function: CurrentNumber `(SOURCE: Source): Number'
+     If the current thread is in the exceptional execution state
+     because of the raising of an exception from SOURCE, this function
+     returns the corresponding number; otherwise, it raises an
+     exception.
+
+ - Procedure: GetMessage `(VAR TEXT: ARRAY OF CHAR)'
+     If the current thread is in the exceptional execution state, this
+     procedure returns the (possibly truncated) string associated with
+     the current context.  Otherwise, in normal execution state, it
+     returns the empty string.
+
+ - Function: IsExceptionalExecution `(): BOOLEAN'
+     If the current thread is in the exceptional execution state
+     because of the raising of an exception, this function returns
+     `TRUE'; otherwise, it returns `FALSE'.
+
+
+File: OOCref.info,  Node: Restrictions on PUSHCONTEXT,  Next: Predefined Exception Sources,  Prev: Exception Facilities,  Up: Exception
+
+Restrictions on PUSHCONTEXT
+---------------------------
+
+   There are a number of important restrictions on the use of
+`PUSHCONTEXT':
+
+  1. Within a procedure, at most one context can be active at a time
+     (i.e., contexts cannot be nested).  This allows for an efficient
+     implementation of the context stack without falling back on heap
+     objects.  If nested contexts are required, local procedures can be
+     used to set up a new exception context.
+
+  2. The state of all non-global variables that were modified after a
+     `PUSHCONTEXT' is undefined if the context is activated again by
+     raising an exception or calling `RETRY'.  The reason is that,
+     while the compiler ensures that the evaluation of a piece of code
+     delivers the correct results in the end, it does not ensure that
+     the state of an interrupted computation is correctly reflected by
+     the memory contents at the time of the interruption.
+
+  3. For exceptions that are not initiated by an explicit call to
+     `RAISE' (i.e., failed run-time checks and external signals), the
+     place where the exception was raised is undefined.  That is, the
+     programmer cannot be certain of the exact set of intructions that
+     were completed before the exception was raised.  The reason is
+     that a sequence of instructions as specified in the source code
+     may be evaluated in a different order or in an overlapped fashion
+     in the emitted machine code.
+
+  4. Every call to `PUSHCONTEXT' must have exactly one matching call to
+     `POPCONTEXT' within the same procedure, assuming that the program
+     parts in between are completed without raising an exception.
+
+     If a stack underflow occurs when `POPCONTEXT' is called, an
+     exception is raised.  If an execution context is left on the stack
+     that doesn't correspond to a valid procedure (i.e., a procedure
+     doing a `PUSHCONTEXT' returns without doing a matching
+     `POPCONTEXT'), activating the context by raising an exception
+     transfers the program into a completely undefined state.  Most
+     likely, the program abort due to a segmentation violation or a
+     comparable error, or the stack of execution contexts is rolled
+     back until a valid context is reached.  There is no way to check
+     for such a situation.  Any programmer should be aware that an
+     invalid context stack can cause considerable grief.
+
+
+File: OOCref.info,  Node: Predefined Exception Sources,  Next: Runtime Exception Numbers,  Prev: Restrictions on PUSHCONTEXT,  Up: Exception
+
+Predefined Exception Sources
+----------------------------
+
+   Several exception sources are predefined in module `Exception'.
+These are available for handling exceptions generated through Oberon-2
+language constructs and other run-time exceptions.
+
+ - Read-only Variable: halt: `Source'
+
+ - Read-only Variable: assert: `Source'
+     These two exception variables are associated to the standard
+     predefined procedures `HALT' and `ASSERT'; `HALT(n)' is equivalent
+     to `RAISE (halt, n, "")', and `ASSERT(FALSE, n)' to `RAISE
+     (assert, n, "")'.
+
+ - Read-only Variable: runtime: `Source'
+     This exception source is used to report failed run-time checks.
+
+
+File: OOCref.info,  Node: Runtime Exception Numbers,  Next: Exception Examples,  Prev: Predefined Exception Sources,  Up: Exception
+
+Runtime Exception Numbers
+-------------------------
+
+   The source `runtime' is used to report failed run-time checks, and
+the following exception numbers are associated with it.  These numbers
+signify the corresponding failed run-time checks, which are described
+fully in *Note Illegal Operations::.
+
+ - Constant: derefOfNIL
+     A dereference of `NIL' or type test on `NIL'.
+
+ - Constant: realDivByZero
+     Real division by zero.
+
+ - Constant: integerDivByZero
+     Integer division by zero.
+
+ - Constant: realOverflow
+     Real overflow (during either conversion or arithmetic operation).
+
+ - Constant: integerOverflow
+     Integer overflow (during either conversion or arithmetic
+     operation).
+
+ - Constant: illegalLength
+     `NEW' was called with a negative length for an open array pointer
+     type.
+
+ - Constant: outOfMemory
+     `NEW' could not allocate the requested memory.
+
+ - Constant: indexOutOfRange
+     Array index out of range.
+
+ - Constant: elementOutOfRange
+     Set element out of range.
+
+ - Constant: endOfFunction
+     The end of a function procedure is reached without encountering a
+     `RETURN' statement.
+
+ - Constant: noMatchingLabel
+     No matching label in `CASE' construct, and there is no `ELSE' part.
+
+ - Constant: noValidGuard
+     All guards of `WITH' failed, and there is no `ELSE' part.
+
+ - Constant: typeGuardFailed
+     Type guard failed.
+
+ - Constant: typeAssertFailed
+     The target of a record assignment does not have compatible type.
+
+ - Constant: stackOverflow
+     Stack overflow.
+
+
+File: OOCref.info,  Node: Exception Examples,  Prev: Runtime Exception Numbers,  Up: Exception
+
+Exception Examples
+------------------
+
+   Typically, one exception source is defined per module.  Exception
+numbers are then used to distinguish between the actual exceptions
+raised against that source.  Those exceptions can then be handled
+either within that module itself, as is generally the case in OOC
+Library modules that use `Exception', or the source and related
+constants can be exported and then handled externally.  Because
+exception sources `assert', `halt', and `runtime' are defined within
+`Exception', failed assertions, and so forth, can be handled just like
+any other exception.
+
+A Simple Example
+................
+
+   The following example is meant to show how to define and use an
+exception source.  Two instances are given where exceptions are raised
+against that source; note that the exception is handled in only one of
+these.
+
+     MODULE SimpleException;
+     
+     IMPORT  Exception, Err;
+     
+     CONST
+       genericException = 1;
+     
+     VAR  src: Exception.Source;
+     
+       PROCEDURE RaiseIt;
+       BEGIN
+         Exception.RAISE (src, genericException,
+                          "[SimpleException] An exception is raised")
+       END RaiseIt;
+     
+       PROCEDURE HandleIt;
+         VAR e: Exception.Source;
+       BEGIN
+         Exception.PUSHCONTEXT (e);
+         IF (e = NIL) THEN  (* normal execution *)
+           RaiseIt
+         ELSE  (* an exception was raised *)
+           Err.String ("Caught the exception."); Err.Ln;
+           Exception.ACKNOWLEDGE
+         END;
+         Exception.POPCONTEXT;
+       END HandleIt;
+     
+       PROCEDURE LetItGo;
+       BEGIN
+         RaiseIt
+       END LetItGo;
+     
+     BEGIN
+       Exception.AllocateSource (src);
+       HandleIt;
+       LetItGo;
+     END SimpleException.
+
+   The exception source `src' is allocated (and initialized) by the call
+to `AllocateSource' in the body of the module.  Procedure `RaiseIt'
+raises an exception against that source.
+
+   In procedure `HandleIt', an exception context is established, and
+then any exceptions that are raised in the scope of that context are
+handled.  Note the use of `ACKNOWLEDGE' to indicate the exception was
+handled, and `POPCONTEXT' to end the context and clean up after it.
+
+   In procedure `LetItGo', the raised exception is not handled, so the
+exception propagates up the call stack, and finding no enclosing context
+handler, finally terminates the program.  The output of this program
+should look something like
+
+     Caught the exception.
+     ##
+     ## Unhandled exception (#1):
+     ## [SimpleException] An exception is raised
+     ##
+
+Differentiating Exceptions
+..........................
+
+   To identify different exceptions, and provide different handling
+depending on the exception raised, both the exception `Source' and
+`Number' need to be considered.  The pair (`Source', `Number') uniquely
+identify the exception that has been raised.  For example,
+
+     MODULE MultiExcept;
+     
+     IMPORT
+       Exception, Out;
+     
+     CONST
+       genericException = 1;
+       zeroException = 2;
+       negativeException = 3;
+     
+     VAR
+       src: Exception.Source;
+     
+       PROCEDURE RaiseIt;
+       BEGIN
+         Exception.RAISE (src, genericException,
+                          "[MultiExcept] An exception is raised")
+       END RaiseIt;
+     
+       PROCEDURE Test (c: INTEGER);
+       BEGIN
+         Out.String ("Testing value="); Out.Int (c, 0); Out.Ln;
+         IF (c = 0) THEN
+           Exception.RAISE (src, zeroException,
+                            "[MultiExcept] Value is zero")
+         ELSIF (c < 0) THEN
+           Exception.RAISE (src, negativeException,
+                            "[MultiExcept] Value less than zero")
+         ELSE
+           RaiseIt
+         END;
+       END Test;
+     
+       PROCEDURE p (i: INTEGER);
+          VAR
+            e: Exception.Source;
+            str: ARRAY 256 OF CHAR;
+        BEGIN
+          Exception.PUSHCONTEXT (e);
+          IF (e = NIL) THEN
+            Test(i);
+          ELSE
+            IF (e = src) THEN (* identify the exception source *)
+              IF (Exception.CurrentNumber(e) = zeroException) THEN
+                Exception.GetMessage(str);
+                Out.String ("Caught exception: "); Out.String(str); Out.Ln;
+                Exception.ACKNOWLEDGE
+              ELSIF (Exception.CurrentNumber(e) = negativeException) THEN
+                Exception.GetMessage(str);
+                Out.String ("Caught exception: "); Out.String(str); Out.Ln;
+                Exception.ACKNOWLEDGE
+              END;
+            END;  (* Note: No ELSE part; *)
+          END;    (* all other exceptions are re-raised. *)
+          Exception.POPCONTEXT;
+        END p;
+     
+     BEGIN
+       Exception.AllocateSource (src);
+       p(-4);
+       p(0);
+       p(3);
+     END MultiExcept.
+
+   Exception numbers `genericException', `zeroException', and
+`negativeException' are defined for `src'.  In procedure `p', two of
+these exceptions are handled, and all other exceptions, including
+`genericException', are simply re-raised.  The output of this program
+looks like
+
+     Testing value=-4
+     Caught exception: [MultiExcept] Value less than zero
+     Testing value=0
+     Caught exception: [MultiExcept] Value is zero
+     Testing value=3
+     ##
+     ## Unhandled exception (#1):
+     ## [MultiExcept] An exception is raised
+     ##
+
+Assertions and Exceptions
+.........................
+
+   The previous two examples are somewhat contrived; you probably
+wouldn't use exceptions quite that way.  Those examples were meant to
+show how the exception mechanisms work, not necessarily how you would
+use them in a real situation.  So for this next set of examples, let us
+look at a more practical problem.  Consider the following module, which
+performs a typical programming task: reading from one file, processing
+the information, and writing the result out to another file.  Note
+that, in this version, no error checking is done.
+
+     MODULE FileFilter;
+     
+     IMPORT Files, TextRider;
+     
+       PROCEDURE Process(inFileName:  ARRAY OF CHAR;
+                         outFileName: ARRAY OF CHAR);
+         VAR r: TextRider.Reader;
+             w: TextRider.Writer;
+             fin, fout: Files.File;
+             res: INTEGER;
+       BEGIN
+         fin := Files.Old(inFileName, {Files.read}, res);
+         r := TextRider.ConnectReader(fin);
+     
+         fout := Files.New(outFileName, {Files.write}, res);
+         w := TextRider.ConnectWriter(fout);
+     
+         (* Process the files... *)
+     
+         fin.Close;
+         fout.Close;
+       END Process;
+     
+     BEGIN
+       Process("in.txt", "out.txt");
+     END FileFilter.
+
+   There are a number of places where things might go wrong.  For
+instance, suppose `in.txt' does not exist; running the program would
+result in the following output:
+
+     ##
+     ## Unhandled exception (#1) in module TextRider at pos 45930:
+     ## Dereference of NIL
+     ##
+
+     *Please note:* The exception is only raised if `TextRider' was
+     compiled with run-time checks enabled; they are disabled by
+     default.  In general, it is not a good idea to assume that library
+     modules raise "proper" exceptions when they are fed illegal
+     values.  For instance, nstead of a deref-of-nil exception, they
+     might cause the OS to signal a `SIGSEGV' (or something similar).
+     Some modules (everything implemented in C) cannot be forced to
+     handle run-time checks gracefully at all.
+
+   This exception occurs because `Files.Old' failed and returned a value
+of `NIL', and that value was passed to `ConnectReader'.  This situation
+should be checked for; Oberon-2 provides a predefined procedure
+`ASSERT' that could be used in this situation.  The following version
+adds error checking to the program:
+
+       PROCEDURE Process(inFileName:  ARRAY OF CHAR;
+                         outFileName: ARRAY OF CHAR);
+         VAR r: TextRider.Reader;
+             w: TextRider.Writer;
+             fin, fout: Files.File;
+             res: INTEGER;
+       BEGIN
+         fin := Files.Old(inFileName, {Files.read}, res);
+         ASSERT(res = Files.done);
+     
+         r := TextRider.ConnectReader(fin);
+         ASSERT(r # NIL);
+     
+         fout := Files.New(outFileName, {Files.write}, res);
+         ASSERT(res = Files.done);
+     
+         w := TextRider.ConnectWriter(fout);
+         ASSERT(w # NIL);
+     
+         (* Process the files... *)
+     
+         IF fin # NIL THEN fin.Close END;
+         IF fout # NIL THEN fout.Close END;
+       END Process;
+
+   Running this program under the same conditions (i.e., `in.txt' does
+not exist) produces the following result:
+
+     ##
+     ## Unhandled exception (#1) in module FileFilter2 at pos 299:
+     ## Assertion failed
+     ##
+
+   This is slightly better than the first version; at least the
+unhandled exception message now shows the relative location of the
+exception in the source text.  But, it would be even better, especially
+if this kind of file processing were done from an interactive program,
+if there were a way to recover from this situation.  The next version
+shows how failed assertions can be caught:
+
+       PROCEDURE Process(inFileName:  ARRAY OF CHAR;
+                         outFileName: ARRAY OF CHAR);
+         CONST
+             finError = 1; rError = 2; foutError = 3; wError = 4;
+         VAR r: TextRider.Reader;
+             w: TextRider.Writer;
+             fin, fout: Files.File;
+             res: INTEGER;
+             e: Exception.Source;
+       BEGIN
+         fin := NIL; fout := NIL;
+         Exception.PUSHCONTEXT (e);
+         IF (e = NIL) THEN
+           fin := Files.Old(inFileName, {Files.read}, res);
+           ASSERT(res = Files.done, finError);
+     
+           r := TextRider.ConnectReader(fin);
+           ASSERT(r # NIL, rError);
+     
+           fout := Files.New(outFileName, {Files.write}, res);
+           ASSERT(res = Files.done, foutError);
+     
+           w := TextRider.ConnectWriter(fout);
+           ASSERT(w # NIL, wError);
+     
+         (* Process the files... *)
+         ELSE
+           IF e = Exception.assert THEN
+             CASE Exception.CurrentNumber(e) OF
+               finError:
+                 (* ... *)
+                 Exception.ACKNOWLEDGE
+             | rError:
+                 (* ... *)
+                 Exception.ACKNOWLEDGE
+             | foutError:
+                 (* ... *)
+                 Exception.ACKNOWLEDGE
+             | wError:
+                 (* ... *)
+                 Exception.ACKNOWLEDGE
+             ELSE  (* exception is not acknowledged otherwise. *)
+             END;
+           END;  (* all other exceptions are re-raised. *)
+         END;
+         Exception.POPCONTEXT;
+     
+         IF fin # NIL THEN fin.Close END;
+         IF fout # NIL THEN fout.Close END;
+       END Process;
+
+   When an exception occurs (indicated by a failed assertion) special
+processing can be done based on the exception number: `finError',
+`rError', `foutError', or `wError'.  Note that the calls to `Close'
+occur outside of the exception context, so that the files can still be
+closed when an exception occurs (as long as they are not `NIL').  An
+else clause is included as part of the `CASE' to prevent a misleading
+`noMatchingLabel' exception.
+
+   This example shows how the exception mechanism can be used in
+conjunction with `ASSERT'.  If more fine-grained control is required,
+an exception source can be defined and calls to `RAISE' used in place of
+`ASSERT'.
+
+
+File: OOCref.info,  Node: Signal,  Prev: Exception,  Up: Exception Handling
+
+Module Signal
+=============
+
+   The module `Signal' provides the means to connect signals to the
+exception handling mechanism defined by module `Exception'.  A signal
+reports the occurrence of an exceptional event to an executing program;
+that is, a signal is an externally generated software interrupt.  The
+following are examples of events that can generate a signal: Program or
+operation errors, or external events such as alarms or job control
+events; one process can also send a signal to another process.
+
+   Full coverage of the use of signals is beyond the scope of this
+manual.  To learn more about signals, most books on the Unix operating
+system have sections describing signals.  Otherwise, `The GNU C Library
+Reference Manual' (available to download in various formats--say, as
+"info" files--or in print with ISBN 1-882114-53-1) is an excellent
+source of information on the use of signals.
+
+   Signals can also be set up to be handled independently of
+exceptions.  The procedure `SetHandler' is used to install a handler
+procedure for when a specific signal occurs.  The procedure `Raise' can
+be used to raise a particular signal, which is then handled in the same
+way as system generated signals (i.e., either an exception is raised or
+the signal's action is activated).
+
+   A signal's action can be set to `handlerException', which means that
+an occurance of the given signal raises an exception.  Unless specified
+otherwise, signals trigger their respective default actions.
+
+   A generic handler, which could be used to handle different kinds of
+signals, might look something like this:
+
+     PROCEDURE GenericHandler(sigNum: Signal.SigNumber);
+       VAR dummy: Signal.SigHandler;
+     BEGIN
+       Err.String("Handling signal="); Err.LongInt(sigNum, 0); Err.Ln;
+     
+       dummy := Signal.SetHandler(sigNum, GenericHandler);
+         (* sigNum's action might be reset by the system to
+          * `handlerDefault', so we explicitly reset our own
+          *  signal action here.  See note below.  *)
+     
+       IF sigNum = Signal.Map(Signal.sigint) THEN
+         (* Actions applicable to `sigint'. *)
+       ELSIF sigNum = Signal.Map(Signal.sigsegv) THEN
+         (* Actions applicable to `sigsegv'.
+          * HALT() would probably be good here. *)
+       ELSIF sigNum = ...
+         ...
+       ELSE
+         (* For other signals that have this procedure as their action,
+          * but are not handled by an ELSIF branch, reset the action
+          * as default, and raise it again. *)
+         dummy := Signal.SetHandler(sigNum, Signal.handlerDefault);
+         Signal.Raise(sigNum)
+       END;
+     END GenericHandler;
+
+     *Please note:* Resetting the signal's action to the current handler
+     is only necessary for System V systems.  For BSD or POSIX, the
+     current signal handler is kept.  Also note that with System V
+     there is a race condition: There is no guarantee that the signal
+     isn't raised again after the handler is cleared by the system, but
+     before the called handler has reinstalled itself.
+
+   This handler would be installed for various signals (probably in a
+module's BEGIN block) as follows:
+
+     oldHandler := Signal.SetHandler(Signal.Map(Signal.sigint),
+                                     GenericHandler);
+     oldHandler := Signal.SetHandler(Signal.Map(Signal.sigsegv),
+                                     GenericHandler);
+     ...
+
+Signal Facilities
+-----------------
+
+Constants
+.........
+
+   The following constants define symbolic names for signals.  Because
+signal numbers vary from system to system, the numbers below cannot be
+passed directly to a system call; a number has to be mapped to the
+system's numbering scheme first by the function `Map'.  Multiple names
+can be mapped to a single signal number; for example on most systems,
+the signals `sigiot' and `sigabrt' are aliases.  Not all signals are
+available on all systems.  If a signal is not defined for the current
+system, `Map' will return the value `unknownSignal'.
+
+*Program error signals:*
+
+ - Constant: sigfpe
+     Fatal arithmetic error.
+
+ - Constant: sigill
+     Illegal instruction.
+
+ - Constant: sigsegv
+     Segmentation violation.
+
+ - Constant: sigbus
+     Bus error.
+
+ - Constant: sigabrt
+     Program abortion.
+
+ - Constant: sigiot
+     I/O trap, usually just another name for sigabrt.
+
+ - Constant: sigtrap
+     Program breakpoint.
+
+ - Constant: sigemt
+     Emulator trap.
+
+ - Constant: sigsys
+     Bad system call.
+
+ - Constant: sigstkflt
+     Stack fault.
+
+*Termination signals:*
+
+ - Constant: sigterm
+     Generic way to cause program termination.
+
+ - Constant: sigint
+     Program interrupt (usually caused by `C-c').
+
+ - Constant: sigquit
+     Program interrupt (usually caused by `C-\').
+
+ - Constant: sigkill
+     Immediate program termination.
+
+ - Constant: sighup
+     "Hang-up" signal.
+
+*Alarm signals:*
+
+ - Constant: sigalrm
+     Typically indicates expiration of a timer.
+
+ - Constant: sigvtalrm
+     Virtual timerO.
+
+ - Constant: sigio
+     File descriptor is ready to perform input or output.
+
+ - Constant: sigurg
+     "Urgent" or out-of-band data arrived at socket.
+
+ - Constant: sigpoll
+     System V signal name, similar to sigio.
+
+*Job control signals:*
+
+ - Constant: sigchld
+     Child process terminates or stops.
+
+ - Constant: sigcld
+     Obsolete name for sigchld.
+
+ - Constant: sigcont
+     Continue process.
+
+ - Constant: sigstop
+     Stop process.
+
+ - Constant: sigtstp
+     Interactive stop signal.
+
+ - Constant: sigttin
+     Background process reads from terminal.
+
+ - Constant: sigttou
+     Background process writes to terminal.
+
+*Operation error signals:*
+
+ - Constant: sigpipe
+     Broken pipe.
+
+ - Constant: siglost
+     Resource lost.
+
+ - Constant: sigxcpu
+     CPU time limit exceeded.
+
+ - Constant: sigxfsz
+     File size limit exceeded.
+
+ - Constant: sigpwr
+     Power state indication.
+
+*Miscellaneous signals:*
+
+ - Constant: sigusr1
+     User defined signal 1.
+
+ - Constant: sigusr2
+     User defined signal 2.
+
+ - Constant: sigwinch
+     Window size change.
+
+ - Constant: siginfo
+     Information request.
+
+ - Constant: sigdil
+     ???
+
+*Other:*
+
+ - Constant: unknownSignal
+     Result of `Map' for invalid signal names.
+
+Types
+.....
+
+   The following types are declared in module `Signal':
+
+ - Data type: SigNumber
+     A system dependant integer type used to represent signal numbers.
+
+ - Procedure type: SigHandler = `PROCEDURE (SIGNUM: SigNumber)'
+     The procedure type used as the signature of a signal handler,
+     which is installed with the procedure `SetHandler'.  A procedure
+     variable of this type is activated upon the arrival of the signal,
+     and the system dependent signal number is passed to the SIGNUM
+     parameter.
+
+Variables
+.........
+
+   The following variables are defined for use with facilities provided
+in module `Signal':
+
+ - Read-only Variable: handlerDefault: SigHandler
+     Setting a signal's action to this handler specifies that the
+     signal should invoke the default action when raised.
+
+ - Read-only Variable: handlerIgnore: SigHandler
+     Setting a signal's action to this handler specifies that the
+     signal should be ignored.  Note that, the signals `sigkill' and
+     `sigstop' cannot be ignored.
+
+ - Read-only Variable: handlerError: SigHandler
+     The value of this variable is returned from from `SetHandler' to
+     indicate an error.
+
+ - Read-only Variable: handlerException: SigHandler
+     Setting a signal's action to this handler specifies that the
+     signal should raise an exception.  Upon arrival of the signal
+     `signum', the handler will install itself again as action for the
+     given signal number, and then activate `Exception.RAISE' with
+     `Signal.exception' as source, the message string `[Signal] Caught
+     signal number <signum>', and the system dependent value of
+     `signum' as exception number.
+
+     If the exception isn't handled by the user, the default exception
+     handler will print the usual message to `stderr', reset the
+     signal's handler to the default action, and raise the signal
+     again.  If the latter doesn't terminate the program, the default
+     handler will terminate the program like a failed run-time check.
+
+ - Read-only Variable: exception: Exception.Source
+     This is used as the exception source for signals that are set to
+     raise an exception via `handlerException'.
+
+Procedures
+..........
+
+   The following procedures are provided for setting signal handlers and
+raising signals:
+
+ - Function: Map `(SIGNUM: SigNumber): SigNumber'
+     Maps a signal name from the above list onto the system dependent
+     signal number associated with that name.  If the signal isn't
+     defined for the system, `unknownSignal' is returned.  More than
+     one signal may be mapped onto the same number.
+
+ - Function: SetHandler `(SIGNUM: SigNumber; ACTION: SigHandler):
+          SigHandler'
+     Installs the signal handler ACTION for the signal number SIGNUM.
+     The signal number must be mapped to the system's number scheme
+     first; that is, the names defined above can't be used directly,
+     but have to be passed through `Map' first.  The behaviour of this
+     procedure is undefined if the given number does not correspond to
+     a legal signal.
+
+     If the signal can be handled, the next occurence of the given
+     signal will activate the procedure in ACTION, passing the system
+     specific signal number via the procedure's SIGNUM parameter.
+     Calling this procedure with `ACTION = NIL' is equivalent to
+     calling it with `ACTION = handlerDefault'.  The system might, as
+     in the case of System V systems, reset the signal handler to the
+     default action before calling ACTION.  On other systems, notably
+     POSIX and BSD, the current action is kept.  So, it is generally a
+     good idea to explicitly set the signal handler again as part of
+     ACTION.
+
+     On success, the `SetHandler' function returns the action that was
+     previously in effect for the specified SIGNUM.  This value can be
+     saved and later restored by calling `SetHandler' again.
+
+     On failure, the value `handlerError' is returned.  Possible errors
+     are an invalid SIGNUM, or an attempt to ignore or provide a
+     handler for the signals `sigkill' or `sigstop'.
+
+          *Please note:* In `oo2c', this function is just a wrapper
+          around the C function `signal'.  For more details, check the
+          specification of this function (e.g., its man page or the
+          relevant chapter of libc info).
+
+ - Procedure: Raise `(SIGNUM: SigNumber)'
+     Raises a signal associated with SIGNUM for the current process.
+     See `SetHandler' for the restrictions regarding the values of
+     SIGNUM.
+
+   Initial actions for all signals within a program are usually either
+`handlerDefault' or `handlerIgnore'.  A check should be done when
+establishing new signal handlers to be sure that the original action
+was not `handlerIgnore'.
+
+   *Example:*
+
+     MODULE SigTest;
+     
+     IMPORT Signal, ...;
+     
+     VAR
+       oldHandler: Signal.SigHandler;
+     
+       PROCEDURE CleanUp(sigNum: Signal.SigNumber);
+       (* Set the handler back to default, clean up (e.g., close
+        * files), and then resend the signal.  *)
+       BEGIN
+         oldHandler := Signal.SetHandler(sigNum, Signal.handlerDefault);
+         (* Do the clean up stuff. *)
+         Signal.Raise(sigNum);
+       END CleanUp;
+     
+     BEGIN
+       oldHandler := Signal.SetHandler(Signal.Map(Signal.sigint), CleanUp);
+     
+       (* Check to make sure the signal was not set to be ignored.  *)
+       IF oldHandler = Signal.handlerIgnore THEN
+         oldHandler := Signal.SetHandler(Signal.Map(Signal.sigint),
+                                         Signal.handlerIgnore);
+       END;
+     
+       ...   (* Other program termination signals, like sighup and
+              * sigterm, might also be set to do the CleanUp action.
+              *)
+     END SigTest.
+
+   Certain signals might not occur when normal run-time checks are
+enabled.  For example, index checks are normally done when accessing
+array elements, so a segmentation violation should never occur because
+of accessing out-of-bounds array elements.  However, if these run-time
+checks are disabled, appropriate signal handlers can be set up to
+capture error conditions.
+
+   *Example:*
+
+     <* IndexCheck := FALSE *>
+     ...
+     
+     PROCEDURE PrintIt(sigNum: Signal.SigNumber);
+     BEGIN
+       oldHandler := Signal.SetHandler(sigNum, PrintIt);
+       Err.String("Resetting program and exiting...");  Err.Ln;
+       (* Cleanup stuff *)
+       HALT(1);
+     END PrintIt;
+     
+     ...
+     
+     oldHandler := Signal.SetHandler(Signal.Map(Signal.sigsegv), PrintIt);
+
+   It is often very difficult to recover from serious events that
+trigger signals.  This is why the exception handling module `Exception'
+has been tied into `Signal'; a program can be set up to handle the error
+via an exception handler.
+
+   *Example:*
+
+     MODULE SigExcept;
+     <* IndexCheck := FALSE *>
+     
+     IMPORT Signal, Exception, ...;
+     
+     VAR
+       oldHandler: Signal.SigHandler;
+     
+       PROCEDURE RunIt;
+         VAR
+             ...
+             e: Exception.Source;
+       BEGIN
+         Exception.PUSHCONTEXT (e);
+         IF (e = NIL) THEN
+           ...  (* Normal excecution part *)
+         ELSE
+           IF e = Signal.exception THEN
+             IF Exception.CurrentNumber(e) = Signal.Map(Signal.sigsegv) THEN
+                 ...
+                 Exception.ACKNOWLEDGE
+             ELSE
+             END
+           END
+         END
+         Exception.POPCONTEXT;
+       END RunIt;
+     
+     BEGIN
+       oldHandler := Signal.SetHandler(Signal.Map(Signal.sigsegv),
+                                       Signal.handlerException);
+       ...
+       RunIt
+     END SigExcept.
+
+
+File: OOCref.info,  Node: Localization,  Next: Language,  Prev: Exception Handling,  Up: Top
+
+Localization
+************
+
+* Menu:
+
+* Locales::                     Localization information based on the
+                                  Posix/C facilities.
+* LocStrings::                  Character and string localization
+                                  facilities.
+* LocNumConv::                  Localized number conversions.
+* LocNumStr::                   Convert numbers to/from strings using
+                                  locale information.
+* LocTextRider::                Localized text riders.
+* LocText::                     Text string localization facilities.
+
+
+File: OOCref.info,  Node: Locales,  Next: LocStrings,  Up: Localization
+
+Module Locales
+==============
+
+
+File: OOCref.info,  Node: LocStrings,  Next: LocNumConv,  Prev: Locales,  Up: Localization
+
+Module LocStrings
+=================
+
+
+File: OOCref.info,  Node: LocNumConv,  Next: LocNumStr,  Prev: LocStrings,  Up: Localization
+
+Module LocNumConv
+=================
+

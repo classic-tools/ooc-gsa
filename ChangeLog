@@ -1,0 +1,5350 @@
+Note: Directory parts of files mentioned here refer to the
+      OOC source tree, not the shrunk oo2c distribution.
+
+1999-11-29  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNText.Mod, tools/CNHTML.Mod:
+	Change comment delimiter "(**" to "(*" before writing.
+
+	* backend/ansi-c/lib/liboo2c.Mod: Bumped version to 12:0:0
+
+	* lib/LongStrings.Mod (Short, Long):
+	New procedures.  They convert between CHAR and LONGCHAR
+	strings.
+
+1999-11-27  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/Msg.Mod: Remove field `MsgList.noMsg'
+
+	* lib/Msg.Mod (InitMsgList): New.
+
+1999-11-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/oo2c.Mod, backend/ansi-c/Config.Mod:
+	Added pragma variable TARGET_USE_LIBM for Mike Griebling.  This
+	variable selects whether the math modules should call libm wherever
+	possible, instead of doing their own calculations.  Configure sets
+	this to TRUE by default, use --disable-libm to change it to FALSE.
+
+1999-11-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNParser.Mod (Statement.Init): Fixed initialization problem.
+
+	* tools/CNModuleDef.Mod (RemoveComments):
+	Fixed bug that left normal comments in the text,
+	even if a doc comment with "(**" appears in the source code.
+
+1999-11-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod: Bumped version to 11:0:0
+
+1999-11-14  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNTexi2HTML.Mod: New file.
+
+	* tools/CNHTML.Mod (WriteSymbols):
+	Very preliminary support for rewriting Texinfo
+	comments.
+
+	* tools/CNScanFile.Mod:
+	New command line option `--no-texinfo'.  If set, do not parse or
+	reformat any Texinfo comment.
+
+	Don't touch a comment if it does not contain a Texinfo command.
+
+	* tools/CNTexi2Text.Mod, tools/CNTexinfo.Mod, tools/CNDecoration.Mod, tools/CNTextBuffer.Mod, tools/CNScanFile.Mod:
+	New file.
+
+	* tools/CNText.Mod (WriteTextSym):
+	If the input file has Texinfo formatted comments, put
+	every comment through the Texinfo formatter before writing it.
+
+	* lib/TextRider.Mod (InitReader):
+	Oops, the field `laLen' was not initialized.
+
+1999-11-06  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Data.Mod (CreateGate): Field `oldValue' was not initialized.
+
+	* frontend/Opcode.Mod: Added `noop' instruction class.
+
+	* frontend/ParseStatm.Mod (FixupCondPath):
+	Use `noopGateHint' instructions when available.
+
+	* frontend/ParseExpr.Mod (CondOr, CondAnd):
+	Fixed invalid gate arguments for complex boolean
+	expressions.
+
+	* frontend/Attributes.Mod (CleanupGreg):
+	Get rid of any `noopGateHint' instructions.
+
+	* backend/ansi-c/Schedule.Mod: Fixed initialization error.
+
+1999-10-31  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/Files.Mod:
+	Adjusted to changed interface of `Channel'.  The `res' variable
+	parameter of `New', `Old', `Tmp', `SetModTime', and `GetModTime' is
+	now of type `Files.Result'.  The `ErrorDescr' procedures are gone.
+
+	* backend/ansi-c/lib/__StdTypes.h: Fixed typo in STATIC_TBCALL.
+
+	* lib/Msg.Mod:
+	Made `MsgList' a double linked list.  Remove `prevMsg' parameter from
+	`GetTemplate()', `GetTest()', and `GetLText()'.  Attributes for
+	messages are sorted lexicographically.
+
+	* lib/TextRider.Mod, lib/BinaryRider.Mod:
+	The rider methods `Res()' have been replaced by a record field `res',
+	similar to the `res' field of the channel riders.  The `ErrorDescr'
+	procedures are gone, `res.GetText()' does conversion to readable text.
+
+	* lib/Channel.Mod:
+	The type of `(Channel|Reader|Writer).res' is `Channel.Result', which
+	is an alias for `Msg.Msg'.  Successful completion is signalled by a
+	`res' value of `Channel.done', which is an alias for NIL.  All
+	`ErrorDescr' procedures have been replaced by `res.GetText' (or
+	`res.GetLText').
+
+1999-10-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolFile.Mod (IntegrateSymobls):
+	Added workaround to prevent that pointer are
+	discarded prematurely, if they appear in receivers of exported
+	type-bound procedures.
+
+1999-10-19  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod:
+	Included module `Msg'.  Pushed version to 10:0:1.
+
+	* frontend/ParseStatm.Mod (AssignmentCompatible):
+	Integer constants are also assignment
+	compatible to parameters of SHORT or LONG, because in this case the
+	type conversion functions are reduced to noops.
+
+	* frontend/ParseExpr.Mod (TypeConversion):
+	If the result is a constant, and the front-end
+	requests it, returns the smallest possible integer type for the
+	result.
+
+	* frontend/Attributes.Mod (ArrayLength):
+	If the result is a constant, and the front-end requests
+	it, returns the smallest possible integer type for the result.
+
+	* optimizers/ConstPropagation.Mod (SystemROT, SystemLSH):
+	Handle constant integer expression specially
+	if requested by the front-end.
+
+1999-10-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Scanner.Mod (GetString):
+	Fixed index out of range if string starts at end of line.
+
+1999-10-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNHTML.Mod (WriteIdent):
+	Somehow, an "X" got into some HREF anchors?!
+
+	* tools/CNParser.Mod (Statement):
+	Fixed YAIP (Yet Another Initialization Problem).
+
+	* tools/CNParser.Mod (Set):
+	Fixed YAIP (Yet Another Initialization Problem).
+
+1999-10-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/LRealConv.Mod:
+	Fixed type mismatch for a constant expression that is not detected by
+	OOC.
+
+1999-10-03  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/Msg.Mod: Added `MsgList'.
+
+	* lib/Msg.Mod: New file.
+
+1999-09-18  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__oo2c.h (_bit):
+	Oops, got operator precedence wrong.  An additional pair of
+	parenthesis fixes SYSTEM.BIT.
+
+1999-09-09  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__oo2c.c:
+	Enabled backtrace info, use wrapper script oobacktrace to decode it.
+
+1999-09-08  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__oo2c.c:
+	Added support for glibc 2.1 backtrace_symbols() function.  After an
+	exception, the stack of active function calls is written to stderr.
+	Unfortunately, this only gets me the addresses of the functions, not
+	their names.  For this reason I have disabled this feature for the
+	moment.
+
+1999-09-02  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__oo2c.h, backend/ansi-c/lib/__oo2c.c, backend/ansi-c/lib/__StdTypes.h, backend/ansi-c/lib/__Exception.h, backend/ansi-c/lib/__Descr.h, backend/ansi-c/lib/__Descr.c, backend/ansi-c/lib/Termination.c, backend/ansi-c/lib/Termination.Mod:
+	Changed license to GNU Lesser General Public License.
+
+	* backend/ansi-c/lib/SysClock.c, backend/ansi-c/lib/SysClock.Mod:
+	Changed license to GNU Lesser General Public License, as agreed with
+	the author.
+
+	* backend/ansi-c/lib/StdChannels.Mod, backend/ansi-c/lib/Signal.c, backend/ansi-c/lib/Signal.Mod, backend/ansi-c/lib/ProgramArgs.Mod, backend/ansi-c/lib/PosixFileDescr.c, backend/ansi-c/lib/PosixFileDescr.Mod:
+	Changed license to GNU Lesser General Public License.
+
+	* backend/ansi-c/lib/OakFiles.c, backend/ansi-c/lib/OakFiles.Mod, backend/ansi-c/lib/Locales.Mod, backend/ansi-c/lib/LocStrings.Mod:
+	Changed license to GNU Lesser General Public License, as agreed with
+	the author.
+
+	* backend/ansi-c/lib/Files.c, backend/ansi-c/lib/Files.Mod, backend/ansi-c/lib/Exception.c, backend/ansi-c/lib/Exception.Mod, backend/ansi-c/lib/C.Mod:
+	Changed license to GNU Lesser General Public License.
+
+	* lib/Out.Mod:
+	Changed license to GNU Lesser General Public License, as agreed with
+	the author.
+
+	* lib/OakStrings.Mod:
+	Changed license to GNU Lesser General Public License.
+
+	* lib/Time.Mod, lib/TextRider.Mod:
+	Changed license to GNU Lesser General Public License, as agreed with
+	the author.
+
+	* lib/Strings.Mod:
+	Changed license to GNU Lesser General Public License.
+
+	* lib/Reals.Mod, lib/RealStr.Mod, lib/RealMath.Mod, lib/RealConv.Mod, lib/OakOut.Mod, lib/OakIn.Mod, lib/LowReal.Mod, lib/Calendar.Mod, lib/BinaryRider.Mod:
+	Changed license to GNU Lesser General Public License, as agreed with
+	the author.
+
+	* lib/LongStrings.Mod:
+	Changed license to GNU Lesser General Public License.
+
+	* lib/LowLReal.Mod, lib/LongInts.Mod:
+	Changed license to GNU Lesser General Public License, as agreed with
+	the author.
+
+	* lib/Log.Mod: Changed license to GNU Lesser General Public License.
+
+	* lib/LocTextRider.Mod, lib/LocText.Mod, lib/LocNumStr.Mod, lib/LocNumConv.Mod, lib/LRealStr.Mod, lib/LRealMath.Mod, lib/LRealConv.Mod, lib/LComplexMath.Mod, lib/JulianDay.Mod, lib/Integers.Mod, lib/IntStr.Mod, lib/IntConv.Mod, lib/In.Mod, lib/Err.Mod, lib/ComplexMath.Mod:
+	Changed license to GNU Lesser General Public License, as agreed with
+	the author.
+
+	* lib/CharClass.Mod, lib/Channel.Mod:
+	Changed license to GNU Lesser General Public License.
+
+1999-08-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/oo2c.Mod:
+	When compiling a file, scan all configured paths for the file even it
+	has a non-empty directory part.
+
+1999-08-21  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNParser.Mod:
+	Initialize declaration and scope objects explicitly before use.
+
+	* tools/CNParser.Mod (DeclSeq.Append):
+	Fixed initialization of a record field.
+
+1999-08-08  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/oowhereis.Mod, tools/CNModules.Mod, tools/oob.Mod, tools/ooef.Mod, tools/oocn.Mod, backend/ansi-c/oo2c.Mod, backend/ansi-c/Build.Mod, backend/ansi-c/FileData.Mod, backend/ansi-c/External.Mod, frontend/SymbolFile.Mod, frontend/Make.Mod, frontend/ParamPaths.Mod:
+	Made `keepGivenPath' a parameter of `FindPath', instead of `Init'.
+
+	* tools/oocn.Mod (ModuleArguments):
+	If the argument is file name ending in `.Mod', and
+	the file exists, then take the module name from the file.  This makes
+	a difference if the module has a mident for its name.
+
+	* tools/CNScanner.Mod (ScanFile, ScanImports):
+	Added call to `RestorePragmas'.
+
+	* tools/CNFilter.Mod (Apply):
+	Fixed bug with --strip-system-flags that caused the filter to
+	stop its work prematurely.
+
+1999-08-06  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod:
+	Emit an error when passing a record value to a pointer receiver.
+	(Thanks to Tim Teulings for the diagnosis.)
+
+1999-07-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__mini_gc.h, backend/ansi-c/lib/__libc.h:
+	Rename size_t to ooc_size_t to avoid name clashes with the standard
+	type, which may be caused by #include <alloca.h> in __oo2c.h.
+
+1999-07-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod: Bumped version to 9:0:0
+
+1999-07-03  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/BinaryRider.Mod (ReadLChar, ReadLString, WriteLChar, WriteLString):
+	New.
+
+1999-06-27  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SideEffects.Mod (GetCallInfo):
+	Fixed initialization error for instances of `CallInfo'.
+	This broke installation of oo2c on some systems with gc disabled.
+
+	* frontend/Data.Mod, frontend/WriteGSA.Mod, backend/ansi-c/WriteGSAvC.Mod, frontend/ParseStatm.Mod, frontend/StdPragmas.Mod, backend/ansi-c/GenStatm.Mod:
+	New pragma variable "PrefillHeap".
+
+1999-06-21  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (AccessVar):
+	On GSA level, treat an open array value parameter with
+	NO_LENGTH_TAG like a variable parameter.
+
+	* frontend/Attributes.Mod (Item.readOnlyPos):
+	Can also apply to immutable parameter.  In this
+	case the file postition is negative.
+
+	* frontend/ParseExpr.Mod (Qualident):
+	Oops, a module's local type identifier that appeared
+	without an export flag in the symbol file was visible in client
+	modules.
+
+	(Designator): A value parameter of open array type is treated as
+	read-only, and is immutable in the called procedure.  Such types can
+	be created in INTERFACE modules.
+
+	* frontend/ParseStatm.Mod (WritableVariable):
+	Also test for immutable paramter values.
+
+	* backend/ansi-c/SystemFlags.Mod (ObjectModifiers):
+	If an value parameter of open array type has no
+	length information (e.g., because it is defined in an INTERFACE
+	module), then procedure activation will not create a local copy of the
+	argument.
+
+1999-06-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Data.Mod:
+	Export InfoDesc, UsableDesc, ConstDesc, and ObjectDesc.
+
+1999-06-17  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseDecl.Mod:
+	Fixed loophole in handling of forward declared types.  A declaration
+	sequence like "TYPE A = RECORD b: POINTER TO B END; B = A;" created an
+	invalid symbol table, and subsequently broken C definitions.
+
+1999-06-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenDecl.Mod (Declaration):
+	When writing a type-cast for a type-bound procedure,
+	omit the specification of the calling convention.
+
+1999-06-13  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod:
+	Pushed version to 8:0:0 because of naming change.
+
+	* backend/ansi-c/lib/PosixFileDescr.c:
+	Rewrote calls to type-bound procedures using the macros from
+	__StdTypes.h
+
+1999-06-05  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (ProcedureCall):
+	Fixed placement of error message for missing `('.
+
+1999-06-04  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNSymTab.Mod: Added data type LONGCHAR and function LONGCHR.
+
+1999-06-03  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNFilter.Mod, tools/oocn.Mod:
+	Added option --strip-mident.  Converts hierarchical module names into
+	standard identifiers by concatenating the parts together.
+
+	* backend/ansi-c/lib/Files.c, backend/ansi-c/lib/__StdTypes.h:
+	Added macros STATIC_TBCALL and DYN_TBCALL as convenient and robust way
+	to call type-bound procedures from the C level.
+
+	* backend/ansi-c/lib/Exception.c, backend/ansi-c/lib/Signal.c, backend/ansi-c/lib/OakFiles.c, backend/ansi-c/lib/Files.c, backend/ansi-c/lib/__oo2c.c, backend/ansi-c/lib/Termination.c, backend/ansi-c/lib/SysClock.c, backend/ansi-c/lib/PosixFileDescr.c, backend/ansi-c/lib/LocStrings.c, backend/ansi-c/lib/Locales.c, backend/ansi-c/lib/__StdTypes.h, backend/ansi-c/lib/__Descr.c, backend/ansi-c/lib/__Descr.h, backend/ansi-c/StdTypes.Mod, backend/ansi-c/CodeGen.Mod, backend/ansi-c/Build.Mod, backend/ansi-c/GenDecl.Mod, backend/ansi-c/Allocate.Mod:
+	Added additional underscore between module and identifier for C level
+	names.  Removed one underscore from "__td", "__md", and "__init" name
+	suffixes.
+
+1999-05-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Classify.Mod (NoopUpdate):
+	Test used wrong input argument for update-mem
+	instructions.
+
+	* frontend/ParseStatm.Mod (CaseLabels):
+	Check for duplicated labels was buggy.  Don't know what
+	it tested for before :-/
+
+	* backend/ansi-c/Classify.Mod:
+	Don't discard type conversion instruction if it is used by an
+	update-mem, otherwise update-mem will use the wrong target type.
+
+1999-05-18  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (EvalMonadicOp, EvalDyadicOp):
+	Improve error recovery if one of the
+	operands is faulty.
+
+	* frontend/SymbolTable.Mod (TypeInGroup):
+	String constants were not part of `grpStructured'.
+
+1999-05-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/StdChannels.Mod (NullChannel.GetModTime):
+	Was abstract, but not implemented.
+
+	* frontend/SymbolTable.Mod (CloseScope):
+	Scan for unresolved abstract procedures used wrong
+	procedure count, typically dropping some errors.
+
+	* frontend/UndefVar.Mod (InspectUses):
+	Don't warn about missing RETURN if procedure is
+	ABSTRACT.
+
+1999-05-02  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenStatm.Mod (NewInstr):
+	Fixed alignment of double for heap objects on 32 bit
+	systems.
+
+	* frontend/Make.Mod, frontend/ParseDecl.Mod, frontend/Scanner.Mod, tools/CNModules.Mod:
+	Added handling of hierarchical module names.
+
+	* tools/CNAST.Mod: Changed semantics of `ImportDesc'.
+
+	* tools/CNParser.Mod, tools/CNScanner.Mod, tools/oowhereis.Mod:
+	Added handling of hierarchical module names.
+
+1999-04-21  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNHTML.Mod (WriteIdent):
+	When writing in xref mode, link the module name to the
+	"_xref.html" file.
+
+1999-04-17  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Config.Mod, backend/ansi-c/Build.Mod, backend/ansi-c/SystemFlags.Mod, backend/ansi-c/External.Mod:
+	Similar to the ADD_OPTION of external libraries, it is now possible to
+	define options whose value is added to the cc command line when
+	compiling an external C file.
+
+1999-04-11  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNScanner.Mod, tools/CNParser.Mod:
+	Fixed deref of NIL if input file is empty.
+
+1999-03-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/oo2c.Mod: Added command line option --help/-h.
+
+	* frontend/ParseExpr.Mod (Designator):
+	For static calls to type-bound procedures write the
+	statically used procedure object into the call instruction.
+
+	* frontend/SymbolTable.Mod (CloseScope):
+	When closing the module scope, set `objFinalTBProc'
+	flags for all procedure that have no redefinition in the local module,
+	and which cannot be redefined outside the module.
+
+	* frontend/Data.Mod (objFinalTBProc):
+	New flag.  When set, a procedure cannot be redefined
+	for any extension of the type-bound procedure's base type.  A call to
+	such a procedure does not need to look up the redirection table, it
+	can use the procedure's address directly.  This flag is set by the
+	front-end after all declarations of a module have been parsed.
+
+	* backend/ansi-c/GenDecl.Mod (Declaration.CanUseTypeName):
+	Fixed glitch that sometimes caused
+	struct definitions to appear at inconvenient places.
+
+1999-03-19  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Data.Mod:
+	Made most of the record declarations private to the module.
+	Basically, this means that the records cannot be extended in other
+	modules.
+
+	* backend/ansi-c/Schedule.Mod, backend/ansi-c/GenStatm.Mod, backend/ansi-c/ControlFlow.Mod, backend/ansi-c/Classify.Mod, backend/ansi-c/Allocate.Mod, optimizers/AlgebraicTransformation.Mod, optimizers/LoopTransformation.Mod, optimizers/GuardPropagation.Mod, optimizers/GuardCond.Mod, optimizers/ConstPropagation.Mod, frontend/SideEffects.Mod, frontend/ParseDecl.Mod, frontend/ParseStatm.Mod, frontend/ParseExpr.Mod, frontend/UndefVar.Mod, frontend/Attributes.Mod, frontend/Opcode.Mod, frontend/Data.Mod:
+	Made `Data' import `Opcode', instead of the other way round.  Turned
+	procedures of `Opcode' into type-bound procedures in `Data'.
+
+1999-03-17  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__Descr.h, backend/ansi-c/GenDecl.Mod:
+	Put padding of type descriptor and module descriptor back.
+
+	* backend/ansi-c/lib/__StdTypes.h, backend/ansi-c/lib/__Descr.h, backend/ansi-c/GenDecl.Mod, backend/ansi-c/GenStatm.Mod:
+	Only pad type tag of records if SIZE(ADDRESS) < 8.
+
+1999-03-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod: New module `LongStrings'.
+
+	* backend/ansi-c/GenDecl.Mod, backend/ansi-c/CodeGen.Mod, backend/ansi-c/GenStatm.Mod, backend/ansi-c/Classify.Mod, backend/ansi-c/Schedule.Mod, backend/ansi-c/Allocate.Mod, backend/ansi-c/WriteGSAvC.Mod, backend/ansi-c/GenConst.Mod, backend/ansi-c/ControlFlow.Mod, optimizers/AlgebraicTransformation.Mod, optimizers/AliasAnalysis.Mod, optimizers/ConstPropagation.Mod, optimizers/DeadCodeElimination.Mod, optimizers/CopyPropagation.Mod, optimizers/LoopTransformation.Mod, optimizers/GuardPropagation.Mod, optimizers/GuardCond.Mod, optimizers/GateReduction.Mod, optimizers/ValueNumbering.Mod, frontend/ParseDecl.Mod:
+	Changed most procedures of module `Data' to type-bound procedures.
+
+	* frontend/SymbolTable.Mod:
+	Fixed index assignment to type-bound procedures if new procedures are
+	defined for an extension before the procedure declarations of the base
+	type have been completed.
+
+	Changed most procedures of module `Data' to type-bound procedures.
+
+	* frontend/ParseExpr.Mod, frontend/Opcode.Mod, frontend/ParseStatm.Mod, frontend/SideEffects.Mod, frontend/Check.Mod, frontend/UndefVar.Mod, frontend/Attributes.Mod, frontend/ErrorInstr.Mod, frontend/WriteGSA.Mod, frontend/Data.Mod:
+	Changed most procedures of module `Data' to type-bound procedures.
+
+1999-03-13  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Data.Mod, optimizers/ValueNumbering.Mod:
+	jnzimmer: Normalize instructions before doing common subexpression
+	detection.  Now "a+2" and "2+a" are treated as equivalent
+	instructions.
+
+1999-03-09  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenStatm.Mod (NewInstr):
+	Fixed memory allocation offset for open array.
+
+1999-03-08  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/SysClock.c (GetTimeOfDay):
+	Added missing return statements.
+
+	* tools/CNParser.Mod, tools/CNAST.Mod:
+	Extended syntax to deal with type qualified set constructors.
+
+1999-03-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Change strChar -> strChar8, strChar16.
+	Use `Date.CompareString' to compare string constants.
+
+	* optimizers/AlgebraicTransformation.Mod:
+	Change strChar -> strChar8, strChar16
+
+	* frontend/ParseExpr.Mod (Factor.Set):
+	Empty set with type prefix, like `SET{}', was broken.
+
+	* backend/ansi-c/Classify.Mod:
+	Fixed clearing of upper bits in set when applying LONG to a set
+	variable.
+
+	* backend/ansi-c/GenDecl.Mod (SetStructName):
+	Fixed array overflow for type names used in oo2c_64.
+
+	(Strings): Write string16 constants as sequence of "unsigned short
+	int" values.
+
+	* backend/ansi-c/WriteGSAvC.Mod (WriteGSA):
+	New instruction subclass `subLStr', used for comparison
+	instructions dealing with LONGCHAR strings.
+
+	* backend/ansi-c/StdTypes.Mod (CharType):
+	New function to determine type of character constant based
+	on its value.
+
+	* backend/ansi-c/SystemFlags.Mod (StructModifiers):
+	Also enable CSTRING for POINTER TO ARRAY OF
+	LONGCHAR.
+
+	* backend/ansi-c/Config.Mod:
+	Symbol file format has changed.  Please get rid of any old .Sym files!
+
+	* backend/ansi-c/lib/__StdTypes.h:
+	LONGCHAR is mapped to unsigned short int.
+
+	* backend/ansi-c/lib/__oo2c.c, backend/ansi-c/lib/__oo2c.h:
+	Added operations on LONGCHAR values.
+
+	* lib/LibSummary.Mod: Added module `LongStrings'.
+
+	* frontend/ParseStatm.Mod, frontend/ParseExpr.Mod:
+	Lots of changes for LONGCHAR support.
+
+	* frontend/SymbolTable.Mod: New predefined function: LONGCHR.
+	Extended predefined functions: CAP, ORD, COPY, SHORT, LONG, MIN, MAX.
+	New basic type: LONGCHAR.
+	New internal type: strStringConst16.
+
+	(Includes): Extended semantics to deal with different `include'
+	relationships (like numeric, character, string const, etc).
+
+	* frontend/SymbolFile.Mod:
+	Added functions to handle string16 constants in symbol files.
+
+	* frontend/Data.Mod (strChar8, strChar16):
+	New type codes.  `strChar8' replaces `strChar'.
+	(strStringConst8, strStringConst16): Likewise.  There are also some
+	new `grp*' type codes to deal with the different string/char array
+	types.
+
+	(Const.string): Can hold CHAR and LONGCHAR string constants.  From now
+	on the string is not necessarily terminated by the first 0X
+	character.  To get the true length, use the value in `Const.int'.
+
+	(GetStringConst): Extended to deal with both string8 and string16
+	values.  The formal parameter list had to be changed for this.
+
+	(CompareStrings): Use this to compare two string constants.  Do not
+	apply any of the relations =, <, <=, etc. to Const.string^ directly!
+
+	(ConvertString): Converts between string8 and string16 constants.
+
+	* frontend/Opcode.Mod:
+	New instruction subclass `subLStr', used for comparison instructions
+	dealing with LONGCHAR strings (opcode eqllstr, neqlstr & friends).
+
+	(stringCopy): Can now copy between CHAR and LONGCHAR arrays.
+
+	(structCopy): When copying from a string constant to an array, the
+	<dest-len> is set to the length of the constant's value (plus 1) to
+	avoid unnecessary memory accesses.
+
+	(capiu): New opcode for CAP(LONGCHAR).
+
+	(OperatorSubclass): Got a new parameter to distinguish between ARRAY
+	OF CHAR and ARRAY OF LONGCHAR.  LONGCHAR types are mapped to
+	`subclIU'.
+
+	* frontend/WriteGSA.Mod (WriteGSA):
+	New instruction subclass `subLStr', used for comparison
+	instructions dealing with LONGCHAR strings.
+
+	* frontend/WriteSymbols.Mod:
+	Added code to emit LONGCHAR constants.  Also inserted dummy code for
+	string16 constants.
+
+	* frontend/Check.Mod (Update):
+	A side-effect of a procedure call can create an
+	`update-heap' instruction.
+
+	* lib/LongStrings.Mod: New file.
+
+1999-03-04  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/Browser.Mod:
+	Fixed output of LONGCHAR constants.  Output of char16 strings is
+	broken, though.
+
+	* backend/ansi-c/lib/PosixFileDescr.c:
+	Do #include <syslimits.h> if this file exists, and try to set
+	SSIZE_MAX to POSIX_SSIZE_MAX if possible.  This fixes a problem with
+	Digital Unix.
+
+1999-02-27  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Data.Mod:
+	Untangled `str*' and `grp*' constants.  The type numbers are now in
+	the range 0..31, the group numbers in the range 32..63.  The latter
+	can be mapped to a SET index by adding the value `grpOffset'.
+
+	* optimizers/ConstPropagation.Mod (ConstantFolding):
+	Put upper bound of index/element number in error
+	messages of type "out of range".
+
+	* frontend/ParseExpr.Mod (SimpleExpression):
+	Implemented concatenation of string constants for
+	non-conformant mode.
+
+	(EvalMonadicOp,EvalDyadicOp): Only call EvalInstr if the operation is
+	valid.
+
+1999-02-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/TextRider.Mod, lib/Out.Mod, lib/OakOut.Mod, lib/Log.Mod:
+	Added NO_COPY to character arrays.
+
+	* lib/BinaryRider.Mod: Rewrote `Writer.WriteString' to use NO_COPY.
+
+	* backend/ansi-c/SystemFlags.Mod, backend/ansi-c/StdTypes.Mod:
+	New system flag NO_COPY.  Can be applied to formal value parameters of
+	structured type.  Signals the compiler, that it should not create a
+	local copy of the value parameter when activating the procedure.  Use
+	with care.
+
+	* backend/ansi-c/CodeGen.Mod (EmitProcedure):
+	Check formal value parameters if a local copy is
+	necessary.
+
+	* optimizers/AliasAnalysis.Mod (NeedLocalCopy):
+	For a value parameter of a procedure, decide if we
+	can do without a local copy of the array (or record).  Reduces
+	overhead for functions like `Strings.Length', because the array is not
+	copied around without any need.
+
+1999-02-02  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Schedule.Mod:
+	Fixed last bugfix to be able to compile VO again.
+
+1999-01-23  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/SystemFlags.Mod (StandardCallConv):
+	Use "C" as default calling convention, "Pascal"
+	gives problems.
+
+	* tools/oocn.Mod:
+	New filter to turn a module into FOREIGN (--mod2foreign) and back
+	(--foreign2mod).
+
+	* tools/CNFilter.Mod:
+	New filter to turn a module into FOREIGN and back.
+
+1999-01-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/oocn.Mod:
+	New options `--strip-comments', `--strip-doc-strings',
+	`--strip-pragmas', and `--strip-system-flags' to filter selected
+	symbols from the module text.
+
+	New mode `--filter' (or `-F').  Echoes module Foo.Mod to file Foo.txt,
+	possibly applying filters and adding line numbers on the
+	way.  Besides this only whitespace is changed.
+
+	* tools/CNXRef.Mod: Added options dealing with `CNFilter.Remove'.
+
+	* tools/CNFilter.Mod: New file.
+
+1999-01-21  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/ProgramArgs.Mod:
+	Removed defunct `Writer' stuff from module to suit the new ABSTRACT
+	markers in module `Channel'.
+
+	* lib/Channel.Mod:
+	Marked `Channel', `Reader', `Writer`, and most of their methods as
+	ABSTRACT.  The `Channel' methods `NewReader' and `NewWriter' are _not_
+	abstract, they are optional.  E.g. a read-only channel (like
+	`ProgramArgs?) does not declare its own `Writer' class, nor its own
+	`NewWriter' method, but rather uses the default implementation, which
+	will return NIL in this case.
+
+	* backend/ansi-c/SystemFlags.Mod:
+	New module flag `OOC_EXTENSIONS' to enable system flags for normal
+	modules.
+
+	(ObjectModifiers): Record type of the receiver of an abstract
+	type-bound procedure must be abstract.  An abstract procedure must be
+	exported.
+
+	* frontend/ParseDecl.Mod (Type):
+	Abstract type not permitted as array base type, type of record
+	field, or type of variable.
+
+	(ProcDecl): Abstract type-bound procedure must not have BEGIN part.
+
+	* frontend/ParseStatm.Mod (PredefCall):
+	Emit error if NEW(p) is called for a pointer with an
+	abstract base type.
+
+	* frontend/ParseExpr.Mod (Designator):
+	Prevent super call to abstract type-bound procedure.
+	Fixed deref of NIL after faulty super calls.
+
+	* frontend/SymbolTable.Mod (CloseScope):
+	When closing the module scope, and if no error has been
+	found yet, check all type-bound procedures of non-abstract record
+	types for unresolved abstract type-bound procedures.
+
+	* frontend/Data.Mod:
+	New flags: `objAbstractTBProc' and `structAbstractType'.
+
+1999-01-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/StdTypes.Mod, backend/ansi-c/SystemFlags.Mod:
+	Removed flag UNTAGGED.
+
+1999-01-01  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Schedule.Mod (InspectUpdate):
+	Side-effect through variable parameters of calls on
+	record fields and array element were no detected when looking for
+	anti-dependencies.
+
+1998-12-25  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/SystemFlags.Mod:
+	Calling convention defaults to "C" for Unix, and "Pascal" for Win32.
+
+	* tools/ooef.Mod:
+	Instead of a module name a file name can be given.  If the argument
+	has no extension, the default module extension is added to the name.
+
+1998-12-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (PredefCall):
+	Fixed run-time exception if argument to LEN is not an
+	array.
+
+1998-12-19  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/C.Mod:
+	New pointer type `string', which is assignment compatible with
+	character arrays and string constants.
+
+	* frontend/ParseStatm.Mod (AssignmentCompatible):
+	Additional rule if the target of the
+	assignment is a variable of pointer type with `structCArrayAssign'
+	set.  In this case the assigment is valid, if the array types on both
+	sides have the same number of dimensions and the same base type, or if
+	the left side is a pointer to character array and the right a string
+	constant.
+
+	* frontend/Data.Mod:
+	Introduced flag to enable/disable use of system flags in a module.
+
+	* backend/ansi-c/SystemFlags.Mod:
+	Introduced flag to enable/disable use of system flags in a module.
+	New struct flag CSTRING.  With this flag set strings or character
+	arrays can be assigned to appropriate pointer variables, which will
+	actually assign the array's address.
+
+	* frontend/Data.Mod: New struct flag: structCArrayAssign.
+
+1998-12-17  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/C.Mod: Added types `set' and `longset'.
+
+1998-12-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Build.Mod (LinkProgram):
+	Removed -allow-undefined from libtool's argument list.
+
+	* tools/CNText.Mod (WriteTextSym):
+	The test for CR+LF was broken, breaking text output
+	for comments and pragmas.
+
+1998-12-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/ooef.Mod:
+	Omit output separator in front of the first file's error list.
+
+	* backend/ansi-c/lib/C.Mod: Set size_t=longint.
+
+	* tools/ooef.Mod:
+	Added command variant to pass a module name and file position to the
+	program instead of reading an error list from stdin.  This way one can
+	translate an exception message to a file position.
+
+	* tools/CNHTML.Mod (WriteTextSym):
+	The test for CR+LF was broken, breaking HTML output
+	for comments and pragmas.
+
+1998-12-13  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenDecl.Mod (Declaration):
+	Oops, WriteCallConv was called for all type
+	declarations, not just function types.
+
+1998-12-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/SystemFlags.Mod:
+	Added calling convention "Pascal" for Win32 target.  Removed flag
+	GCC_ATTRIB_STDCALL.
+
+	* backend/ansi-c/StdTypes.Mod (StructAlloc):
+	Extended to deal with ALIGNX flags.
+
+	* backend/ansi-c/GenDecl.Mod (LeftTypeExpr):
+	If only of the ALIGNX flags is set for a record, then
+	the struct is defined with attribute _NOALIGN (defined in __oo2c.h).
+
+	(Declaration): For Win32 target write __stdcall and __cdecl attributes
+	for procedures.  Omit these attributes for type casts.
+
+	* backend/ansi-c/lib/__oo2c.h:
+	New define _NOALIGN to suppress all alignment of record fields by the
+	C compiler.
+
+1998-12-10  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolTable.Mod:
+	Fixed argument types of SHORT/LONG for 64 bit values.
+
+1998-12-09  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__oo2c.h:
+	Changed prototype code for alloca() to avoid warnings on Alpha/gcc.
+
+	* lib/Log.Mod (Ptr, Adr): Extended code to deal with 64 bit addresses.
+
+	* backend/ansi-c/lib/Locales.c:
+	Removed two redundant type casts which are invalid on a 64 bit system.
+
+1998-12-05  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod: Bumped version to 6:0:1.
+
+	* backend/ansi-c/lib/Signal.c, backend/ansi-c/lib/Signal.Mod:
+	Somehow the signal `sigio' was omitted from the module.
+
+1998-11-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/PosixFileDescr.Mod:
+	Exported the field `Channel.fd' as read-only.  This is done for
+	system-dependent client modules of this module.  Note that this field
+	is not part of the official specification of derived classes like
+	`Files'.
+
+1998-11-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__libc.h:
+	Added workaround for size_t operand of `memset' for gcc.
+
+	* backend/ansi-c/lib/SysClock.c:
+	Added configure check for `settimeofday'.
+
+1998-10-14  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNDefTexi.Mod (WriteVariables):
+	A list of variables only contained the name of the
+	first variable.
+
+1998-10-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod: Bumped version to 5:0:0.
+
+1998-10-03  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/Signal.c, backend/ansi-c/lib/Signal.Mod (SetHandler):
+	Now a function.
+	(SetDefault, SetIgnore, SetException): Gone.
+	(handlerDefault, handlerIgnore, handlerException, handlerError): New
+	read-only procedure variables.
+
+	* frontend/ParseStatm.Mod (AssignmentCompatible):
+	When assigning a procedure to a procedure
+	variable, an invalid error message was triggered if the right side of
+	the assignment is the name of the current procedure.
+
+	* frontend/SymbolTable.Mod (GlobalDecl):
+	New.  TRUE iff `obj' is declared on module level.
+
+1998-09-29  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/oocn.Mod:
+	New option --colors <name>: Select color set used for HTML.  The
+	variants "hilit" (default) and "font-lock" are available.
+
+	* tools/CNHTML.Mod: Added support for different color sets.
+
+	* tools/oocn.Mod:
+	New option --line-num: Prepend original line number to every line of
+	output.
+
+	* tools/CNHTML.Mod, tools/CNText.Mod (WriteSymbols):
+	New parameter `lineNum'.  If TRUE, then all output
+	lines are prefixed by their line number in the input file.
+
+	* tools/CNScanner.Mod (StartSymbol.Line):
+	New type-bound procedure.  Calculates original
+	line number of given symbol.
+
+	* tools/oocn.Mod:
+	New option --no-internal: Omit internal modules from the output of
+	--modules.
+
+1998-09-28  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (ProcedureCall):
+	For a function call, require that a parameter list
+	follows.  Otherwise the compiler would allow for a call to a
+	type-bound function to omit the empty parameter list `()'.
+
+1998-09-26  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/oocn.Mod: New option --def-texi.
+
+	* tools/CNDefTexi.Mod: New file.
+
+1998-09-25  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNIdentifier.Mod (Designator):
+	Take effects of WITH statement into account.
+
+	* tools/CNParser.Mod (WithBranch):
+	Report syntax error if a type constructor is used.
+
+	* tools/oocn.Mod:
+	Removed option --definition/-D again, now the mode "definition" is
+	implied by --def-txt, --def-html, and --def-xref (new).
+
+	* tools/CNModuleDef.Mod (Remove):
+	Added a little hack to avoid messing up rewritten IMPORT
+	statements.
+
+	(ScanType): Array base types were not included in the scan.
+
+	* tools/CNXRef.Mod: Added code for cross-referenced module definitions.
+
+1998-09-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/oocn.Mod: New mode:
+	  --definition or -D extracts definitions of the given modules
+	Selector for -D:
+	  --def-text (default, emit ASCII text) or --def-html (emit HTML text)
+	The option "-o -" sets the output channel to stdout.
+
+	* tools/CNModuleDef.Mod: New file.
+
+	* tools/CNScanner.Mod (Remove):
+	New type-bound procedure to remove parts of a syntax tree.
+	(DocString): Predicate to test if a symbol is a documentation string.
+	(RemoveComments): New.
+
+	* tools/CNOutput.Mod, tools/CNText.Mod: New file.
+
+1998-09-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/Log.Mod (Ln): Removed paremeter.
+
+	* tools/CNParser.Mod:
+	Some sequences could create entirely empty nodes.  Branches of WITH
+	statements were not entered in the AST.  Some "up" pointers were
+	incorrect.
+
+	* tools/CNScanner.Mod: New type-bound procedures.
+	  For symbols: NextSym, PrevSym.
+	  For nodes: First, Last, Next, Prev, FirstSym, LastSym.
+
+	* tools/CNAST.Mod (First, Last):
+	Added type-bound procedures for the different kinds of
+	node.
+
+1998-09-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod: Bumped version number to 4:0:1.
+
+	* backend/ansi-c/lib/Signal.c, backend/ansi-c/lib/Signal.Mod:
+	Replaced type `C.int' with new type alias `SigNumber'.
+
+	* lib/TextRider.Mod (ReadReal):
+	Oops, the range checking for REALs was broken.
+
+1998-09-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/C.Mod:
+	Defined type `address' to `SYSTEM.ADDRESS' (instead of LONGINT).
+
+1998-08-25  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNAST.Mod, tools/CNDecl.Mod, tools/CNHTML.Mod, tools/CNIdentifier.Mod, tools/CNModules.Mod, tools/CNParser.Mod, tools/CNScanner.Mod, tools/CNSymTab.Mod, tools/CNXRef.Mod, tools/oocn.Mod:
+	New file.
+
+1998-08-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/Log.Mod: New file.
+
+	* tools/ooef.Mod (PrintErrors):
+	Add separator line between different files in context
+	mode.
+
+	* tools/ooef.Mod (ActiveFile):
+	Use separate variable to keep track of the currently
+	active file.
+
+	(PrintText): Fixed buglet that omitted the final newline if the last
+	line of the input file does not end in a newline.
+
+	(SortErrors): Revert list of files.
+
+1998-08-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (CondAnd, CondOr):
+	Added fix to change the `oldValue' entries of gates
+	when they refer to an unusable value.  Otherwise gates derived from
+	such old `oldValue's can cause cyclic instruction dependencies.
+
+1998-08-14  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/UndefVar.Mod (InspectUses):
+	Take control flow information along the chains of gates
+	into consideration and disregard impossible paths.
+
+	* optimizers/GuardCond.Mod (Init):
+	Also use dependencies introduced by argument of non-gate
+	instructions to populate the initial matrix.
+
+1998-08-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/TextRider.Mod (maxLengthEol): Exported.
+
+	(Reader.eol): All characters must be less than ASCII(20X).
+
+	(Eol): Do incremental lookahead, instead of a single lookahead over
+	the number of characters in `eol'.  Otherwise the predicate can block,
+	although it could already decide that the answer is `FALSE'.
+
+1998-08-11  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (CommitRepeatMerge):
+	Don't progagate $exit out of the loop, and
+	replace the loop gate for $exit with the constant FALSE.
+
+1998-08-10  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Opcode.Mod:
+	Merge instructions: A non-loop merge can only contain gates.  In other
+	words, a merge-if, merge-cond, or merge-case is either empty, or it
+	contains an arbitrary number of gate instructions.
+
+	* optimizers/GateReduction.Mod (TraverseGates):
+	Do not create negation instructions in non-loop
+	merges.
+
+1998-08-09  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Schedule.Mod: Added pragmas to enable debug mode.
+
+	* frontend/ParseExpr.Mod (Designator):
+	Don't report any errors about read-only variables if the
+	designator was not parsed successfully.
+
+	* tools/Browser.Mod (WriteSet): Oops, the last set element got lost.
+
+1998-08-05  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenDecl.Mod (LeftTypeExpr, CanUseTypeName):
+	Prevent structure definitions in the
+	formal parameter list of a function (this happened in POPP.Mod).
+
+	* backend/ansi-c/GenStatm.Mod (CaseGuard):
+	Take into account, that the back-end can skip a
+	conversion instruction, possibly making the range of the case labels
+	larger than that of the selection expression.
+
+1998-07-28  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod: Bumped version to 3:3:0.
+
+	* backend/ansi-c/lib/__StdTypes.h:
+	Define `hugeint' to `LOCAL_INT64_T', which is included from
+	__config.h.
+
+1998-07-27  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolTable.Mod (InitPredef):
+	Define types HUGEINT and SYSTEM.SET64 if
+	StdPragmas.targetInteger >= 64.
+
+1998-07-23  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Scanner.Mod (Ident):
+	If an identifier had a keyword as prefix, the ident was
+	sometimes confused with the keyword.  (Thanks to Stewart Smith.)
+
+	* lib/TextRider.Mod (Reader.Available):
+	Not all lookahead characters are always valid.
+	(Thanks to Ian Rae.)
+
+1998-07-13  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Fixed bug with loops. Remove loop, if only taken once.
+
+1998-07-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod: Changed library version to 3:2:0.
+
+1998-07-11  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/LRealStr.Mod, lib/LRealConv.Mod:
+	Some bugfixes by Mike Griebling.  Sorry, he did not send a ChangeLog
+	entry.
+
+	* lib/Integers.Mod:
+	Code cleanup and a bugfix by Mike Griebling.  Sorry, he did not send a
+	ChangeLog entry.
+
+	* lib/TextRider.Mod (Scanner):
+	New type code `undefined', set when initializing the
+	scanner or calling `ClearError'.  `invalid' is used for
+	`invalidFormat' or `valueOutOfRange' errors, `error' for everything
+	else.  Both error codes are sticky.
+
+	(ReadReal): Overflow check for SHORT() did not take rounding into
+	account.
+
+1998-07-03  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/TextRider.Mod (RealLReal, ReadNum):
+	Signal `invalidFormat' error if a real
+	representation is longer than 1023 characters.
+	(InitWriter): Use `CharClass.systemEol' as default for new writers.
+
+	* lib/CharClass.Mod (eol, IsEol):
+	Fixed for all implementations of OOC.  Renamed `IsEOL'
+	to `IsEol' for consistent naming.
+	(systemEol): New string, holds target system's eol marker.
+
+1998-06-30  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenStatm.Mod (CallInstr):
+	Fixed code generation for C style rest parameter `...'.
+
+	* lib/TextRider.Mod: Some fixes for auto detection of eol.
+
+1998-06-29  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/TextRider.Mod (Reader.SetEol):
+	Expanded statement about inconsistency.
+
+	* lib/TextRider.Mod (Reader.SetEol):
+	Made inconsistency example more clear.
+
+	* lib/TextRider.Mod: Renamed `SetEOL' to `SetEol'.
+
+	(Reader.SetEol): Added auto detection to the specs again.
+
+	(Lookahead, Consume, Reader.Eol, ReaderReadLine):
+	Added eol auto detection magic.
+
+	(Reader.ClearError,Reader.SetPos):
+	Reset ongoing auto detection if called.
+
+	* backend/ansi-c/lib/OakFiles.c:
+	If the current system knows O_BINARY, use it for the calls to open().
+
+	* backend/ansi-c/lib/Files.c (open_file):
+	If the current system knows O_BINARY, use it for the call
+	to open().
+
+1998-06-28  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/oo2c.Mod (Compile):
+	Get rid of `objInLibrary' flag if we just recompiled the
+	module.
+
+	* backend/ansi-c/lib/liboo2c.Mod:
+	Bumped version to 3:0:0 because of interface changes in TextRider.
+
+	* optimizers/GuardCond.Mod (TransitiveHull):
+	It can happen that both "RegionA contradicts
+	RegionB" _and_ "RegionA implies RegionB" holds, if RegionA is
+	unreachable.
+
+	* lib/TextRider.Mod:
+	Rewrote reader and scanner to permit end-of-line markers with more
+	than one byte.
+
+	(SetEOL): New method for Reader, Writer, Scanner.
+
+	(Scanner.SkipSpaces): Removed from the interface.
+
+	Note: I did not fix the potential string buffer overruns in ReadLReal
+	and Scanner.ReadNum.
+
+	* frontend/ParseStatm.Mod (AssignToVar.Visible):
+	The predicate was too restrictive for values
+	`a' on the exit path of a loop.
+
+1998-06-27  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/TextRider.Mod: Proposal for extended eol handling.
+
+1998-06-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/TextRider.Mod (UngetChar, ReadChar):
+	When "ungetting" a character, save the current
+	value of `res' and set it to `done' again.  Precondition for
+	`UngetChar': the "ungetted" character was read while `res=done'.
+	`ReadChar' restores the `res' of a previously "unget" character.
+
+	(Eol): Does not move position anymore.
+
+	(Check): Added pre-condition `r. byteReader. res = done'
+
+	(ReadLInt, ReadHex): Unget last character, even if it triggered an
+	error or `readAfterEnd'.
+
+	(ReadSet): Minor rewrite to establish pre-condition for `Check'.
+
+	(StateScan): Tried to fix error handling.
+
+	Turned several local support type-bound procedures into normal
+	procedures; this is more efficient, and the compiler can better work
+	on normal calls.
+
+	Only remaining problem: InOutTest reports that it processed 4 lines
+	from ScanTest.dat, although MG's reference file reported 5 lines.
+	Because the last line of the input file has no end of line character,
+	this is somehow correct from the point of view of the module's code.
+
+1998-06-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Build.Mod:
+	Added option "--libs <string>".  Like "--ldflags", this add additional
+	parameters to the linker invocation.  This option is intended to be
+	used during automated configuration of additional library packages
+	(like VO).
+
+	* backend/ansi-c/Schedule.Mod (InitSelection):
+	Always schedule "exit" as last instruction.
+
+	* lib/OakStrings.Mod: New file.
+
+1998-06-13  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/BinaryRider.Mod (ReadNum, ReadBool):
+	Detect invalid input and signal an
+	`invalidFormat' error.  Do not change `res' unless it holds the value
+	`done'.
+
+1998-06-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/TextRider.Mod:
+	Exported `InitReader', `InitWriter', `InitScanner',
+	`Reader.byteReader', `Writer.byteWriter', and `Scanner.r' for
+	extensions of the riders.
+
+	* lib/BinaryRider.Mod:
+	Exported `InitReader', `InitWriter', `Reader.byteReader', and
+	`Writer.byteWriter' for extensions of the riders.
+
+1998-06-11  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseDecl.Mod (ProcDecl):
+	Leave "exit" instruction in top-level region.
+
+	* optimizers/AliasAnalysis.Mod (BuildDesignator):
+	Fixed NIL deref when building a designator
+	containing a type-guarded record.
+
+1998-06-10  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod: Code cleanup
+
+1998-06-04  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Code-Cleanup. Removed unnecessary state "mayConst".
+
+1998-06-02  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/PosixFileDescr.c, backend/ansi-c/lib/Files.c, backend/ansi-c/lib/ProgramArgs.Mod, backend/ansi-c/lib/StdChannels.Mod, lib/BinaryRider.Mod, lib/TextRider.Mod, lib/Channel.Mod:
+	Exported fields
+	  Channel.Channel.{res,readable,writable,open},
+	  Channel.Reader.{base,res,bytesRead,positionable}, and
+	  Channel.Writer.{base,res,bytesWritten,positionable}
+	as read-write.  This is done to permit specializations of the classes
+	to change these fields.  The user should consider them read-only.  The
+	previously provided methods SetXXX have been removed.
+
+	* lib/LowLReal.Mod, lib/LowReal.Mod:
+	From: Mike Griebling <grieblm@trt.allied.com>
+	I found a bug in the LowReal.intpart and LowLReal.intpart
+	routines which would erroneously indicate that the integer
+	parts of numbers like 1.5 is 0.
+
+1998-05-26  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Build.Mod (CompileCCode):
+	If C source file is RCS master, run co and continue
+	with working file.
+
+	(BuildExternals): Fixed possible NIL-deref if an external C file does
+	not exist.
+
+1998-05-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod:
+	Added `Types' and `Kernel' to the import list, even if they are not
+	part of the official OOC library.
+
+	* backend/ansi-c/oo2c.Mod:
+	See if the libtool command string is defined, before calling MakeLib
+	or InstallLib.
+
+1998-05-21  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod, lib/LibSummary.Mod:
+	Removed module Blowfish.
+
+1998-05-19  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/oowhereis.Mod, tools/ooef.Mod, tools/oob.Mod:
+	Changed output of --version and --help.
+
+	* backend/ansi-c/oo2c.Mod: Changed output of --version.
+
+	* backend/ansi-c/Build.Mod (CompileCCode):
+	Override USE_GC, if gcflags has changed with respect
+	to the default value.
+
+	* backend/ansi-c/lib/__oo2c.c, backend/ansi-c/lib/__mini_gc.h, backend/ansi-c/lib/OakFiles.c:
+	Replaced HAVE_GC with USE_GC.
+
+1998-04-29  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/StdTypes.Mod:
+	Fixed description of `struct*' and `obj*' constants.  Introduced some
+	symbolic constants `struct*' for the set `Data.Struct.beFlags'.  The
+	Win32 port will probably need them.
+
+	* backend/ansi-c/SystemFlags.Mod:
+	Enable system flags for normal modules, until we know whether the
+	Win32 port needs this or not.
+
+	* backend/ansi-c/lib/OakFiles.Mod:
+	Link names of procedure are placed _before_ the procedure name, _not_
+	behind.
+
+	* backend/ansi-c/SystemFlags.Mod: New type flags:
+	  GCC_ATTRIB_STDCALL (for procs)
+	  NOALIGN, ALIGN2, ALIGN4, ALIGN8 (for records)
+	  UNTAGGED (for records and arrays?)
+
+1998-04-28  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Parameter.Mod (IsAlpha):
+	Consider underscore as character.  That is, option and
+	pragma names can have "_" in place of a character.
+
+	* frontend/ParseDecl.Mod (ProcDecl):
+	Fixed parsing of system flags associated with procedures.
+
+	* frontend/ParseExpr.Mod (BoundSetElement):
+	Fixed bogus error message whenever the set type was
+	undefined due to a previous error.
+
+	* tools/oob.Mod: Oops.  Forgot to initialize pragmas before using them.
+
+1998-04-27  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod:
+	Fixed bug with incorrect marking of loop dependent instructions in
+	stacked loops.
+
+1998-04-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/StdTypes.Mod, backend/ansi-c/GenDecl.Mod, backend/ansi-c/SystemFlags.Mod:
+	Added module flag "GCC_ATTRIB_STDCALL".  If set for an INTERFACE
+	module, then for all function prototypes in the generated header file
+	the string "__attribute__ ((stdcall))" is inserted before the function
+	name.  This is used to access functions of the Windows API with gcc.
+
+1998-04-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod, frontend/ParseExpr.Mod, frontend/Data.Mod, frontend/Attributes.Mod:
+	Mark the enter instruction of a greg with `instrNotDead', if the greg
+	contains a run-time check.
+
+	* backend/ansi-c/lib/SysClock.c (GetClock):
+	Guess what, gmtime() and localtime() use the same static
+	variable to pass back their result.  Thanks to Mike Griebling for
+	unearthing this particular piece of C-sickness.
+
+1998-04-21  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/LoopTransformation.Mod, optimizers/GuardPropagation.Mod, optimizers/GuardCond.Mod, frontend/ParseStatm.Mod, frontend/ParseExpr.Mod, frontend/SideEffects.Mod, frontend/SymbolTable.Mod, frontend/SymbolFile.Mod, frontend/StdPragmas.Mod, frontend/Parameter.Mod, frontend/ParamPaths.Mod, frontend/ErrorInstr.Mod, frontend/ParamOptions.Mod, frontend/Error.Mod, frontend/Check.Mod, frontend/Attributes.Mod, backend/ansi-c/CodeGen.Mod, frontend/Scanner.Mod, frontend/Opcode.Mod, frontend/Data.Mod:
+	Textual clarifications.
+
+1998-04-13  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod, lib/LibSummary.Mod:
+	Removed reference to complex number support in OOC.
+
+1998-04-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/StdPragmas.Mod: Moved module body into procedure `Init'.
+
+	* backend/ansi-c/oo2c.Mod: Added call to StdPragmas.Init
+
+1998-03-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/oo2c.Mod, frontend/StdPragmas.Mod, frontend/Error.Mod:
+	Moved pragma variable `warnings' from module `Error' into module
+	`StdPragmas'.
+
+	* backend/ansi-c/GenStatm.Mod (GlobalRegion):
+	Never use values from StdPragmas in the backend.
+
+	* frontend/ParseStatm.Mod (AssignmentCompatible):
+	When assigning a procedure to a variable, make
+	sure that the procedure is defined on module level.
+
+	* frontend/Attributes.Mod:
+	Moved pragma variables into separate module `StdPragmas'.
+
+	* frontend/StdPragmas.Mod: New file.
+
+1998-02-20  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod (GetSetConst):
+	automatic set conversion disabled
+
+	Do paranoid type checks only, if front-end did not yet found an error.
+
+	(ReplaceConstantRegions): Consider never taken region without merge
+	not as an error.
+
+1998-02-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod: Added module Reals.
+	Library version is 1:0:0
+
+1998-02-14  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Attributes.Mod:
+	Create COMPILER* and TARGET* pragma variables during module
+	initialization.
+
+	* backend/ansi-c/Config.Mod:
+	Added default values for COMPILER* and TARGET* pragma variables.
+
+1998-02-13  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/Time.Mod (GetTime): New.  Gets time of day in TimeStamp format.
+
+1998-02-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Scanner.Mod (SaveScanPos, RestoreScanPos):
+	New.  Save and restore scanner state,
+	including conditional compilation info and pragma variables.
+
+	* frontend/ParamPragmas.Mod (Save, Restore):
+	Extended the amount of saved data.
+
+1998-02-11  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/Integers.Mod: Removed "Files" from "IMPORT Files:=BinaryRider".
+
+1998-02-10  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__StdTypes.h: New macros: TYPE_TAG, TYPE_DESCR
+
+	* frontend/Parameter.Mod (SkipWhitespace):
+	Skipping stopped when an INCLUDE was done.
+
+	* backend/ansi-c/GenStatm.Mod, backend/ansi-c/lib/Exception.Mod, backend/ansi-c/lib/__Exception.h, backend/ansi-c/lib/__oo2c.c, backend/ansi-c/lib/__oo2c.h:
+	Split _div_by_zero into _real_div_by_zero and _integer_div_by_zero,
+	because the pragma variables distinguish between real and integer
+	here.
+
+1998-02-06  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod: Implemented new semantics for set types.
+	See frontend/doc/SetExtension.
+
+	* backend/ansi-c/StdTypes.Mod (SetType): Gone.
+
+	* backend/ansi-c/lib/SysClock.c, backend/ansi-c/lib/SysClock.Mod, lib/JulianDay.Mod, lib/Calendar.Mod, lib/Time.Mod:
+	Replaced GMT with UTC.
+
+1998-02-05  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/LibSummary.Mod: Added module Reals.
+
+1998-02-04  Michael Griebling  <grieblm@trt.allied.com>
+
+	* lib/Reals.Mod: New file.
+
+	* lib/Integers.Mod:
+	Update from Mike: New copyright notice.  Fixes in function Quotient,
+	Remainder, and QuoRem.  Updated pre-condition for GCD.
+
+1998-02-01  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Schedule.Mod (DataDependencies):
+	Inspection of aliases distinguishes between
+	updating and accessing part of string-copy/struct-copy.
+
+	* optimizers/AliasAnalysis.Mod (Aliasing):
+	Added arguments to distinguish between the accessing and
+	updating part of string-copy and struct-copy.  For example the
+	scheduler needs to determine aliases that only effect the updating
+	part of such copy instructions.
+
+	* lib/Integers.Mod (Test):
+	Replaced overflowing expression -80000000H with 80000000H.
+
+	* frontend/IntArith.Mod (Sub):
+	Fixed overflow handling if `y' equals MIN(LONGINT).
+
+1998-01-31  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Schedule.Mod (Region):
+	Make exit instruction depend on final value of $store during
+	scheduling.
+	Also updated code dealing with access-heap & update-heap.
+
+	* optimizers/AliasAnalysis.Mod (ComputeAliasing):
+	Asymmetric handling of accessNonlocal and
+	updateNonlocal broke the predicate `TransitiveStoreAlias', which in
+	turn caused broke instruction scheduling.
+	(WildOpcode): Opc.bit and Opc.updateMem were not listed.
+	Also updated code dealing with access-heap & update-heap.
+
+	* frontend/Data.Mod:
+	GateDesc.var: Now of type `Object' instead of `Addressable'
+
+	* frontend/Opcode.Mod:
+	Removed <type-value> operand from access-heap and update-heap.
+	Previously this was the third operand of these instructions.  Also
+	removed the <type-value> result from update-heap.  They have no
+	purpose beyond the information already provided by $store.  For more
+	information see the description of the $store variable at the
+	beginning of the module text.
+
+1998-01-29  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Schedule.Mod (InspectUpdate):
+	Fixed glitch that prevented detection of anti-aliases
+	when updating an array element or record field with string-copy or
+	struct-copy.
+
+	Updates to deal with new handling of $mem.
+
+	* backend/ansi-c/CodeGen.Mod (FinishModule):
+	Changed parameter list so that the frontend doesn't
+	need to know about data structures of the backend.
+
+	* frontend/Check.Mod: Added checks for some additional restrictions.
+
+	* frontend/ParseExpr.Mod:
+	Fixed buglet that messed up the opcode of comparisons dealing with
+	pointer and procedure values.  Some updates to deal with new handling
+	of $mem.
+
+	* frontend/ParseDecl.Mod:
+	Removed dependence on data structure of backend module introduced in
+	previous release.
+
+	* frontend/Opcode.Mod:
+	Removed opcodes collect and reclaim.  This change influences all
+	instructions dealing with $mem, most of all procedure calls.  For the
+	full list of instructions and a detailed description see notes at
+	beginning of the module source.  The definition of the call opcode was
+	updated accordingly.
+
+	I had to change opcode update-mem to take the new value as second
+	argument and the value of $mem as third.  Previously it was the other
+	way round.
+
+	* frontend/Data.Mod:
+	Added various procedures to support module SideEffects: LastResult,
+	MoveResultList, MoveResultToEnd, MoveOperandToEnd, TransferResultList,
+	TransferOperandList.
+
+1998-01-17  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/oo2c.Mod:
+	Included path to primary initialization file in output of
+	--write-config.
+
+1998-01-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Parameter.Mod (ParseConfigFile):
+	New parameter to return name of top-level
+	configuration file.
+
+1998-01-11  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/ProgramArgs.Mod:
+	Newline characters embedded in arguments will be turned to whitespace,
+	i.e., CharClass.eol is replaced with " ".
+
+1998-01-08  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/RealConv.Mod (FormatReal):
+	Preliminary fix to prevent floating-point overflows.
+	Some systems set the FPU to signal an SIGFPE for such overflows,
+	causing installation of oo2c to fail with a core dump.
+
+1998-01-08  Michael Griebling  <grieblm@trt.allied.com>
+
+	* lib/LRealMath.Mod (sqrt):
+	Previous version of this function called RealMath.sqrt for a
+	first approximation.  This failed for very large/small arguments.
+
+1998-01-08  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Scanner.Mod:
+	Turned `IdentLength' and `StringLength' into pragma variables.
+
+1997-12-28  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Added tests to detect overflow when converting a LONGREAL value to
+	REAL or integer.
+
+1997-12-21  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenConst.Mod (Real):
+	Write REAL constants with 7 digits precision.
+
+	* backend/ansi-c/lib/__oo2c.h (_valid_real):
+	Accepted range was too large.  It included LONGREAL
+	values that would be mapped to `inf' when applying SHORT().
+
+	* backend/ansi-c/StdTypes.Mod (ValidReal):
+	Accepted range was too large.  It included LONGREAL
+	values that would be mapped to `inf' when applying SHORT().
+
+1997-12-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/StdTypes.Mod (ValidInt):
+	New predicate to test whether a real value will result in
+	a valid LONGINT value after ENTIER.
+	Renamed LegalChar to ValidChar, LegalReal to ValidReal.
+
+	* backend/ansi-c/Config.Mod:
+	Enable real overflow checks by default.  Note that this will only
+	check whether SHORT(longreal) delivers a valid REAL value.  Underflows
+	are ignored.  No other overflow checks are or will be implemented.
+
+	* backend/ansi-c/lib/__oo2c.h:
+	Added trap functions (_real_overflow, _integer_overflow) for real and
+	integer overflow.  New macros to test to overflow (_valid_real,
+	_valid_int).
+
+	* frontend/ParseExpr.Mod (TypeConversion):
+	Check for overflow when converting LONGREAL to REAL
+	or REAL to integer.
+
+	* backend/ansi-c/lib/__oo2c.c:
+	Added trap functions for real and integer overflow.
+
+	* backend/ansi-c/lib/__Exception.h, backend/ansi-c/lib/Exception.Mod:
+	Added code for real and integer overflow.
+
+1997-12-17  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod (ComputeConstantResults):
+	non-successfull calculation of constant did
+	result in a "mayConst" marker instead of a "nonConst" one.
+
+1997-12-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/FileData.Mod (RemoveFiles):
+	Register as termination proc so that all marked files
+	are removed even if the program is interrupted.
+
+1997-12-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/AliasAnalysis.Mod (Aliasing):
+	access-mem and update-mem (i.e., GET and PUT) weren't
+	handled at all.
+	.
+
+1997-12-02  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (MarkSideEffectedVars):
+	When calling a procedure which reads/writes
+	$mem from within a module body the global variables weren't forced
+	into $mem.
+
+1997-11-26  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Parameter.Mod (ParseConfigFile):
+	Setting the empty string as name of the
+	configuration file (e.g. through env var or cmd line argument)
+	disables reading of config file.
+
+	* backend/ansi-c/GenDecl.Mod (Declaration):
+	Make sure that a receiver's type is declared before the
+	prototype declaration of the procedure, instead of within its
+	parameter list.
+
+1997-11-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenStatm.Mod: Removed cmd line option --vstack
+
+1997-11-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/oo2c.Mod:
+	Fixed creation/installation of libraries.  Removed path part from cmd
+	line options --make-lib/--install-lib.
+
+	* backend/ansi-c/External.Mod: New file.
+
+1997-11-17  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__StdTypes.h, backend/ansi-c/StdTypes.Mod:
+	Renamed int64 to hugeint to avoid name clashes, e.g. with BeOS.
+
+1997-11-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/GuardCond.Mod (Init):
+	Fixed a rule that fouled up the derived data for some
+	conditional statements with lots of constant expressions in them.
+
+1997-10-14  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Build.Mod (LinkProgram, Makefile):
+	Move gc flags to end of link command.
+
+1997-10-13  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/liboo2c.Mod: New file.
+
+	* backend/ansi-c/oo2c.Mod:
+	New command line options: --make-lib, --install-lib.
+
+	* backend/ansi-c/FileData.Mod (MarkForRemoval, RemoveFiles):
+	Mechanism to store a list of file names
+	and to remove all files in the list.
+
+	* backend/ansi-c/Config.Mod:
+	Added constants for symbol file version and defaults values for
+	libtool name and library path.
+
+	* backend/ansi-c/SystemFlags.Mod:
+	Added code to handle library information.  Use use new field
+	`beFlags'.
+
+	* frontend/Error.Mod (VerboseMsg):
+	Call `Out.Flush' after writing line to stdout.
+
+	* frontend/SymbolFile.Mod:
+	Extended symbol file format to include version information.  Save
+	`beFlags' for structs and objects.  Changed magic number.
+
+	* frontend/Data.Mod:
+	`Object.flags' and `Struct.flags' were splitted into two separate
+	fields: `flags' and `beFlags'.  The back-end can put anything into
+	`beFlags', both fields are saved and restored automatically by module
+	`SymbolFile'.
+
+	* backend/ansi-c/StdTypes.Mod:
+	New constants `objExportMaskBE' and `structExportMaskBE'.  See module
+	Data for details.  Fixed back-end struct and object flags accordingly.
+
+1997-10-11  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/Err.Mod, lib/Out.Mod, lib/In.Mod:
+	Renamed `Boolean' to `Bool' for consistency with TextRider.
+
+	* tools/oob.Mod: Return exit code 1 if some error occured, 0 otherwise.
+
+	* tools/oowhereis.Mod:
+	Return exit code 1 if file wasn't found, 0 otherwise.
+
+1997-10-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/oo2c.Mod, tools/ooef.Mod, tools/oob.Mod, tools/oowhereis.Mod:
+	Added option --include-config <file>.
+
+1997-10-06  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Classify.Mod (Region):
+	"copy" instructions of structured type don't emit any C
+	code.
+
+	* frontend/Opcode.Mod:
+	Clarification: The front-end won't leave any "copy" instructions in
+	the code, but a back-end may create such instructions for its own
+	purposes.
+
+	* backend/ansi-c/CodeGen.Mod (CollectInitialization):
+	When removing array initialization from the
+	module body make sure that no additional uses of "undefined" variables
+	are created.  In this case create a fake copy instruction and use it
+	instead.
+
+1997-09-26  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__oo2c.c (_oo2c_init):
+	Call GC_INIT() and GC_register_displacement().
+
+1997-09-23  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/LibSummary.Mod: Added localization modules.
+
+1997-09-23  Michael Griebling  <grieblm@trt.allied.com>
+
+	* backend/ansi-c/lib/LocStrings.c, lib/LocNumConv.Mod, lib/LocNumStr.Mod, backend/ansi-c/lib/LocStrings.Mod, lib/LocText.Mod, lib/LocTextRider.Mod:
+	New file.
+
+1997-09-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/TextRider.Mod:
+	Renamed constant `name' for `Scanner.type' to `ident'.  Removed
+	procedure `Writer.Flush'.
+
+	* frontend/ParseStatm.Mod (ProcedureCall):
+	Fixed handling of NIL_COMPAT flag for variable
+	parameters.
+
+1997-09-22  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Rewrote code for region reordering. Seems to work for now... ;->
+
+1997-09-19  Michael Griebling  <grieblm@trt.allied.com>
+
+	* lib/ComplexMath.Mod, lib/LComplexMath.Mod:
+	Optimized the `sqrt' function.
+
+1997-09-18  Michael Griebling  <grieblm@trt.allied.com>
+
+	* lib/LComplexMath.Mod, lib/ComplexMath.Mod:
+	Changed the `div' and `abs' algorithms to have a reduced
+	chance of incurring overflow errors.
+
+1997-09-11  Michael Griebling  <grieblm@trt.allied.com>
+
+	* lib/Calendar.Mod (Init): Renamed to `SetLocalTime'.
+	(SetGMT): New.  Like `SetLocalTime', but uses GMT for time zone.
+	(Inc, DayOfWeekStr, MonthStr): Gone.
+
+1997-09-11  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/SysClock.Mod (MakeLocalTime):
+	New.  Takes a `DateTime' record an fills in time zone
+	and DST information according to the local time zone.
+
+1997-09-05  Michael Griebling  <grieblm@trt.allied.com>
+
+	* lib/TextRider.Mod:
+	1) Changed the `valueOutOfRange' error code to avoid Channel conflicts.
+	2) The scanner `eot' type name was changed to `error'.
+	3) The Reader/Writer ErrorDescr routines were updated to use the new
+	   LocText translation database -- if available.
+	4) After errors, terminated strings are returned and the scanner string
+	   variable contains as many numerical digits as were read.
+	5) The scanner method `Skip' was renamed to `SkipSpaces'.
+	6) Various reader/scanner positioning problems were corrected which showed
+	   up under error conditions.
+	7) A `valueOutOfRange' error code is now set when strings, names, and
+	   identifiers exceed the length of the return string.
+	8) A Res() method was added to the Scanner.
+
+1997-08-31  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Allocate.Mod (ResolveVarConflicts):
+	New pass for allocator algorithm.  Looks for
+	possible conflicts between live ranges living in local scalar
+	variables of `greg' and inserts copy instructions to fix the problem.
+	See procedure header for more details.
+
+	* frontend/Scanner.Mod (CheckSym):
+	Use `lastSymEnd' when missing opening parenthesis.
+	(GetSym): Restore `lastSymEnd' after comment.
+
+1997-08-28  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (PredefCall):
+	In non-conformant mode check that the type of the second
+	argument of INC/DEC is included in the type of the first.  In
+	conformant mode only do this for constants and require equal types for
+	all other expressions.
+
+	(Statement): If assertions are disabled evaluate the call to ASSERT in
+	an IF FALSE THEN ... END environment.
+
+1997-08-25  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (Statement):
+	If an assignment to a record variable needs a type
+	assertion, make sure that the type check is scheduled before the copy
+	instruction.
+
+1997-08-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/oowhereis.Mod, tools/oob.Mod: Added option `--help'.
+
+1997-08-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Allocate.Mod (EmitVariables):
+	Added code to save/restore pointer to top of value
+	array stack around Exception.PUSHCONTEXT.
+
+1997-08-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenStatm.Mod (NewInstr):
+	Check given array lengths before calling malloc().
+
+1997-08-14  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__oo2c.h (_push_value_ov):
+	Changed test for overflow to unsigned compare.
+
+	* tools/Browser.Mod (WriteStruct):
+	Extended procedure to cover SYSTEM.  The output of the
+	symbol file browser for SYSTEM doesn't make much sense, though.
+
+1997-08-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__oo2c.c, backend/ansi-c/lib/__oo2c.h:
+	Extended message for overflow of array stack to incorporate the module
+	and file position.
+
+1997-08-11  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/PosixFileDescr.c (Init):
+	Don't change standard fd to O_APPEND, rather disable
+	positioning on stdin, stdout, and stderr.
+
+	Make BeOS happy: include socket.h if present.
+
+1997-08-11  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__StdTypes.h, backend/ansi-c/StdTypes.Mod:
+	Added preliminary support for 64 bit integer/set types.
+
+1997-08-10  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/CodeGen.Mod (CollectInitialization):
+	Array initialization was too eager if an
+	array was intialized multiple times in the module body.
+
+1997-08-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Schedule.Mod:
+	Replace scheduling strategy with one that actually makes some sense.
+	Slightly decreases amount of allocated register variables.
+
+	* backend/ansi-c/lib/Locales.c: Additional type casts to CHAR.
+
+1997-07-30  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod: Removed TermProc
+
+	* optimizers/ConstPropagation.Mod: Totally rewrote markup phase.
+	Reaches fixpoint at first run.
+
+1997-07-28  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/Channel.Mod:
+	Be more explicit about the purpose of `freeErrorCode'.
+
+1997-07-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Make.Mod (ScanSources):
+	If the scanner checked out the source file discard the
+	old file name (master file) and use the name of the working file.
+
+1997-07-22  Michael Griebling  <grieblm@trt.allied.com>
+
+	* lib/RealMath.Mod:
+	Improved accuracy of tan, arcsin, arccos, arctan, sqrt, exp routines.
+	Fixed error testing/reporting for exp and power routines.
+
+1997-07-21  Michael Griebling  <grieblm@trt.allied.com>
+
+	* lib/TextRider.Mod:
+	1) Corrected error handling to terminate reads when errors occur.
+	2) Added "interpretStrings" flag to allow quotes to be parsed.
+	3) Added "useSignedNumbers" flag to allow number signs to be parsed.
+
+1997-07-19  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/Locales.c: New file.
+
+	* backend/ansi-c/lib/Locales.Mod:
+	Michael Griebling changed this file into a portable FOREIGN
+	implementation.
+
+1997-07-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (StatementSeq):
+	Try to guess if a semicolon is missing and issue
+	appropriate error message.   Previously a missing semicolon would say
+	something like "END expected".
+
+1997-07-15  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod:
+	Major rewrite, does reach fixpoint without iteration.
+	Still missing: comments and some performance improvements.
+
+1997-07-14  Michael Griebling  <grieblm@trt.allied.com>
+
+	* lib/TextRider.Mod:
+	1) Added a `valueOutOfRange' error code to indicate when numbers
+	   and set elements are out of range but are valid otherwise.
+	2) All input reads are now stopped when an error occurs.
+	3) Invalid input errors now "Unget" the look-ahead character
+	   which caused the error.
+
+1997-07-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/PosixFileDescr.Mod, backend/ansi-c/lib/PosixFileDescr.c:
+	Problem: Whenever an application only read parts of a line of input
+	from the terminal the rest of the line was passed to the next program
+	reading from the terminal (usually the shell).  Fix: Only grab whole
+	lines of input from the terminal and let internal buffering deal with
+	smaller requests.
+
+1997-07-09  Michael Griebling  <grieblm@trt.allied.com>
+
+	* lib/RealStr.Mod, lib/LRealStr.Mod:
+	Comment disagreed with algorithm in RealToStr.  Algorithm corrected.
+
+	* lib/LRealConv.Mod, lib/RealConv.Mod:
+	Incorrect length bug fix in LengthFloatReal & LengthEngReal.
+
+1997-07-08  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseDecl.Mod (IdentDef):
+	Marking a nested procedure for export will now trigger an
+	error message.
+
+1997-06-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/PosixFileDescr.c, backend/ansi-c/lib/PosixFileDescr.Mod, lib/Channel.Mod (Flush):
+	Added this to the specs: "Any pending write operations are
+	passed to the underlying OS and all buffers are marked as invalid.
+	The next read operation will get its data directly from the channel
+	instead of the buffer."
+
+	* backend/ansi-c/lib/Files.c:
+	Changed some error messages to refer to `file' instead of `channel'.
+
+1997-06-17  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/ProgramArgs.Mod, backend/ansi-c/lib/Files.c, backend/ansi-c/lib/Files.Mod, backend/ansi-c/lib/PosixFileDescr.Mod, backend/ansi-c/lib/PosixFileDescr.c:
+	Changed methods NewReader/NewWriter of all channel implementations to
+	return the native Reader/Writer types.  This way those modules can be
+	used without the need to import anything from module Channel.  This
+	means that the interfaces of the channel modules are "standard" O2
+	anymore, although "conformant" client modules won't notice the
+	difference.
+
+	* lib/RealStr.Mod:
+	Reformatted the specs for exported items.  Changed the syntax
+	description for fixed/floating-point numbers to use EBNF.
+
+	* lib/IntStr.Mod (StrToInt):
+	Only call ValueInt if the format is known to be all
+	right.
+
+	Reformatted the specs for exported items.
+
+1997-06-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/LibSummary.Mod: Added modules Signal and Blowfish to the list.
+
+1997-06-10  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/CodeGen.Mod:
+	Added code to detect constant intialization of scalar arrays in the
+	module body.  See backend/ansi-c/doc/ArrayInit for details.
+
+1997-06-08  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/Calendar.Mod:
+	Changed module style to adhere to the standards set by other library
+	modules: Replaced type `Calendar' with `SysClock.DateTime'.  Replaced
+	all type-bound procedures with normal ones.  Removed procedures
+	IncByMonth, IncByYear, FindDate, MoonPhase, PaschalFullMoon.  Added
+	predicate IsLeapYear.  Misc name changes to obey the naming
+	conventions used in other parts of the lib, like InitFromStr ->
+	StrToTime, ToStr -> TimeToStr, ToTimeStamp -> SetTimeStamp,
+	InitFromTimeStamp -> GetTimeStamp.
+
+	* frontend/ParseStatm.Mod (PredefCall):
+	Oops.  Write access to variable parameters of predefined
+	procedures wasn't checked.  Exception for ADR: the argument can be a
+	read-only imported variable, a procedure name, or a string constant,
+	but not a constant value of scalar type.
+
+	* optimizers/AlgebraicTransformation.Mod:
+	Division, modulo, and multiplication by power of two will be converted
+	into arithmetic shift resp. logical "and".  Extended and exported
+	procedures GetZero and GetOne.
+
+1997-06-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Added code to handle type casts between integer, real, or set
+	constants.  Unreachable code elimination is still disabled.
+
+1997-06-06  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/Files.c (FileDesc.Register):
+	After a file had been closed Register was doing
+	nothing, instead of setting the appropriate error code.
+
+1997-05-23  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (ProcedureCall):
+	Set flag `instrCheckNil' for call if the procedure
+	address isn't derived from an address instruction and pragma variable
+	"DerefCheck" is set.
+
+	* backend/ansi-c/GenStatm.Mod (CallInstr):
+	Insert test for procedure value of NIL when required.
+
+	* frontend/Data.Mod (Flag instrCheckNil):
+	Can be set for call instructions, too.
+
+1997-05-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/Signal.c (Signal_Raise):
+	Use `kill' instead of `raise': SunOS 4 doesn't know
+	`raise'.
+
+1997-05-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__oo2c.c (_default_exception_handler):
+	Use `kill' instead of `raise': SunOS 4
+	doesn't know `raise'.
+
+1997-05-06  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/Exception.Mod:
+	Cleaned up comments.  Added reference to `Signal.SetException'.
+
+	* backend/ansi-c/lib/__oo2c.c (_default_exception_handler):
+	Added code to handle signal exceptions.
+
+	* backend/ansi-c/lib/Signal.c, backend/ansi-c/lib/Signal.Mod: New file.
+
+1997-05-03  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/GuardCond.Mod (Init):
+	A step of the matrix initialization treated loop gates like
+	ordinary gates, producing impossible relationships between regions.
+
+	* frontend/SideEffects.Mod (AdjustOperands):
+	Accesses to variable parameters of the caller
+	weren't handled properly when adding operands to a call instruction.
+
+1997-05-02  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__oo2c.c:
+	Changed all functions handling failed run-time checks to raise
+	exceptions.
+
+	* backend/ansi-c/lib/Exception.Mod:
+	Added constants for the exception numbers of the various run-time
+	checks.
+
+1997-04-28  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/UndefVar.Mod:
+	Disabled warning 414.  It is emitted too often and for technical
+	reasons the compiler currently can't suppress the "wrong" warnings.
+
+	* frontend/ParseStatm.Mod (ProcedureCall):
+	If a called procedure accesses (updates) a variable
+	nonlocal to the caller through side-effects, but doesn't read from /
+	write to $mem, add $store to the call's operand (result) list.
+	Otherwise the scheduler might move the procedure call to an illegal
+	position.
+
+	* frontend/Attributes.Mod (CleanupGreg):
+	Leave value for nonlocal variable in the result list of
+	the enter instruction even if it's never used.  This is necessary to
+	avoid scheduling problems for procedure calls if the procedure only
+	updates a nonlocal variable without reading it.
+
+1997-04-23  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/Exception.Mod, backend/ansi-c/lib/Exception.c, backend/ansi-c/lib/__Exception.h:
+	New file.
+
+	* backend/ansi-c/Allocate.Mod, backend/ansi-c/GenStatm.Mod:
+	Added code to handle calls to Exception.PUSHCONTEXT.
+
+1997-04-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod, frontend/Data.Mod, backend/ansi-c/SystemFlags.Mod:
+	Added code for "special code" procedures.  Instead of a call to the
+	given procedure the back-end inserts its own code for it.  Can be used
+	to implement direct access to functions provided by a mathematical
+	co-processor, instead of going the long way through a normal procedure
+	activation.
+
+1997-04-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/PosixFileDescr.Mod, backend/ansi-c/lib/Files.Mod, lib/Channel.Mod:
+	Minor corrections in the documentation.
+
+	* lib/Strings.Mod:
+	Reformulated the genernal notes, removed ASSERT statements.
+
+1997-04-17  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/oowhereis.Mod, tools/ooef.Mod, tools/oob.Mod:
+	Added test for environment variable OOC_CONFIG.  If it's set, its
+	value is taken for the file name of the main configuration file (which
+	is usually /usr/[local/]lib/oo2c/oo2c by default).  The command line
+	option "--config <file>" has the highest priority, of course.
+
+	* frontend/ParseExpr.Mod (EvalDyadicOp):
+	In non-conformant mode, only require the formal
+	parameter lists of procedure arguments to =/# to match, instead of
+	demanding "same types".
+
+	* frontend/ParseStatm.Mod (WithStatement):
+	In non-conformant mode, prevent WITH statements from
+	having any effect on the outer appearance (i.e., the formal parameter
+	list as seen in procedure calls or procedure assignments/comparisons)
+	of enclosing procedure(s).
+
+	* frontend/ParseDecl.Mod (ProcDecl):
+	In non-conformant mode the redefinition of a type-bound
+	procedure may extend the result type of the original procedure.
+
+	* backend/ansi-c/Config.Mod, frontend/Attributes.Mod:
+	Added pragma variable `ConformantMode'.  Default is FALSE.
+
+	* backend/ansi-c/GenStatm.Mod (NewInstr):
+	Added code to test whether NEW was called with a negative
+	length, and to detect a failed malloc().  Both cases will trigger a
+	run-time error.
+
+	* frontend/ParseStatm.Mod (PredefCall):
+	Added checks for constant length arguments of NEW.
+	Negative values will emit an error, a value of zero will emit a
+	warning.
+
+	* frontend/ParseDecl.Mod (ArrayType):
+	Added checks for negative (error) and zero (warning)
+	array length.
+
+	* backend/ansi-c/oo2c.Mod, backend/ansi-c/Config.Mod:
+	Added test for environment variable OOC_CONFIG.  If it's set, its
+	value is taken for the file name of the main configuration file (which
+	is usually /usr/[local/]lib/oo2c/oo2c by default).  The command line
+	option "--config <file>" has the highest priority, of course.
+
+	* frontend/Parameter.Mod (ParseConfigFile):
+	Added parameter `envVar'.  If an environment
+	variable of the given name exists, its value supersedes the name of
+	the hardcoded default configuration file.
+
+1997-04-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod:
+	Added code to make sure that a data type used as an expression is
+	detected and properly handled.
+
+	(MarkSideEffectedVars): Modifications affecting only a field or an
+	element of a local variable weren't registered properly (i.e., the
+	affected variables weren't collected or reclaimed across a procedure
+	call).
+
+	* frontend/ParseExpr.Mod:
+	Added code to make sure that a data type used as an expression is
+	detected and properly handled.
+
+	* frontend/Make.Mod (ScanModule):
+	Restore state of pragma variables when done.
+
+1997-04-14  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenStatm.Mod (NewInstr):
+	Fixed code generated with "Initialize=TRUE".
+
+1997-04-13  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/OakFiles.Mod, backend/ansi-c/lib/OakFiles.c:
+	New file.
+
+	* lib/LibSummary.Mod:
+	Added these module to the list: Integers, JulianDay, OakStrings,
+	OakFiles.  Some minor corrections.
+
+1997-04-09  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/ooef.Mod: New file.
+
+	* frontend/ParseExpr.Mod (AccessVar): Removed obsolete code.
+
+	(Designator): Take side-effects during calculation of an array index
+	into account.
+
+1997-04-08  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/GateReduction.Mod (TraverseGates):
+	Made gate replacement less aggressive to avoid
+	problems with unreachable code elimination during constant propagation
+	and decrease register pressure by a (very small) fraction.
+
+	* backend/ansi-c/oo2c.Mod:
+	Added alias analysis to set of optimizations, both standard and
+	enhanced.
+
+1997-04-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Schedule.Mod (DataDependencies):
+	Anti-dependence between a field (or element)
+	update and a corresponding access wasn't detected.
+
+1997-04-06  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Allocate.Mod (GlobalRegion):
+	Added code to create copies of scalar value parameters
+	if they are overwritten in the procedure.
+
+	(CoalescesRanges): Sometimes two live ranges entering a gate were
+	merged although they conflicted with each other.  It's beyond me how
+	the compiler could ever work with this kind of bug  :-O
+
+1997-04-05  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Schedule.Mod (DataDependencies):
+	Enforce more strict ordering of update and access
+	operations on $store.
+
+	* frontend/ParseStatm.Mod (AssignToDesignator):
+	Don't attempt an assignment if the designator is
+	broken.
+
+	(ProcedureCall): Make sure that values passed to variable or
+	structured parameters represent the correct value of the variable just
+	before the procedure is activated.
+
+1997-04-03  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/SysClock.c: New file.
+
+	* backend/ansi-c/lib/SysClock.Mod: Now implemented as foreign module.
+
+1997-04-02  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/AlgebraicTransformation.Mod (ArithmTransform):
+	Fixed transformation "0-a" to "-a".
+
+	* backend/ansi-c/Config.Mod: Allow HALT(0).
+
+1997-03-30  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Schedule.Mod (DataDependencies):
+	Added collect to list of access instructions.
+	Some code cleanup.
+
+	* frontend/ParseStatm.Mod (CollectToMem):
+	Mark collect instructions with
+	`Data.instrUniqueResult'.
+
+	* frontend/Opcode.Mod:
+	Clarification: A collect instruction is very tightly coupled to the
+	instruction it feed its $mem value to.  Some optimizations and the
+	scheduler treat a collect-instr-reclaim sequence as a single unit.
+	Therefore certain optimizations (like commonon subexpression
+	elimination) should be avoided on them.  A collect is always flagged
+	with `instrUniqueResult'.
+
+1997-03-28  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Schedule.Mod (DataDependencies):
+	Updated to work with new AliasAnalysis.
+
+	* optimizers/AliasAnalysis.Mod:
+	Code to remove unnecessary dependencies of access instructions upon
+	updates is functional.  Still missing: improvements on updates,
+	detection of unnecessary local copies of structured value parameters.
+
+	* frontend/ParseStatm.Mod (AssignToDesignator):
+	Added code to take side-effects into account
+	that might have happened since the r-value of the designator was
+	calculated.
+
+	* frontend/ParseExpr.Mod (TypeTest):
+	Transform code for "p^(R)" into the equivalent notation
+	"p(POINTER TO R)^".
+
+1997-03-27  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Attributes.Mod (ArrayLength):
+	The type of LEN(ARRAY n OF T) was depending on n,
+	instead of being LONGINT always.
+
+	* optimizers/AlgebraicTransformation.Mod (Transform):
+	Fixed access of undefined field.  Fixed bogus
+	transformation of neq instruction in RangeFolding.
+
+	* frontend/ParseExpr.Mod (ConstExpr):
+	Make sure that for integer constants the smallest
+	possible type is selected.  Otherwise "CONST c=LEN(a);" will always
+	assign the type LONGINT to `c', regardless of its value.
+
+	* backend/ansi-c/StdTypes.Mod (Min, Max):
+	Assign type CHAR to result of MIN(CHAR) & MAX(CHAR).
+
+1997-03-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/PosixFileDescr.c (flush_lines):
+	The code to test whether a newline was part of the
+	output stream triggered way too many flush operations.  Output to
+	terminal should be faster now.
+
+	* backend/ansi-c/GenDecl.Mod (Declaration):
+	Added code to handle strange declarations like "TYPE T
+	= ARRAY OF POINTER TO T" without core dump.
+
+1997-03-23  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/UndefVar.Mod:
+	Got rid of another wrong warning about an undefined variable.
+
+1997-03-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseDecl.Mod (DeclSeq):
+	Changed handling of type declarations to allow for type
+	definitions like "TYPE T = RECORD p: POINTER TO T END;"
+
+	* tools/Browser.Mod:
+	For record types that aren't exported but are implicitly part of the
+	the symbol file (e.g. because one of their pointers is exported),
+	write the full record declaration but put the name into brackets.
+
+1997-03-21  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/Files.c (call_open):
+	Set just one permission bit when creating temporary
+	files: user write.
+
+	* frontend/ParseDecl.Mod (Receiver):
+	Accept pointer to anonymous record for type of receiver.
+
+1997-03-18  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Fixed Bugbug which caused elimination of non-constant regions
+
+1997-03-17  Michael Griebling  <grieblm@trt.allied.com>
+
+	* lib/LRealMath.Mod, lib/RealMath.Mod:
+	round() procedure incorrectly rounded negative numbers.
+
+	* lib/RealStr.Mod, lib/LRealStr.Mod:
+	Fixed point output of 0.0 was deleting the leading zero.  The
+	leading zero killing routine was made a bit less ambitious.
+
+1997-03-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/CodeGen.Mod:
+	Added pseudo optimization "?" to list of procedures.  Given as part of
+	an --opt argument it will write the GSA code to stdout, otherwise it's
+	a noop.
+
+	* backend/ansi-c/Classify.Mod (NoopUpdate): Major cleanup.
+
+	* backend/ansi-c/Schedule.Mod (AddAccesses):
+	Only add artificial arguments if the access aliases
+	with the update.
+
+	* backend/ansi-c/WriteGSAvC.Mod, frontend/WriteGSA.Mod (Id):
+	Changed indentation of GSA statements.
+
+1997-03-05  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ErrorInstr.Mod (SetErrorEnv):
+	Take pseudo gregs that are used to evaluate constant
+	expressions into account.
+
+1997-03-02  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* lib/TextRider.Mod:
+	Added ClearError and ErrorDescr methods to Reader, Writer, and
+	Scanner.
+
+	* backend/ansi-c/GenStatm.Mod:
+	Added code to handle type casts via SYSTEM.VAL from scalar to
+	structured values and vice versa.
+
+	* frontend/Opcode.Mod (type-cast):
+	Add location to type cast operand when casting from a
+	simple variable.
+
+	* frontend/ParseStatm.Mod (PredefCodeGen):
+	Add location to type cast operand when casting from a
+	simple variable.
+
+1997-03-01  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (ProcedureCall):
+	Mark a procedure call with `instrNotDead' if
+	evaluation of the procedure may raise an exception.
+
+	* frontend/SymbolFile.Mod, frontend/Error.Mod, backend/ansi-c/CodeGen.Mod, backend/ansi-c/Build.Mod:
+	Added code to report file I/O errors.
+
+	* frontend/ParseDecl.Mod (FinishRegion):
+	Mark procedure with `instrNotDead' if it may raise an
+	exception.
+
+	* frontend/SideEffects.Mod:
+	Take the possibility of a procedure raising an exception into account
+	when calculating its side-effects on its callers.
+
+	* frontend/ParseExpr.Mod:
+	Fixed `a IN b' (again), where `b' is a legal expression but doesn't
+	deliver a value of set type.
+
+1997-02-28  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod (ConstantFolding):
+	Added overflow checks after folding of
+	REAL or LONGREAL operations.
+
+	* backend/ansi-c/Allocate.Mod (AddToGlobal):
+	Keep in mind that a global live range used in the
+	backedge operand of a loop gate extends to the end of the loop; it
+	doesn't end at the beginning of the region like other gate arguments.
+
+1997-02-28  Michael Griebling  <grieblm@trt.allied.com>
+
+	* lib/LRealStr.Mod: Bug fix to avoid hanging on infinite numbers.
+	Outputs "Infinity" for infinite IEEE numbers and
+	"NaN' for illegal numbers.
+
+	* lib/RealStr.Mod: Bug fix to avoid hanging on infinite numbers.
+	Outputs "Infinity" for infinite IEEE numbers and
+	"NaN" for illegal numbers.
+
+	* lib/LRealConv.Mod, lib/RealConv.Mod:
+	Updated Length routines to detect infinite and NaN numbers.
+
+	* lib/LowLReal.Mod, lib/LowReal.Mod:
+	Added IsNaN and IsInfinity query functions.
+
+1997-02-24  Michael Griebling  <grieblm@trt.allied.com>
+
+	* lib/RealMath.Mod: Fixed sinh/cosh bug.
+	Improved sin/cos accuracy for larger angles.
+
+	* lib/LRealMath.Mod: Fixed sinh/cosh bug.
+	Improved sin/cos accuracy for larger angles.
+	(was 10 digits for certain angles -- now always 15 digits)
+
+1997-02-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Allocate.Mod (BuildInterferenceGraph):
+	Overflow of result table in the first
+	marking phase wasn't handled properly.
+
+1997-02-21  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/LoopTransformation.Mod:
+	Made loop invariant code motion more aggressive.  It now tries to move
+	invariant code out of nested guards.  This is kind of speculative, but
+	it has a positive impact on oo2c's execution time.  Which hopefully
+	means it is a Good Thing(tm).
+
+	* frontend/Opcode.Mod (MayTrap):
+	New predicate.  Inspects an instruction's opcode to see if
+	it can trigger a run-time error during execution and for this reason
+	can't be moved out of a guard without special precautions.
+
+1997-02-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/oo2c.Mod:
+	Changed the `enhanced optimization' setting to include common
+	subexpression elimination and repeat some of the cheaper
+	optimizations.
+
+1997-02-20  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Fixed problem with GSA invariant violation.
+
+	Modified "TakenAlternative" to be more precise, if one
+	alternative is classified CONST(TRUE) and the other BOTTOM.
+
+1997-02-19  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod:
+	Identified the problem with previous versions:
+	If two instructions used the same operand, which depends somehow on a
+	loop, and one of them is calcucated inside, the other outside the
+	loop, they both were considered as "equal". This is not true, as
+	the instruction inside the loop may give a different result for each
+	loop iteration, which does not hold for the outside instruction.
+
+	All known problems are fixed for this release, but code must be
+	cleaned up somehow.
+
+1997-02-19  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseDecl.Mod (FixupTBCalls):
+	When fixing the activations of a type-bound procedure
+	replace the formal parameter information and the argument locations,
+	too.
+
+	* frontend/Opcode.Mod (GetFormalParam): Cleaned up.  Hopefully.
+
+	* optimizers/ConstPropagation.Mod (ConstantFolding):
+	Fixed possible read access of undefined variable.
+
+	* backend/ansi-c/WriteGSAvC.Mod:
+	Changed command line options to --cgsa, --cgsa-loc, and --cgsa-qnames
+	to avoid clashes with the options of the WriteGSA module.
+
+1997-02-18  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod:
+	Another version. Build sucessfully the sources of distribution 0.3,
+	but breaks code generation of this version when CSE is done
+	for access-instructions.
+
+1997-02-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/PosixFileDescr.Mod, backend/ansi-c/lib/PosixFileDescr.c:
+	Use append mode when writing to file descriptors stdout/stderr that
+	were passed from the shell.
+
+1997-02-14  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (TypeConversion):
+	Fixed rounding when converting from LONGREAL to
+	REAL.
+
+	* optimizers/ConstPropagation.Mod (ConstantFolding):
+	Fixed rounding of REAL operations.
+
+	* frontend/Opcode.Mod:
+	Clarification: SHORT(LONGREAL) has to honor rounding mode.
+
+1997-02-13  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolFile.Mod (Write):
+	Read magic number of previous symbol file before starting to
+	write the new one.
+
+	* tools/Browser.Mod (WriteConst):
+	Use correct number of significant places when writing
+	real constants.
+
+	* backend/ansi-c/StdTypes.Mod:
+	Use decimal representation for definition of MIN/MAX values of real
+	types.
+
+	* frontend/Scanner.Mod (Number):
+	Read REAL constants with REAL precision, instead of
+	LONGREAL; otherwise the internal representation of the constant would
+	be more accurate than the data type permits.
+
+1997-02-13  Michael Griebling  <grieblm@trt.allied.com>
+
+	* lib/LowLReal.Mod:
+	Updated the endian test to be compatible with Oberon-F (missing SYSTEM.BYTE)
+	and to be independent of the size of INTEGERs.
+
+1997-02-13  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/Files.c (Register):
+	Use POSIX chmod() instead of BSD fchmod().
+
+1997-02-09  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (MarkSideEffectedVars):
+	Take nasty accesses across multiple local
+	procedures into account.
+
+	(FixupCondPath): If possible take gate arguments from `oldMerge'
+	instead of gates from `path', since the latter may only be a subset of
+	the former.
+
+	* backend/ansi-c/Schedule.Mod (AddAccesses):
+	Ignore accesses to undefined variables.
+
+	* backend/ansi-c/lib/StdChannels.Mod:
+	Flush stdout and stderr when program terminates, otherwise buffered
+	output may be lost.
+
+	* lib/TextRider.Mod (ReadLn):
+	Broke whenever the reading position was on an end of line
+	character prior to invocation.
+
+1997-02-08  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (WritableVariable):
+	When attempting to write to a read-only
+	designator, refer in the error message to the position of the relevant
+	field selector or variable.
+
+	* tools/oowhereis.Mod: Fixed argument access.
+
+1997-02-08  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/__libc.h:
+	Stop gcc complaining about declaration clash with builtin function
+	memcpy on SunOS 4.
+
+1997-02-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/C.Mod, backend/ansi-c/lib/Files.Mod, backend/ansi-c/lib/Files.c, backend/ansi-c/lib/Locales.Mod, backend/ansi-c/lib/PosixFileDescr.Mod, backend/ansi-c/lib/PosixFileDescr.c, backend/ansi-c/lib/ProgramArgs.Mod, backend/ansi-c/lib/StdChannels.Mod, backend/ansi-c/lib/SysClock.Mod, backend/ansi-c/lib/Termination.Mod, backend/ansi-c/lib/Termination.c, backend/ansi-c/lib/__Descr.c, backend/ansi-c/lib/__Descr.h, backend/ansi-c/lib/__StdTypes.h, backend/ansi-c/lib/__libc.h, backend/ansi-c/lib/__mini_gc.h, backend/ansi-c/lib/__oo2c.c, backend/ansi-c/lib/__oo2c.h, lib/Ascii.Mod, lib/BinaryRider.Mod, lib/Calendar.Mod, lib/Channel.Mod, lib/CharClass.Mod, lib/ComplexMath.Mod, lib/ConvTypes.Mod, lib/Err.Mod, lib/In.Mod, lib/IntConv.Mod, lib/IntStr.Mod, lib/Integers.Mod, lib/JulianDay.Mod, lib/LComplexMath.Mod, lib/LRealConv.Mod, lib/LRealMath.Mod, lib/LRealStr.Mod, lib/LibSummary.Mod, lib/LongInts.Mod, lib/LowLReal.Mod, lib/LowReal.Mod, lib/OakIn.Mod, lib/OakMath.Mod, lib/OakMathL.Mod, lib/OakOut.Mod, lib/Out.Mod, lib/RandomNumbers.Mod, lib/RealConv.Mod, lib/RealMath.Mod, lib/RealStr.Mod, lib/Strings.Mod, lib/TextRider.Mod, lib/Time.Mod:
+	New file.
+
+1997-02-03  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Allocate.Mod, backend/ansi-c/Build.Mod, backend/ansi-c/CodeGen.Mod, backend/ansi-c/FileData.Mod, backend/ansi-c/GenConst.Mod, backend/ansi-c/GenDecl.Mod, backend/ansi-c/GenInclude.Mod, backend/ansi-c/GenStatm.Mod, backend/ansi-c/SystemFlags.Mod, backend/ansi-c/WriteGSAvC.Mod, frontend/Error.Mod, frontend/Make.Mod, frontend/ParamOptions.Mod, frontend/ParamPaths.Mod, frontend/Parameter.Mod, frontend/ParseStatm.Mod, frontend/RCS.Mod, frontend/Scanner.Mod, frontend/Statistics.Mod, frontend/SymbolFile.Mod, frontend/SymbolTable.Mod, frontend/WriteGSA.Mod, frontend/WriteSymbols.Mod, tools/Browser.Mod, tools/oowhereis.Mod:
+	Converted sources to new library.
+
+	* backend/ansi-c/oo2c.Mod (RunMake):
+	Write error message if make determined that the module
+	needs to be recompiled, but no sources can be found.
+
+1997-01-31  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenDecl.Mod (TypeDescriptor):
+	Use sizeof to calculate the type's size for the type
+	descriptor.  This way the .d files can be used in both 32 and 64 bit
+	foreign modules without change, unless they contain local record
+	declarations.
+
+1997-01-29  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseDecl.Mod (Type):
+	Find out if the array is fixed or open before calling
+	SystemFlags.StructModifiers.
+
+1997-01-28  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod: Code cleanup.
+
+1997-01-21  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Splitted up old replacement code by code for constant replacement
+	and code for region movement.
+
+	This way, the redundant GSA instructions like "if-true: TRUE"
+	and "if-false: FALSE", which occured spuriously, have gone.
+
+1997-01-18  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseDecl.Mod:
+	Renamed procedures CodeGen.CompleteXYZ to a hopefully more suitable
+	FinishXYZ.
+
+	(ProcDecl): Pass declarations of external procedures to
+	FinishProcedure, although the greg argument will be NIL.
+
+	* backend/ansi-c/CodeGen.Mod:
+	Renamed procedures CodeGen.CompleteXYZ to a hopefully more suitable
+	FinishXYZ.
+
+	Fixed handling of external procedure declarations.
+
+	* backend/ansi-c/oo2c.Mod:
+	Renamed procedures CodeGen.CompleteXYZ to a hopefully more suitable
+	FinishXYZ.
+
+1997-01-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/SystemFlags.Mod (ObjectModifiers):
+	Fixed handling of NO_TYPE_TAG and NO_LENGTH_TAG
+	fields.
+
+	Added predicate ParamMatchExt.
+
+	* backend/ansi-c/StdTypes.Mod:
+	Moved function `ParamsMatchExt' into module SystemFlags.
+
+1997-01-11  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolTable.Mod (SameType):
+	Return TRUE if one of the given types is faulty; this
+	suppresses any successive error messages regarding these types.
+
+1997-01-10  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Scanner.Mod (ConvertHex):
+	Fixed mapping of hexadecimal constants greater than
+	MAX(LONGINT).  Added warning.
+
+1997-01-09  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenStatm.Mod (NewInstr):
+	Fixed code generation for SYSTEM.NEW
+
+	* frontend/ParseStatm.Mod (PredefCodeGen):
+	Fixed code generation for SYSTEM.NEW
+
+1997-01-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/CodeGen.Mod, backend/ansi-c/Build.Mod, backend/ansi-c/oo2c.Mod:
+	Added options -O, --coptflags.
+
+1997-01-04  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (Designator):
+	Assume that a left parenthesis belongs to a procedure
+	call if the designator isn't a record or a record pointer.
+
+1997-01-03  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenStatm.Mod (ConvInstr):
+	Fixed conversion though ENTIER to round towards -inf.
+
+	* frontend/Opcode.Mod:
+	Clarification: Type conversion from real to integer has to round
+	towards negative infinity.
+
+	* backend/ansi-c/GenDecl.Mod (Declaration):
+	Translate constant declarations to #defines.
+
+	* backend/ansi-c/CodeGen.Mod (EmitDeclarations):
+	Write exported constant declarations into the
+	header file.
+
+1996-12-31  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenStatm.Mod (EmitLocalVars):
+	Make sure that a variable is emitted if it is used
+	but never properly defined.
+
+1996-12-29  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/IntArith.Mod (Includes): Adjusted handling of real types.
+
+	* frontend/ParseExpr.Mod (HasDynamicType):
+	Don't complain about missing dynamic type if the
+	designator is broken anyway.
+
+	* frontend/ParseStatm.Mod (PredefCodeGen):
+	Result type of SIZE() is the smallest integer type
+	containing the constant value.
+
+1996-12-28  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (EvalDyadicOp):
+	Make sure that something like `int+record' doesn't
+	break the compiler.
+
+1996-12-27  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (ProcedureCall):
+	Check that any variable passed to a VAR parameter is
+	writable.
+
+1996-12-18  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (TypeTest): Fixed error message.
+
+	* frontend/ParseStatm.Mod (PredefCall):
+	MIN/MAX not applicable to complex types.
+
+1996-12-17  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (Statement):
+	Check that the argument of RETURN is assignment
+	compatible with the function result type.
+
+	* frontend/Error.Mod (ErrIns2):
+	Ignore error messages with a negative position value.
+
+	* backend/ansi-c/CodeGen.Mod (TranslateGreg):
+	Brought descriptions of steps 4-6 up to date.
+
+1996-12-10  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (EvalDyadicOp):
+	Allow comparison between procedure variable and
+	procedure constant if their formal parameters match.
+
+	* frontend/ParseDecl.Mod (ProcDecl):
+	The redefinition of a type-bound procedure has to be
+	exported if the inherited procedure is exported.
+
+1996-12-02  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Classify.Mod (Region):
+	Don't discard a type conversion if it is used as argument of
+	a type cast; otherwise the type of the cast's input operand cannot be
+	determined later on.
+
+	* frontend/ParseExpr.Mod (Expr):
+	Right side of IN is only extended to SET if it is a constant,
+	but not if it is a variable with a constant value.
+	(SimpleExpr): Same for argument of complement.
+
+1996-12-01  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/oo2c.Mod:
+	Added command line option `--version' and `--write-config'.
+
+1996-11-30  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Schedule.Mod (DataDependencies):
+	Called procedures can change local structured
+	variables (through VAR parameter or nonlocal access).  Make sure that
+	accesses of such a changed variable are scheduled before the call.
+
+	* backend/ansi-c/GenDecl.Mod (Declaration):
+	Fixed length calculation of multi-dimensional arrays.
+
+1996-11-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (MarkSideEffectedVars):
+	If a variable's adress is passed through a
+	dedicated argument, then this variable has to be collected
+	resp. reclaimed for the given call instruction.
+
+1996-11-19  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenStatm.Mod (ForceToMem):
+	Cast to the type of the assignment target, not to the
+	type of the given value.
+
+	* backend/ansi-c/GenInclude.Mod (AddOptions):
+	Expand name of include path to get rid of any tilde
+	shortcuts, since the way it is passed to the C compiler prevents any
+	filename expansion.
+
+1996-11-17  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/CodeGen.Mod (AdjustBranchConditions):
+	Tries to remove unnecessary negations in
+	branches.
+
+	* backend/ansi-c/Schedule.Mod (ScheduleInstr):
+	Merged in functionality of `ScheduleMerge'.
+
+1996-11-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Allocate.Mod (TransformLocation):
+	When accessing the value of a CHAR variable cast
+	it to `int'; this avoids problems when comparing an int with an
+	unsigned char (such a comparison is evaluated in ANSI-C as if both
+	sides were unsigned).
+
+1996-11-11  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolFile.Mod, frontend/SymbolTable.Mod:
+	Replaced recursive algorithms working on binary trees of declarations
+	with interative ones (wherever possible).  With this the compilation
+	of large interface modules on machines with a small stack (e.g.
+	X11.Mod on BeBox) won't cause any trouble.
+
+1996-11-08  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolTable.Mod (InsertField):
+	When inserting a field, check that no previous field or
+	type-bound procedure declaration of the same name is visible.
+
+	* backend/ansi-c/GenStatm.Mod (SetInstr):
+	When doing a bit operation make sure that the mask value
+	is an unsigned type.
+
+	* backend/ansi-c/GenConst.Mod (Char):
+	Write character constants as integer values.
+
+	* backend/ansi-c/GenDecl.Mod (Declaration):
+	When writing the fields of an extended record type,
+	make sure that conflicts between fields of same name from different
+	extension levels are resolved.
+
+	* tools/oob.Mod:
+	Ignore unknown variables in OPTIONS section of configuration.
+
+	* frontend/SymbolFile.Mod (IntegrateSymbols):
+	Record fields and type-bound procedures weren't
+	handled as if they were read from a symbol file.
+
+	* frontend/ParamOptions.Mod (Parse):
+	Always consider DEFINE to be a keyword.
+
+1996-11-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolFile.Mod:
+	Changed encoding of string values to increase efficiency when
+	reading identifiers and string constants from symbol file.
+
+1996-11-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/oo2c.Mod: Option --no-rtc disables stack checks, too.
+
+1996-11-06  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Build.Mod, backend/ansi-c/SystemFlags.Mod:
+	Split link flag ADD_OPTION into prefix and suffix.
+
+1996-11-04  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/CodeGen.Mod:
+	Added loop transformation (currently this is only a simple loop
+	invariant code motion) to default optimizations.
+
+	* backend/ansi-c/SystemFlags.Mod (LinkSection): Added ADD_OPTION rule.
+
+	* backend/ansi-c/oo2c.Mod:
+	New debug option --alloc-stats to evaluate efficieny of register
+	allocator.
+
+	* backend/ansi-c/Build.Mod (Main):
+	Don't call module body if it doesn't have an initialization
+	function.
+
+	(LinkProgram): Add additional flags from the OPTIONS section if
+	required by the module.
+
+	* backend/ansi-c/GenStatm.Mod (TypeCastInstr):
+	Fixed cast from pointer or procedure type.
+
+	* backend/ansi-c/GenDecl.Mod (SetStructName):
+	Scan structure even if it has been given a name in
+	its symbol file.
+
+	(Declaration): Added code to add an additional pointer level to
+	function types.  Fixed pointers to union types.  Fixed struct marking
+	for multiple aliases for the same type.
+
+	(WriteScalarType): Modified to handle `pointer to function'
+	correctly.
+
+	* frontend/SideEffects.Mod (AdjustResults):
+	Mark any call to a procedure that won't return as
+	`not dead' to avoid having it removed by dead code elimination.
+
+	* frontend/ParseStatm.Mod (PredefCodeGen):
+	Make sure that SYSTEM.ADR always returns a LONGINT
+	value.
+
+	(RegisterSideEffects): Mark any call to a procedure that won't return
+	as `not dead' to avoid having it removed by dead code elimination.
+
+1996-11-01  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Classify.Mod:
+	Fixed classification of access instructions that pass nonlocal reads
+	to called procedures.  They are marked with `instrNoOutput' and won't
+	use up any registers.
+
+	* frontend/SideEffects.Mod:
+	Fixed adding of operands to procedure calls.  Address, type tag, and
+	length arguments were not handled properly.
+
+	* backend/ansi-c/WriteGSAvC.Mod:
+	Renamed flag `instrMayTrap' to `instrNotDead'; more appropriate this
+	way.  New flag `instrUniqueResult' for instructions whose dynamic
+	execution count can never be changed by a code transformation.
+
+	* backend/ansi-c/CodeGen.Mod:
+	Added optimization `loop transformation', id is `l'.
+
+	* backend/ansi-c/GenDecl.Mod:
+	Added reserved C++ words `bool', `true', and `false'.
+
+	* optimizers/LoopTransformation.Mod: New file.
+
+	* optimizers/ConstPropagation.Mod, optimizers/DeadCodeElimination.Mod, frontend/ParseStatm.Mod, frontend/ParseExpr.Mod, frontend/WriteGSA.Mod, frontend/Attributes.Mod, frontend/Data.Mod:
+	Renamed flag `instrMayTrap' to `instrNotDead'; more appropriate this
+	way.  New flag `instrUniqueResult' for instructions whose dynamic
+	execution count can never be changed by a code transformation.
+
+	* frontend/Opcode.Mod:
+	Removed record resp. array value from argument list of `type-tag'
+	resp. `array-length'.  This implies that these instructions may be
+	scheduled before the dereference (i.e. access-heap) instruction they
+	belong to.  In particular they can be classified as loop invariant and
+	moved to the outside of loops.
+
+1996-10-28  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Build.Mod (Makefile):
+	Don't use automatic variable $< in makefile.  HP-UX's make
+	ignores it, nuking all compiler calls.
+
+1996-10-27  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/oowhereis.Mod: New file.
+
+	* backend/ansi-c/oo2c.Mod:
+	New option `--oc-rules'.  Used in together with `--makefile'.  Only
+	write rules refering to the Oberon compiler into the makefile if this
+	option is present.
+
+	* backend/ansi-c/Build.Mod:
+	Cleaned up generated main files and makefiles.
+
+	(Makefile): New option `ocRules'.  If FALSE, do not write any rules
+	into the makefile that call the Oberon compiler.
+
+	* backend/ansi-c/GenStatm.Mod (EmitLocalVars):
+	Don't emit local variables whose values are only
+	handled in registers.
+
+	* backend/ansi-c/GenInclude.Mod (AddOptions):
+	Avoid duplicated include options.
+
+	* backend/ansi-c/Schedule.Mod (Select):
+	Schedule instructions that don't translate to C at once.
+
+	* backend/ansi-c/Allocate.Mod:
+	Mark variables that are used in the emitted C code.  Unmarked
+	variables don't have to be declared.
+
+	* backend/ansi-c/Config.Mod:
+	Removed obsolete GETREG, PUTREG, and CC constants.
+
+	Added defaults for oo2c specific compiler options.
+
+	* frontend/ParamOptions.Mod:
+	Changed DEFINE to use the syntax that is used for pragmas.
+
+	* frontend/Error.Mod (ReadErrorList): Expand given filename.
+
+	* frontend/ParamPaths.Mod:
+	Made syntax of PATHS resp. NEWFILES sections more verbose (and
+	hopefully less error prone).
+
+	(GeneratePath): Fall back on PATHS section if NEWFILES doesn't contain
+	a matching pattern.
+
+	* frontend/Parameter.Mod (ReadInteger): Integers can have sign.
+
+	(ParseConfigFile, ParseCmdLine): Option specifying configuration file
+	can be placed anywhere inside the command's options.
+
+1996-10-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Classify.Mod, backend/ansi-c/GenConst.Mod, backend/ansi-c/StdTypes.Mod, backend/ansi-c/WriteGSAvC.Mod, frontend/Data.Mod, frontend/Opcode.Mod, frontend/ParseExpr.Mod, frontend/ParseStatm.Mod, frontend/SymbolFile.Mod, frontend/SymbolTable.Mod, frontend/WriteGSA.Mod, frontend/WriteSymbols.Mod, optimizers/AlgebraicTransformation.Mod, optimizers/ConstPropagation.Mod, tools/Browser.Mod:
+	Added support for SYSTEM types SET8, SET16, and SET32.
+
+	* backend/ansi-c/oo2c.Mod (RunMake):
+	Use `VerboseMsg' to write name of compiled module.
+
+	* backend/ansi-c/CodeGen.Mod (WriteSymbolFile):
+	Use `VerboseMsg' to tell if a symbol file has
+	changed.
+
+	* optimizers/GuardPropagation.Mod (Propagate):
+	Don't replace string variables with a constant, even if
+	they are guarded by an `equal' predicate.
+
+	* backend/ansi-c/Allocate.Mod (IntegrateInstruction):
+	Fixed handling of gate arguments when
+	integrating a non-loop merge into its enclosing region.
+
+	* frontend/SideEffects.Mod:
+	Removed opcodes access-local and update-local.  The introduction of
+	the struct-copy instruction made them obsolete.
+
+	* backend/ansi-c/Schedule.Mod:
+	Made it work again after access/update-local were removed.
+
+1996-10-21  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenStatm.Mod, backend/ansi-c/WriteGSAvC.Mod, backend/ansi-c/Classify.Mod, frontend/ParseStatm.Mod, frontend/ParseExpr.Mod, frontend/Check.Mod, frontend/WriteGSA.Mod, frontend/Opcode.Mod:
+	Removed opcodes access-local and update-local.  The introduction of
+	the struct-copy instruction made them obsolete.
+
+	* backend/ansi-c/ControlFlow.Mod: New file.
+
+	* backend/ansi-c/GenStatm.Mod (AccessInstr, UpdateInstr):
+	Fixed code generation for GET/PUT.
+
+	* backend/ansi-c/CodeGen.Mod:
+	Removed optimization option DependenceAnalysis (`d').  Now done by the
+	front-end (if in a somewhat optimistic way).
+
+	* backend/ansi-c/Classify.Mod (NoopAccess):
+	Extended predicate to compare address of access with
+	that of usage.
+
+	* frontend/SymbolFile.Mod (WriteUsedImports):
+	Sort written modules alphabetically.  Otherwise it
+	can happen that a symbol file written as part of a make differs from
+	the one that is generated when compiling just the module.
+
+	* frontend/ParseStatm.Mod (CollectToMem, ReclaimFromMem):
+	Only add marked local variables to the
+	collect/reclaim.
+
+	(ProcedureCall): Only collect/reclaim local variables whose addresses
+	are passed directly to the called procedure.  If the caller gets the
+	address of a local variable in such a way, its value is forced into
+	$mem and after the call retrieved from $mem (if necessary).  Otherwise
+	it may stay in a register.  This can cause (very minor) problems in
+	connection with convoluted usage of SYSTEM.ADR, but this is more than
+	compensated by gains in both speed and memory consumption.
+
+	* frontend/Attributes.Mod (Address):
+	When calculating the address of a nonlocal variable, use
+	the value passed through enter.  This way it's recognized as part of
+	the procedure interface.
+
+1996-10-19  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenStatm.Mod (WriteDyOp):
+	Combine operator into assignment resp. use post increment
+	(post decrement) whenever possible.
+
+	* backend/ansi-c/Allocate.Mod (EmitVariables):
+	Assign storage class `register' to temporary
+	variables.
+
+	* frontend/ParseExpr.Mod (Factor):
+	The dynamic type of a pointer wasn't accessed if the pointer
+	value was the result of a function call.
+
+	* backend/ansi-c/GenStatm.Mod (GlobalRegion, Region):
+	Major cleanup in code generation.
+
+	* backend/ansi-c/CodeGen.Mod (TranslateGreg):
+	Moved transformation GSA control flow --> linear
+	instruction sequence into separate module ControlFlow.
+
+	* backend/ansi-c/Build.Mod (Makefile):
+	Write own rule for generated executable into makefile.
+
+	* frontend/Opcode.Mod:
+	Adjusted maxOpcode.  Made procedure RegionMerge more robust.
+
+1996-10-17  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	(ComputeConstantResults) Variable `res' was not initialized
+	correctly. Fixed.
+
+1996-10-15  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	(ComputeConstantResults) Fixed bug which occured when the second
+	operand of a disabled boundIndex/boundRange instructions was not a
+	constant, but the first one was (and should be propagated).
+
+1996-10-13  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Build.Mod: Added code to write makefiles.
+
+	* backend/ansi-c/oo2c.Mod:
+	Added command line option `--makefile <mfile>'.  Writes a makefile for
+	the given module resp. command into <mfile>.
+
+1996-10-11  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Schedule.Mod (Schedule):
+	Replaced very stupid selection heuristic with a merely
+	stupid one: Arrange the GSA code to approximate the sequence of
+	instructions of the initial source code.
+
+1996-10-10  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Schedule.Mod (DataDependencies):
+	Take loop gates into account when resolving
+	anti-dependencies.
+
+	(Schedule): Changed algorithm to keep a set of `ready' instructions.
+
+	Removed debug code.
+
+1996-10-09  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Build.Mod:
+	Added option `--no-build'.  If present only C sources are generated,
+	but no object files or executables are built.
+
+	* backend/ansi-c/Allocate.Mod:
+	Added coalescing of gates with their arguments.  Removed debug code.
+
+	(ColorGraph): Replaced linear search for node with smallest current
+	degree by heap sort.
+
+1996-10-02  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Allocate.Mod:
+	Improved handling of gate arguments: they don't create any inteference
+	in the region they appear in.  Added some blurb describing the way
+	gates and regions are handled.
+
+	* backend/ansi-c/CodeGen.Mod:
+	Added constant propagation to default optimizations.
+
+1996-09-26  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Added support for propagation of constants over disabled boundIndex or
+	boundRange instructions.
+
+	* optimizers/AlgebraicTransformation.Mod:
+	Added return statements in GetOne/GetZero.
+
+1996-09-26  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod: *** empty log message ***
+
+1996-09-26  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/Worklist.Mod:
+	AddUsingInstr* added more instructions than needed, namely for not
+	only for the `used' result, but for all results which followed the
+	`used' one.
+
+1996-09-25  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (AssignToVar):
+	Fixed obscure problem when propagating a loop gate into
+	the enclosing region if the loop is guarded by a conditional
+	expression.
+
+1996-09-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Allocate.Mod (IntegrateInstruction):
+	Handle the pathological case of empty live
+	ranges correctly.
+
+	* frontend/Attributes.Mod (TypeTag, ArrayLength):
+	Let dead code elimination remove unused
+	type-tag and array-length instructions, even if they might raise an
+	exception if their argument is NIL.
+
+	* backend/ansi-c/Allocate.Mod:
+	Rewritten from scratch.  Allocation is now done by a hierarchical
+	graph allocator.  Coalescing of gate arguments/gate results is not
+	implemented yet.
+
+	* frontend/SymbolFile.Mod (ReadObject):
+	Set the type of the formal parameter `...' type to
+	`strNone'.
+
+	* frontend/Attributes.Mod (GetNonParamOpnd):
+	Deal correctly with arguments passed to special
+	formal parameter `...' (obj.mode=Data.objRestParam).
+
+	* frontend/ParseStatm.Mod (Statement):
+	Make distinction between unstructured and structured
+	assignment statement.  For the latter insert an explicit `struct-copy'
+	instruction.
+
+	* frontend/ParseExpr.Mod (Designator):
+	Fixed code generation for receiver of type-bound call.
+
+	(EvalDyadicOp): Add addresses of string to be compared to the
+	instruction that model string comparisons.
+
+	* frontend/Opcode.Mod:
+	New instruction `struct-copy'.  Models assignment of whole structured
+	values, e.g. when assigning a record value to a record variable.
+
+	String compare opcodes (like eqlstr) have 4 (instead of 2) operands.
+	The 3rd and 4th operands hold the addresses of the string to be
+	compared.
+
+	* frontend/Data.Mod: Made `Location' an extension of `Info'.
+
+	* backend/ansi-c/Schedule.Mod:
+	Added code to handle instruction `struct-copy'.
+
+	* backend/ansi-c/GenStatm.Mod:
+	Fixed code generation for type-bound procedure call.  String compares
+	use the 3rd/4th operand of the compare instruction.  Fixed parallel
+	assignment of (the live ranges of) gate arguments to their gates.
+	Added code to handle instruction `struct-copy'.
+
+	* backend/ansi-c/Classify.Mod:
+	Added code to deal with opcode `struct-copy'.
+
+	* backend/ansi-c/CodeGen.Mod (NumerateRegions):
+	Use instruction list to determine the sequence of
+	regions calculated by the scheduler, _not_ the region list.
+
+1996-09-20  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Added propagation of constant first operand for boundIndex/boundRange
+	if the instruction is disabled.
+
+1996-09-19  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod: Cleaned up code a bit.
+	Seem to work for now with the `oo2c' backend.
+
+1996-09-14  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/GateReduction.Mod (VisibleValue):
+	Recognize redundant loop gates.  Such gates take
+	either the same value as 2nd/3rd operand or the 3rd operand is the
+	gate itself.
+
+1996-09-10  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Removed trial-check, which was for the wrong case and corrupted the
+	whole front-end constant folding.
+
+	Still to implement some nasty features on bound-index/-range opcodes.
+
+	A working `oo2c' compiler could be created with this revision.
+
+	* optimizers/RedundantGates.Mod:
+	Added new type of `redundant gate' to the selection routine: If a
+	loop-gate is the third operand of itself (i.e. the back-edge value),
+	then the gate´s value is loop-invariant and can be replaced by the
+	gate´s second operand.
+
+1996-09-03  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Do not fold bound-(index|range) during trial phase.
+	Fixed problem with unhandled merges, which are operands of other,
+	nonconstant merges.
+
+1996-08-21  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/WriteGSA.Mod:
+	Removed references to module TopologicalOrder, including the command
+	line option --write-sorted.
+
+1996-08-20  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod:
+	Put all `access' and all `update' instructions to a partition on their
+	own in order to disable CSE on them for now. If we do not so, some of
+	those instructions are thought of giving the same result, which they
+	definitely do not! Futher investigations have to follow here...
+
+	* optimizers/AlgebraicTransformation.Mod: Removed some debug output
+
+1996-08-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenStatm.Mod (EmitCase):
+	Handle lonely case guards correctly (i.e. case guards that
+	do not appear as operands of a case merge).
+
+	(Region): Be more careful when placing an `else' statement.  Otherwise
+	it can happen that an `if' with two else parts is emitted.
+
+	* optimizers/GateReduction.Mod (VisibleValue):
+	Fixed calculation of final value of cascaded gates.
+
+	* backend/ansi-c/WriteGSAvC.Mod, frontend/WriteGSA.Mod (Id):
+	Try to place the instruction mark [XXX] in (and not before) the
+	instruction's indentation.
+
+	* backend/ansi-c/CodeGen.Mod (NumerateRegions):
+	Take into account that merges are moved into their
+	last guard in the generated C code.
+
+	New constant `defaultOptimizers' lists the optimizations that are
+	applied by default.
+
+1996-08-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenStatm.Mod (BoundInstr):
+	Suppress redundant index checks.
+
+	* optimizers/GuardCond.Mod (Init):
+	Added guard propagation to avoid spurious `undefined variable'
+	warnings from the front-end.
+
+	* frontend/Data.Mod:
+	Doc fix: `instrCheckNil' can be set for access-heap, update-heap,
+	array-length, and type-tag instructions.
+
+	* frontend/ParseStatm.Mod (AssignToDesignator):
+	Fixed structured assignment to dereferenced
+	pointer variable.
+
+	* frontend/Opcode.Mod (access-heap, update-heap):
+	Should trap if the given address is NIL
+	and the flag `instrCheckNil' is set.
+
+	(ValueOperand): First argument of access-local resp. update-local
+	isn't a value.
+
+	* frontend/ParseExpr.Mod (Designator):
+	Reset index counter to 0 if a new array is selected.
+
+	(ConditionExit): Fixed code generation of termination condition for
+	WHILE loops.  Loops with multiple nonlocal exits, like a RETURN and an
+	ASSERT, weren't translated properly.
+
+	* frontend/Attributes.Mod (InitGreg):
+	Initialize pseudo variables $return and $trap with a copy
+	of FALSE, instead the the constant FALSE itself.  Otherwise the
+	introduction of of a loop gate for one of those variables will break
+	the loop by replacing all occurences of FALSE within the loop with a
+	bogus value.
+
+	* optimizers/AlgebraicTransformation.Mod (ArithmTransform):
+	Don't touch bound-index resp. bound-range
+	instructions.
+
+1996-08-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SideEffects.Mod (PropogateSideEffects):
+	Don't add a nonlocal variable to a caller's
+	enter instruction if it was been initialized by the caller
+	previously.
+
+	(PropagateMem): Working list wasn't traversed properly.
+
+	(Adjust): When cleaning up restore the `info' fields of all global
+	regions to their previous state, i.e. set the pointer to the one that
+	was valid before `AddProc' was called.
+
+	* frontend/ParseExpr.Mod (CondOr, CondAnd):
+	 Fixed initialization problem -- again.
+
+	* frontend/Data.Mod:
+	New flag for Objects.flags: objWasForwardDeclaration.  Set if the
+	object was introduced by a forward declaration, but has been resolved
+	in the meantime.
+
+	* frontend/Attributes.Mod, frontend/Opcode.Mod:
+	Added value parameter to array-length and type-tag instruction to
+	avoid scheduling of pointer dereference behind the computation of the
+	array length resp. type tag.
+
+1996-08-01  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Schedule.Mod: New file.
+
+	* frontend/WriteGSA.Mod:
+	Reworked output of object names.  New option `--gsa-qnames' will write
+	longer (but unambiguous) names by qualifying every name with procedure
+	and module name.
+
+	* frontend/SideEffects.Mod (AdjustOperands):
+	Make sure that no unused collect instructions
+	survive.  A free floating collect can have disastrous effects :-(
+
+	* frontend/ParseStatm.Mod, frontend/ParseExpr.Mod:
+	The operands of dyadic operations and procedure calls were ignored
+	when creating a loop gate.
+
+	* frontend/Opcode.Mod (opcode update-local):
+	The update instruction takes the old value of
+	the updated variable as 3rd argument.
+
+	(OperatorSubclass): Default subclass for an undefined input type is
+	`subclS'.
+
+	* frontend/Data.Mod (ReverseInstr):
+	New.  Reverses the instruction list of the given
+	region.
+
+	* frontend/Check.Mod (All): Added test for structural consistency.
+
+	* frontend/Attributes.Mod (SizeOfItem):
+	Fixed size calculation of open arrays.
+
+1996-07-27  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParamPragmas.Mod: Fixed procedures Pop and Restore.
+
+	* frontend/ParseStatm.Mod (RepeatStatement):
+	Fixed code generation of FOR loop.  Nonlocal exits
+	from the loop (i.e. RETURN or EXIT) were ignored when calculating the
+	boolean condition that terminates the loop.
+
+1996-07-26  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolFile.Mod:
+	Add index of type-bound procedure to symbol file.
+
+1996-07-26  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Opcode.Mod:
+	Don't mark delete-store instruction as disabled, but as potenial trap.
+	This way it's never considered to be dead code.
+
+	(GetFormalParam): Completely rewritten.  Did the previous
+	implementation ever work?
+
+	* frontend/Attributes.Mod (TypeTag):
+	Fixed dynamic tag for variables that have only a static
+	type.
+
+	(CleanupGreg): Don't mark delete-store instruction as disabled, but as
+	potenial trap.  This way it's never considered to be dead code.
+
+	* frontend/ParseStatm.Mod (PassParameter): Fixed location variable.
+
+	(ProcedureCall): Fixed address of called procedure.  The previous code
+	didn't work for procedure variables and type-bound procedures.
+
+	* frontend/ParseExpr.Mod (Designator):
+	Fixed type tag used for a type-bound procedure call.
+
+1996-07-25  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseDecl.Mod (ReplaceLocations):
+	Don't forget to replace the formal parameter
+	operand, too.
+
+	* frontend/Opcode.Mod (opcode call):
+	Added description of operand locations.
+
+	* frontend/ParseStatm.Mod (PassParameter):
+	If actual parameter is local variable, and formal
+	parameter is VAR, then put the local variable in the value operand's
+	location attribute.
+
+	* frontend/SideEffects.Mod (PropagateSideEffects):
+	Fixed reconstruction of designator if it is a
+	local variable that has been assigned a constant value.
+
+	* frontend/SymbolFile.Mod:
+	Added code to free unused constant objects.  Saves a lot of memory for
+	long make runs (approx. 135K for a `make all' on the current ood
+	sources).
+
+1996-07-23  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseDecl.Mod, frontend/SymbolTable.Mod, frontend/Data.Mod:
+	Added code to free unused constant objects.  Saves a lot of memory for
+	long make runs (approx. 135K for a `make all' on the current ood
+	sources).
+
+	* frontend/Attributes.Mod (GetNonParamOpnd):
+	New.  Takes a call instruction and retrieves the
+	first operand that doesn't correspond to one of the formal parameters
+	of the called procedure (but rather to a nonlocal variable access).
+
+	(TracesToEmptyStore): Now handles procedure calls setting $store.
+
+	* frontend/SideEffects.Mod: New file.
+
+	* frontend/ParseExpr.Mod (TypeTest):
+	Use the type given in the guard for the type field of the
+	created type-guard instruction, instead of the variable's type.
+
+	* frontend/WriteGSA.Mod (MW):
+	New debug proc.  Mark operand or instruction `n' and write the
+	global region it belongs to.
+
+	* frontend/ParseStatm.Mod (RegisterSideEffects):
+	Make sure that the $mem result of a procedure
+	call appears at the same position as the operand of the exit
+	instruction (if exit exists).
+
+1996-07-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseDecl.Mod (ProcDecl):
+	Remove all references to formal parameters of forward
+	declaration as soon as the parameters of the procedure definition are
+	known.
+
+1996-07-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Opcode.Mod:
+	Extension of call instruction: If the called procedure accesses
+	(updates) a heap object without reading from (writing to) $mem, then
+	the current (new) value is added as final argument (result).
+
+1996-07-18  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (CheckVariableParam):
+	Variable of type SYSTEM.SET8 is compatible to
+	variable parameter of type SYSTEM.BYTE
+
+	* backend/ansi-c/StdTypes.Mod (LegalReal):
+	Take rounding into account when deciding if a given
+	LONGREAL number represents a valid REAL value.
+
+1996-06-29  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Data.Mod:
+	Correction: field `ObjectDesc.greg' is of type `GlobalRegion'
+
+1996-06-27  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Data.Mod (MoveInFront):
+	New.  Moves a instructions in front of another in a
+	region's instruction list.
+
+1996-06-21  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (TypeTest):
+	Fixed 4th operand (extension level) of type-test and
+	type-guard instructions.
+
+	* frontend/Data.Mod, frontend/Opcode.Mod, frontend/Attributes.Mod:
+	Fixed comments regarding pragma variables controlling runtime checks.
+	Fixed placement of runtime checks.
+
+	* frontend/Scanner.Mod:
+	Moved procedure `NotifyPragmaAssign' from Config into StdTypes to
+	avoid a cyclic import if this procedures calls module `Error' (the
+	ANSI-C back-end does this).
+
+1996-06-19  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolFile.Mod (ReadStruct):
+	Restore `objIsParameter' flag when reading the formal
+	parameter of a procedure type.
+
+	* frontend/SymbolFile.Mod (ReadObject):
+	Set `moduleId' for every object read from symbol file.
+
+	* frontend/Attributes.Mod (TypeTag): Fixed type tag for pointer types.
+
+	* frontend/ParseExpr.Mod (Designator): Fixed type tag for super call.
+
+1996-06-17  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (PredefCodeGen):
+	When parsing a call of SYSTEM.VAL, then set the
+	result's address to the one of the operand.
+
+1996-06-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolFile.Mod (ReadStruct):
+	Restore `Struct.len' (extension level) when reading a
+	record type.
+
+	* frontend/Data.Mod:
+	Clarification: `Struct.len' holds the extension level of a record
+	type.
+
+1996-06-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Data.Mod (FindGlobalRegion):
+	Extendend domain to include operands, results,
+	instructions, and regions.
+
+1996-06-11  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Fixed bug with `BitTest' being in the wrong case block.
+
+	Fixed wrong evaluation of SYSTEM.LSH and SYSTEM.ROT on constants with
+	data types different from LONGINT.
+
+1996-06-09  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/WriteGSAvC.Mod, backend/ansi-c/GenStatm.Mod, backend/ansi-c/Classify.Mod, backend/ansi-c/Allocate.Mod:
+	New file.
+
+1996-06-02  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (RegisterSideEffects):
+	Changed location attributes of results of a
+	call instruction that signal a modified variable parameter.  The
+	location was the formal parameter.  Now it's the variable that was
+	passed to the parameter, or NIL if it was a complex designator (like a
+	record field or array element).
+
+	(RemoveCollectOperands): Discarded.  All local variables appear as
+	operands of a collect instruction.
+
+	* frontend/SymbolFile.Mod (ReadObjList):
+	Fixed module ids of record elements and formal
+	parameters read from symbol file.
+
+1996-06-01  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Attributes.Mod, frontend/ParseStatm.Mod, frontend/ParseExpr.Mod, frontend/Opcode.Mod:
+	Inserted variable address as second parameter into access-local,
+	access-nonlocal, and their update counterparts.  This way all access
+	resp. update instructions take their variable's address as argument.
+
+	Instruction `zero' got an address parameter, too.
+
+1996-05-31  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Error.Mod (EmitErrors):
+	Added parameter to suppress all warnings.  This is used
+	by `Make' to avoid generation of warnings while scanning just the
+	import list of a module.
+
+1996-05-30  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod, frontend/Opcode.Mod:
+	Added value of $mem as last argument to trap instructions.  It's only
+	present if $mem is defined at the place of the trap.
+
+1996-05-25  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Check.Mod:
+	Added procedure to check restrictions of update instructions for
+	structured variables.
+
+	* frontend/ParseStatm.Mod (AssignToVar):
+	Don't create update-local instruction if the new value
+	is result of a call, reclaim, or gate instruction.
+
+1996-05-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod:
+	Fixed result types of update and reclaim instructions.  Don't insert
+	update-local for results of reclaim.
+
+1996-05-23  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Data.Mod:
+	New constant `minInstrFlag'.  Holds the index of the smallest set
+	element in `Instruction.flags' that isn't used by the front-end.
+
+1996-05-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/WriteGSA.Mod, frontend/ParseStatm.Mod, frontend/ParseExpr.Mod, frontend/Opcode.Mod:
+	Added instructions access-local and update-local.  They are inserted
+	when refering to structured (i.e. record, array, or complex) local
+	variables or value parameters.  See file frontend/doc/AccessLocal for
+	details.
+
+1996-05-20  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/AlgebraicTransformation.Mod:
+	Added constant forwarding for bound(Range|Index) instructions.
+
+1996-05-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolFile.Mod (IntegrateSymbols):
+	Do not discard objects that may be used for
+	debugging output.  Otherwise WriteGSA may abort with a nasty NIL
+	dereference.
+
+1996-05-19  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Make.Mod, frontend/SymbolFile.Mod:
+	Added format identifier to symbol files to distinguish between files
+	that were generated by different back-ends.
+
+	* frontend/ParseStatm.Mod, frontend/Opcode.Mod:
+	Added operand to `trap-case'.  It holds the value of the case select
+	expression.
+
+	* frontend/Data.Mod (OpndType):
+	New function.  Takes an operand (instance of Opnd),
+	returns its type (an instance of Struct).
+
+	* frontend/Data.Mod:
+	Instructions are hold in doubly linked list (again), since the
+	algorithm for building interference graphs for register allocation
+	traverses the instructions back to front.
+
+	* optimizers/DeadCodeElimination.Mod, frontend/ParseExpr.Mod, frontend/Opcode.Mod:
+	Changed behaviour of bound-index and bound-range to be consistent with
+	type-guard and type-assert: Result is always the value of the first
+	operand.  If the runtime check is disabled, then the flag
+	`instrIsDisabled' is set.  Disabled checks are removed when the final
+	dead code elimination is run.
+
+1996-05-08  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	(SkipRegionsWithMerge) Fixed bug with region which was second operand
+	of loop-merge skipped.
+
+1996-05-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Attributes.Mod, frontend/ParseDecl.Mod, frontend/ParseExpr.Mod, frontend/ParseStatm.Mod:
+	Changed code generation and semantic checks to handle non-Oberon types
+	and objects.
+
+	* frontend/SymbolTable.Mod (ParamsMatch):
+	Calls StdTypes.ParamMatchExt to extend test for
+	matching parameters by back-end specific criteria (like parameter
+	locations, calling convention, special parameters).
+
+	* frontend/Scanner.Mod:
+	Introduced global variable `allowUnderscore'.  If set, then `_' is a
+	legal character for identifiers.
+
+	* frontend/Opcode.Mod (PassPerReference): Moved to module StdTypes.
+
+	Extended specs of opcode `string-copy' to deal with non-Oberon
+	destination whose length isn't known.
+
+	* frontend/Data.Mod:
+	Added various flags for Objects and Structs to model non-standard
+	types introduced when interfacing to foreign (i.e. C) code.
+
+	* backend/ansi-c/Build.Mod, backend/ansi-c/CodeGen.Mod, backend/ansi-c/FileData.Mod, backend/ansi-c/GenDecl.Mod, backend/ansi-c/StdTypes.Mod, backend/ansi-c/SystemFlags.Mod, backend/ansi-c/oo2c.Mod:
+	Snapshot.  INTERFACE files can be compiled; `make all' on the
+	full oo2c sources compiles (both for Oberon-2 and the generated
+	C declarations) without errors; not a single statement is
+	translated, though
+
+	* frontend/SymbolFile.Mod (Write, Read):
+	Added module flags to symbol file.
+	(ReadObject): Set flag `objIsParameter' when reading C-style rest
+	parameter.
+
+1996-05-06  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/oob.Mod: Fixed init of Error module.
+
+1996-05-01  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenInclude.Mod: New file.
+
+	* frontend/ParseStatm.Mod (RegisterSideEffects): Fixed last bugfix.
+
+1996-04-30  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/GuardCond.Mod (Init):
+	Fixed reasoning that adds implications to region R based on
+	implications of regions nested in R.
+
+	* frontend/ParseStatm.Mod (RegisterSideEffects):
+	Test for existence of enter instruction
+	(instead of exit) to decide if side-effect information is
+	available.
+
+1996-04-29  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* frontend/Data.Mod:
+	New procedures: NthResult, ResultIndex, NumOfOperands, NumOfResults
+
+1996-04-29  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod: Moved some procedures to `Data.Mod'
+
+1996-04-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Config.Mod:
+	Added pragma variable `StackCheck'.  The initial value is taken from
+	`Config.defaultStackCheck'.  If the variable is TRUE, then the flag
+	`Data.instrStackCheck' is set for a global region's enter
+	instruction.
+
+	* frontend/ParseDecl.Mod (ProcDecl):
+	Emit warning if SYSTEM.VAL is used to cast to a type with
+	higher alignment.
+
+	* frontend/ParseStatm.Mod, frontend/Data.Mod, frontend/Attributes.Mod:
+	Added pragma variable `StackCheck'.  The initial value is taken from
+	`Config.defaultStackCheck'.  If the variable is TRUE, then the flag
+	`Data.instrStackCheck' is set for a global region's enter
+	instruction.
+
+1996-04-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenConst.Mod: New file.
+
+	* frontend/SymbolFile.Mod (WriteOtherImports):
+	Write a module name just once into the symbol
+	file even if it appears more than once in the import list.
+
+	Changed the `magic number' of a symbol file (its first 4 bytes) to
+	something that doesn't consist of ASCII characters only.
+
+1996-04-09  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod:
+	(Available) Modified once again after a discussion with MvA who told
+	me that MergeCond-Regions are not always executed, which I supposed
+	before.
+
+1996-04-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (Designator):
+	Increment field `arrayDim' whenever an array index has
+	been parsed.
+
+	* frontend/Attributes.Mod (ArrayLength):
+	Fixed first operand of array-length instruction.  Fixed
+	dimension index for open array parameters and pointers.
+
+1996-04-04  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod: Added some comments.
+	(Available) New implementation which catches more identical
+	instructions. Still needs to be verified.
+
+1996-04-01  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/Build.Mod, backend/ansi-c/FileData.Mod, backend/ansi-c/GenDecl.Mod:
+	New file.
+
+1996-03-31  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Make.Mod:
+	New flag `compiled', set in `Make.Module. flags' if the module has
+	been translated as part of the make.
+
+1996-03-25  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Attributes.Mod (ArrayLength, SizeOfItem):
+	Added code to handle the (array) length
+	resp. the size of of string constants.
+
+1996-03-22  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/RedundantGates.Mod: New file.
+
+1996-03-18  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Attributes.Mod, frontend/Opcode.Mod, frontend/ParseStatm.Mod, frontend/SymbolTable.Mod:
+	Removed support for SYSTEM procedures CC, GETREG, and PUTREG.
+
+1996-03-17  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolFile.Mod: New file.
+
+	* frontend/ParseDecl.Mod, frontend/Make.Mod, frontend/SymbolTable.Mod:
+	Moved procedures to read/write symbol files into seperate module
+	SymbolFile.  The old procedures ReadSymbolFile, WriteSymbolFile, and
+	IntegrateSymbols are now implemented as SymbolFile.Read,
+	SymbolFile.Write, and SymbolFile.IntegrateSymbols.
+
+	* frontend/ParseDecl.Mod (Type):
+	Also mark formal parameter types like "ARRAY OF RECORD .. END"
+	as faulty.
+
+1996-03-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseDecl.Mod (ProcDecl):
+	Don't call `CodeGen.CompleteProcedure' for forward
+	procedures.
+
+	* frontend/SymbolTable.Mod, frontend/Data.Mod:
+	Fixed `Object.level' counter for procedures.  Now a global procedure
+	is assigned a level of 0, just like any other global declaration.  The
+	level of non-global declarations equals the number of procedures
+	around it.
+
+1996-03-14  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/CodeGen.Mod (DeleteGreg):
+	If `keepInterface=TRUE' then replace arguments of exit's
+	operands by a dummy value.  This avoids references to results deleted
+	later on.
+
+1996-03-13  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/Browser.Mod: Fixed `extended' command line option.
+
+1996-03-13  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Removed type restrictions for the parameters of predefined functions
+	ASH, LSH, ROT, and some of the set operations.
+
+1996-03-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/CodeGen.Mod:
+	Cleared a few runaway pointers that kept unused objects alive for the
+	garbage collector.
+
+	* frontend/SymbolTable.Mod (IntegrateSymbols):
+	Clear `currValue' field of objects that are moved
+	into the import symbol tables.  Fixed removing of not exported
+	objects.
+
+1996-03-06  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (ConstExpr):
+	Be more thorough about deleting the dummy greg that holds
+	the code for the constant expression.  Otherwise the gc won't discard
+	it.
+
+	* frontend/WriteGSA.Mod, frontend/UndefVar.Mod:
+	Killed some pointers to prevent garbage collector from keeping dead
+	heap objects alive.
+
+1996-03-04  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod (LatticeOfGate):
+	gate could be become bottom even though some inputs are still marked top. Fixed.
+
+	(ReplaceByConstants): Fixed problems with merges. Regions of
+	non-constant merges were not inspected during replacement phase.
+
+	* optimizers/ValueNumbering.Mod:
+	Added cleanup code at several positions.
+
+1996-03-04  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/UndefVar.Mod (InspectUses):
+	Fixed bug that caused all uses of a variable to be
+	ignored after a collect instruction.  To be precise, the search wasn't
+	continued with the corresponding result value of the collect's
+	companion reclaim.
+
+	* frontend/ParseStatm.Mod (AssignToVar):
+	Always set location of result when assigning to $mem.
+
+	* frontend/ParseExpr.Mod (ElementAddress):
+	Oops.  Used uninitialzed variable.  Lucky me, OOC
+	detected this.  ;-)
+
+1996-03-02  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod: (MoveDiffInstrSignature):
+	  Fixed bug with uninitialized variable `pivotMerge'. This could have
+	  caused unnecessary splitting of regions containing `gates'.
+
+	(Partition.Length):
+	  Removed some unused variables.
+
+	(CSE):
+	  Removed redundant type guard.
+
+1996-03-02  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Opcode.Mod:
+	New operand of call instruction.  The third operand now holds a
+	reference to the called (normal or type-bound) procedure or
+	`Data.constUndef' if the call activates a procedure variable.  This
+	encodes the (static) type-bound procedure and its receiver directly
+	into the call.
+
+	* frontend/Data.Mod:
+	Added new constant `constUndef' that can be used to signal an
+	undefined or missing operand.
+
+1996-03-01  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/CodeGen.Mod, backend/ansi-c/Config.Mod, backend/ansi-c/StdTypes.Mod, backend/ansi-c/oo2c.Mod, backend/ansi-c/SystemFlags.Mod:
+	New file.
+
+1996-02-27  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod (SplitPartitionByNonInstr):
+	Fixed bug in `moveIt' predicate which
+	  caused too many splittings, if the `pivotOpnd. arg IS D.Result' was
+	  true.
+
+	Increased speed by using doubly linked lists for `Node' and explicit
+	length information in `PartitionDesc'.
+
+1996-02-27  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/WriteGSA.Mod: Added option --gsa-sorted.
+
+1996-02-23  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseDecl.Mod (FinishRegion):
+	Remove constants of value NIL from the GSA code (they
+	are replaced by LONGINT consts of value 0).
+
+1996-02-22  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod (FixpointIteration):
+	Removed unnecessary code which checked for empty
+	  partitions.
+
+	Module is considered <beta>.
+
+	* optimizers/ConstPropagation.Mod (ConstantFolding):
+	Added assertions to make sure that two constant
+	  operands are of the same type.
+
+	(InitLattices): Removed, replacement is `InitLattice'
+
+	(InitLattice): New, generate lattice information for argument, if none
+	  is present.
+
+	(RegionInitLattices): New, generates lattice information for all
+	  instructions of given region.
+
+	behaviour change: lattices for all instructions are now generated
+	unconditionally at the beginning of constant propagation. Previously,
+	they were only generated on demand.
+
+	* optimizers/Worklist.Mod:
+	converted `ReplaceData' to typebound procedure for `Node'.
+
+1996-02-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod:
+	Added type conversion for second operand of INC/DEC to the first
+	operand's type.
+
+1996-02-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Make.Mod, frontend/ParseDecl.Mod:
+	Moved procedures `ObjectModifiers' and `StructModifiers' into module
+	`SystemFlags'.
+
+1996-02-21  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolTable.Mod:
+	Added code to write/read back-end specific information that may be
+	part of a `Struct' resp. `Object' to/form symbol files.
+
+	* frontend/ParseExpr.Mod (Designator):
+	Convert index value to type LONGINT.
+
+	* frontend/ParseDecl.Mod (ProcDecl):
+	Set flag `Data.objContainsProc' for the module
+	resp. procedure in which this procedure is declared.
+
+	* frontend/Data.Mod:
+	Added field `beInfo' to type `Addressable' (ie, to `Struct' and
+	`Object'), added flags `objExportsBEInfo' and `structExportsBEInfo'.
+
+1996-02-20  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod: Works now.
+
+	Added checking of post conditions for all stages.
+
+	Still some open questions.
+
+1996-02-18  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod:
+	Seem to be a faily stable version now, can be run on the compiler
+	itself without any runtime errors.
+
+	Correctness is still not verified...
+
+1996-02-16  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod: still too slow...
+
+1996-02-14  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* frontend/Data.Mod (Dominates, DominatesNR):
+	Fixed serious bug in predicate.
+
+1996-02-14  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ValueNumbering.Mod: seems to work, but not very elegant...
+
+1996-02-13  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* frontend/Data.Mod (Dominates, DominatesNR):
+	New.  Fast dominance tests.
+
+1996-02-10  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Attributes.Mod, frontend/Opcode.Mod, frontend/UndefVar.Mod, frontend/ParseExpr.Mod, frontend/ParseStatm.Mod:
+	Inserted address of variable parameter as second operand to
+	access-var-param and update-var-param instructions.
+
+1996-02-10  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Unreachable merges were not deleted but replaced by non-existent path leading to
+	them. Fixed.
+
+	Possible speedup due to usage of non"*Unique" procedures from `Worklist'.
+
+1996-02-09  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Scanner.Mod (Line, Column):
+	New.  Take a file position, return the line
+	resp. column the position is refering to.
+
+	* frontend/Attributes.Mod, frontend/Data.Mod, frontend/Opcode.Mod, frontend/ParseDecl.Mod, frontend/ParseExpr.Mod, frontend/ParseStatm.Mod, frontend/SymbolTable.Mod, frontend/UndefVar.Mod:
+	Rearranged codes for types and type groups in Data.  Changed tests for
+	membership of a type in a group to use the predicate `TypeInGroup'
+	(provided by module SymbolTable).
+
+1996-02-08  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Attributes.Mod, frontend/Data.Mod, frontend/Opcode.Mod, frontend/ParseExpr.Mod, frontend/ParseStatm.Mod, frontend/SymbolTable.Mod, frontend/WriteSymbols.Mod:
+	Added aliases `Data.strAddress = Data.strLongInt' and `Opcode.sublAdr
+	= Opcode.subclL' to be able to distinguish between LONGINT and address
+	values in the compiler's source code.  The idea is to make it easier
+	to change the address type for 64bit systems.
+
+1996-02-08  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Attributes.Mod, frontend/Check.Mod, frontend/ParseExpr.Mod, frontend/ParseStatm.Mod, frontend/UndefVar.Mod, frontend/WriteGSA.Mod:
+	Moved field `bodyOf' out of `RegionDesc' and into the more appropriate
+	`GlobalRegionDesc'.
+
+	* frontend/Data.Mod:
+	Replaced all doubly linked list by single linked ones.  This can (but
+	doesn't need to) reduce the amount of storage needed for the GSA data
+	structure by 10 to 25%.
+
+	Moved field `bodyOf' out of `RegionDesc' and into the more appropriate
+	`GlobalRegionDesc'.
+
+1996-02-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (TypeConversion):
+	The current value of converted constants wasn't set
+	to the new value.
+
+1996-02-06  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/WriteGSA.Mod:
+	Added option to enable assignment hints (--gsa-assign).
+
+	* frontend/Statistics.Mod:
+	Extended to count region, instruction, result, and operand objects in
+	gregs.
+
+	* frontend/ParseStatm.Mod (AssignToVar):
+	Correct nasty bug in propagation of cond gates.
+	Setting assignment hints in GSA code is now optional (--gsa-assign).
+
+	(LoopStatement): Initialize $exit with a copy of FALSE instead of
+	FALSE itself, otherwise FixupLoopGate will make wrong value
+	replacements in nested LOOPs.
+
+	* frontend/ParseDecl.Mod: Adapted to oo2c/CodeGen interface.
+
+	* frontend/Data.Mod:
+	Made the `prevXXX' links of all doubly linked lists local.
+
+	* frontend/Data.Mod:
+	Marked Region.nextRegion/prevRegion as read-only.  Fixed comment
+	regarding Object.level.
+
+1996-02-05  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/Worklist.Mod:
+	Made the formerly internal structure `Node' and all procedures dealing
+	with it visible for more efficient usage (e.g. iteration) of worklists.
+
+1996-01-31  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolTable.Mod (TypeInGroup):
+	Added type groups grpPointer and grpProc, reject bogus
+	groups that correspond to structure type ids.
+
+	(InitPredef): Fixed formal paramter list of NEW and SYSTEM.NEW.
+
+	* frontend/ParseStatm.Mod (CheckVariableParam): Fixed parameter checks.
+
+	(RegisterSideEffects): Added warning when call to nested procedure
+	modifies a variable that is guarded by a WITH.
+
+	* frontend/ParseExpr.Mod (EvalDyadicOp, Expr):
+	Fixed semantic checks for comparison between pointers
+	resp. procs.
+
+	(CondAnd, CondOr): Fixed conditional expressions that contain negated
+	simple expressions.
+
+	* optimizers/GuardCond.Mod:
+	Modified algorithms to decrease memory allocation and increase speed.
+
+1996-01-30  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Check.Mod (MergeUses): Fixed.
+
+1996-01-30  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Removed unnecessary test for an `ELSE' case.
+
+1996-01-29  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Opcode.Mod:
+	Changed instruction `zero'.  Updated descriptions of collect, reclaim,
+	create-store, delete-store.
+
+	* frontend/ParseStatm.Mod (AssignToVar):
+	 Make sure that only one reclaim instruction is
+	generated for a given $mem value.  Create copy instruction when
+	assigning parameter attributes like address, type tag, and array
+	length.
+
+	(RegisterSideEffects): When a procedure call assigns to $mem, then
+	generate the reclaim instruction before all other side-effects are
+	registered.
+
+1996-01-28  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/UndefVar.Mod: Completely rewritten.
+
+	* frontend/ParseExpr.Mod (Designator):
+	Fixed position attributes for field selectors and array
+	indices.  Fixed array index on undefined values.
+
+	* frontend/ParseDecl.Mod (ProcDecl):
+	Guard exit instruction by $return even if no procedure
+	block exits.  Got rid of "may be used undefined" warnings.
+
+	* frontend/Error.Mod: Enabled error suppression.
+
+	* frontend/Attributes.Mod (Reclaim2Collect):
+	New.  Given a reclaim instruction and a variable,
+	find the variable's value that is passed to the corresponding collect
+	instruction.
+	(TracesToEmptyStore):  Moved from UndefVar.  Given a variable and a
+	value of $store, determine if there exists a path through $store that
+	doesn't write to this variable.
+
+	(CleanupGReg): Remove results from enter instruction that correspond
+	to nonlocal variables that are never read.
+
+1996-01-26  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/GuardCond.Mod (CreateRegionPost):
+	Oops, calculation of post conditions didn't scan
+	all enclosing regions.
+
+1996-01-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (AssignToVar):
+	Insert copy instruction when assigning negation to a
+	variable, to prevent ParseExpr.SplitPaths to take apart (and delete)
+	the `negsu' instruction.
+
+1996-01-24  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/AlgebraicTransformation.Mod:
+	Added the handling of some more cases for algebraic transformations,
+	mainly in the SET area.
+
+	* optimizers/ConstPropagation.Mod:
+	Fixed serious bug which caused regions marked as non-reachable to
+	be considered as a valid path for `merge'.
+
+1996-01-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (Factor):
+	Set current value of `x' to some value, even if no valid
+	factor can be found.  This avoids NIL deref later on.
+
+1996-01-24  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod: Cleaned up code.
+	Reworked all stuff which handles `merges'. Now should not remove
+	needed merges, but should catch all unneeded merges.
+
+1996-01-19  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseDecl.Mod:
+	`StructModifiers' is called before `StdTypes.StructAlloc'
+	(FormalPars): Added calls to `StructModifiers'.
+	(ProcDecl): Moved call to `ObjectModifiers' (syntactically) before the
+	procedure identifier.
+
+	* optimizers/GateReduction.Mod (TraverseGates):
+	Didn't take undefined values into account.  These
+	values are of the type D.Object, instead of D.Const or D.Result.
+
+	* frontend/Data.Mod (InitInstruction): Field `flags' wasn't cleared.
+
+1996-01-18  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (RemoveCollectOpnds):
+	Don't remove the first two operands from the
+	collect instruction.  They hold the values of $mem and $store.
+
+1996-01-18  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod, frontend/ParseStatm.Mod:
+	Rewrote code generation for boolean expressions.  The idea is to model
+	the data flow through conditional expressions (& resp. OR) as precise as
+	possible.  As a side-effect the handling of negated expressions
+	improved: the laws of De Morgan are automatically applied on negated &
+	resp. OR, and negations used in guards are removed by swapping the
+	`true' and the `false' path.
+
+1996-01-16  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/AlgebraicTransformation.Mod:
+	The module is still not finished.
+
+	Introduced `ArithmTransform', a procedure for all those special
+	arithmetical cases which were not catched yet.
+
+	* optimizers/ConstPropagation.Mod:
+	Also have a look on `mergeCond' the same way as we do on `mergeIf'/`mergeCase'.
+	This way, some more `gates' become eliminated.
+
+	Rewrote parts of the code and replaced them by smaller, equivalent ones.
+
+1996-01-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Data.Mod, frontend/Make.Mod, frontend/ParseDecl.Mod, frontend/ParseExpr.Mod, frontend/ParseStatm.Mod, frontend/SymbolTable.Mod, frontend/WriteGSA.Mod:
+	Splitted `Object.mnolev' into `Object.moduleId' and `Object.level'.
+
+	* tools/Browser.Mod (WriteSet):
+	Initial "{" of set constants was missing.
+
+	* frontend/SymbolTable.Mod (ReadSymbolFile):
+	Calculation of size and alignment of imported types
+	was still broken for some extended records.  Changed import to do the
+	calculation when all types are in memory, and not as part of the
+	reading process.
+
+	* frontend/Error.Mod:
+	Extended module to handle error messages for multiple source files.
+	Adapted error suppression to the one used by o2c.
+
+1996-01-15  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Reworked parts of `ReplaceByConstants' completely, so that much redundant
+	code is ommited.
+
+1996-01-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ErrorInstr.Mod: New file.
+
+1996-01-14  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (Designator):
+	Don't erase reference to open array length until the
+	designator has reached the end of the open dimensions.
+
+	* frontend/ParseStatm.Mod (ReclaimFromMem):
+	Don't reclaim values that the called function
+	returns in memory anyway.
+	(RemoveCollectedOpnds): New.  Don't collect values into mem that the
+	following call will force into mem anyway.
+
+	(PassParameter): Added location attributes for values passed to formal
+	parameters by a `call' instruction.  The formal parameter objects are
+	used for the location's `var' field.
+	(RegisterSideEffects): Fixed faulty location flags.
+
+	* frontend/Data.Mod (GetModule):
+	New.  Takes a procedure or module object, returns the
+	top level module it is part of.
+
+1996-01-11  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/Worklist.Mod: Removed unused stuff.
+
+	* optimizers/AlgebraicTransformation.Mod: Removed `HandleGuard'.
+	Rewrote `BooleanResult' in order to handle `NOT' instructions better.
+
+	* optimizers/ConstPropagation.Mod:
+	Rewrote `ReplaceByConstant' completely. Now moves instructions correctly
+	and inspects regions only once. Not reached regions are deleted in an extra
+	phase.
+
+1996-01-09  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Intermediate version, some fixes by Michael van Acken.
+
+1996-01-08  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolTable.Mod (ReadStruct):
+	Size and alignment of structured types was not
+	calculated properly whenever the imported type was recursive,
+	i.e. whenever it contained a pointer entry referencing itself.  The
+	pointer type's size and alignment was used before it was calculated.
+
+	* frontend/ParseExpr.Mod (Designator):
+	Type guard on record variables broke the calculation of
+	the variable's address.
+
+1996-01-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/UndefVar.Mod (TracesToEmptyStore):
+	Don't stop search at `reclaim' instruction,
+	rather get the $store operand of the corresponding `collect' and
+	continue search.
+	Adapted to changed `GuardCond'.
+
+1996-01-05  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/WriteGSA.Mod:
+	New options to include addional information when writing GSA code to
+	stdout.  See backend/ansi-c/doc/oo2c for the option list.
+
+	* frontend/Check.Mod: New file.
+
+	* optimizers/GuardCond.Mod:
+	Extended module to include merge regions in its calculations.
+
+	* optimizers/DeadCodeElimination.Mod (Eliminate):
+	Never delete an "enter" instruction.
+
+	* frontend/ParseStatm.Mod (PassNonlocalReferences, RegisterSideEffects):
+	Fixed bug in paramter
+	passing when calling procedure variables or type-bound procedures.
+
+	Some bugfixes in connection with reclaim, reading from $mem, and
+	writing to $mem.
+
+	(Dominates): Moved to ParseExpr.
+
+	(AssignToVar): Fixed assignment of loop gates.
+
+	(CommitRepeatMerge): If the loop guard is a shortcut expression, then
+	change the back-edge operand to the value that holds in the exit edge
+	before passing the gate to `AssignToVar', afterwards change the
+	operand to the value that holds for the back edge.
+
+	* frontend/Opcode.Mod (RegionMerge):
+	New.  Takes a region, gives the merge that contains
+	gates associated with the region.
+
+1996-01-05  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/AlgebraicTransformation.Mod:
+	Range information or types is now used to determine constant comparisons.
+
+1996-01-04  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (AccessVar):
+	First access of $mem puts it in the enter instruction's
+	result list.
+
+	(CorrectCondGate): Turn gate from a merge-cond: into the valid gate
+	operand if region is inside the TRUE/TRUE (for &) resp. FALSE/FALSE
+	(for OR) path.
+
+	(CondAnd, CondOr): Fixed propagation of gates out of the merge-cond:.
+
+	Name cleanup: xyzGReg turned into xyzGreg.
+
+	* optimizers/GuardCond.Mod (RemoveDeadReferences):
+	New.  Updates region implication
+	resp. contradiction information after a dead code elimination, to
+	avoid calling `Init' again.
+	(Init): Makes use of gates with constant operands.
+
+	* frontend/Data.Mod:
+	New procedure ClearInfo, ClearInstrInfo, and ClearRegionInfo to clear
+	`info' & `marker' fields.
+	New functions ArgumentIndex, OperandIndex, NthOperand, NthArgument to
+	access operands.
+	(FindOperand, FindResult): Location attributes may be NIL.
+
+1996-01-02  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseDecl.Mod (Module):
+	Returns now with valid region implication
+	resp. contradiction info as provided by `GuardCond'.
+
+1995-12-31  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/WriteGSA.Mod:
+	Added code to mark instructions or operands in the printed GSA code.
+	Set `opnd. pos' or `instr. pos' to `mark' and it will appear as
+	position "[XXX]" in the written code.
+
+1995-12-28  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/WriteGSA.Mod:
+	Added code to write guarding conditions and implications
+	resp. contradictions of regions.
+
+	* frontend/SymbolTable.Mod (WriteSymbolFile):
+	Put the magic numbers of all imported modules into
+	the symbol file.  Fixed bug in detection of modules that provide types
+	for the symbol file.  `symbolFileChanged' is FALSE if there was no
+	symbol file beforehand.
+
+	* frontend/Scanner.Mod (Init, GetSym):
+	Added incremental file reading to allow `Make' to read
+	just the start of the file instead of reading the whole file.
+
+	* frontend/RCS.Mod (Exists): Removed.  Replaced by `TimeStamp.Exists'.
+
+	* frontend/Make.Mod, optimizers/GuardPropagation.Mod: New file.
+
+	* optimizers/GuardCond.Mod:
+	Completely rewrote module to gather more information.  Interface
+	changed slightly.
+
+1995-12-20  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/Worklist.Mod: Derived `Worklist' from `Data.Info'.
+
+1995-12-19  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod (AssignToVar):
+	When creating a new gate due to an assignment of a gate
+	to a variable, then use the old gate's `oldValue' entry to set the new
+	one's `oldValue'.  This value may differ from the one currently stored
+	in the variable's symbol table entry.
+
+1995-12-19  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseExpr.Mod (FieldAddress, ElementAddress):
+	Set file position for operands of
+	address calculations.
+
+1995-12-18  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/Worklist.Mod:
+	New procedures `AddUsingInstrUnique' and `AddInstrUnique'.
+
+	Changed parameter type of `UsingHook' to reflect the fact that all
+	Uses could be used by instructions, not only other instructions.
+
+	* optimizers/ConstPropagation.Mod:
+	Forgot to initialize all results of predefined & SYSTEM procedures as
+	`bottom'.
+
+	Only the first result was set to `bottom', all other results were not
+	classified at all. Now, all instructions with more than one result are
+	classified as `bottom', and all using instructions - for all results -
+	are added to the worklist.
+
+	Regions classified as `FALSE' are now stripped off the corresponding
+	merges.
+
+	If only one region is left at the merge, this region will always be
+	executed, so the corresponding instructions are moved up one region.
+
+1995-12-17  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/UndefVar.Mod (CheckVars):
+	Ignore structured (ie, record or array) variables when
+	searching for undefined vars.
+
+	* frontend/ParseDecl.Mod (Module, ProcDecl):
+	Don't look for unresolved forward references or unused
+	objects if an error was found beforehand.
+
+1995-12-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Opcode.Mod (Commutative):
+	New.  Predicate to test opcode for "a op b = b op a".
+	I hope I got the name right :).
+
+	* frontend/Opcode.Mod:
+	Fixed typo in div/mod spec: x div y = ENTIER (x / y).
+
+	Changed names of set operators to inter(section),
+	sym(mmetrical)diff(erence), and union (was and, xor, or).
+
+1995-12-15  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/AlgebraicTransformation.Mod: First version
+
+1995-12-14  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseDecl.Mod (ProcDecl, Module):
+	Copy propagation and dead code elimintation are
+	done right after a global region is completed.  The idea is to make
+	the bulk of the dead code collectable by the gc as soon as possible.
+	Setting `removeDeadCode' to FALSE will suppress cp and dce.
+
+1995-12-14  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/AlgebraicTransformation.Mod: New file.
+
+1995-12-14  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Data.Mod (Delete):
+	Modified procedure to allow global region as input.
+
+1995-12-13  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/GuardCond.Mod (CopyGuardInfo):
+	Oops, forgot to copy `negate` field.
+
+	(BuildPreConditions): Added case guards to pre-conditions.
+
+	* frontend/Data.Mod (ReplaceUses):
+	Assert that operand `of' isn't an Object or a Struct.
+
+1995-12-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Data.Mod:
+	New flag `objIsTwisted' for detection of formal parameters types that
+	were changed by WITH.
+
+	* frontend/ParseStatm.Mod (WithStatement, ProcedureCall):
+	Warning 411 is only printed if a
+	formal parameter is modified by WITH and the procedure is called
+	recursively.
+
+	* optimizers/GateReduction.Mod (TraverseGates):
+	Replace boolean gates with constant input by the
+	corresponding--possibly negated--guard.
+
+	* optimizers/GuardCond.Mod (TraceValue):
+	Extended procedure to recognize boolean gates with
+	constants as operands and trace them to the original guards.
+
+1995-12-12  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	It seems this is a stable version of the `constant propagation'.
+	I found no problem yet, `ooc' is able to compile itself with
+	optimization on.
+
+1995-12-09  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/GuardCond.Mod (OperandCondition):
+	New.  Takes an operand, returns the conditions
+	that hold at the point where the operand is used.
+
+	* frontend/UndefVar.Mod (CheckVars):
+	Don't create (and erase afterward) a guard against $trap
+	around the exit instruction, since it is already guarded this way by
+	Attr.GuardExit.
+
+	* frontend/ParseStatm.Mod (FunctionTrap):
+	Removed, its job is now done by Attributes.GuardExit.
+
+	* frontend/Data.Mod:
+	Added serperate data type `GlobalRegion' for greg regions.  It holds
+	references to the greg's exit and enter instructions.
+
+	* optimizers/GateReduction.Mod: New file.
+
+	* frontend/Attributes.Mod (GuardExit):
+	New.  Creates guards against $trap and ~$return that are
+	put around a greg's exit instruction.
+
+	* frontend/ParseExpr.Mod (EvalInstr):
+	Remove `mayTrap' flag from instruction that was
+	successfully folded into a constant.  This allows dead code elmination
+	to discard the original instruction.
+
+	(StringConvertible): Removed obsolete region parameter.
+
+1995-12-08  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Statistics.Mod: New file.
+
+	* frontend/ParseStatm.Mod (AddUpdate):
+	Oops.  Forgot to add last operand of `update-heap'
+	instruction.
+
+	* frontend/ParseExpr.Mod (Designator):
+	Defer creation of `adr' instructions for variables until
+	the address is requested.  Access item's address via `Item.Adr()'.
+
+	(EvalDyadicOp): Comparison between array of char and empty string
+	constant was sometimes assigned a wrong subclass.
+
+	* frontend/Data.Mod (GetXXXConst):
+	Split list of constants in multiple lists indexed by
+	the constant's type.  Should speed up constant creation somewhat.
+
+	* frontend/Attributes.Mod (Item.Adr):
+	New type-bound procedure to access an item's address.
+	Used to defer creation of `adr' instruction until they are truly
+	needed.
+
+1995-12-05  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Regions (marked with `bottom' or so) were only inspected, if their
+	new lattice value has changed from the initial value.
+	This caused some problems when a lattice value became `bottom'. The
+	instructions were not inspected during constant propagation, but
+	`ReplaceByConstants' would inspect them and discover not initialized
+	lattice fields.
+
+1995-12-04  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Attributes.Mod (CleanupGReg):
+	Also clear the current value field of nonlocal objects
+	that appear as results in the greg's enter instruction.
+
+1995-12-01  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Fixed bug with constant folding of `classBit(Set|Range|Clear)', type of
+	instruction was falsely determined from first operand instead of the
+	instruction itself.
+
+1995-11-30  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/UndefVar.Mod (ReadsEmptyStore):
+	Assume that all references to variables appearing
+	beyond the formal parameters in a procedure's enter instruction
+	correspond to existing read instructions.
+
+	* frontend/SymbolTable.Mod (WarnUnused):
+	Disabled warnings of unused formal parameters.
+
+	(WriteTree): Don't write the objects representing imported modules
+	into the symbol file.
+
+	(WriteUsedImports): Don't forget to write modules into the sym file
+	that provide types for it due to type aliasing, but don't appear in
+	the current module's import list.
+
+	(InitPredef): Oops.  Forget to define second parameters of ROT and
+	LSH.
+
+	* frontend/ParseStatm.Mod (AssignmentCompatible):
+	Handle case of assignment to `grpString'
+	(first parameter of COPY) correctly.
+
+	Removed some redundant type-guards spotted by OOC itself.
+
+	* frontend/ParseExpr.Mod (EvalInstr):
+	Call `TryConstantFolding' with parameter
+	`adaptIntRange=TRUE'.
+
+	(Designator): Set a procedure designator's current value to its
+	address.
+
+	(StringConvertible): When converting a character constant into a
+	string constant also update the item's current value to the new
+	constant.
+
+	* frontend/ParseDecl.Mod (ProcDecl):
+	Don't clear export flag of type-bound procedures when the
+	receiver's record type isn't exported.  The procedure may be called
+	with a pointer as receiver.
+
+	* frontend/ParseExpr.Mod (EvalDyadicOp):
+	Overlooked comparison operators =, # when building
+	opcode for SET operations.
+
+	(Factor): Sequences of set elements were built with a wrong opcode.
+
+1995-11-29  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolTable.Mod (Find):
+	When a search fails inside a type-bound procedure, continue
+	the search in the global module scope.
+
+	(ReadImportList): Store modules that provide types for the current
+	module's symbol file in a local list.
+	(ReadStruct): If a type is read from a different module, then search
+	the local module list for the providing module (and not the global
+	one).
+
+	* frontend/ParseStatm.Mod (RegisterSideEffects):
+	Corrected code that assigns the new values of a
+	call's variable parameters to the actual parameter designators.
+
+	* frontend/ParseExpr.Mod (Designator):
+	Store receiver of type-bound procedure in global
+	variable `receiverDesignator'.
+
+1995-11-28  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Changed the way `AlgebraicTransformation' is called.
+
+	# added some comments
+
+1995-11-27  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Scanner.Mod (Init):
+	Will checkout working file only if RCS is enabled and
+	`fileName' looks like the name of a RCS master file.  Will not search
+	for RCS master itself, assumes that `fileName' was previously passed
+	to `ParamPaths.FindPath' to do this.
+
+	* frontend/ParamPaths.Mod (Init):
+	New config option `keepGivenPath': If TRUE, then FindPath or
+	FindPathExt won't search the path lists when they are given a filename
+	with a directory prefix (eg, "./foo" or "bar/foo").
+	(FindPath): Changed search for `fileName' with non-empty directory.
+	If `fileName' isn't found in the path list, try the name itself and
+	then the RCS master.
+	Changed name of NEWPATHS section to NEWFILES.
+
+1995-11-26  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/RCS.Mod:
+	Changed file search and path generation to take the empty RCS suffix
+	into account.  Removed reference to module `Dos'.
+
+1995-11-25  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParamPaths.Mod (FindPath):
+	Use module `RCS' to locate RCS master file.
+	(MakeRCSName, RCS2File): Removed.
+
+1995-11-23  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/RCS.Mod: New file.
+
+	* frontend/Scanner.Mod (Init):
+	Changed procedure to search for a RCS master file if the given
+	file does not exist.  Moved the RCS stuff into a seperate module
+	RCS.Mod.
+
+	(MODULE): Oops.  Added parameter `stringLength' to option list
+	_twice_.  Result was a list with a loop and a never terminating
+	search.
+
+	* frontend/ParseStatm.Mod:
+	Added position tags to guards created by IF, CASE, WHILE, REPEAT,
+	LOOP, FOR.
+
+	* frontend/ParseExpr.Mod (Designator):
+	Fixed position tag for `adr' instructions.
+	(SplitPaths): Added position tags for guards.
+
+1995-11-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolTable.Mod (ReadObjList):
+	Set `localTo' field of record fields and type-bound
+	procedures to refer to their enclosing record.
+
+	(TypeInGroup, TypeName): Added handling of groups of types.
+
+	* frontend/ParseStatm.Mod (AssignmentCompatible):
+	Assignment to first parameter of COPY did not
+	convert character constant into string constant.  Groups of types
+	(used to describe special parameter of predefined procedures) weren't
+	handled.
+
+	(FixupLoopGate): Change only operands that are actually used for
+	values.
+
+	(CheckValueParam): Somehow this check compatibility was very, very
+	broken.
+
+	(PassNonlocalReferences): Extended to pass parameter tags (type tag,
+	length, address, etc) of parameter local to the caller to the called
+	procedure as additional (ie, non-parameter) operands.
+
+	(ProcedureCall): Fixed it to accept empty parameter lists.
+
+	* frontend/ParseDecl.Mod (Type):
+	Oops.  Always removed export flags from record fields
+	resp. type-bound procs.
+
+1995-11-15  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Scanner.Mod (GetSym):
+	End of strings delimited by ' wasn't recognized.
+
+1995-11-14  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/Worklist.Mod: Added some assertions.
+
+1995-11-13  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolTable.Mod (Fingerprint):
+	Split expression into three simpler ones.  Hope that
+	they are simple enough for Oberon-A.
+
+	(ReadSymbolFile): Restore scope stack to previous state after the
+	symbol file has been read.
+
+	* frontend/ParseDecl.Mod (IdentDef):
+	The export flags of a forward declaration were kept for
+	the actual definition.
+
+	* frontend/IntArith.Mod (Div, Mod):
+	Variable `min' wasn't set to the minimum value of the
+	given range.
+
+	* frontend/Data.Mod (InitRegion):
+	The field `instrTail' wasn't initialized.
+
+	* tools/Browser.Mod (WriteReal):
+	Oops.  Forgot to write the real number to stdout.
+
+1995-11-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Scanner.Mod:
+	Marked forward declaration of `GetSym' as exported.
+
+1995-11-12  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/GuardCond.Mod: New file.
+
+	* frontend/UndefVar.Mod:
+	Adapted module to use the advanced control flow information provided
+	by the module GuardCond.
+
+1995-11-10  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/CopyPropagation.Mod, optimizers/Worklist.Mod, optimizers/ConstPropagation.Mod:
+	*** empty log message ***
+
+1995-11-09  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/Worklist.Mod: *** empty log message ***
+
+1995-11-06  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/Browser.Mod, tools/oob.Mod, frontend/Attributes.Mod, frontend/Data.Mod, frontend/Error.Mod, frontend/IntArith.Mod, frontend/Opcode.Mod, frontend/ParamOptions.Mod, frontend/ParamPaths.Mod, frontend/ParamPragmas.Mod, frontend/Parameter.Mod, frontend/ParseDecl.Mod, frontend/ParseExpr.Mod, frontend/ParseStatm.Mod, frontend/Scanner.Mod, frontend/SymbolTable.Mod, frontend/UndefVar.Mod:
+	Added GPL header.
+
+	* frontend/UndefVar.Mod:
+	CheckVars: Changed probing for missing RETURN to take traps into
+	consideration.
+
+	* frontend/ParseDecl.Mod:
+	ProcDecl: Moved creation of trap at the end of a function procedure
+	behind the check for undefined variables and missing returns.
+	Putting the trap in the code would actually disable any probing for
+	missing RETURN.
+
+	* frontend/ParseExpr.Mod:
+	AccessVar: Fixed access to nonlocal variables resp. variable
+	parameters.
+
+1995-11-05  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Data.Mod: ExitInstr: Fixed typo in comment.
+
+1995-11-04  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/UndefVar.Mod:
+	Added detection of paths through a function that doesn't end in a
+	return.  Improved detection of undef vars.
+
+	* frontend/ParseStatm.Mod:
+	PassNonlocalReferences: Location attribute for additional parameters
+	to a call weren't set.
+
+	* frontend/ParseExpr.Mod:
+	AccessVar: Reading from a nonlocal variable is now detected and the
+	variable is put into the result list of enter.
+
+	* frontend/Attributes.Mod:
+	CleanupGReg: Do _not_ remove unused nonlocal references from enter's
+	result list, since those variable are accessed via $store and don't
+	turn up in the use list.
+
+	* frontend/WriteGSA.Mod:
+	Added flag to toggle writing of operand positions.
+
+	* frontend/UndefVar.Mod:
+	Completely rewrote probing code for use of undefined variables.
+
+	* frontend/ParseStatm.Mod:
+	CreateUpdate: Change variable's current value to reflect update.
+
+	Replaced `Opc.Copy' by the actual statements.
+
+	Added procedure `FunctionTrap' to generate a trap if procedure is left
+	without RETURN.
+
+	* frontend/ParseDecl.Mod: Updated call to `UndefVar.CheckVar'.
+
+	* frontend/Opcode.Mod:
+	Added formal parameter list of called procedure (Data.Struct) as
+	second operand to `call'.
+
+	Added procedure `ValueOperand' that evaluates to TRUE if a given
+	operand is used as value.
+
+	Adr: Fixed `adr' instruction to return a LONGINT value.
+
+	Removed procedure `Copy'.
+
+	Added `GetReceiver', `GetFormalParam'.
+
+	* frontend/Error.Mod:
+	ErrXXX: Replaced ASSERT(pos>=0) by a warning if pos<0.
+
+	* frontend/Data.Mod:
+	Added flag `objReadBeforeWrite' for variable parameters.
+
+1995-11-01  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/Worklist.Mod: New file.
+
+1995-10-31  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SymbolTable.Mod:
+	InitPredef: The result type of LEN wasn't set.
+
+	* frontend/ParseStatm.Mod:
+	PredefCodeGen: The result of CHR, ENTIER, LONG, SHORT, ORD function
+	calls has been discarded.
+
+1995-10-29  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/WriteGSA.Mod: Removed reference to `SymbolTable.mod'.
+
+	Exported `WrOpcode'.
+
+	* frontend/SymbolTable.Mod:
+	Changed specs variable `mod': It is only valid while
+	`ParseDecl.Module' is running, otherwise it is NIL.
+
+	* frontend/ParseStatm.Mod:
+	CaseStatement: Statements in the ELSE part are now put into the
+	correct guard.
+
+	WithStatement: Fixed access to undefined variable.
+
+	* frontend/ParseExpr.Mod:
+	Changed address calculations to operate on the type `LONGINT'.
+
+	Designator: Fixed NIL deref.
+
+	EvalDyadicOp: Fixed code gen for string comparison.
+
+	* frontend/ParseDecl.Mod:
+	Changed formal parameters of `Module' to return the list of gregs and
+	the root of the symbol table in variable parameters.
+
+	* frontend/Data.Mod: Fixed `MoveInstruction'.
+
+	* frontend/Error.Mod:
+	Corrected interpretation patterns for command line options -v, -w,
+	--error-msgs.
+
+	* frontend/Opcode.Mod: Added some comments.
+
+1995-10-27  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Removed 'ConstForwarding' because all it that it did is also done
+	by 'ConstPropagation' in a more efficient manner.
+
+	* optimizers/ConstPropagation.Mod:
+	Cleaned up ConstPropagation stuff and fixed some bugs due to
+	false handling of merge's operands
+
+1995-10-25  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Still problems with 'nested loops', maybe we'll have to resolve those
+	nested loops from the inner to the outer one.
+
+	Also, there ist still some missing idea, how "pseudo constant"
+	gates should be handled. The gates I mean are of the form
+	gate (merge) (opnd1) (opnd2) ...
+	where all operands are the same, i.e. same instruction or same
+	access.
+
+1995-10-24  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/ConstPropagation.Mod:
+	Completely rewritten ConstPropagation part of the source. It now is
+	much shorter, more efficient and does not get into infinite loops when
+	dealing with GSA loops.
+
+	Still some work to do with nested loops, gates in loops (the example from
+	Brandis' diss., ConstProp3.Mod) and incorporation of AlgebraicTransformations.
+
+1995-10-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/Attributes.Mod, frontend/Scanner.Mod:
+	*** empty log message ***
+
+1995-10-07  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParamPragmas.Mod, frontend/Parameter.Mod, frontend/ParamOptions.Mod, tools/oob.Mod:
+	*** empty log message ***
+
+1995-10-04  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/Browser.Mod: *** empty log message ***
+
+	* tools/oob.Mod: New file.
+
+1995-10-03  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParamPaths.Mod, frontend/ParamPragmas.Mod, frontend/Parameter.Mod:
+	*** empty log message ***
+
+1995-10-02  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/IntArith.Mod: *** empty log message ***
+
+1995-10-01  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParamPragmas.Mod: New file.
+
+1995-09-30  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/Browser.Mod: *** empty log message ***
+
+1995-09-24  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/SizeData.Mod, frontend/UndefVar.Mod: New file.
+
+1995-09-19  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/DeadCodeElimination.Mod: *** empty log message ***
+
+1995-09-18  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/DeadCodeElimination.Mod: *** empty log message ***
+
+1995-09-16  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* optimizers/DeadCodeElimination.Mod: New file.
+
+1995-09-13  Juergen Zimmermann  <jnzimmer@informatik.uni-kl.de>
+
+	* optimizers/CopyPropagation.Mod: New file.
+
+1995-09-11  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/Browser.Mod:
+	Removed redundant formal parameter of `WriteConst'.
+
+1995-09-10  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParamOptions.Mod, frontend/ParamPaths.Mod, frontend/Parameter.Mod, frontend/WriteSymbols.Mod, tools/Browser.Mod:
+	New file.
+

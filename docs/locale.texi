@@ -1,0 +1,33 @@
+@node Localization, Language, Exception Handling, Top
+@chapter Localization
+
+@menu
+* Locales::                     Localization information based on the
+                                  Posix/C facilities.
+* LocStrings::                  Character and string localization 
+                                  facilities.
+* LocNumConv::                  Localized number conversions. 
+* LocNumStr::                   Convert numbers to/from strings using 
+                                  locale information.
+* LocTextRider::                Localized text riders.
+* LocText::                     Text string localization facilities.
+@end menu
+
+@node Locales, LocStrings,  , Localization
+@section Module Locales
+
+@node LocStrings, LocNumConv, Locales, Localization
+@section Module LocStrings
+
+@node LocNumConv, LocNumStr, LocStrings, Localization
+@section Module LocNumConv
+
+@node LocNumStr, LocTextRider, LocNumConv, Localization
+@section Module LocNumStr
+
+@node LocTextRider, LocText, LocNumStr, Localization
+@section Module LocTextRider
+
+@node LocText,  , LocTextRider, Localization
+@section Module LocText
+

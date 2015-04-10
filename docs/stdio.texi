@@ -1,0 +1,532 @@
+@node Standard I/O,  , Standard Mappers, I/O Subsystem
+@section Standard I/O
+
+Modules @code{In}, @code{Out}, and @code{Err} provide simple interfaces to
+the standard channels (@pxref{StdChannels}) These modules can be used to
+read from predefined input (typically the keyboard) and write to predefined
+output (typically the computer screen) locations.
+
+Historically, the various Oberon systems/ compilers have furnished modules
+called @code{In} and @code{Out}, which were intended primarily as aids for
+learning the Oberon(-2) programming language.  These modules were often
+over-simplified to such a degree that they were of limited use beyond the
+initial learning stage.  The intention was that, after learning the
+language, a programmer would learn other, more sophisticated methods for
+I/O.
+
+Although the modules @code{In}, @code{Out}, and @code{Err} in the OOC
+library are simple enough to be used by novices, they are not nearly as
+limited as the corresponding modules from the original Oberon system.
+Hence, they are still useful to programmers well beyond the beginning
+stages.
+
+These modules give simplified facilities similar to module TextRider applied
+to the standard channels; they allow reading and writing of data as text.
+If these prove to be insufficient for your needs, then modules TextRider or
+BinaryRider may be used instead (@pxref{Standard Mappers})
+
+@menu
+* In::                          Simple interface to standard input.
+* Out::                         Simple interface to standard output.
+* Err::                         Simple interface to standard error channel.
+@end menu 
+
+@node In, Out,  , Standard I/O 
+@subsection Module In
+@pindex In
+@cindex channels, in
+
+Module @code{In} provides a set of basic read operations for text.  It is
+initially set to read from the standard input channel
+@code{StdChannels.stdin} (@pxref{StdChannels}), but this may be changed with
+the @code{SetReader} procedure.
+
+Each of the procedures in this module is designed to interpret a specific
+type of text token.  That is, @code{Char} will read in a single @code{CHAR}
+value, @code{Int} will read in an @code{INTEGER} value, and so forth.  For
+exact syntax of each of these tokens see @ref{Syntax of Text Tokens}.
+
+The following program fragment gives an example of how you could read input
+a single line at a time (input stops after reading a blank line):
+
+@smallexample
+VAR str: ARRAY 256 OF CHAR;
+    
+  In.Line(str);	
+  WHILE In.Done() & (str # "") DO
+     (* process each line *)
+     In.Line(str);	
+  END;
+@end smallexample
+
+@defvr {Read-only Variable} reader
+The reader used for all read operations in module @code{In}.  The type of
+@code{reader} is @code{TextRider.Reader}, and it is initialized to refer to
+a text reader connected to the channel @code{StdChannels.stdin}.  
+
+The @code{SetReader} procedure may be used to change this to refer to
+another @code{TextRider.Reader}.
+@end defvr
+
+@deffn Function Done @code{(): BOOLEAN}
+This function returns @code{FALSE} after an unsuccessful read operation.
+This may be caused by attempting to read improperly formatted text (e.g.,
+attempting to read non-numeric text using @code{Int}), or if the underlying
+reader has encountered an error.  Further reading is not possible until the
+error is cleared using the @code{ClearError} procedure.
+@end deffn
+
+@deffn Procedure ClearError 
+Clears error conditions, re-enabling further read operations.
+@end deffn
+
+@deffn Procedure SetReader @code{(@var{r}: TextRider.Reader)}
+This procedure is used to change the reader used by all read operations in
+module @code{In}.  Refer to @ref{TextRider} for details on how to open other
+readers.  If @var{r=NIL}, the reader is set to read from
+@code{StdChannels.stdin}.
+@end deffn
+
+All of the following read operations require that @code{Done()} @result{}
+@code{TRUE}; that is, they will not read anything else after an unsuccessful
+read operation has occured.  Further reading cannot take place until the
+error is cleared using @code{ClearError}.
+
+Most of these read operations skip leading whitespace (i.e., spaces, tabs,
+end-of-line characters, etc.) before reading a token; the only procedures
+that do not skip whitespace are @code{Char} and @code{Line}.
+
+A read error will occur, not only for improperly formatted text, but for
+numbers (i.e., reading using @code{Int}, @code{Real}, and so forth) and set
+elements that have values out of range of the target type.  For example,
+attempting to read @samp{999999999999999999} using @code{Int} will give
+@code{Done()} @result{} @code{FALSE}.
+
+An error will also occur for procedures that read into an @code{ARRAY}
+@code{OF} @code{CHAR}, when the array is not large enough to hold the entire
+input.
+
+@deffn Procedure Bool @code{(VAR @var{bool}: BOOLEAN)}
+Reads in the text @samp{TRUE} or @samp{FALSE}; any other text results in an
+error.  When an error occurs, the value of @var{bool} is undefined.
+@end deffn
+
+@deffn Procedure Char @code{(VAR @var{ch}: CHAR)}
+Reads in a single character.
+@end deffn
+
+@deffn Procedure Hex @code{(VAR @var{lint}: LONGINT)}
+Reads in text in the form of an unsigned hexadecimal number.  The first
+character must be a decimal digit (i.e., @samp{0..9}) and subsequent
+characters must be valid hexadecimal digits (i.e., @samp{0..9} or
+@samp{A..F}).  The value read must be in the valid range for a
+@code{LONGINT}.
+
+Upon encountering an error, the value of @var{lint} is undefined.
+
+@strong{Please note:} Because @code{LONGINT} values are signed, hex numbers
+in the range @samp{80000000H..FFFFFFFFH} are interpreted as negative
+@code{LONGINT} values.
+@end deffn
+  
+@deffn Procedure Identifier @code{(VAR @var{s}: ARRAY OF CHAR)}
+Reads an Oberon-2 style identifier.  The first character must be a letter,
+which is followed by any sequence of letters and digits.  An error will
+occur if @var{s} is not large enough to hold the entire input.
+
+Upon encountering an error, the value of @var{s} is undefined.
+@emph{Example:}  
+
+@smallexample
+(* Input is as follows:  
+myIdentifier 3isBad 
+*)
+
+VAR str: ARRAY 256 OF CHAR;
+
+In.Identifier(str)
+   @result{} Done() = TRUE, str = "myIdentifier"
+In.Identifier(str)
+   @result{} Done() = FALSE, str = undefined
+@end smallexample
+@end deffn
+
+@deffn Procedure Int @code{(VAR @var{int}: INTEGER)}
+Reads in text in the form of a signed whole number.  The first character
+must be a digit, a "@code{+}" sign, or a "@code{-}" sign.  The value read
+must be in the valid range for an @code{INTEGER}.
+
+Upon encountering an error, the value of @var{int} is undefined.
+
+@emph{Example:}  
+
+@smallexample
+(* Input is as follows:
+12345
+999999999999999
+forty-two
+*)
+
+VAR intVar: INTEGER;
+
+In.Int(intVar);
+   @result{} Done() = TRUE, intVar = 12345
+In.Int(intVar);
+   @result{} Done() = FALSE, intVar = undefined
+In.ClearError;
+In.Int(intVar); (* attempting to read `forty-two' *)
+   @result{} Done() = FALSE, intVar = undefined
+        (* reading position is still at the `f' in
+           `forty-two' *)
+@end smallexample
+@end deffn
+
+@deffn Procedure LongInt @code{(VAR @var{lint}: LONGINT)}
+This procedure provides the same facility as @code{Int}, except that it
+deals with @code{LONGINT} values.
+@end deffn
+
+@deffn Procedure ShortInt @code{(VAR @var{int}: SHORTINT)}
+This procedure provides the same facility as @code{Int}, except that it
+deals with @code{SHORTINT} values.
+@end deffn
+
+@deffn Procedure Line @code{(VAR @var{s}: ARRAY OF CHAR)}
+Reads text until an end-of-line character is encountered.  The end-of-line
+character is discarded and @var{s} is always terminated with @code{0X}.  An
+error will occur if @var{s} is not large enough to hold the entire input.
+
+Upon encountering an error, the value of @var{s} is undefined.
+
+@strong{Please note:} This procedure returns an empty string if already at
+at the end-of-line.
+@end deffn
+
+@deffn Procedure String @code{(VAR @var{s}: ARRAY OF CHAR)}
+Reads in any text enclosed in single (@code{'}) or double (@code{"}) quote
+marks.  The opening quote must be the same as the closing quote and must not
+occur within the string.  Reading will continue until the terminating quote
+mark is encountered, an invalid character is read (end-of-line is always
+considered invalid), or there are no more characters available to be read.
+@var{s} is always terminated with @code{0X}.
+
+Unquoted strings or strings with no terminating quote mark result in an
+error.  An error will also occur if @var{s} is not large enough to hold the
+entire input.
+
+Upon encountering an error, the value of @var{s} is undefined.
+
+@emph{Example:}  
+
+@smallexample
+(* Input is as follows:
+"A well-formed string"
+"No end quote
+*)
+
+VAR str: ARRAY 256 OF CHAR;
+
+In.String(str);
+   @result{} Done() = TRUE, str = "A well-formed string"
+In.String(str);
+   @result{} Done() = FALSE, str = undefined
+        (* reading position is now at the end of this line *)
+@end smallexample
+@end deffn
+  
+@deffn Procedure Real @code{(VAR @var{real}: REAL)}
+Reads in text in the form of a signed fixed or floating-point number.  The
+first character must be a digit, a "@code{+}" sign, or a "@code{-}" sign.
+The value read must be in the valid range for a @code{REAL}.
+
+Upon encountering an error, the value of @var{real} is undefined.
+
+@emph{Example:}  
+
+@smallexample
+(* Input is as follows:
+3.1415
++54321E+30
+2.34E+56
+*)
+
+VAR realVar: REAL;
+
+In.Real(realVar);
+   @result{} Done() = TRUE, realVar = 3.141500
+In.Real(realVar);
+   @result{} Done() = TRUE, realVar = 5.432100E+34
+In.Real(realVar);
+   @result{} Done() = FALSE, realVar = undefined
+        (* value is out of range for REAL *)
+@end smallexample
+@end deffn
+  
+@deffn Procedure LongReal @code{(VAR @var{lreal}: LONGREAL)}
+This procedure provides the same facility as @code{Real}, except that it
+deals with @code{LONGREAL} values.
+@end deffn
+
+@deffn Procedure Set @code{(VAR @var{s}: SET)}
+Reads in text in the form of a set constructor.  The values of set elements
+must be in the range @samp{0..MAX(SET)}.
+
+Upon encountering an error, the value of @var{s} is undefined.
+
+@emph{Example:}  
+
+@smallexample
+(* Input is as follows:
+@{0, 1, 2, 3, 4, 5@}
+@{6, 7, 1024@}
+*)
+
+VAR setVar: SET;
+
+In.Set(setVar);
+   @result{} Done() = TRUE, setVar = @{0..5@}
+In.Set(setVar);
+   @result{} Done() = FALSE, setVar = undefined
+        (* reading position is now at the `@}' after 
+           the `1024' *)
+@end smallexample
+@end deffn
+
+@node Out, Err, In, Standard I/O
+@subsection Module Out
+@pindex Out
+@cindex channels, out
+
+Module @code{Out} provides a set of basic write operations for text.  It is
+initially set to write to the standard output channel
+@code{StdChannels.stdout} (@pxref{StdChannels}), but this may be changed
+with the @code{SetWriter} procedure.
+
+@defvr {Read-only Variable} writer
+The writer used for all write operations in module @code{Out}.  The type of
+@code{writer} is @code{TextRider.Writer}, and it is initialized to refer to
+a text reader connected to the channel @code{StdChannels.stdout}.
+
+The @code{SetWriter} procedure may be used to change this to refer to
+another @code{TextRider.Writer}.
+@end defvr
+
+@deffn Function Done @code{(): BOOLEAN}
+This function returns @code{FALSE} after an unsuccessful write operation.
+This may happen when underlying writer has encountered an error.  Further
+writing is not possible until the error is cleared using the
+@code{ClearError} procedure.
+@end deffn
+
+@deffn Procedure ClearError 
+Clears error conditions, re-enabling further read operations.
+@end deffn
+
+@deffn Procedure SetWriter @code{(@var{w}: TextRider.Writer)}
+This procedure is used to change the writer used by all write operations in
+module @code{Out}.  Refer to @ref{TextRider} for details on how to open
+other writers.  If @var{w=NIL}, the writer is set to write to
+@code{StdChannels.stdout}.
+@end deffn
+
+@deffn Procedure Flush
+Flushes all buffers associated with @code{Out.writer}.  Any pending write
+operations are passed to the underlying system.  If a writing error occurs
+while flushing buffers, @code{Out.Done()} will subsequently return
+@code{FALSE}.  Otherwise, @code{Out.Done()} will return @code{TRUE}.
+@end deffn
+
+@deffn Procedure Bool @code{(@var{bool}: BOOLEAN)}
+Writes the value of @var{bool} as text.  That is, either @samp{TRUE} or
+@samp{FALSE}.
+@end deffn
+  
+@deffn Procedure Char @code{(@var{ch}: CHAR)}
+Writes a single character value @var{ch}.  
+
+@emph{Example:}  
+
+@smallexample
+Out.Char("A");
+   @result{} writes one character = "A"
+@end smallexample
+@end deffn
+  
+@deffn Procedure Hex @code{(@var{lint}: LONGINT; @var{n}: LONGINT)}
+Writes the value of @var{lint} as an unsigned hexadecimal number with a
+minimum field width of @var{n}.  Leading zeros are written if the value of
+@var{lint} requires less than @var{n} places.  If @var{n} is less than or
+equal to zero, field width is 8.
+
+@emph{Example:}  
+
+@smallexample
+Out.Hex(127, 4);
+   @result{} writes "007F"  
+Out.Hex(-128, 0);
+   @result{} writes "FFFFFF80"
+@end smallexample
+@end deffn
+  
+@deffn Procedure Int @code{(@var{int}: INTEGER; @var{n}: LONGINT)}
+Writes the value of @var{int} as a decimal number with a minimum field width
+of @var{n}.  Leading spaces are written if the value of @var{int} requires
+less than @var{n} places.  A sign is written only for negative values.
+
+@emph{Example:}  
+
+@smallexample
+Out.Int(54321, 0);
+   @result{} writes "54321"
+Out.Int(54321, 10);
+   @result{} writes "     54321"
+@end smallexample
+@end deffn
+
+@deffn Procedure LongInt @code{(@var{lint}: LONGINT; @var{n}: LONGINT)}
+This procedure provides the same facility as @code{Int}, except that it
+deals with @code{LONGINT} values.
+@end deffn
+
+@deffn Procedure ShortInt @code{(@var{sint}: SHORTINT; @var{n}: LONGINT)}
+This procedure provides the same facility as @code{Int}, except that it
+deals with @code{SHORTINT} values.
+@end deffn
+
+@deffn Procedure Real @code{(@var{real}: REAL; @var{n}, @var{k}: LONGINT)}
+Writes the value of @var{real} as a floating-point number with a minimum
+field width of @var{n}.
+
+If the value of @var{k} is greater than 0, that number of significant digits
+is included.  Otherwise, an implementation-defined number of significant
+digits is included.  The decimal point is not included if there are no
+significant digits in the fractional part.
+
+The number is scaled with one digit in the whole number part.  A sign is
+included only for negative values.
+
+@emph{Example:}  
+
+@smallexample
+Out.Real(3923009, 0, 0);
+   @result{} writes "3.923009E+6"
+Out.Real(3923009, 10, 1);
+   @result{} writes "      4E+6"
+
+Out.Real(-39.23009, 12, 2);
+   @result{} writes "     -3.9E+1"
+
+Out.Real(0.0003923009, 6, 1);
+   @result{} writes "  4E-4"
+@end smallexample
+@end deffn
+
+@deffn Procedure LongReal @code{(@var{lreal}: LONGREAL; @var{n}, @var{k}: LONGINT)}
+This procedure provides the same facility as @code{Real}, except that it
+deals with @code{LONGREAL} values.
+@end deffn
+
+@deffn Procedure RealEng @code{(@var{real}: REAL; @var{n}, @var{k}: LONGINT)}
+This procedure provides the same facility as @code{Real}, except that the
+number is scaled with one to three digits in the whole number part and has
+an exponent that is a multiple of three.
+
+@emph{Example:}  
+
+@smallexample
+Out.RealEng(39.23009, 10, 5);
+   @result{} writes "    39.230"
+
+Out.RealEng(-3923009, 7, 3);
+   @result{} writes " -3.92E+6"
+
+Out.RealEng(0.0003923009, 1, 1);
+   @result{} writes "400E-6"
+Out.RealEng(0.0003923009, 4, 2);
+   @result{} writes "  390E-6"
+@end smallexample
+@end deffn
+
+@deffn Procedure LongRealEng @code{(@var{lreal}: LONGREAL; @var{n}, @var{k}: LONGINT)}
+This procedure provides the same facility as @code{RealEng}, except that it
+deals with @code{LONGREAL} values.
+@end deffn
+
+@deffn Procedure RealFix @code{(@var{real}: REAL; @var{n}, @var{k}: LONGINT)}
+Writes the value of @var{real} as a fixed-point number with a minimum field
+width of @var{n}.
+
+The value is rounded to the given value of @var{k} relative to the decimal
+point.  The decimal point is suppressed if @var{k} is less than 0.
+
+The number will have at least one digit in the whole number part.  A sign is
+included only for negative values.  
+
+@emph{Example:}  
+
+@smallexample
+Out.RealFix(3923009, 0, -5);
+   @result{} writes "3920000"  (* rounded to the 
+                        ten-thousands place *)
+
+Out.RealFix(3923.5, 0, -1);
+   @result{} writes "3924" (* rounded to the "ones" place *)
+
+Out.RealFix(-39.23009, 10, 1);
+   @result{} writes "     -39.2"
+
+Out.RealFix(0.0003923009, 11, 4);
+   @result{} writes "     0.0004"
+@end smallexample
+@end deffn
+
+@deffn Procedure LongRealFix @code{(@var{lreal}: LONGREAL; @var{n}, @var{k}: LONGINT)}
+This procedure provides the same facility as @code{RealFix}, except that it
+deals with @code{LONGREAL} values.
+@end deffn
+
+@deffn Procedure Set @code{(@var{s}: SET)}
+Writes the value of @var{s} as an Oberon-2 set constructor, including curly
+braces, commas, and range indicators (@samp{..}) where appropriate.
+
+@emph{Example:}  
+
+@smallexample
+Out.Set(@{1,6,10@});
+   @result{} writes "@{1, 6, 10@}"
+Out.Set(@{0, 1, 2, 3, 4, 5@});
+   @result{} writes "@{0..5@}"
+Out.Set(@{0, 2, 4, 6@} + @{1, 3, 5, 7@});
+   @result{} writes "@{0..7@}"
+@end smallexample
+@end deffn
+
+@deffn Procedure String @code{(@var{s}: ARRAY OF CHAR)}
+Writes a string value up to, but not including, the terminating @code{0X}
+character.  The behaviour of this procedure is undefined if @var{s} is an
+unterminated character array.
+
+@strong{Please note:} @code{In.String} and @code{Out.String} @emph{are not}
+symmetric.  That is, @*@code{Out.String} does not enclose the written string
+in quote marks; only the actual character values contained in @var{s} are
+written.
+@end deffn
+
+@deffn Procedure Ln
+Writes an end-of-line marker (i.e., a "newline").  
+@end deffn
+
+@node Err,  , Out, Standard I/O
+@subsection Module Err
+@pindex Err
+@cindex channels, error
+
+Module @code{Err} provides a set of basic write operations for text, which
+exactly mirror those in module @code{Out}.  The difference is that
+@code{Err} is initially set to write to the standard error channel
+@code{StdChannels.stderr} (@pxref{StdChannels}).  Also note that the call
+@code{Err.SetWriter(NIL)} will reset the writer for @code{Err} to
+@code{StdChannels.stderr}.
+
+Because the interfaces of @code{Out} and @code{Err} are identical,
+decriptions of facilities are not duplicated here.  

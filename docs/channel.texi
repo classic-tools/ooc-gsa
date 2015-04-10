@@ -1,0 +1,1769 @@
+@node Channels, Standard Mappers, Input/Output Overview, I/O Subsystem
+@section Channels
+
+This section describes the channel types provided by the OOC library.  Each
+module contains both the channel and its associated basic riders.  Constant
+values that are relevant to a particular channel type are also declared
+within the defining module.
+
+@menu 
+* Channel::                     Defines abtract channel and rider types.  
+* Files::                       File access.  
+* StdChannels::                 Interface to standard input, output, and 
+                                 error channels.  
+* ProgramArgs::                 Facilities to access program arguments.  
+@end menu
+
+@node Channel, Files,  , Channels
+@subsection Module Channel
+@pindex Channel
+@cindex channels
+
+Module Channel provides three @dfn{abstract classes}: @code{Channel},
+@code{Reader}, and @code{Writer}.
+
+All types and procedures declared in this module are considered abstract;
+they are never instanciated or called.  Module Channel is of interest,
+however, because like all abstract classes, its types define the interface
+elements that are required for any concrete classes, which are derived from
+them.
+
+Abstract class @code{Channel} is the base for all channel types.  
+
+Abstract classes @code{Reader} and @code{Writer} are the required basic
+rider types that must be declared for each channel.  Notice that these
+define only read/ write operations for sequences of bytes (@pxref{Riders and
+Mappers})
+
+See the various concrete channel classes for more detail and examples of
+usage (like @ref{Files}, @ref{StdChannels}, or @ref{ProgramArgs}).  In
+particular, the chapter about Files can be read without any prior knowledge
+about channels.
+
+@menu 
+* Abstract Class Channel::      Elements of abtract channel types.  
+* Abstract Class Reader::       Elements of abstract reader types.  
+* Abstract Class Writer::       Elements of abstract writer types.  
+* Channel Procedures::          Free-standing procedures in module 
+                                 Channel.  
+* Summary of Channel Constants::Summarized list of constants in module
+                                 Channel.  
+@end menu
+
+@node Abstract Class Channel, Abstract Class Reader,  , Channel
+@subsubsection Abstract Class Channel
+@cindex channels, base type
+@cindex channels, abstract class
+
+@deftp {Abstract Class} Channel = POINTER TO ChannelDesc
+This is the abstract base channel type.  Channel types are used to connect
+to @dfn{data locations} (@pxref{Input/Output Overview}).  @code{Channel}
+contains the following fields:
+
+@table @asis
+@item Field: @b{res}@minus{}: @code{INTEGER}
+@code{res} is the result (i.e., error flag) signalling failure of a call to
+@code{NewReader}, @code{NewWriter}, @code{Flush}, @code{Close}, etc.
+@code{res} is initialized to @code{done} when the channel is created.  
+
+Every operation sets this to @code{done} if successful, or otherwise, to an
+appropriate error value to indicate the cause of the error (use method
+@code{ErrorDescr} to get a plain text error description).  @xref{Summary of
+Channel Constants} for a list of applicable error codes.
+
+@item Field: @b{readable}@minus{}: @code{BOOLEAN}
+@code{readable} is set to @code{TRUE} if, and only if, readers can be
+attached to this channel with @code{NewReader}.
+
+@item Field: @b{writable}@minus{}: @code{BOOLEAN}
+@code{writable} is set to @code{TRUE} if, and only if, writers can be
+attached to this channel with @code{NewWriter}.
+
+@item Field: @b{open}@minus{}: @code{BOOLEAN}
+@code{open} indicates the channel's status; that is, it is set to
+@code{TRUE} on channel creation, and set to @code{FALSE} by a call to
+@code{Close}.  Closing a channel prevents all further read or write
+operations on it.
+
+@item Method: @code{(@var{ch}: Channel)} @b{Length} @code{(): LONGINT}
+@code{Length} returns the number of bytes of data for the channel @var{ch}.
+If @var{ch} represents a file, then this value is the file's size.  If
+@var{ch} has no fixed length (e.g., because it's interactive), it returns
+@code{noLength}.
+
+@item Method: @code{(@var{ch}: Channel)} @b{GetModTime} @code{(VAR @var{mtime}: Time.TimeStamp)}
+@code{GetModTime} retrieves the modification time of the data location
+accessed by channel @var{ch}.  
+
+If no such information is available, @code{@var{ch}.res} is set to
+@code{noModTime}; otherwise it is set to @code{done}.  
+
+@item Method: @code{(@var{ch}: Channel)} @b{NewReader} @code{(): Reader}
+This method attaches a new reader to the channel @var{ch}.  The reader's
+position is set to the beginning of the channel, and its @code{res} field is
+initialized to @code{done}.
+
+@code{@var{ch}.res} is set to @code{done} on success and the new reader is
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
+to indicate the error cause.
+
+@strong{Please note}: if the channel does not support multiple reading
+positions, the same reader is always returned.
+
+@item Method: @code{(@var{ch}: Channel)} @b{NewWriter} @code{(): Writer}
+This method attaches a new writer to the channel @var{ch}.  The writer's
+position is set to the beginning of the channel, and its @code{res} field is
+initialized to @code{done}.  
+
+@code{@var{ch}.res} is set to @code{done} on success and the new writer is
+returned.  Otherwise, it returns @code{NIL} and @code{@var{ch}.res} is set
+to indicate the error cause.
+
+@strong{Please note}: if the channel does not support multiple writing
+positions, the same writer is always returned.
+
+@item Method: @code{(@var{ch}: Channel)} @b{Flush}
+Flushes all buffers related to this channel.  Any pending write operations
+are passed to the underlying OS and all buffers are marked as invalid.  The
+next read operation will get its data directly from the channel instead of
+the buffer.  If a writing error occurs, the field @code{@var{ch}.res} will
+be changed to @code{writeError}, otherwise it's assigned @code{done}.  
+
+@strong{Please note}: you must check the channel's @code{res} flag after an
+explicit @code{Flush}; none of the attached writers will indicate a write
+error in this case.
+
+@item Method: @code{(@var{ch}: Channel)} @b{Close}
+Flushes all buffers associated with @code{ch}, closes the channel, and frees
+all system resources allocated to it.  This invalidates all riders attached
+to @code{ch}; they can't be used further.  On success, if all read and write
+operations (including @code{Flush}) have completed successfully,
+@code{@var{ch}.res} is set to @code{done}.  An opened channel can only be
+closed once, successive calls of @code{Close} are undefined.  
+
+@strong{Please note}: unlike the Oberon System all opened channels have to
+be closed explicitly.  Otherwise resources allocated to them will remain
+blocked.
+
+@item Method: @code{(@var{ch}: Channel)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
+Retrieves a descriptive error message string stating the reason why the
+previous operation (@code{NewReader}, @code{NewWriter}, @code{Flush},
+@code{Close}, etc.) failed.  The string starts with a capital letter and
+does not include any termination punctuation.  @var{descr} should be large
+enough to hold a multi-line message (256 characters should suffice).  
+
+If @code{@var{r}.res = done}, then @var{descr} is assigned the empty
+string.
+
+@item Method: @code{(@var{ch}: Channel)} @b{ClearError}
+Sets the result flag @code{@var{ch}.res} to @code{done}.  
+@end table
+@end deftp
+
+@node Abstract Class Reader, Abstract Class Writer, Abstract Class Channel, Channel
+@subsubsection Abstract Class Reader
+@cindex readers, base type
+@cindex readers, abstract class
+
+@deftp {Abstract Class} Reader = POINTER TO ReaderDesc
+This is the abstract base reader type.  Reader types are used to perform
+read operations on channels (@pxref{Input/Output Overview}).  @code{Reader}
+contains the following fields:
+
+@table @asis
+@item Field: @b{base}@minus{}: @code{Channel}
+@code{base} refers to the channel the reader is connected to.  
+
+@item Field: @b{res}@minus{}: @code{INTEGER}
+@code{res} is a result (error) flag that signals failure of a call to
+@code{ReadByte}, @code{ReadBytes}, or @code{SetPos}.  @code{res} is
+initialized to @code{done} when creating a reader or by calling
+@code{ClearError}.  The first failed read operation (or @code{SetPos})
+changes this to indicate the error, all further calls to @code{ReadByte},
+@code{ReadBytes}, or @code{SetPos} will be ignored until @code{ClearError}
+resets this flag.
+
+This means that the successful completion of an arbitrary complex sequence
+of read operations can be ensured by asserting that @code{res} equals
+@code{done} beforehand and also after the last operation.
+
+Use the method @code{ErrorDescr} to get a plain text error description of
+this error code.  @xref{Summary of Channel Constants} for a list of
+applicable error codes.
+
+@item Field: @b{bytesRead}@minus{}: @code{LONGINT}
+@code{bytesRead} is set by @code{ReadByte} and @code{ReadBytes} to indicate
+the number of bytes that were successfully read.
+
+@item Field: @b{positionable}@minus{}: @code{BOOLEAN}
+@code{positionable} is set to @code{TRUE} if, and only if, the reader can be
+moved to another position with @code{SetPos}; for channels that can only be
+read sequentially, like input from the keyboard, this is set to
+@code{FALSE}.
+
+@item Method: @code{(@var{r}: Reader)} @b{Pos} @code{(): LONGINT}
+Returns the current reading position associated with the reader @var{r} in
+channel @code{@var{r}.base}, i.e., the index of the first byte that is read
+by the next call to @code{ReadByte} or @code{ReadBytes}.  This procedure
+returns @code{noPosition} if the reader has no concept of a reading position
+(e.g., if it corresponds to input from keyboard), otherwise the result is
+non-negative.
+
+@item Method: @code{(@var{r}: Reader)} @b{Available} @code{(): LONGINT}
+Returns the number of bytes available for the next reading operation.  For a
+file this is the length of the channel @code{@var{r}.base} minus the current
+reading position, for an sequential channel (or a channel designed to handle
+slow transfer rates) this is the number of bytes that can be accessed
+without additional waiting.  
+
+The result is @code{-1} if @code{Close()} was called for the channel (or
+the channel has been otherwise disconnected), or no more bytes are
+available.
+
+@strong{Please note}: the number returned may be an approximation of the
+number of bytes that could be read at once; it could be lower than the
+actual value.  For some channels or systems, this value may be as low as 1
+even if more bytes are waiting to be processed.
+
+@item Method: @code{(@var{r}: Reader)} @b{SetPos} @code{(@var{newPos}: LONGINT)}
+Sets the reading position to @var{newPos}.  Using a negative value of
+@var{newPos}, or calling this procedure for a reader that doesn't allow
+positioning, will set @code{@var{r}.res} to @code{outOfRange}.  A value
+larger than the channel's length is legal, but the next read operation will
+most likely fail with an @code{readAfterEnd} error (unless the channel has
+grown beyond this position in the meantime).  
+
+Calls to this procedure while @code{@var{r}.res # done} will be ignored; in
+particular, a call with @code{@var{r}.res = readAfterEnd} error will not
+reset @code{res} to @code{done}.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadByte} @code{(VAR @var{x}: SYSTEM.BYTE)}
+Reads a single byte from the channel @code{@var{r}.base} at the reading
+position associated with @var{r} and places it in @var{x}.  The reading
+position is moved forward by one byte on success, otherwise
+@code{@var{r}.res} is changed to indicate the error cause.  Calling this
+procedure with the reader @var{r} placed at the end (or beyond the end) of
+the channel will set @code{@var{r}.res} to @code{readAfterEnd}.  
+
+@code{@var{r}.bytesRead} will be @code{1} on success and @code{0} on
+failure.
+
+Calls to this procedure while @code{@var{r}.res # done} will be ignored.
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadBytes} @code{(VAR @var{x}: ARRAY OF SYSTEM.BYTE; @var{start}, @var{n}: LONGINT)}
+Reads @var{n} bytes from the channel @code{@var{r}.base} at the reading
+position associated with @var{r} and places them in @var{x} beginning at
+index @var{start}.  The reading position is moved forward by @var{n} bytes
+on success, otherwise @code{@var{r}.res} is changed to indicate the error
+cause.
+
+Calling this procedure with the reader @var{r} positioned less than @var{n}
+bytes before the end of the channel will will set @code{@var{r}.res} to
+@code{readAfterEnd}.
+
+@code{@var{r}.bytesRead} will hold the number of bytes that were actually
+read (being equal to @var{n} on success).  Calls to this procedure while
+@code{@var{r}.res # done} will be ignored.
+
+@strong{Pre-condition}: @var{n} and @var{start} are non-negative.  Also,
+there is enough space in array @var{x}, starting at index @var{start}, to
+hold @var{n} bytes.
+
+@item Method: @code{(@var{r}: Reader)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
+Retrieves a descriptive error message string stating the reason why one of
+the previous operations (@code{SetPos}, @code{ReadByte}, or
+@code{ReadBytes}) failed.  The string starts with a capital letter and does
+not include any termination punctuation.  @var{descr} should be large enough
+to hold a multi-line message (256 characters should suffice).  
+
+If @code{@var{r.res} = done}, then @var{descr} is assigned the empty string.
+
+@item Method: @code{(@var{r}: Reader)} @b{ClearError}
+Sets the result flag @code{@var{r}.res} to @code{done}, re-enabling further
+read operations on @var{r}.
+@end table
+@end deftp
+
+@node Abstract Class Writer, Channel Procedures, Abstract Class Reader, Channel
+@subsubsection Abstract Class Writer
+@cindex writers, base type
+@cindex writers, abstract class
+
+@deftp {Abstract Class} Writer = POINTER TO WriterDesc
+This is the abstract base writer type.  Writer types are used to perform
+write operations on channels (@pxref{Input/Output Overview}).  @code{Writer}
+contains the following fields:
+
+@table @asis
+@item Field: @b{base}@minus{}: @code{Channel}
+This field refers to the channel the writer is connected to.  
+
+@item Field: @b{res}@minus{}: @code{INTEGER}
+@code{res} is a result (error) flag that signals failure of a call to
+@code{WriteByte}, @code{WriteBytes}, or @code{SetPos}.  It is initialized to
+@code{done} when creating a writer or by calling @code{ClearError}.  The
+first failed writing (or @code{SetPos}) operation changes @code{res} to
+indicate the error, all further calls to @code{WriteByte},
+@code{WriteBytes}, or @code{SetPos} will be ignored until @code{ClearError}
+resets this flag.
+
+This means that the successful completion of an arbitrary complex sequence
+of write operations can be ensured by asserting that @code{res} equals
+@code{done} beforehand and also after the last operation.
+
+Use the method @code{ErrorDescr} to get a plain text error description of
+this error code.  @xref{Summary of Channel Constants} for a list of
+applicable error codes.
+
+@strong{Please note}: due to buffering, a write error may occur when
+flushing or closing the underlying channel; you have to check the channel's
+@code{res} field after any @code{Flush()} or the final @code{Close()}
+because a writer's @code{res} field may not indicate a write error in that
+case.
+
+@item Field: @b{bytesWritten}@minus{}: @code{LONGINT}
+Set by @code{WriteByte} and @code{WriteBytes} to indicate the number of
+bytes that were successfully written.
+
+@item Field: @b{positionable}@minus{}: @code{BOOLEAN}
+@code{TRUE} if, and only if, the writer can be moved to another position
+with @code{SetPos}; for channels that can only be written sequentially, like
+output to a terminal, this is @code{FALSE}.
+
+@item Method: @code{(@var{w}: Writer)} @b{Pos} @code{(): LONGINT}
+Returns the current writing position associated with the writer @var{w} in
+channel @code{@var{w}.base}, i.e., the index of the first byte that is
+written by the next call to @code{WriteByte} or @code{WriteBytes}.  This
+procedure returns @code{noPosition} if the writer has no concept of a
+writing position (e.g., if it corresponds to output to terminal), otherwise
+the result is non-negative.
+
+@item Method: @code{(@var{w}: Writer)} @b{SetPos} @code{(@var{newPos}: LONGINT)}
+Sets the writing position to @var{newPos}.  A negative value of
+@var{newPos}, or calling this procedure for a writer that doesn't allow
+positioning, will set @code{@var{w}.res} to @code{outOfRange}.  A value
+larger than the channel's length is legal, however, the next write operation
+@dfn{zero fills} the intervening space.  That is, the gap from the previous
+end of the channel to @var{newPos} are filled with @code{0X} bytes.
+
+Calls to this procedure while @code{@var{w}.res # done} are ignored.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteByte} @code{(@var{x}: SYSTEM.BYTE)}
+Writes a single byte @var{x} to the channel @code{@var{w}.base} at the
+writing position associated with @var{w}.  The writing position is moved
+forward by one byte on success, otherwise @code{@var{w}.res} is set to
+indicate the error cause.
+
+@code{@var{w}.bytesWritten} will be @code{1} on success and @code{0} on
+failure.
+
+Calls to this procedure while @code{@var{w}.res # done} are ignored.
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteBytes} @code{(VAR @var{x}: ARRAY OF SYSTEM.BYTE;  @var{start}, @var{n}: LONGINT)}
+Writes @var{n} bytes from @var{x}, beginning at index @var{start}, to the
+channel @code{@var{w}.base} at the writing position associated with @var{w}.
+The writing position is moved forward by @var{n} bytes on success, otherwise
+@code{@var{w}.res} is set to indicate the error cause.
+@code{@var{w}.bytesWritten} will hold the number of bytes that were actually
+written (being equal to @var{n} on success).
+
+Calls to this procedure while @code{@var{w}.res # done} are ignored.
+
+@strong{Pre-condition}: @var{n} and @var{start} are non-negative.  Also,
+this method requires that accessing @var{n} bytes in array @var{x}, starting
+from index @var{start}, will not go past the end of the array.
+
+@item Method: @code{(@var{w}: Writer)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
+Retrieves a descriptive error message string stating the reason why one of
+the previous operations (@code{SetPos}, @code{WriteByte}, or @*
+@code{WriteBytes}) failed.  The string starts with a capital letter and does
+not include any termination punctuation.  @var{descr} should be large enough
+to hold a multi-line message (256 characters should suffice).
+
+ If @code{@var{r}.res = done}, then @var{descr} is assigned the empty
+string.
+
+@item Method: @code{(@var{w}: Writer)} @b{ClearError}
+Sets the result flag @code{@var{w}.res} to @code{done}, re-enabling further
+write operations on @var{w}.
+@end table
+@end deftp
+
+@node Channel Procedures, Summary of Channel Constants, Abstract Class Writer, Channel
+@subsubsection Channel Procedures
+@cindex channels, procedures
+
+@deffn Procedure ErrorDescr @code{(@var{res}: INTEGER; VAR @var{descr}: ARRAY OF CHAR)}
+Translates this module's error codes into strings (@pxref{Summary of Channel
+Constants}).  The string starts with a capital letter and does not include
+any termination punctuation.  @var{descr} should be large enough to hold a
+multi-line message (256 characters should suffice).
+
+If @code{@var{res}=done}, then @var{descr} is assigned the empty string.
+
+Note: This procedure should only be used to determine the result code of a
+failed attempt to create a new instance of a channel (i.e., whenever one of
+the functions @code{New()} or @code{Old()} returned @code{NIL}).  You should
+use the type-bound @code{ErrorDescr} procedures (individual class' methods)
+for all other situations.
+@end deffn
+
+@node Summary of Channel Constants,  , Channel Procedures, Channel
+@subsubsection Summary of Channel Constants
+@cindex channels, constants
+
+@defvr Constant noLength
+A result value for @code{Channel.Length}.  
+@end defvr
+
+@defvr Constant noPosition
+A possible return value for @code{Reader.Pos()} or @code{Writer.Pos()}
+meaning that the reader or writer has no concept of a position (e.g., if it
+corresponds to input from keyboard or output to a terminal).
+@end defvr 
+
+A specific channel implementation (e.g., @pxref{Files}) defines its own list
+of codes, containing aliases for the codes below (where appropriate) plus
+error codes of its own.  Every module provides a procedure @code{ErrorDescr}
+to translate any code into a human readable message, and type-bound
+procedures for its @code{Channel}, @code{Reader}, and @code{Writer} types
+for the same purpose.
+
+The user should use the type-bound procedures whenever possible.
+
+The following values may appear in the @code{res} field of @code{Channel},
+@code{Reader}, or @code{Writer}.  @strong{Please note}: These codes only
+cover the most typical errors.
+
+@defvr Constant done
+This indicates successful completion of the last operation.  
+@end defvr
+
+@defvr Constant invalidChannel
+The channel isn't valid.  For example, because it wasn't opened in the first
+place or was somehow corrupted.
+@end defvr
+
+@defvr Constant writeError
+A write error occured; usually this error happens with a writer, but for
+buffered channels this may also occur during a @code{Flush} or a
+@code{Close}.
+@end defvr
+
+@defvr Constant noRoom
+A write operation failed because there isn't any space left on the device.
+For example, the disk is full or you exeeded your quota; usually this error
+happens with a writer, but for buffered channels this may also occur during
+a @code{Flush} or a @code{Close}.
+@end defvr
+
+The following constants only apply to @code{Reader.res} and @code{Writer.res}:
+
+@defvr Constant outOfRange
+@code{SetPos} has been called with a negative argument or it has been called
+on a rider that doesn't support positioning.
+@end defvr 
+
+@defvr Constant readAfterEnd
+A call to @code{ReadByte} or @code{ReadBytes} has tried to access a byte
+beyond the end of the channel.  This means that there weren't enough bytes
+left or the read operation started at (or after) the end.
+@end defvr 
+
+@defvr Constant channelClosed
+The rider's channel has been closed, preventing any further read or write
+operations.  This means there was a call to @code{Channel.Close()} (in which
+case, you probably made a programming error), or the channel has been
+otherwise disconnected (e.g., the process at the other end of the channel,
+say a pipe or TCP stream, closed the connection).
+@end defvr
+
+@defvr Constant readError
+An unspecified read error.  
+@end defvr
+
+@defvr Constant invalidFormat
+Set by a mapper (e.g., TextRiders.Reader) if the byte stream at the current
+reading position doesn't represent an object of the requested type.
+@end defvr
+
+The following constants only apply to @code{Channel.res}:  
+
+@defvr Constant noReadAccess
+@code{NewReader} was called to create a reader on a channel that doesn't
+allow read access.
+@end defvr
+
+@defvr Constant noWriteAccess
+@code{NewWriter} was called to create a writer on a channel that doesn't
+allow write access.
+@end defvr
+
+@defvr Constant closeError
+An attempt to close the channel failed.  
+@end defvr
+
+@defvr Constant noModTime
+No modification time is available for the given channel.  
+@end defvr
+
+@defvr Constant noTmpName
+Creation of a temporary file failed because the system was unable to assign
+an unique name to it (closing or registering an existing temporary file
+beforehand might help in this case).
+@end defvr
+
+@defvr Constant freeErrorCode
+Free error code number.  This is provided so that a specific channel
+implemenatation can start defining new error codes from this value.
+@end defvr
+
+@node Files, StdChannels, Channel, Channels
+@subsection Module Files
+@pindex Files
+@cindex files
+
+Most computer systems provide some way of storing @dfn{persistent data}---
+information that exists between one program activation and the next.  The
+most common way of accessing persistent data is through a @dfn{file system}.
+A @dfn{file} is generally a collection of data that is held on some physical
+medium like a hard disk or magnetic tape.  A @dfn{file system} provides a
+means to manage files; grouping them logically into entities called
+@dfn{directories}, and otherwise accessing them through @dfn{file names}.
+As these are typical, basic computer concepts, this document will assume
+some familiarity with file systems.
+
+Module Files provides facilities for accessing files using channel and rider
+abstractions.  Files provides three related classes: @code{File},
+@code{Reader}, and @code{Writer}.  These classes are concrete subclasses of
+their conterparts in module Channel (@pxref{Channel}).
+
+Class @code{File} is derived from the base channel type and adds additional
+methods for file specific operations.  Files are probably the most
+frequently used channel implementation and, at the same time, the first
+channel to be used by a novice user.  Therefore the description below
+incorporates all the relevant parts from the chapter about the abstract base
+type @code{Channel}.
+
+As with all basic riders, @code{Reader} and @code{Writer} operate on
+sequences of bytes.  Consequently, most of the time, after a file is opened,
+a mapper would be attached to provide more useful read/write operations
+(@pxref{BinaryRider} and @ref{TextRider})
+
+@quotation
+@strong{Please note}: Most Unix systems only allow a fixed number of files
+(and sockets) to be open simultaneously.  If this limit is reached, no new
+file can be opened or socket be created until an old file/socket is closed.
+For any POSIX compliant system at least 16 open files are supported, most
+implementations provide a much larger number.
+@end quotation
+
+@menu 
+* Class File::                  Specific features of class File.  
+* Class Reader (for File)::     Specific features of the reader class 
+                                 associated with class File.  
+* Class Writer (for File)::     Specific features of the writer class 
+                                 associated with class File.  
+* File Locators::               Locators used for opening files.
+* Other File Operations::       Free-standing procedures in module Files.  
+* Summary of File Constants::   Summarized list of constants in module
+                                 Files.  
+@end menu
+
+@node Class File, Class Reader (for File),  , Files
+@subsubsection Class File
+@cindex files, features
+@cindex files, class
+@cindex files, methods
+
+Class File allows access to files as contiguous sequences of bytes.  
+
+@emph{Example:}  
+
+@smallexample
+VAR  f: Files.File;
+
+f := Files.Old ("example.dat", @{Files.read, Files.write@}, res);
+IF (res # Files.done) THEN
+    (* Error processing: failed to open "old" file.  *)
+END; ...
+
+f.Close; (* Be sure to close the file so that resources are freed. *)
+@end smallexample
+
+@deftp {Class} File = POINTER TO FileDesc
+This is the concrete subclass of @code{Channel} that corresponds to actual
+files.  @code{File} inherits the following fields:
+
+@table @asis
+@item Field: @b{res}@minus{}: @code{INTEGER}
+@code{res} is the result (i.e., error flag) signalling failure of a call to
+@code{NewReader}, @code{NewWriter}, @code{Flush}, @code{Close}, etc.
+@code{res} is initialized to @code{done} when the file is created.  Every
+operation sets this to @code{done} if successful, or otherwise, to an
+appropriate error value to indicate the cause of the error (use the method
+@code{ErrorDescr} to get a plain text error description).  @xref{Summary of
+File Constants} for a list of applicable error codes.
+
+@item Field: @b{readable}@minus{}: @code{BOOLEAN}
+@code{readable} is set to @code{TRUE} if, and only if, readers can be
+attached to this file with @code{NewReader}.
+
+@item Field: @b{writable}@minus{}: @code{BOOLEAN}
+@code{writable} is set to @code{TRUE} if, and only if, writers can be
+attached to this file with @code{NewWriter}.
+
+@item Field: @b{open}@minus{}: @code{BOOLEAN}
+@code{open} indicates the file's status; that is, it is set to @code{TRUE}
+on file creation, and set to @code{FALSE} by a call to @code{Close}.
+Closing a file prevents all further read or write operations on it.
+@end table
+@end deftp
+
+@code{File} inherits the following methods from the abstract class
+@code{Channel}:
+
+@table @asis
+@item Method: @code{(@var{f}: File)} @b{Length} @code{(): LONGINT}
+@code{Length} returns the number of bytes of data for the file @var{f}.  If
+@var{f} represents a genuine file, this value is the file's size.  If
+@var{f} has no fixed length (e.g., because it's a FIFO special file), it
+returns @code{noLength}.
+
+@emph{Example:}  
+
+@smallexample
+(* For file,
+ -rw-rw-r--   1 nikitin      8641 Jun  6 08:14 misc.txt
+*)
+
+VAR len: LONGINT;
+
+len := f.Length();
+    @result{} len = 8641
+@end smallexample
+
+@item Method: @code{(@var{f}: File)} @b{GetModTime} @code{(VAR @var{mtime}: Time.TimeStamp)}
+@code{GetModTime} retrieves the modification time of the data location
+accessed by file @var{f}.
+
+ If no such information is available, @code{@var{f}.res} is set to
+@code{noModTime}; otherwise to @code{done}.  For more on time stamps
+@xref{Time}.
+
+@emph{Example:}  
+
+@smallexample
+(* For file,
+ -rw-rw-r--   1 nikitin      8641 Jun  6 08:14 misc.txt
+*)
+
+VAR fTime: Time.TimeStamp;
+
+f.GetModTime(fTime);
+    @result{} fTime.days = 50605
+    @result{} fTime.msecs = 44064000
+@end smallexample
+
+@item Method: @code{(@var{f}: File)} @b{NewReader} @code{(): Reader}
+This method attaches a new (basic) reader to the file @var{f} (you will most
+likely never need to call this directly; you'd normally connect a mapper
+instead).  
+
+The reader's position is set to the beginning of the file, and its
+@code{res} field is initialized to @code{done}.
+
+@code{@var{f}.res} is set to @code{done} on success and the new reader is
+returned.  Otherwise, it returns @code{NIL} and @code{@var{f}.res} is set to
+indicate the error cause.
+
+@strong{Please note}: if the file does not support multiple reading
+positions (e.g., because it's a FIFO special file), the same reader is
+always returned.
+
+@emph{Example:}  
+
+@smallexample
+VAR r: Files.Reader;
+
+r := f.NewReader();
+IF (f. res # Files.done) THEN
+   (* Error processing:  failed to attach a new reader.  *)
+END; 
+@end smallexample
+
+@item Method: @code{(@var{f}: File)} @b{NewWriter} @code{(): Writer}
+This method attaches a new writer to the file @var{f} (you will most likely
+never need to call this directly; you'd normally connect a mapper instead).
+The writer's position is set to the very start of the file, and its
+@code{res} field is initialized to @code{done}.  
+
+@code{@var{f}.res} is set to @code{done} on success and the new writer is
+returned.  Otherwise, it returns @code{NIL} and @code{@var{f}.res} is set to
+indicate the error cause.
+
+@strong{Please note}: if the file does not support multiple writing
+positions (e.g., because it's a FIFO special file), the same writer is
+always returned.
+
+@emph{Example:}  
+
+@smallexample
+VAR w: Files.Writer;
+
+w := f.NewWriter();
+IF (f. res # Files.done) THEN
+   (* Error processing:  failed to attach a new writer.  *)
+END; 
+@end smallexample
+
+@item Method: @code{(@var{f}: File)} @b{Flush}
+Flushes all buffers related to this file.  Any pending write operations are
+passed to the underlying OS and all buffers are marked as invalid.  The next
+read operation will get its data directly from the channel instead of the
+buffer.  If a writing error occurs, the field @code{@var{f}.res} will be
+changed to @code{writeError}, otherwise it's assigned @code{done}.  
+
+@strong{Please note}: you must check the file's @code{res} flag after an
+explicit @code{Flush}; none of the attached writers will indicate a write
+error in this case.
+
+@emph{Example:}  
+
+@smallexample
+f.Flush;
+IF (f.res # Files.done) THEN
+   (* Error processing:  write error when flushing buffers. *)
+END; 
+@end smallexample
+
+@item Method: @code{(@var{f}: File)} @b{Close}
+Flushes all buffers associated with @var{f}, closes the file, and frees all
+system resources allocated to it.  This invalidates all riders attached to
+@var{f}; they can't be used further.  On success, if all read and write
+operations (including @code{Flush}) have completed successfully,
+@code{@var{f}.res} is set to @code{done}.  An opened file can only be closed
+once, successive calls of @code{Close} are undefined.  
+
+@strong{Please note}: unlike the Oberon System all opened Files have to be
+closed explicitly.  Otherwise resources allocated to them will remain
+blocked.
+
+@emph{Example:}  
+
+@smallexample
+f.Close;
+IF (f. res # Files.done) THEN
+   (* Error processing:  error occured as file was closed.  *)
+END; 
+@end smallexample
+
+@item Method: @code{(@var{f}: File)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
+Retrieves a descriptive error message string stating the reason why the
+previous operation (@code{NewReader}, @code{NewWriter}, @code{Flush},
+@code{Close}, etc.) failed.  The string starts with a capital letter and
+does not include any termination punctuation.  @var{descr} should be large
+enough to hold a multi-line message (256 characters should suffice).  
+
+If @code{@var{r}.res = done}, then @var{descr} is assigned the empty string.
+
+@emph{Example:}  
+
+@smallexample
+(* Attempting to connect a writer to a file opened 
+   only for reading *)
+
+f := Files.Old ("example.dat", @{Files.read@}, res);
+
+w := f. NewWriter();
+   @result{} f.res = noWriteAccess
+f.ErrorDescr (str);
+   @result{} str = "No write permission for file"
+@end smallexample
+
+@item Method: @code{(@var{f}: File)} @b{ClearError}
+Sets the result flag @code{@var{f}.res} to @code{done}.  
+
+@emph{Example:}  
+
+@smallexample
+f.ClearError;
+   @result{} f.res = done
+@end smallexample
+@end table
+
+Besides its inherited methods, @code{File} has the following additional
+method:
+
+@table @asis
+@item Method: @code{(@var{f}: File)} @b{Register}
+Registers the file @var{f} in the directory structure if it has been created
+with the @code{Tmp} procedure (@pxref{File Locators}).  Registration happens
+atomically, i.e., it is guaranteed that any previously existing file is
+replaced by the newly registered one without any "in between" state.  If the
+operation is interrupted, then either the old file still exists on the file
+system, or it has been replaced completely by the new one.  
+
+Calling @code{Tmp} and @code{Register} successively has the same effect as
+calling @code{New}.  Calling this procedure has no effect if the file
+@var{f} has been created with @code{New} or has been registered previously.
+
+Registration fails with an @code{anonymousFile} error if it was created by
+calling @code{Tmp} with an empty file name, and with a @code{channelClosed}
+error if @var{f} is closed.
+
+@emph{Example:}  
+
+@smallexample
+(* open named temporary file *)
+f := Files.Tmp ("temp.fil", @{Files.write@}, res);
+
+f.Close;
+f.Register;
+   @result{} f.res = channelClosed
+f.ErrorDescr (str);
+   @result{} str = "File has been closed"
+
+(* open anonymous temporary file *)
+f := Files.Tmp ("", @{Files.write@}, res); 
+
+f.Register;
+   @result{} f.res = anonymousFile
+f.ErrorDescr (str);
+   @result{} str = "Can't register anonymous file"
+@end smallexample
+@end table
+
+@node Class Reader (for File),  Class Writer (for File), Class File, Files
+@subsubsection Class Reader 
+@cindex files, reader
+@cindex reader, for files
+
+Class Reader provides primitive read operations on Files; that is, reading
+of bytes from a file.  Most programmers would not use this class directly; a
+mapper class like @code{BinaryRider.Reader} or @code{TextRider.Reader} would
+be used instead (@pxref{BinaryRider} and @ref{TextRider})
+
+@deftp {Class} Reader = POINTER TO ReaderDesc
+This is a concrete rider type for reading bytes from files.  @code{Reader}
+inherits the following fields from the base reader type:
+
+@table @asis
+@item Field: @b{base}@minus{}: @code{Channel.Channel}
+@code{base} refers to the file the reader is connected to.
+
+@item Field: @b{res}@minus{}: @code{INTEGER}
+@code{res} is a result (error) flag that signals failure of a call to
+@code{ReadByte}, @code{ReadBytes}, or @code{SetPos}.  @code{res} is
+initialized to @code{done} when creating a reader or by calling
+@code{ClearError}.  The first failed read operation (or @code{SetPos})
+changes this to indicate the error, all further calls to @code{ReadByte},
+@code{ReadBytes}, or @code{SetPos} will be ignored until @code{ClearError}
+resets this flag.  
+
+This means that the successful completion of an arbitrary complex sequence
+of read operations can be ensured by asserting that @code{res} equals
+@code{done} beforehand and also after the last operation.
+
+Use method @code{ErrorDescr} to get a plain text error description of this
+error code.  @xref{Summary of File Constants} for a list of applicable error
+codes.
+
+@item Field: @b{bytesRead}@minus{}: @code{LONGINT}
+@code{bytesRead} is set by @code{ReadByte} and @code{ReadBytes} to indicate
+the number of bytes that were successfully read.
+
+@item Field: @b{positionable}@minus{}: @code{BOOLEAN}
+@code{positionable} is set to @code{TRUE} if, and only if, the reader can be
+moved to another position with @code{SetPos}; for files that can only be
+read sequentially, this is set to @code{FALSE}.
+@end table
+@end deftp
+
+@code{Reader} inherits the following methods from the abstract reader class:  
+
+@table @asis
+@item Method: @code{(@var{r}: Reader)} @b{Pos} @code{(): LONGINT}
+Returns the current reading position associated with the reader @var{r} in
+file @code{@var{r}.base}, i.e., the index of the first byte that is read by
+the next call to @code{ReadByte} or @code{ReadBytes}.  This procedure
+returns a non-negative result.
+
+@item Method: @code{(@var{r}: Reader)} @b{Available} @code{(): LONGINT}
+Returns the number of bytes available for the next reading operation.  For a
+file this is the length of the file @code{@var{r}.base} minus the current
+reading position.  
+
+ The result is @code{-1} if @code{Close()} was called for the file (or the
+file has been otherwise closed), or no more bytes are available.
+
+@item Method: @code{(@var{r}: Reader)} @b{SetPos} @code{(@var{newPos}: LONGINT)}
+Sets the reading position to @var{newPos}.  Using a negative value of
+@var{newPos}, or calling this procedure for a reader that doesn't allow
+positioning, will set @code{@var{r}.res} to @code{outOfRange}.  A value
+larger than the file's length is legal, but the following read operation
+will most likely fail with an @code{readAfterEnd} error (unless the file has
+grown beyond this position in the meantime).  
+
+Calls to this procedure while @code{@var{r}.res # done} will be ignored, in
+particular a call with @code{@var{r}.res = readAfterEnd} error will not
+reset @code{res} to @code{done}.
+
+@emph{Example:}  
+
+@smallexample
+(* For file,
+ -r--r--r--   1 nikitin     12265 Jun  9 11:16 test.dat
+*)
+
+VAR pos, avail: LONGINT;
+    r: Files.Reader;
+    f: Files.File;
+
+f := Files.Old("test.dat", @{Files.read@}, res);
+r := f. NewReader();
+
+pos := r.Pos();
+   @result{} pos = 0
+
+avail := r.Available();
+   @result{} avail = 12265
+
+r.SetPos(6000);
+
+pos := r.Pos();
+   @result{} pos = 6000
+
+avail := r.Available();
+   @result{} avail = 6265
+@end smallexample
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadByte} @code{(VAR @var{x}: SYSTEM.BYTE)}
+Reads a single byte from the file @code{@var{r}.base} at the reading
+position associated with @var{r} and places it in @var{x}.  The reading
+position is moved forward by one byte on success, otherwise
+@code{@var{r}.res} is changed to indicate the error cause.  Calling this
+procedure with the reader @var{r} placed at the end (or beyond the end) of
+the file will set @code{@var{r}.res} to @code{readAfterEnd}.
+
+@code{@var{r}.bytesRead} will be @code{1} on success and @code{0} on
+failure.
+
+Calls to this procedure while @code{@var{r}.res # done} will be ignored.
+
+@emph{Example:}  
+
+@smallexample
+(* OOC assumes that @code{SIZE(SYSTEM.BYTE) = SIZE(SHORTINT)} *)
+VAR byte: SHORTINT;
+    ch  : CHAR;
+
+r.ReadByte(byte);
+r.ReadByte(ch);
+@end smallexample
+
+@item Method: @code{(@var{r}: Reader)} @b{ReadBytes} @code{(VAR @var{x}: ARRAY OF SYSTEM.BYTE; @var{start}, @var{n}: LONGINT)}
+Reads @var{n} bytes from the file @code{@var{r}.base} at the reading
+position associated with @var{r} and places them in @var{x}, beginning at
+index @var{start}.  The reading position is moved forward by @var{n} bytes
+on success, otherwise @code{@var{r}.res} is changed to indicate the error
+cause.  
+
+Calling this procedure with the reader @var{r} positioned less than @var{n}
+bytes before the end of the file will will set @code{@var{r}.res} to
+@code{readAfterEnd}.
+
+@code{@var{r}.bytesRead} will hold the number of bytes that were actually
+read (being equal to @var{n} on success).  Calls to this procedure while
+@code{@var{r}.res # done} will be ignored.
+
+@strong{Pre-condition}: @var{n} and @var{start} are non-negative. Also,
+there is enough space in array @var{x}, starting at index @var{start}, to
+hold @var{n} bytes.
+
+@emph{Example:}  
+
+@smallexample
+VAR byteArr: ARRAY 256 OF SHORTINT;
+
+r.ReadBytes(byteArr, 0, 16);
+   @result{} reads the next 16 bytes from r.base into byteArr[0..15]
+
+r.ReadBytes(byteArr, 16, 100);
+   @result{} reads the next 100 bytes from r.base into 
+        byteArr[16..115]
+@end smallexample
+
+@item Method: @code{(@var{r}: Reader)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
+Retrieves a descriptive error message string stating the reason why one of
+the previous operations (@code{SetPos}, @code{ReadByte}, or
+@code{ReadBytes}) failed.  The string starts with a capital letter and does
+not include any termination punctuation.  @var{descr} should be large enough
+to hold a multi-line message (256 characters should suffice).  
+
+If @code{@var{r}.res = done}, then @var{descr} is assigned the empty string.
+
+@emph{Example:}  
+
+@smallexample
+r.SetPos(-1);
+   @result{} r.res = outOfRange
+r.ErrorDescr(str);
+   @result{} str = "Trying to set invalid position"
+@end smallexample
+
+@item Method: @code{(@var{r}: Reader)} @b{ClearError}
+Sets the result flag @code{@var{r}.res} to @code{done}, re-enabling further
+read operations on @var{r}.
+
+@emph{Example:}  
+
+@smallexample
+r.ClearError
+   @result{} r.res = done
+@end smallexample
+@end table
+
+@node Class Writer (for File), File Locators, Class Reader (for File), Files
+@subsubsection Class Writer 
+@cindex files, writer
+@cindex writer, for files
+
+Class Writer provides primitive write operations on Files; that is, writing
+of bytes to a file.  Most programmers would not use this class directly; a
+mapper class like @code{BinaryRider.Writer} or @code{TextRider.Writer} would
+be used instead (@pxref{BinaryRider} and @pxref{TextRider})
+
+@deftp {Class} Writer = POINTER TO WriterDesc
+This is a concrete rider type for writing bytes to files.  @code{Writer}
+inherits the following fields from the base writer type:
+
+@table @asis
+@item Field: @b{base}@minus{}: @code{Channel.Channel}
+This field refers to the file the Writer is connected to.  
+
+@item Field: @b{res}@minus{}: @code{INTEGER}
+@code{res} is a result (error) flag that signals failure of a call to
+@code{WriteByte}, @code{WriteBytes}, or @code{SetPos}.  It is initialized to
+@code{done} when creating a writer or by calling @code{ClearError}.  The
+first failed writing (or @code{SetPos}) operation changes @code{res} to
+indicate the error, all further calls to @code{WriteByte},
+@code{WriteBytes}, or @code{SetPos} will be ignored until @code{ClearError}
+resets this flag.
+
+This means that the successful completion of an arbitrary complex sequence
+of write operations can be ensured by asserting that @code{res} equals
+@code{done} beforehand and also after the last operation.
+
+Use @code{ErrorDescr} to get a plain text error description of this error
+code.  @xref{Summary of File Constants} for a list of applicable error
+codes.
+
+@strong{Please note}: due to buffering, a write error may occur when
+flushing or closing the underlying file; you have to check the file's
+@code{res} field after any @code{Flush()} or the final @code{Close()}.
+
+@item Field: @b{bytesWritten}@minus{}: @code{LONGINT}
+Set by @code{WriteByte} and @code{WriteBytes} to indicate the number of
+bytes that were successfully written.
+
+@item Field: @b{positionable}@minus{}: @code{BOOLEAN}
+@code{TRUE} if, and only if, the writer can be moved to another position
+with @code{SetPos}; for files that can only be written sequentially, this is
+@code{FALSE}.
+@end table
+@end deftp
+
+@code{Writer} inherits the following methods from the abstract writer class:  
+
+@table @asis
+@item Method: @code{(@var{w}: Writer)} @b{Pos} @code{(): LONGINT}
+Returns the current writing position associated with the writer @var{w} in
+file @code{@var{w}.base}, i.e., the index of the first byte that is written
+by the next call to @code{WriteByte} or @code{WriteBytes}.  This procedure
+returns a non-negative result.
+
+@item Method: @code{(@var{w}: Writer)} @b{SetPos} @code{(@var{newPos}: LONGINT)}
+Sets the writing position to @var{newPos}.  A negative value of
+@var{newPos}, or calling this procedure for a writer that doesn't allow
+positioning, will set @code{@var{w}.res} to @code{outOfRange}.  A value
+larger than the file's length is legal, however, the next write operation
+@dfn{zero fills} the intervening space.  That is, the gap from the previous
+end of the file to @var{newPos} are filled with @code{0X} bytes.
+
+Calls to this procedure while @code{@var{w}.res # done} are ignored.
+
+@emph{Example:}  
+
+@smallexample
+(* For file,
+ -r--r--r--   1 nikitin     12265 Jun  9 11:16 test.dat
+*)
+
+VAR pos, LONGINT;
+    w: Channel.Writer;
+    f: Files.File;
+
+f := Files.Old("test.dat", @{Files.write@}, res);
+w := f. NewWriter();
+
+pos := w.Pos();
+   @result{} pos = 0
+
+w.SetPos(6000);
+
+pos := w.Pos();
+   @result{} pos = 6000
+@end smallexample
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteByte} @code{(@var{x}: SYSTEM.BYTE)}
+Writes a single byte @var{x} to the file @code{@var{w}.base} at the writing
+position associated with @var{w}.  The writing position is moved forward by
+one byte on success, otherwise @code{@var{w}.res} is set to indicate the
+error cause.  
+
+@code{@var{w}.bytesWritten} will be @code{1} on success and @code{0} on
+failure.
+
+Calls to this procedure while @code{@var{w}.res # done} are ignored.
+
+@emph{Example:}  
+
+@smallexample
+(* OOC assumes that SIZE(SYSTEM.BYTE) = SIZE(SHORTINT) *)
+VAR byte: SHORTINT;
+
+byte = ODH;
+w.WriteByte(byte);
+w.WriteByte("A");
+@end smallexample
+
+@item Method: @code{(@var{w}: Writer)} @b{WriteBytes} @code{(VAR @var{x}: ARRAY OF SYSTEM.BYTE;  @var{start}, @var{n}: LONGINT)}
+Writes @var{n} bytes from @var{x}, starting at index @var{start} in @var{x},
+to the file @code{@var{w}.base} at the writing position associated with
+@var{w}.  The writing position is moved forward by @var{n} bytes on success,
+otherwise @code{@var{w}.res} is set to indicate the error cause.
+@code{@var{w}.bytesWritten} will hold the number of bytes that were actually
+written (being equal to @var{n} on success).  
+
+Calls to this procedure while @code{@var{w}.res # done} are ignored.
+
+@strong{Pre-condition}: @var{n} and @var{start} are non-negative.  Also,
+this method requires that accessing @var{n} bytes in array @var{x}, starting
+from index @var{start}, will not go past the end of the array.
+
+@emph{Example:}  
+
+@smallexample
+(* OOC assumes that SIZE(SYSTEM.BYTE) = SIZE(CHAR). *)
+VAR charArr: ARRAY 256 OF CHAR;
+
+charArr := "abcdefghijklmnopqrstuvwxyz";  
+        (* Note charArr[26] = 0X *)
+
+w.WriteBytes(charArr, 0, 16);
+   @result{} writes exactly 16 values 
+      (i.e., 0X is not automatically written) 
+   @result{} abcdefghijklmnop
+
+w.WriteBytes(charArr, 16, 11);
+   @result{} writes exactly 11 values 
+      (i.e., 0X is written from charArr[26]) 
+   @result{} qrstuvwxyz0X
+@end smallexample
+
+@item Method: @code{(@var{w}: Writer)} @b{ErrorDescr} @code{(VAR @var{descr}: ARRAY OF CHAR)}
+Retrieves a descriptive error message string stating the reason why one of
+the previous operations (@code{SetPos}, @code{WriteByte}, or
+@code{WriteBytes}) failed.  The string starts with a capital letter and does
+not include any termination punctuation.  @var{descr} should be large enough
+to hold a multi-line message (256 characters should suffice).  
+
+If @code{@var{w}.res = done}, then @var{descr} is assigned the empty string.
+
+@emph{Example:}  
+
+@smallexample
+f.Close;
+w.WriteByte("A");
+   @result{} w.res = channelClosed
+w.ErrorDescr(str);
+   @result{} str = "File has been closed"
+@end smallexample
+
+@item Method: @code{(@var{w}: Writer)} @b{ClearError}
+Sets the result flag @code{@var{w}.res} to @code{done}, re-enabling further
+write operations on @var{w}.
+
+@emph{Example:}  
+
+@smallexample
+w.ClearError
+   @result{} w.res = done
+@end smallexample
+@end table
+
+Besides its inherited methods, @code{Writer} has the following additional
+methods:
+
+@table @asis
+@item Method: @code{(VAR @var{w}: Writer)} @b{Truncate} @code{(VAR @var{newLength}: LONGINT)}
+Causes the file associated with @var{w} to have the specified length.  If
+the file was previously larger than @var{newLength}, the extra data is lost.
+If it was previously shorter, bytes between the old and new lengths are read
+as @dfn{null bytes} (i.e., @code{0X} bytes).  The writer's position is not
+modified in either case.  
+
+@strong{Please note}: On systems that do not support shortening files
+directly it is implemented as a partial file copy.
+@end table
+
+@node File Locators, Other File Operations, Class Writer (for File), Files
+@subsubsection File Locators 
+@cindex files, locators
+@cindex locators, for files
+
+The following locator procedures are provided for opening files.  Possible
+values for the @var{flags} parameter are @code{read}, @code{write},
+@code{tryRead}, @code{tryWrite} (@pxref{Summary of File Constants}).
+
+@deffn Function New @code{(VAR @var{file}: ARRAY OF CHAR; VAR @var{flags}: SET;  VAR @var{res}: INTEGER): File}
+Creates a new file under the name @var{file}.  On success, the new file
+object is returned, and @var{res} is set to @code{done}.  Otherwise, it
+returns @code{NIL} and @var{res} and will indicate the problem.  
+
+Use procedure @code{ErrorDescr} to get a plain text error description of
+this error code.  @xref{Summary of File Constants} for a list of applicable
+error codes.
+
+@strong{Please note}: that in terms of the Oberon System this procedure
+combines the procedures New and Register.
+@end deffn
+
+@deffn Function Old @code{(VAR @var{file}: ARRAY OF CHAR; VAR @var{flags}: SET;  VAR @var{res}: INTEGER): File}
+Opens an existing file.  On success the new file object is returned and
+@var{res} is set to @code{done}.  Otherwise, it returns @code{NIL} and
+@var{res} will indicate the problem.  
+
+Use procedure @code{ErrorDescr} to get a plain text error description of
+this error code.  @xref{Summary of File Constants} for a list of applicable
+error codes.
+@end deffn
+
+@deffn Function Tmp @code{(VAR @var{file}: ARRAY OF CHAR; VAR @var{flags}: SET;  VAR @var{res}: INTEGER): File}
+Creates a temporary file that can be registered later on.  On success the
+new file object is returned and @var{res} is set to @code{done}.  Otherwise,
+it returns @code{NIL} and @var{res} will indicate the problem.  
+
+Use @code{ErrorDescr} to get a plain text error description of this error
+code.  @xref{Summary of File Constants} for a list of applicable error
+codes.
+
+Temporary files are created with an empty permission list, the permissions
+are extended upon registration.  The files are deleted if they haven't been
+registered and are closed, or the program terminates.  
+
+An unique temporary file name is created if the given file name is the empty
+string.  Such a file can't be registered later.  Note that some systems may
+have a low limit for the number of temporary file names.  The limit is never
+less than 25.  To be safe, you should never have more than 25 anonymous
+temporary files open simultaneously, or check that the TMP_MAX macro in
+/usr/include/stdio.h is large enough for your purposes.
+
+With oo2c if @var{file} isn't empty, the new name is derived from the old
+one by appending "^", "^1", "^2", etc. in turn, until a file name is found
+that doesn't exist already.  If such call to @code{Tmp} returns
+@code{nameTooLong}, then this refers to the constructed temporary name, not
+the one in @var{file}.
+
+This function corresponds to Oberon System's New.
+@end deffn
+
+@node Other File Operations, Summary of File Constants, File Locators, Files
+@subsubsection Other File Operations 
+@cindex files, other operations
+@cindex operations, on files
+
+It isn't always desirable to have to open a file before performing certain
+operations on it.  You may not be interested in a file's contents; but
+rather some property of the file itself (for instance, does the named file
+even exist).  As such, module Files provides some free-standing procedures:
+
+@deffn Procedure SetModTime @code{(VAR @var{file}: ARRAY OF CHAR;  VAR @var{mtime}: Time.TimeStamp; VAR @var{res}: INTEGER)}
+Sets the modification time of the given file to @var{mtime}.  On success
+@var{res} will contain @code{done}, otherwise an error code that'll indicate
+the problem.  
+
+@strong{Please note}: under Unix this procedure will also change the access
+time to the value of @var{mtime}.
+@end deffn
+
+@deffn Procedure GetModTime @code{(VAR @var{file}: ARRAY OF CHAR;  VAR @var{mtime}: Time.TimeStamp; VAR @var{res}: INTEGER)}
+Gets the modification time of the given file to @var{mtime}.  On success
+@var{res} will contain @code{done}, otherwise an error code indicating the
+problem.
+@end deffn
+
+@deffn Function Exists @code{(VAR @var{file}: ARRAY OF CHAR): BOOLEAN}
+Returns @code{TRUE} if file @var{file} exists, @code{FALSE} otherwise.  This
+procedure may be changed in future revisions to give more useful information
+on failure.
+@end deffn
+
+@deffn Procedure ErrorDescr @code{(VAR @var{res}: INTEGER; VAR @var{descr}: ARRAY OF CHAR)}
+Translates this module's error codes into strings.  The string starts with a
+capital letter and does not include any termination punctuation.
+@var{descr} should be large enough to hold a multi-line message (256
+characters should suffice).  If @code{@var{res}=done}, then @var{descr} is
+assigned the empty string.  
+
+@strong{Please note}: This procedure should only be used to determine the
+result code of a failed attempt to create a new instance of a file (i.e.,
+whenever one of the functions @code{New()}, @code{Old()}, or @code{Tmp()}
+returned @code{NIL}).  You should use the type-bound @code{ErrorDescr}
+procedures for all other situations.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+(* Attempting to open a "read-only" file for writing *)
+
+f := Files.Old ("example.dat", @{Files.write@}, res);
+   @result{} res = accessDenied
+Files.ErrorDescr (res, str);
+   @result{} str = "Failed to open file with requested access rights"
+@end smallexample
+
+@node Summary of File Constants,  , Other File Operations, Files
+@subsubsection Summary of File Constants
+@cindex files, constants
+@cindex constants, for files
+
+For constant values that are common to all channel types (@pxref{Summary of
+Channel Constants}), local names have been provided:
+
+@defvr Constant noLength
+A result value for @code{File.Length}.  
+@end defvr
+
+@defvr Constant noPosition
+A possible return value for @code{Reader.Pos()} or @code{Writer.Pos()}
+meaning that the reader or writer has no concept of a position.
+@end defvr 
+
+The following values may appear in the @code{res} field of @code{File},
+@code{Reader}, or @code{Writer}:  
+
+@defvr Constant done
+This indicates successful completion of the last operation.  
+@end defvr
+
+@defvr Constant invalidChannel
+The channel (i.e., file) isn't valid.  For example, because it wasn't opened
+in the first place or was somehow corrupted.
+@end defvr
+
+@defvr Constant writeError
+A write error occured; usually this error happens with a writer, but for
+buffered files this may also occur during a @code{Flush} or a @code{Close}.
+@end defvr
+
+@defvr Constant noRoom
+A write operation failed because there isn't any space left on the device.
+For example, the disk is full or you exeeded your quota; usually this error
+happens with a writer, but for buffered files this may also occur during a
+@code{Flush} or a @code{Close}.
+@end defvr
+
+The following constants only apply to @code{Reader.res} and
+@code{Writer.res}:
+
+@defvr Constant outOfRange
+@code{SetPos} has been called with a negative argument or it has been called
+on a rider that doesn't support positioning.
+@end defvr 
+
+@defvr Constant readAfterEnd
+A call to @code{ReadByte} or @code{ReadBytes} has tried to access a byte
+beyond the end of the file.  This means that there weren't enough bytes left
+or the read operation started at (or after) the end.
+@end defvr 
+
+@defvr Constant channelClosed
+The rider's channel (i.e., file) has been closed, preventing any further
+read or write operations.  This means there was a call to
+@code{File.Close()} (in which case, you probably made a programming error),
+or the channel has been otherwise closed.
+@end defvr
+
+@defvr Constant readError
+An unspecified read error.  
+@end defvr
+
+@defvr Constant invalidFormat
+Set by a mapper (e.g., TextRiders.Reader) if the byte stream at the current
+reading position doesn't represent an object of the requested type.
+@end defvr
+
+The following constants only apply to @code{File.res}:  
+
+@defvr Constant noReadAccess
+@code{NewReader} was called to create a reader on a file that doesn't allow
+read access.
+@end defvr
+
+@defvr Constant noWriteAccess
+@code{NewWriter} was called to create a writer on a file that doesn't allow
+write access.
+@end defvr
+
+@defvr Constant closeError
+An attempt to close the file failed.  
+@end defvr
+
+@defvr Constant noModTime
+No modification time is available for the given file.  
+@end defvr
+
+@defvr Constant noTmpName
+Creation of a temporary file failed because the system was unable to assign
+an unique name to it (closing or registering an existing temporary file
+beforehand might help in this case).
+@end defvr
+
+The following values report problems when opening or modifying a file:  
+
+@defvr Constant accessDenied
+Access to the file was denied, e.g., because a file's permissions don't
+permit the requested access method, or because the given URL isn't
+publically readable.
+@end defvr
+
+@defvr Constant isDirectory
+The @code{flags} argument specified write access, and the file is a
+directory.
+@end defvr
+
+@defvr Constant tooManyFiles
+The process or the entire system has too many files open.  
+@end defvr
+
+@defvr Constant noSuchFile
+The named file in a call to @code{Old()} does not exist.  Or the directory
+part of a file name passed to @code{New()} or @code{Tmp()} does not exist.
+@end defvr
+
+@defvr Constant directoryFull
+The directory or the file system that would contain the new file cannot be
+extended, either because there is no space left or the directory has a fixed
+upper limit.
+@end defvr
+
+@defvr Constant readOnlyFileSystem
+The file resides on a read-only file system and it is attempted to create a
+new file or to gain write access for an existing one.
+@end defvr
+
+@defvr Constant invalidTime
+The time passed to procedure @code{SetModTime} is not a valid time stamp;
+either the millisecond part isn't valid, or the time value is too large or
+too small to be mapped to the time value of the underlying OS.
+@end defvr
+
+@defvr Constant notOwner
+Only the owner of a file can change its modification time.  
+@end defvr
+
+@defvr Constant anonymousFile
+A file can only be registered if a file name was passed to the initial call
+to @code{Tmp()}.
+@end defvr
+
+@defvr Constant dirWriteDenied
+You need to have write permission for the directory you want to add a new
+file to.
+@end defvr
+
+@defvr Constant fileError
+Unspecified error when opening/creating a file; this usually means that this
+module doesn't know how to interpret the error code delivered by the OS.
+@end defvr
+
+@defvr Constant nameTooLong
+Either the total length of the file name or of an individual file name
+component is too large; the operating system can impose such limits (see
+PATH_MAX and NAME_MAX in /usr/include/limits.h), or the file system itself
+restricts the format of names on it.
+@end defvr
+
+@defvr Constant notDirectory
+A file that is referenced as a directory component of the file name exists,
+but is not a directory.
+@end defvr
+
+@defvr Constant linkLoop
+Too many symbolic links were resolved while trying to look up the file name;
+the operating system has an arbitrary limit on the number of symbolic links
+that may be resolved in looking up a single file name, as a primitive way to
+detect loops.
+@end defvr
+
+The following are possible elements for the @var{flags} parameter of
+@code{New}, @code{Old}, or @code{Tmp}.  
+
+ @strong{Please note}: at least one of the following flags has to be set;
+otherwise you will get an "access denied" error:
+
+@defvr Constant read
+If the file cannot be opened for reading access, then it isn't opened at
+all; in this case the error code is set to @code{noReadAccess}.
+@end defvr
+
+@defvr Constant write
+If the file cannot be opened for writing access, then it isn't opened at
+all; in this case the error code is set to @code{noWriteAccess}.
+@end defvr
+
+@defvr Constant tryRead
+Try to open this file for reading access; if the file permissions don't
+permit reading, the file is opened nevertheless, but the file descriptor's
+attribute @code{readable} is set to @code{FALSE}.
+@end defvr
+
+@defvr Constant tryWrite
+Try to open this file for writing access; if the file permissions don't
+permit writing, the file is opened nevertheless, but the file descriptor's
+attribute @code{writable} is set to @code{FALSE}.
+@end defvr
+
+@node StdChannels, ProgramArgs, Files, Channels
+@subsection Module StdChannels
+@pindex StdChannels
+@cindex channels, standard
+@cindex standard channels
+
+Module StdChannels defines the standard I/O channels, which are predefined
+channels for input (typically the keyboard) and output (typically the
+computer screen).  
+
+Standard channels do not have to be opened by a client program because they
+are already open and ready for use.  Their attributes and operations are
+described by the class @code{Channel.Channel}.  
+
+The standard channels (@code{stdin}, @code{stdout}, and @code{stderr})
+should never be closed.  You @emph{can} close the standard channels (e.g.,
+to detach a program from its terminal), but @code{StdChannels} does not
+provide a way to reopen them.  Notice that the modules @code{In},
+@code{Out}, @code{Err}, @code{OakIn}, and @code{OakOut} are all affected by
+such operations on standard channels.  If, for example, you call
+@code{stdout.Close}, then the procedures in module Out will no longer
+function (unless you use @code{Out.SetWriter} to set another channel).  
+
+A fourth standard channel, @code{null}, is also provided.  
+
+Mappers may be attached to any of these channels to provide read/ write
+operations for them.  Mappers from module @code{TextRider} are most often
+used.  
+
+Also, be aware that modules @code{In}, @code{Out}, and @code{Err} provide
+simple interfaces to the standard channels (@pxref{Standard I/O})  So that,
+in many cases, you may not have to use module @code{StdChannels} directly.
+
+@defvr {Read-only Variable} stdin
+The @dfn{standard input} channel, which is a predefined source of input for
+the program.  The referenced channel is read-only.  
+@end defvr
+@cindex standard input channel
+
+@emph{Example:}  
+
+@example
+VAR stringVar: ARRAY 256 OF CHAR; 
+    rdr:       TextRider.Reader;
+
+rdr := TextRider.ConnectReader(StdChannels.stdin);
+rdr.ReadLine(stringVar);
+@end example
+
+@defvr {Read-only Variable} stdout
+The @dfn{standard output} channel, which is a predefined destination for
+output from the program.  The referenced channel is write-only.
+@end defvr
+@cindex standard output channel
+
+@emph{Example:}  
+
+@example
+VAR wrtr: TextRider.Writer;
+
+wrtr := TextRider.ConnectWriter(StdChannels.stdout);
+wrtr.WriteString("A string to write"); wrtr.WriteLn;
+@end example
+
+@defvr {Read-only Variable} stderr
+The @dfn{standard error} channel, which can be used for error messages and
+diagnostics issued by the program.  The referenced channel is write-only.
+@end defvr
+@cindex standard error channel
+
+@emph{Example:}  
+
+@example
+VAR wrtr: TextRider.Writer;
+
+wrtr := TextRider.ConnectWriter(StdChannels.stderr);
+wrtr.WriteString("An error has occured"); wrtr.WriteLn;
+@end example
+
+@defvr {Read-only Variable} null
+The @dfn{null} channel, which can be used as a destination for output that
+is to be discarded.  The referenced channel is write-only.
+@end defvr
+
+@node ProgramArgs,  , StdChannels, Channels
+@subsection Module ProgramArgs
+@pindex ProgramArgs
+@cindex program arguments
+
+This module provides access to the command line arguments passed to the
+program's invocation.  They are mapped onto a standard channel @code{args},
+with each argument transformed into a single line of text.  Interpreting the
+list of arguments is usually done by applying an instance of
+@code{TextRider.Reader} or @code{TextRider.Scanner} to the argument channel.
+
+The number of arguments is determined by calling @code{args.ArgNumber()}.
+If the invocation were, for example, @code{foo bar 42}, where @code{foo} is
+the name of the program itself, then the channel's contents would look like
+this:
+
+@example
+foo
+bar
+42
+@end example
+
+For the above example, @code{args.ArgNumber()} would return @code{2}; that
+is, the program name is not counted by @code{ArgNumber} even though it is
+present in @code{args}.
+
+Note that command line arguments should not contain any end-of-line
+characters, otherwise, a single argument would be mapped onto multiple
+lines.
+
+Also, be careful with settings for @code{TextRider.Reader} and especially
+@code{TextRider.Scanner}: end-of-line characters are treated as whitespace
+by many of the read operations, which means, for a program @code{foo}, the
+reader or scanner has no way of distinguishing between
+
+@example
+foo 123 bar
+for "123 bar"
+@end example
+
+You would normally consider the first invocation as having two arguments,
+and the second as having one; which is also how ProgramArgs would interpret
+them.  For @code{foo 123 bar}, @code{args} would contain
+
+@example
+foo
+123
+bar
+@end example
+
+whereas, for @code{foo "123 bar"}, @code{args} would contain
+
+@example
+foo
+123 bar
+@end example
+
+But a text reader or scanner, if set to treat end-of-line as whitespace,
+would treat both of these invocations as equivalent.
+
+@quotation
+@strong{Please note}: In cases where separate arguments need to be
+considered as a whole, the reader method @code{ReadLine} should be used.
+Unlike other read operations, such as@code{ReadInt} or
+@code{ReadIdentifier}, leading whitespace is not skipped and, after
+completion, the reading position is just behind the end-of-line character.
+
+So @code{ReadLine} should be used to read, for example, file name arguments
+because operating systems like Unix typically allow arbitrary characters in
+file names, including blanks and control codes.
+@end quotation
+
+Module @code{ProgramArgs} provides local equivalents for the following
+constants from module @code{Channels}: @code{done}, @code{outOfRange},
+@code{readAfterEnd}, @code{channelClosed}, @code{noWriteAccess}, and
+@code{noModTime}.
+
+@deftp {Class} Channel = POINTER TO ChannelDesc
+This class is derived from the abstract base channel class.  In addition to
+its inherited fields and methods (@pxref{Abstract Class Channel}), the class
+provides the following method:
+
+@table @asis
+@item Method: @code{(VAR @var{ch}: Channel)} @b{ArgNumber} @code{(): LONGINT}
+Returns the number of command line arguments (excluding the program name
+itself) passed to the program.
+@end table
+@end deftp
+
+@defvr {Read-only Variable} args
+The predefined @dfn{program arguments} channel.  The referenced channel is
+read-only.
+@end defvr
+@cindex program arguments channel
+
+As a further example, suppose a program @code{foo} required exactly two
+(positional) command line arguments.  The first is an integer value and the
+second is an identifier.  Also, suppose that all of the following
+invocations are to be considered equivalent:
+
+@smallexample
+foo 123 bar
+foo +123 bar
+foo "  +123" " bar"
+@end smallexample
+
+Note that, the following module would @emph{not} consider @samp{foo 123 "
+bar "} or @samp{foo 123+ bar} to be equivalent to the above invocations.
+
+@emph{Example:}  
+
+@smallexample
+VAR r: TextRider.Reader;
+    str: ARRAY 256 OF CHAR;
+    int: LONGINT;
+
+  r := TextRider.ConnectReader(ProgramArgs.args);
+  IF r = NIL THEN 
+     (* Error processing: failed to connect to `args' *)
+  END;
+
+  IF ProgramArgs.args.ArgNumber() # 2 THEN
+     (* Error processing: wrong number of arguments *)
+  END;
+
+  (* skip past the line containing the program name `foo' *)
+  r.ReadLn;
+
+  r.ReadLInt(int);
+  IF r.Res() # TextRider.done THEN
+     (* Error processing: can't read an integer *)
+  ELSIF ~r.Eol() THEN
+     (* Error processing: this argument has other stuff after
+        the integer just read *)
+  END;
+
+  r.ReadLn; (* skip to the next line *)
+
+  r.ReadIdentifier(str);
+  IF r.Res() # TextRider.done THEN
+     (* Error processing: can't read an identifier *)
+  ELSIF ~r.Eol() THEN
+     (* Error processing: extra stuff after the identifier *)
+  END;
+@end smallexample
+

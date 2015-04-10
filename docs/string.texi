@@ -1,0 +1,949 @@
+@node Character & String Handling, Integer/String Conversion, OOC Library Overview, Top
+@chapter Character & String Handling
+
+Operations on strings and characters are an important part of many programs.
+The Oberon-2 language provides various built-in operations on characters and
+strings, but the OOC library goes on to extend the native facilities of
+Oberon-2 with a useful set of modules for character and string manipulation.
+
+@menu
+* Ascii::                       Standard short character names for control 
+                                 characters.  
+* CharClass::                   Classification of values of type CHAR.  
+* Strings::                     Facilities to manipulate strings.  
+@end menu
+
+@node Ascii, CharClass,  , Character & String Handling
+@section Module Ascii
+@pindex Ascii
+@cindex ASCII characters 
+@cindex ASCII
+@cindex characters 
+
+The Oberon-2 language report defines characters using @dfn{@code{ASCII}}
+(American Standard Code for Information Exchange) representation.  Because
+of this, and for convenience, OOC provides module @file{Ascii}, which
+defines useful constants corresponding to certain @code{ASCII} characters.
+
+Note that OOC does support the full ISO-Latin-1 character set, which is a
+strict superset of @code{ASCII}, as well as Unicode (via
+@code{LONGCHAR}---@pxref{Additional Data Types})
+
+@code{ASCII} characters can be printable characters, such as letters and
+digits, and also non-printing characters such as tab and linefeed.
+@code{ASCII} only truly defines 128 characters; this means that the
+interpretation of the range from @samp{80X} to @samp{0FFX} may vary.
+
+Constants for all of the standard @code{ASCII} names for non-printing
+characters are provided in module @file{Ascii}:
+
+@vindex eol
+@vindex nul
+@vindex soh
+@vindex stx
+@vindex etx
+@vindex eot
+@vindex enq
+@vindex ack
+@vindex bel
+@vindex bs
+@vindex ht
+@vindex lf
+@vindex vt
+@vindex ff
+@vindex cr
+@vindex so
+@vindex si
+@vindex dle
+@vindex dc1
+@vindex dc2
+@vindex dc3
+@vindex dc4
+@vindex nak
+@vindex syn
+@vindex etb
+@vindex can
+@vindex em
+@vindex sub
+@vindex esc
+@vindex fs
+@vindex gs
+@vindex rs
+@vindex us
+@vindex del
+
+@example
+CONST
+  nul = 00X;     soh = 01X;     stx = 02X;
+  etx = 03X;     eot = 04X;     enq = 05X;
+  ack = 06X;     bel = 07X;     bs  = 08X;
+  ht  = 09X;     lf  = 0AX;     vt  = 0BX;
+  ff  = 0CX;     cr  = 0DX;     so  = 0EX;
+  si  = 0FX;     dle = 01X;     dc1 = 11X;
+  dc2 = 12X;     dc3 = 13X;     dc4 = 14X;
+  nak = 15X;     syn = 16X;     etb = 17X;
+  can = 18X;     em  = 19X;     sub = 1AX;
+  esc = 1BX;     fs  = 1CX;     gs  = 1DX;
+  rs  = 1EX;     us  = 1FX;     del = 7FX;
+@end example
+
+The most commonly used ASCII names have the following meanings:
+
+@cindex bell
+@cindex backspace
+@cindex horizontal tabulator
+@cindex vertical tabulator
+@cindex line feed
+@cindex form feed
+@cindex carriage return
+@cindex escape
+@cindex delete
+
+@example
+ bel -- bell
+ bs  -- backspace
+ ht  -- horizontal tabulator
+ vt  -- vertical tabulator
+ lf  -- line feed
+ ff  -- form feed
+ cr  -- carriage return
+ esc -- escape
+ del -- delete
+@end example
+
+Also, some often used synonyms are declared in module Ascii:
+
+@vindex sp
+@vindex xon
+@vindex xoff
+
+@example
+CONST 
+  sp   = " ";
+  xon  = dc1;
+  xoff = dc3;
+@end example
+  
+@node CharClass, Strings, Ascii, Character & String Handling
+@section Module CharClass
+@pindex CharClass
+@cindex characters
+@cindex character classification
+@cindex character testing
+@cindex classification of characters
+@cindex predicates on characters
+
+Programs that deal with characters and strings often need to perform tests
+that "classify a character."  Is the character a letter?  A digit?  A
+whitespace character?  and so forth.
+
+Module CharClass provides a set of boolean function procedures that are
+used for such classification of values of the type @code{CHAR}.  All
+procedures accept a single argument of type @code{CHAR} and return a
+@code{BOOLEAN} result.
+
+Recall that Oberon-2 is defined so that characters are ordered the in the
+same manner as defined by ASCII.  Specifically, all the digits precede all
+the upper-case letters, and all the upper-case letters precede all the
+lower-case letters.  This assumption is carried over into module CharClass.
+Also, note that CharClass uses constants defined in module Ascii within many
+of its procedures (@pxref{Ascii})
+
+For example, the function @code{IsLetter} is used to test whether a
+particular character is one of @samp{A} through @samp{Z} or @samp{a} through
+@samp{z}:
+
+@smallexample
+Out.String("The character '");
+IF CharClass.IsLetter(c) THEN
+   Out.Char(c); 
+   Out.String("' is a letter."); 
+ELSE
+   Out.Char(c); 
+   Out.String("' isn't a letter."); 
+END;
+Out.Ln
+@end smallexample
+
+@strong{Please note}: None of these predicates are affected by the current
+localization setting.  For example, @code{IsUpper} will always test for
+@code{"A"<=ch & ch<="Z"} regardless of whether the locale specifies that
+additional characters belong to this set or not.  The same holds for the
+compare and capitalization procedures in module Strings.
+
+@cindex end of line character
+@defvr Constant eol
+The implementation-defined character used to represent end-of-line
+internally by OOC (@pxref{Ascii})
+@end defvr
+
+@defvr {Read-only Variable} systemEol
+An implementation defined string that represents the end-of-line marker used
+by the target system for text files.  @code{systemEol} may be more than one
+character in length, and is not necessarily equal to @code{eol}.  Note that
+@code{systemEol} is a string; it is always terminated by @code{0X} (i.e.,
+@code{systemEol} cannot contain the character @samp{0X}).
+@end defvr
+
+
+@cindex digit character
+@cindex numeric character
+@deffn Function IsNumeric @code{(@var{ch}: CHAR): BOOLEAN}
+Returns @code{TRUE} if, and only if, @var{ch} is classified as a numeric
+character (i.e., a decimal digit---@samp{0} through @samp{9}).
+@end deffn
+
+@cindex letter character
+@deffn Function IsLetter @code{(@var{ch}: CHAR): BOOLEAN}
+Returns @code{TRUE} if, and only if, @var{ch} is classified as a letter.  
+@end deffn
+
+@cindex upper-case character
+@deffn Function IsUpper @code{(@var{ch}: CHAR): BOOLEAN}
+Returns @code{TRUE} if, and only if, @var{ch} is classified as an upper-case
+letter.
+@end deffn
+
+@cindex lower-case character
+@deffn Function IsLower @code{(@var{ch}: CHAR): BOOLEAN}
+Returns @code{TRUE} if, and only if, @var{ch} is classified as a lower-case
+letter.
+@end deffn
+
+@cindex control character
+@deffn Function IsControl @code{(@var{ch}: CHAR): BOOLEAN}
+Returns @code{TRUE} if, and only if, @var{ch} represents a control function
+(that is, an ASCII character that is not a printing character).
+@end deffn
+
+@cindex whitespace character
+@deffn Function IsWhiteSpace @code{(@var{ch}: CHAR): BOOLEAN}
+Returns @code{TRUE} if, and only if, @var{ch} represents a space character
+or other "format effector".  @code{IsWhiteSpace} returns @code{TRUE} for
+only these characters:
+
+@example
+@samp{ } -- space (i.e., @samp{Ascii.sp})
+
+@samp{Ascii.ff} -- formfeed
+
+@samp{Ascii.cr} -- carriage return
+
+@samp{Ascii.ht} -- horizontal tab
+
+@samp{Ascii.vt} -- vertical tab
+@end example
+@end deffn
+  
+@deffn Function IsEOL @code{(@var{ch}: CHAR): BOOLEAN}
+Returns @code{TRUE} if, and only if, @var{ch} is the implementation-defined
+character used to represent end of line internally.
+@end deffn
+
+@node Strings,  , CharClass, Character & String Handling
+@section Modules Strings and LongStrings
+@pindex Strings
+@pindex LongStrings
+@cindex strings
+@cindex strings, long
+@cindex character arrays
+@cindex string terminator character
+
+As string manipulation is so common to programming problems, the OOC library
+provides additional string operations to those built into Oberon-2.  The
+Oberon-2 language defines a @dfn{string} as a character array containing
+@code{0X} as an embedded terminator.  This means that an @code{ARRAY OF
+CHAR} isn't necessarily a string.  The module @file{Strings} provides string
+manipulation operations for use on terminated character arrays, whereas
+module @file{LongStrings} has operations for terminated arrays of long
+characters (@code{LONGCHAR}---@pxref{Additional Data Types})
+
+Recall that @dfn{string literals} are sequences of characters enclosed in
+single (@code{'}) or double (@code{"}) quote marks.  The opening quote must
+be the same as the closing quote and must not occur within the string.
+Passing a string literal of length @var{n} as an argument to a procedure
+expecting an @code{ARRAY OF CHAR} delivers @var{n+1} characters to the
+parameter.
+
+The number of characters in a string (up to the terminating @code{0X}) is
+called its @dfn{length}.  A string literal of length 1 can be used wherever
+a character constant is allowed and vice versa.
+
+@quotation
+@strong{Please note}: All procedures reading and producing strings expect
+termination with @code{0X}.  The behaviour of a procedure is undefined if
+one of its input parameters is an unterminated character array.  Behavior is
+also undefined if a negative value is used as an input parameter that
+represents an array position or a string length.
+@end quotation
+
+@menu
+* Copying and Concatenation::   Procedures to copy the contents of strings.  
+* Compare & Searching Strings:: Comparison of strings and locating 
+                                 sub-strings.  
+* Misc. Strings Procedures::    Procedures @code{Length} and @code{Capitalize}.  
+@end menu
+
+@node Copying and Concatenation, Compare & Searching Strings,  , Strings
+@subsection Copying and Concatenation
+@cindex strings, copying
+@cindex strings, concatenation
+
+This section describes procedures that construct a string value, and
+attempt to assign it to a variable parameter.  All of these procedures have
+the property that if the length of the constructed string value exceeds the
+capacity of the variable parameter, a truncated value is assigned.  The
+constructed string always ends with a string terminator @code{0X}.
+
+Also described are procedures that provide for pre-testing of the
+operation-completion conditions for the copying and concatenation
+procedures.
+
+@deffn Procedure Assign @code{(@var{source}: ARRAY OF CHAR;  VAR @var{destination}: ARRAY OF CHAR)}
+@end deffn
+@deffn Procedure Assign @code{(@var{source}: ARRAY OF LONGCHAR;  VAR @var{destination}: ARRAY OF LONGCHAR)}
+This procedure copies the string value of @var{source} to @var{destination}.
+It is equivalent to the predefined procedure @code{COPY}.  Unlike
+@code{COPY}, this procedure can be assigned to a procedure variable.
+@end deffn
+
+@deffn Function CanAssignAll @code{(@var{sourceLength}: INTEGER;  VAR @var{destination}: ARRAY OF CHAR): BOOLEAN}
+@end deffn
+@deffn Function CanAssignAll @code{(@var{sourceLength}: INTEGER;  VAR @var{destination}: ARRAY OF LONGCHAR): BOOLEAN}
+Returns TRUE if a number of characters, indicated by @var{sourceLength},
+will fit into @var{destination}; otherwise returns FALSE.
+
+@strong{Pre-condition}: @var{sourceLength} is not negative.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR source:      ARRAY 6 OF CHAR; 
+    destination: ARRAY 4 OF CHAR; 
+
+source := ""; 
+Strings.CanAssignAll (Strings.Length (source), destination);  
+   @result{} TRUE
+Strings.Assign (source, destination);  
+   @result{} destination = ""
+
+source := "abc"; 
+Strings.CanAssignAll (Strings.Length (source), destination);
+   @result{} TRUE
+Strings.Assign (source, destination);  
+   @result{} destination = "abc"
+
+source := "abcd"; 
+Strings.CanAssignAll (Strings.Length (source), destination);  
+   @result{} FALSE
+Strings.Assign (source, destination);  
+   @result{} destination = "abc"
+@end smallexample
+
+@deffn Procedure Extract @code{(@var{source}: ARRAY OF CHAR; @var{startPos},  @var{numberToExtract}: INTEGER; VAR @var{destination}: ARRAY OF CHAR)}
+@end deffn
+@deffn Procedure Extract @code{(@var{source}: ARRAY OF LONGCHAR; @var{startPos},  @var{numberToExtract}: INTEGER; VAR @var{destination}: ARRAY OF LONGCHAR)}
+This procedure copies at most @var{numberToExtract} characters from
+@var{source} to @var{destination}, starting at position @var{startPos} in
+@var{source}.  An empty string value will be extracted if @var{startPos} is
+greater than or equal to @code{Length(@var{source})}.  
+
+@strong{Pre-condition}: @var{startPos} and @var{numberToExtract} are not
+negative.
+@end deffn
+
+@deffn Function CanExtractAll @code{(@var{sourceLength}, @var{startPos},  @var{numberToExtract}: INTEGER; VAR @var{destination}: ARRAY OF CHAR): BOOLEAN}
+@end deffn
+@deffn Function CanExtractAll @code{(@var{sourceLength}, @var{startPos},  @var{numberToExtract}: INTEGER; VAR @var{destination}: ARRAY OF LONGCHAR): BOOLEAN}
+Returns @code{TRUE} if there are @var{numberToExtract} characters starting
+at @var{startPos} and within the @var{sourceLength} of some string, and if
+the capacity of @var{destination} is sufficient to hold
+@var{numberToExtract} characters; otherwise returns @code{FALSE}.  
+
+@strong{Pre-condition}: @var{sourceLength}, @var{startPos}, and
+@var{numberToExtract} are not negative.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR source:      ARRAY 6 OF CHAR; 
+    destination: ARRAY 4 OF CHAR; 
+
+source := "abcde"; 
+
+Strings.CanExtractAll (Strings.Length (source), 0, 3, destination);
+   @result{} TRUE
+Strings.Extract (source, 0, 3, destination);  
+   @result{} destination = "abc"
+ 
+Strings.CanExtractAll (Strings.Length (source), 3, 2, destination);  
+   @result{} TRUE
+Strings.Extract (source, 3, 2, destination);  
+   @result{} destination = "de"
+
+Strings.CanExtractAll (Strings.Length (source), 0, 4, destination);  
+   @result{} FALSE
+Strings.Extract (source, 0, 4, destination);  
+   @result{} destination = "abc"
+
+Strings.CanExtractAll (Strings.Length (source), 2, 4, destination);  
+   @result{} FALSE
+Strings.Extract (source, 2, 4, destination);  
+   @result{} destination = "cde"
+
+Strings.CanExtractAll (Strings.Length (source), 5, 1, destination);  
+   @result{} FALSE
+Strings.Extract (source, 5, 1, destination);  
+   @result{} destination = ""
+
+Strings.CanExtractAll (Strings.Length (source), 4, 0, destination);  
+   @result{} TRUE
+Strings.Extract (source, 4, 0, destination);  
+   @result{} destination = ""
+@end smallexample
+
+@deffn Procedure Delete @code{(VAR @var{stringVar}: ARRAY OF CHAR;  @var{startPos}, @var{numberToDelete}: INTEGER)}
+@end deffn
+@deffn Procedure Delete @code{(VAR @var{stringVar}: ARRAY OF LONGCHAR;  @var{startPos}, @var{numberToDelete}: INTEGER)}
+Deletes at most @var{numberToDelete} characters from @var{stringVar},
+starting at position @var{startPos}.  The string value in @var{stringVar} is
+not altered if @var{startPos} is greater than or equal to
+@code{Length(@var{stringVar})}.  
+
+@strong{Pre-condition}: @var{startPos} and @var{numberToDelete} are not
+negative.
+@end deffn
+
+@deffn Function CanDeleteAll @code{(@var{stringLength}, @var{startPos},  @var{numberToDelete}: INTEGER): BOOLEAN}
+@end deffn
+@deffn Function CanDeleteAll @code{(@var{stringLength}, @var{startPos},  @var{numberToDelete}: INTEGER): BOOLEAN}
+Returns @code{TRUE} if there are @var{numberToDelete} characters starting at
+@var{startPos} and within the @var{stringLength} of some string; otherwise
+returns @code{FALSE}.  
+
+@strong{Pre-condition}: @var{stringLength}, @var{startPos} and
+@var{numberToDelete} are not negative.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR stringVar: ARRAY 6 OF CHAR; 
+    startPos:  INTEGER; 
+ 
+stringVar := "abcd";
+Strings.CanDeleteAll (Strings.Length (stringVar), 0, 4);   
+   @result{} TRUE
+Strings.Delete (stringVar, 0, 4);   
+   @result{} stringVar = ""
+ 
+stringVar := "abcd";
+Strings.CanDeleteAll (Strings.Length (stringVar), 1, 2);   
+   @result{} TRUE
+Strings.Delete (stringVar, 1, 2);   
+   @result{} stringVar = "ad"
+ 
+stringVar := "abcd";
+Strings.CanDeleteAll (Strings.Length (stringVar), 0, 5);   
+   @result{} FALSE
+Strings.Delete (stringVar, 0, 5);   
+   @result{} stringVar = ""
+@end smallexample
+
+@deffn Procedure Insert @code{(@var{source}: ARRAY OF CHAR;  @var{startPos}: INTEGER; VAR @var{destination}: ARRAY OF CHAR)}
+@end deffn
+@deffn Procedure Insert @code{(@var{source}: ARRAY OF LONGCHAR;  @var{startPos}: INTEGER; VAR @var{destination}: ARRAY OF LONGCHAR)}
+Inserts @var{source} into @var{destination} at position @var{startPos}.
+After the call, @var{destination} contains the string that is contructed by
+first splitting @var{destination} at the position @var{startPos} and then
+concatenating the first half, @var{source}, and the second half.  The string
+value in @var{destination} is not altered if @var{startPos} is greater than
+@code{Length(@var{source})}.  If @code{@var{startPos}=Length(@var{source})},
+then @var{source} is appended to @var{destination}.  
+
+@strong{Pre-condition}: @var{startPos} is not negative.
+@end deffn
+  
+@deffn Function CanInsertAll @code{(@var{sourceLength}, startPos: INTEGER;  VAR @var{destination}: ARRAY OF CHAR): BOOLEAN}
+@end deffn
+@deffn Function CanInsertAll @code{(@var{sourceLength}, startPos: INTEGER;  VAR @var{destination}: ARRAY OF LONGCHAR): BOOLEAN}
+Returns @code{TRUE} if there is room for the insertion of @var{sourceLength}
+characters from some string into @var{destination} starting at
+@var{startPos}; otherwise returns @code{FALSE}.  
+
+@strong{Pre-condition}: @var{sourceLength} and @var{startPos} are not
+negative.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR source:      ARRAY 6 OF CHAR; 
+    destination: ARRAY 8 OF CHAR; 
+
+source := "abc";
+destination := "012"; 
+
+Strings.CanInsertAll (Strings.Length (source), 1, destination);  
+   @result{} TRUE
+Strings.Insert (source, 1, destination);  
+   @result{} destination = "0abc12"
+
+Strings.CanInsertAll (Strings.Length (source), 3, destination);  
+   @result{} TRUE
+Strings.Insert (source, 3, destination);  
+   @result{} destination = "012abc"
+
+Strings.CanInsertAll (Strings.Length (source, 4, destination);  
+   @result{} FALSE
+Strings.Insert (source, 4, destination);  
+   @result{} destination = "012"
+ 
+source := "abcde"; 
+destination := "012356"; 
+
+Strings.CanInsertAll (Strings.Length (source), 0, destination);  
+   @result{} FALSE
+Strings.Insert (source, 0, destination);  
+   @result{} destination = "abcde01"
+ 
+Strings.CanInsertAll (Strings.Length (source), 4, destination);  
+   @result{} FALSE
+Strings.Insert (source, 4, destination);  
+   @result{} destination = "0123abc"
+@end smallexample
+
+@deffn Procedure Replace @code{(@var{source}: ARRAY OF CHAR;  @var{startPos}: INTEGER; VAR @var{destination}: ARRAY OF CHAR)}
+@end deffn
+@deffn Procedure Replace @code{(@var{source}: ARRAY OF LONGCHAR;  @var{startPos}: INTEGER; VAR @var{destination}: ARRAY OF LONGCHAR)}
+Copies @var{source} into @var{destination} starting at position
+@var{startPos}.  The existing character values of @var{destination} are
+overwritten (i.e., replaced by) @var{source}'s values.  Copying stops when
+all of @var{source} has been copied, or when the last character of the
+string value in @var{destination} has been replaced.  The string value in
+@var{destination} is not altered if @var{startPos} is greater than or equal
+to @code{Length(@var{source})}.  
+
+Notice that @code{Replace} does not continue past the string terminator
+@code{0X} in @var{destination}.  That is, @code{Length(@var{destination})}
+will never be changed by @code{Replace}.
+
+@strong{Pre-condition}: @var{startPos} is not negative.
+@end deffn
+
+@deffn Function CanReplaceAll @code{(@var{sourceLength}, @var{startPos}: INTEGER;  VAR @var{destination}: ARRAY OF CHAR): BOOLEAN}
+@end deffn
+@deffn Function CanReplaceAll @code{(@var{sourceLength}, @var{startPos}: INTEGER;  VAR @var{destination}: ARRAY OF LONGCHAR): BOOLEAN}
+Returns @code{TRUE} if there is room for the replacement of
+@var{sourceLength} characters in @var{destination} starting at
+@var{startPos}; otherwise returns @code{FALSE}.  
+
+@strong{Pre-condition}: @var{sourceLength} and @var{startPos} are not
+negative.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR source, destination: ARRAY 6 OF CHAR; 
+
+source := "ab"; destination := "1234"; 
+Strings.CanReplaceAll (Strings.Length (source), 0, destination);  
+   @result{} TRUE
+Strings.Replace (source, 0, destination);  
+   @result{} destination = "ab34"
+ 
+source := "abc"; destination := "1234"; 
+Strings.CanReplaceAll (Strings.Length (source), 2, destination);  
+   @result{} FALSE
+Strings.Replace (source, 2, destination);  
+   @result{} destination = "12ab"
+ 
+source := ""; destination := "1234"; 
+Strings.CanReplaceAll (Strings.Length (source), 4, destination);  
+   @result{} TRUE
+Strings.Replace (source, 4, destination);  
+   @result{} destination = "1234"
+
+source := ""; destination := "1234"; 
+Strings.CanReplaceAll (Strings.Length (source), 5, destination);  
+   @result{} FALSE
+Strings.Replace (source, 5, destination);  
+   @result{} destination = "1234"
+@end smallexample
+
+@deffn Procedure Append @code{(@var{source}: ARRAY OF CHAR;  VAR @var{destination}: ARRAY OF CHAR)}
+@end deffn
+@deffn Procedure Append @code{(@var{source}: ARRAY OF LONGCHAR;  VAR @var{destination}: ARRAY OF LONGCHAR)}
+Appends @var{source} to @var{destination}.  
+@end deffn
+
+@deffn Function CanAppendAll @code{(@var{sourceLength}: INTEGER;  VAR @var{destination}: ARRAY OF CHAR): BOOLEAN}
+@end deffn
+@deffn Function CanAppendAll @code{(@var{sourceLength}: INTEGER;  VAR @var{destination}: ARRAY OF LONGCHAR): BOOLEAN}
+Returns @code{TRUE} if there is sufficient room in @var{destination} to
+append a string of length @var{sourceLength} to the string in
+@var{destination}; otherwise returns @code{FALSE}.  
+
+@strong{Pre-condition}: @var{sourceLength} is not negative.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR source, destination: ARRAY 6 OF CHAR; 
+
+source := "12"; destination := "abc"; 
+Strings.CanAppendAll (Strings.Length (source), destination);  
+   @result{} TRUE
+Strings.Append (source, destination);  
+   @result{} destination = "abc12"
+
+source := "123"; destination := "abc"; 
+Strings.CanAppendAll (Strings.Length (source), destination);  
+   @result{} FALSE
+Strings.Append (source, destination);  
+   @result{} destination = "abc12"
+
+source := "123"; destination := "abcde"; 
+Strings.CanAppendAll (Strings.Length (source), destination);  
+   @result{} FALSE
+Strings.Append (source, destination);  
+   @result{} destination = "abcde"
+@end smallexample
+
+@deffn Procedure Concat @code{(@var{source1}, @var{source2}: ARRAY OF CHAR;  VAR @var{destination}: ARRAY OF CHAR)}
+@end deffn
+@deffn Procedure Concat @code{(@var{source1}, @var{source2}: ARRAY OF LONGCHAR;  VAR @var{destination}: ARRAY OF LONGCHAR)}
+Concatenates @var{source2} onto @var{source1} and copies the result into
+@var{destination}.  Note that any previous contents of @var{destination} are
+destroyed by @code{Concat}.
+@end deffn
+
+@deffn Function CanConcatAll @code{(@var{source1Length}, @var{source2Length}: INTEGER;  VAR @var{destination}: ARRAY OF CHAR): BOOLEAN}
+@end deffn
+@deffn Function CanConcatAll @code{(@var{source1Length}, @var{source2Length}: INTEGER;  VAR @var{destination}: ARRAY OF LONGCHAR): BOOLEAN}
+Returns @code{TRUE} if there is sufficient room in @var{destination} for a
+two strings of lengths @var{source1Length} and @var{source2Length};
+otherwise returns @code{FALSE}.
+
+@strong{Pre-condition}: @var{source1Length} and @var{source2Length} are not
+negative.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR source1, source2: ARRAY 5 OF CHAR; 
+    destination: ARRAY 6 OF CHAR; 
+
+source1 := "12"; source2 := "abc"; 
+Strings.CanConcatAll (Strings.Length (source1), 
+                      Strings.Length (source2), destination);  
+   @result{} TRUE
+Strings.Concat (source1, source2, destination);  
+   @result{} destination = "12abc"
+ 
+source1 := "123"; source2 := "abc"; 
+Strings.CanConcatAll (Strings.Length (source1), 
+                      Strings.Length (source2), destination);  
+   @result{} FALSE
+Strings.Concat (source1, source2, destination);  
+   @result{} destination = "123ab"
+
+source1 := ""; source2 := "abc"; 
+Strings.CanConcatAll (Strings.Length (source1), 
+                      Strings.Length (source2), destination);  
+   @result{} TRUE
+Strings.Concat (source1, source2, destination);  
+   @result{} destination = "abc"
+@end smallexample
+
+@node Compare & Searching Strings, Misc. Strings Procedures, Copying and Concatenation, Strings
+@subsection Comparing & Searching Strings
+@cindex strings, comparing
+@cindex strings, searching
+
+These procedures provide for the comparison of string values, and for the
+location of substrings within strings.
+
+@deffn Function Compare @code{(@var{stringVal1}, @var{stringVal2}: ARRAY OF CHAR): CompareResults}
+@end deffn
+@deffn Function Compare @code{(@var{stringVal1}, @var{stringVal2}: ARRAY OF LONGCHAR): CompareResults}
+Returns @code{less}, @code{equal}, or @code{greater}, according as
+@var{stringVal1} is lexically less than, equal to, or greater than
+@var{stringVal2}.
+
+@strong{Please note}: Oberon-2 already contains predefined comparison
+operators on strings.
+
+@deftp {Data type} CompareResults = SHORTINT
+@code{CompareResults} and its related constants are used with procedure
+@code{Compare}.  The following constants are defined for its value:
+@defvr Constant less
+@end defvr
+@defvr Constant equal
+@end defvr
+@defvr Constant greater
+@end defvr
+@end deftp
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR stringVal1, stringVal2: ARRAY 4 OF CHAR; 
+
+stringVal1 := "abc"; stringVal2 := "abc"; 
+Strings.Compare (stringVal1, stringVal2);  
+   @result{} equal
+ 
+stringVal1 := "abc"; stringVal2 := "abd"; 
+Strings.Compare (stringVal1, stringVal2);  
+   @result{} less
+ 
+stringVal1 := "ab"; stringVal2 := "abc"; 
+Strings.Compare (stringVal1, stringVal2);  
+   @result{} less
+ 
+stringVal1 := "abd"; stringVal2 := "abc"; 
+Strings.Compare (stringVal1, stringVal2);  
+   @result{} greater
+@end smallexample
+
+@deffn Function Equal @code{(@var{stringVal1}, @var{stringVal2}: ARRAY OF CHAR): BOOLEAN}
+@end deffn
+@deffn Function Equal @code{(@var{stringVal1}, @var{stringVal2}: ARRAY OF LONGCHAR): BOOLEAN}
+Returns @code{@var{stringVal1}=@var{stringVal2}}.  That is, @code{Equal}
+returns @code{TRUE} if the string value of @var{stringVal1} is the same as
+the string value of @var{stringVal2}; otherwise, it returns @code{FALSE}.
+Unlike the predefined operator @code{=}, this procedure can be assigned to a
+procedure variable.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR stringVal1, stringVal2: ARRAY 4 OF CHAR; 
+ 
+stringVal1 := "abc"; stringVal2 := "abc"; 
+Strings.Equal (stringVal1, stringVal2);  
+   @result{} TRUE
+ 
+stringVal1 := "abc"; stringVal2 := "abd"; 
+Strings.Equal (stringVal1, stringVal2);  
+   @result{} FALSE
+ 
+stringVal1 := "ab"; stringVal2 := "abc"; 
+Strings.Equal (stringVal1, stringVal2);  
+   @result{} FALSE
+@end smallexample
+
+@deffn Procedure FindNext @code{(@var{pattern}, @var{stringToSearch}: ARRAY OF CHAR;  @var{startPos}: INTEGER; VAR @var{patternFound}: BOOLEAN;  VAR @var{posOfPattern}: INTEGER)}
+@end deffn
+@deffn Procedure FindNext @code{(@var{pattern}, @var{stringToSearch}: ARRAY OF LONGCHAR;  @var{startPos}: INTEGER; VAR @var{patternFound}: BOOLEAN;  VAR @var{posOfPattern}: INTEGER)}
+This procedure is used to locate a pattern string within another string.  It
+searches forward through @var{stringToSearch} for next occurrence of
+@var{pattern}; @var{startPos} is the starting position of the search (within
+@var{stringToSearch}).  
+
+If @code{@var{startPos}<Length(@var{stringToSearch})} and @var{pattern} is
+found, @var{patternFound} is returned as @code{TRUE} and @var{posOfPattern}
+contains the start position in @var{stringToSearch} of @var{pattern} (i.e.,
+@var{posOfPattern} is in the range
+
+@code{[@var{startPos}..Length(@var{stringToSearch})-1]})
+
+Otherwise, @var{patternFound} is returned as @code{FALSE} and
+@var{posOfPattern} is unchanged.
+
+If @code{@var{startPos}>Length(@var{stringToSearch})-Length(@var{pattern})},
+then @var{patternFound} is returned as @code{FALSE}.
+
+@strong{Pre-condition}: @var{startPos} is not negative.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR pattern:        ARRAY 4 OF CHAR; 
+    stringToSearch: ARRAY 9 OF CHAR; 
+    found: BOOLEAN; 
+    posOfPattern: INTEGER; 
+
+pattern := "ab"; stringToSearch := "ababcaba"; 
+Strings.FindNext (pattern, stringToSearch, 0, found, posOfPattern);  
+   @result{} TRUE, posOfPattern = 0
+Strings.FindNext (pattern, stringToSearch, 1, found, posOfPattern);  
+   @result{} TRUE, posOfPattern = 2
+Strings.FindNext (pattern, stringToSearch, 2, found, posOfPattern);  
+   @result{} TRUE, posOfPattern = 2
+Strings.FindNext (pattern, stringToSearch, 3, found, posOfPattern);  
+   @result{} TRUE, posOfPattern = 5
+Strings.FindNext (pattern, stringToSearch, 4, found, posOfPattern);  
+   @result{} TRUE, posOfPattern = 5
+Strings.FindNext (pattern, stringToSearch, 5, found, posOfPattern);  
+   @result{} TRUE, posOfPattern = 5
+Strings.FindNext (pattern, stringToSearch, 6, found, posOfPattern);  
+   @result{} FALSE, posOfPattern unchanged
+ 
+pattern := ""; stringToSearch := "abc"; 
+Strings.FindNext (pattern, stringToSearch, 2, found, posOfPattern);  
+   @result{} TRUE, posOfPattern = 2
+Strings.FindNext (pattern, stringToSearch, 3, found, posOfPattern);  
+   @result{} FALSE, posOfPattern unchanged
+@end smallexample
+
+@deffn Procedure FindPrev @code{(@var{pattern}, @var{stringToSearch}: ARRAY OF CHAR;  @var{startPos}: INTEGER; VAR @var{patternFound}: BOOLEAN;  VAR @var{posOfPattern}: INTEGER)}
+@end deffn
+@deffn Procedure FindPrev @code{(@var{pattern}, @var{stringToSearch}: ARRAY OF LONGCHAR;  @var{startPos}: INTEGER; VAR @var{patternFound}: BOOLEAN;  VAR @var{posOfPattern}: INTEGER)}
+This procedure is used to locate a pattern string within another string.  It
+searches backward through @var{stringToSearch} for a previous occurrence of
+@var{pattern}; @var{startPos} is the starting position of the search (within
+@var{stringToSearch}).  
+
+If @var{pattern} is found, @var{patternFound} is returned as @code{TRUE}
+and @var{posOfPattern} contains the start position in @var{stringToSearch}
+of @var{pattern} (i.e., @var{posOfPattern} is in the range
+@code{[0..@var{startPos}]}).
+
+Otherwise, @var{patternFound} is returned as @code{FALSE} and
+@var{posOfPattern} is unchanged (in this case, the pattern might be found at
+@var{startPos}).
+
+The search will fail if @var{startPos} is negative.
+
+If @code{@var{startPos}>Length(@var{stringToSearch})-Length(@var{pattern})}
+the whole string value is searched.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR pattern:        ARRAY 4 OF CHAR; 
+    stringToSearch: ARRAY 9 OF CHAR; 
+    found: BOOLEAN; 
+    posOfPattern: INTEGER; 
+
+pattern := "abc"; stringToSearch := "ababcaba"; 
+Strings.FindPrev(pattern, stringToSearch, 1, found, posOfPattern);
+   @result{} FALSE, posOfPattern unchanged
+Strings.FindPrev(pattern, stringToSearch, 2, found, posOfPattern);
+   @result{} TRUE, posOfPattern = 2
+Strings.FindPrev(pattern, stringToSearch, 3, found, posOfPattern);
+   @result{} TRUE, posOfPattern = 2
+ 
+pattern := "ab"; stringToSearch := "ababcaba"; 
+Strings.FindPrev(pattern, stringToSearch, 0, found, posOfPattern);
+   @result{} TRUE, posOfPattern = 0
+Strings.FindPrev(pattern, stringToSearch, 1, found, posOfPattern);
+   @result{} TRUE, posOfPattern = 0
+Strings.FindPrev(pattern, stringToSearch, 2, found, posOfPattern);
+   @result{} TRUE, posOfPattern = 2
+Strings.FindPrev(pattern, stringToSearch, 3, found, posOfPattern);
+   @result{} TRUE, posOfPattern = 2
+Strings.FindPrev(pattern, stringToSearch, 4, found, posOfPattern);
+   @result{} TRUE, posOfPattern = 2
+Strings.FindPrev(pattern, stringToSearch, 5, found, posOfPattern);
+   @result{} TRUE, posOfPattern = 5
+ 
+pattern := ""; stringToSearch := "abc"; 
+Strings.FindPrev(pattern, stringToSearch, -1, found, posOfPattern);
+   @result{} FALSE, posOfPattern unchanged
+Strings.FindPrev(pattern, stringToSearch, 0, found, posOfPattern);
+   @result{} TRUE, posOfPattern = 0
+Strings.FindPrev(pattern, stringToSearch, 4, found, posOfPattern);
+   @result{} TRUE, posOfPattern = 3
+@end smallexample
+
+@deffn Procedure FindDiff @code{(@var{stringVal1}, @var{stringVal2}: ARRAY OF CHAR;  VAR @var{differenceFound}: BOOLEAN; VAR @var{posOfDifference}: INTEGER)}
+@end deffn
+@deffn Procedure FindDiff @code{(@var{stringVal1}, @var{stringVal2}: ARRAY OF LONGCHAR;  VAR @var{differenceFound}: BOOLEAN; VAR @var{posOfDifference}: INTEGER)}
+Compares the string values in @var{stringVal1} and @var{stringVal2} for
+differences.  If they are equal, @var{differenceFound} is returned as
+@code{FALSE}; and @code{TRUE} otherwise.
+
+If @var{differenceFound} is @code{TRUE}, @var{posOfDifference} is set to the
+position of the first difference; otherwise @var{posOfDifference} is
+unchanged.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR stringVal1, stringVal2: ARRAY 4 OF CHAR; 
+    diffFound: BOOLEAN;
+    posOfDiff: INTEGER; 
+
+stringVal1 := "abc"; stringVal2 := "abc"; 
+Strings.FindDiff(stringVal1, stringVal2, diffFound, posOfDiff);
+   @result{} FALSE, posOfDifference unchanged
+ 
+stringVal1 := "ab"; stringVal2 := "ac"; 
+Strings.FindDiff(stringVal1, stringVal2, diffFound, posOfDiff);
+   @result{} TRUE, posOfDifference = 1
+ 
+stringVal1 := "ab"; stringVal2 := "a"; 
+Strings.FindDiff(stringVal1, stringVal2, diffFound, posOfDiff);
+   @result{} TRUE, posOfDifference = 1
+@end smallexample
+
+@node Misc. Strings Procedures,  , Compare & Searching Strings, Strings
+@subsection Miscellaneous Strings Procedures
+@cindex strings, length
+@cindex strings, capitalizing
+
+@deffn Function Length @code{(@var{stringVal}: ARRAY OF CHAR): INTEGER}
+@end deffn
+@deffn Function Length @code{(@var{stringVal}: ARRAY OF LONGCHAR): INTEGER}
+Returns the string length of @var{stringVal}.  This is equal to the number
+of characters in @var{stringVal} up to and excluding the first @code{0X}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+Strings.Length("Hello, world"); 
+    @result{} 12
+
+VAR stringVal: ARRAY 6 OF CHAR; 
+stringVal := ""; 
+Strings.Length(stringVal);
+    @result{} 0
+stringVal := "12"; 
+Strings.Length(stringVal);
+    @result{} 2
+@end smallexample
+
+Recall that if you instead need the @emph{total} size of the character
+array, you should use the standard Oberon-2 function procedure @code{LEN}:
+
+@smallexample
+VAR aString: ARRAY 32 OF CHAR;
+aString := "Hello, world";
+LEN(aString)
+    @result{} 32
+@end smallexample
+
+@deffn Procedure Capitalize @code{(VAR @var{stringVar}: ARRAY OF CHAR)}
+@end deffn
+@deffn Procedure Capitalize @code{(VAR @var{stringVar}: ARRAY OF LONGCHAR)}
+Applies the function @code{CAP} to each character of the string value in
+@var{stringVar}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR stringVar: ARRAY 6 OF CHAR; 
+
+stringVar := "abc"; 
+Strings.Capitalize (stringVar);   
+   @result{} stringVar = "ABC"
+ 
+stringVar := "0aB";
+Strings.Capitalize (stringVar);   
+   @result{} stringVar = "0AB"
+@end smallexample

@@ -1,0 +1,121 @@
+@node OOC Library Overview, Character & String Handling, Introduction, Top
+@unnumbered Part I:  The OOC Library
+@chapter OOC Library Overview
+
+This part of the manual describes the OOC library, and provides a reference
+as to the use of these facilities with the OOC compiler.
+
+The Oberon-2 programming language does not provide built-in facilities for
+performing common operations such as input/output, string manipulation,
+mathematical functions and so forth.  These facilities are instead
+implemented in library modules.  As such, much of learning about a new
+Oberon-2 compiler, such as OOC, is discovering how to use those library
+facilities.
+
+The designers of the OOC library have attempted to make all modules as easy
+to use and understand as possible.  Module definitions can be viewed with
+the browser that comes with the OOC compiler; this is an easy way to see
+what facilities are available in each module.
+
+However, module definitions are generally not sufficient for a good
+understanding of all facilities.  This manual provides a more comprehensive
+guide to the OOC library.  As with all Oberon-2 modules, library modules
+must always be imported before they can be used within a client module.
+
+@menu
+* Standards::                   Standards followed by OOC and its library.  
+* Definition of Terms::         Terminology used in this part of the manual.  
+@end menu
+
+@node Standards,  Definition of Terms,  , OOC Library Overview
+@section Standards
+@cindex standards
+@cindex conventions
+@cindex naming conventions
+
+The only available standard for Oberon-2 is described in @cite{The Oakwood
+Guildlines for Oberon-2 Compiler Developers}, which will be referred to
+subsiquently as @dfn{Oakwood}.  The Oakwood library does not provide the
+kind of functionality that OOC's designers wished to provide.  However,
+because Oakwood is the only available standard, these modules have been
+provided in the OOC library.  The names of the Oakwood modules for OOC all
+begin with "Oak" (e.g., OakIn, OakOut).
+
+The OOC library also provides replacements for Oakwood modules that contain
+expanded functionality.  That is, OOC provides modules In, Out, Files, and
+so forth.
+
+Also, in order to provide consistency, the OOC library attempts to follow
+these naming conventions:
+
+@smallexample
+================================================================
+Names for              Start with              Examples
+----------------------------------------------------------------
+Constants, variables   Lower-case noun         version, wordSize
+                       Lower-case adjective    full
+ 
+Types                  Upper-case noun         File, TextFrame
+ 
+Procedures             Upper-case verb         WriteString
+ 
+Functions              Upper-case noun         Position
+                       Upper-case adjective    Empty, Equal
+ 
+Modules                Upper-case noun         Files, TextFrames
+----------------------------------------------------------------
+@end smallexample
+
+@node Definition of Terms,  , Standards, OOC Library Overview
+@section Definition of Terms
+@cindex object-oriented terms
+@cindex class (definition)
+@cindex abstract class (definition)
+@cindex record (definition)
+@cindex method (definition)
+@cindex object (definition)
+@cindex data type (definition)
+
+Standard Oberon-2 terminology closely follows "conventional" programming
+practices.  The Oberon-2 language report describes things using words like
+@dfn{procedure} and @dfn{type}.  Special object-oriented (OO) terms like
+@dfn{class} and @dfn{method} aren't typically used by the Oberon community.
+These OO ideas can be described using various combinations of
+@dfn{conventional} terms; for instance, @dfn{extensible record} or
+@dfn{type-bound procedure}.
+
+But it isn't always convenient to use these conventional terms; the
+object-oriented terms are often more concise and handier to use.  Also,
+there are notable distinctions in the OOC library between modules that
+provide things like a collection of mathematical functions (that operate on
+existing types) and true extensible abstract data types (e.g., channels and
+riders).  For these reasons, this section defines how certain terms are to
+be used throughout the rest of this manual.
+
+A @dfn{data type} is a simple Oberon-2 type declaration.  It may be any type
+whose internal structure is of no importance to the user, or an @dfn{alias}
+type that declares an alias name for a basic type like @code{INTEGER}.
+
+A @dfn{record} is a normal Oberon-2 record type declaration.  It generally
+can be used directly to define variables.  Operations on records (i.e.,
+procedures) are declared external to the type (e.g.,
+@code{SysClock.DateTime} @pxref{SysClock})
+
+A @dfn{class} differs from normal records in that they are extensible and
+their operations are implemented as type-bound procedures.  These are
+usually declared as a pointer plus record combination and the two types
+should be considered as a single class.  Generally, it is pointless to
+create a variable of the record type---you can't use it; its contents are
+undefined.
+
+A @dfn{method} is simply another term for a type-bound procedure.
+
+An @dfn{object} is an instance of a class (i.e., a variable whose type is a
+class).
+
+An @dfn{abstract class} serves as a pattern from which other classes can be
+derived.  Abstract classes provide an interface, but no implementation (or
+perhaps a partial implementation).  They can never be used to create
+objects; rather, they must be extended to form @dfn{concrete subclasses}
+that inherit the interface and then go on to complete the implementation.
+Abstract classes ensure a consistent design for their subclasses.

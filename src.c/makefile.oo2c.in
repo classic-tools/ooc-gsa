@@ -1,0 +1,222 @@
+CC = cc
+CFLAGS =  
+LDFLAGS = 
+GCFLAGS = @gc_flags_make@
+
+
+###### no need to change anything below this line
+
+SHELL = /bin/sh
+
+ALL_CFLAGS = $(CFLAGS) -Isrc.c -Ilib -I-
+
+ALL_LDFLAGS = $(LDFLAGS)
+
+.SUFFIXES:
+
+.PHONY: all build cfiles clean o2_clean
+
+c_ext = lib/__oo2c.c lib/Files.c lib/PosixFileDescr.c lib/SysClock.c lib/Termination.c lib/Rts.c src.c/_oo2c.c
+
+objs_ext =
+
+c_gen = src.c/Strings.c src.c/Config.c src.c/Strings2.c src.c/Filenames.c src.c/ConvTypes.c src.c/Opcode.c src.c/Ascii.c src.c/CharClass.c src.c/LongStrings.c src.c/IntConv.c src.c/IntStr.c src.c/Msg.c src.c/LongInts.c src.c/LowReal.c src.c/LowLReal.c src.c/LRealConv.c src.c/LRealStr.c src.c/RealConv.c src.c/Time.c src.c/Channel.c src.c/BinaryRider.c src.c/ProgramArgs.c src.c/StdChannels.c src.c/RCS.c src.c/RealMath.c src.c/LRealMath.c src.c/RealStr.c src.c/TextRider.c src.c/Out.c src.c/Parameter.c src.c/ParamOptions.c src.c/ParamPaths.c src.c/ParamPragmas.c src.c/StdPragmas.c src.c/Error.c src.c/Data.c src.c/FileData.c src.c/External.c src.c/StdTypes.c src.c/Scanner.c src.c/SymbolTable.c src.c/SystemFlags.c src.c/Attributes.c src.c/CopyPropagation.c src.c/DeadCodeElimination.c src.c/GuardCond.c src.c/SymbolFile.c src.c/Make.c src.c/UndefVar.c src.c/Classify.c src.c/GateReduction.c src.c/GenInclude.c src.c/GuardPropagation.c src.c/SideEffects.c src.c/IntArith.c src.c/Worklist.c src.c/AlgebraicTransformation.c src.c/AliasAnalysis.c src.c/GenConst.c src.c/LoopTransformation.c src.c/Schedule.c src.c/Allocate.c src.c/ControlFlow.c src.c/GenDecl.c src.c/ValueNumbering.c src.c/ErrorInstr.c src.c/WriteSymbols.c src.c/WriteGSA.c src.c/Check.c src.c/ConstPropagation.c src.c/ParseExpr.c src.c/ParseStatm.c src.c/WriteGSAvC.c src.c/GenStatm.c src.c/Build.c src.c/CodeGen.c src.c/ParseDecl.c src.c/oo2c.c
+
+d_gen = src.c/Strings.d src.c/Config.d src.c/Strings2.d src.c/Filenames.d src.c/ConvTypes.d src.c/Opcode.d src.c/Ascii.d src.c/CharClass.d src.c/LongStrings.d src.c/IntConv.d src.c/IntStr.d src.c/Msg.d src.c/LongInts.d src.c/LowReal.d src.c/LowLReal.d src.c/LRealConv.d src.c/LRealStr.d src.c/RealConv.d src.c/Time.d src.c/Channel.d src.c/BinaryRider.d src.c/ProgramArgs.d src.c/StdChannels.d src.c/RCS.d src.c/RealMath.d src.c/LRealMath.d src.c/RealStr.d src.c/TextRider.d src.c/Out.d src.c/Parameter.d src.c/ParamOptions.d src.c/ParamPaths.d src.c/ParamPragmas.d src.c/StdPragmas.d src.c/Error.d src.c/Data.d src.c/FileData.d src.c/External.d src.c/StdTypes.d src.c/Scanner.d src.c/SymbolTable.d src.c/SystemFlags.d src.c/Attributes.d src.c/CopyPropagation.d src.c/DeadCodeElimination.d src.c/GuardCond.d src.c/SymbolFile.d src.c/Make.d src.c/UndefVar.d src.c/Classify.d src.c/GateReduction.d src.c/GenInclude.d src.c/GuardPropagation.d src.c/SideEffects.d src.c/IntArith.d src.c/Worklist.d src.c/AlgebraicTransformation.d src.c/AliasAnalysis.d src.c/GenConst.d src.c/LoopTransformation.d src.c/Schedule.d src.c/Allocate.d src.c/ControlFlow.d src.c/GenDecl.d src.c/ValueNumbering.d src.c/ErrorInstr.d src.c/WriteSymbols.d src.c/WriteGSA.d src.c/Check.d src.c/ConstPropagation.d src.c/ParseExpr.d src.c/ParseStatm.d src.c/WriteGSAvC.d src.c/GenStatm.d src.c/Build.d src.c/CodeGen.d src.c/ParseDecl.d src.c/oo2c.d
+
+objs_gen = stage0/__oo2c.o stage0/Files.o stage0/PosixFileDescr.o stage0/SysClock.o stage0/Termination.o stage0/Rts.o stage0/Strings.o stage0/Config.o stage0/Strings2.o stage0/Filenames.o stage0/ConvTypes.o stage0/Opcode.o stage0/Ascii.o stage0/CharClass.o stage0/LongStrings.o stage0/IntConv.o stage0/IntStr.o stage0/Msg.o stage0/LongInts.o stage0/LowReal.o stage0/LowLReal.o stage0/LRealConv.o stage0/LRealStr.o stage0/RealConv.o stage0/Time.o stage0/Channel.o stage0/BinaryRider.o stage0/ProgramArgs.o stage0/StdChannels.o stage0/RCS.o stage0/RealMath.o stage0/LRealMath.o stage0/RealStr.o stage0/TextRider.o stage0/Out.o stage0/Parameter.o stage0/ParamOptions.o stage0/ParamPaths.o stage0/ParamPragmas.o stage0/StdPragmas.o stage0/Error.o stage0/Data.o stage0/FileData.o stage0/External.o stage0/StdTypes.o stage0/Scanner.o stage0/SymbolTable.o stage0/SystemFlags.o stage0/Attributes.o stage0/CopyPropagation.o stage0/DeadCodeElimination.o stage0/GuardCond.o stage0/SymbolFile.o stage0/Make.o stage0/UndefVar.o stage0/Classify.o stage0/GateReduction.o stage0/GenInclude.o stage0/GuardPropagation.o stage0/SideEffects.o stage0/IntArith.o stage0/Worklist.o stage0/AlgebraicTransformation.o stage0/AliasAnalysis.o stage0/GenConst.o stage0/LoopTransformation.o stage0/Schedule.o stage0/Allocate.o stage0/ControlFlow.o stage0/GenDecl.o stage0/ValueNumbering.o stage0/ErrorInstr.o stage0/WriteSymbols.o stage0/WriteGSA.o stage0/Check.o stage0/ConstPropagation.o stage0/ParseExpr.o stage0/ParseStatm.o stage0/WriteGSAvC.o stage0/GenStatm.o stage0/Build.o stage0/CodeGen.o stage0/ParseDecl.o stage0/oo2c.o stage0/_oo2c.o
+
+headers = src.c/Strings.h src.c/Config.h src.c/Rts.h src.c/Strings2.h src.c/Filenames.h src.c/ConvTypes.h src.c/Termination.h src.c/Opcode.h src.c/Ascii.h src.c/CharClass.h src.c/LongStrings.h src.c/IntConv.h src.c/IntStr.h src.c/Msg.h src.c/LongInts.h src.c/LowReal.h src.c/LowLReal.h src.c/LRealConv.h src.c/LRealStr.h src.c/RealConv.h src.c/SysClock.h src.c/Time.h src.c/Channel.h src.c/BinaryRider.h src.c/C.h src.c/PosixFileDescr.h src.c/ProgramArgs.h src.c/StdChannels.h src.c/Files.h src.c/RCS.h src.c/RealMath.h src.c/LRealMath.h src.c/RealStr.h src.c/TextRider.h src.c/Out.h src.c/Parameter.h src.c/ParamOptions.h src.c/ParamPaths.h src.c/ParamPragmas.h src.c/StdPragmas.h src.c/Error.h src.c/Data.h src.c/FileData.h src.c/External.h src.c/StdTypes.h src.c/Scanner.h src.c/SymbolTable.h src.c/SystemFlags.h src.c/Attributes.h src.c/CopyPropagation.h src.c/DeadCodeElimination.h src.c/GuardCond.h src.c/SymbolFile.h src.c/Make.h src.c/UndefVar.h src.c/Classify.h src.c/GateReduction.h src.c/GenInclude.h src.c/GuardPropagation.h src.c/SideEffects.h src.c/IntArith.h src.c/Worklist.h src.c/AlgebraicTransformation.h src.c/AliasAnalysis.h src.c/GenConst.h src.c/LoopTransformation.h src.c/Schedule.h src.c/Allocate.h src.c/ControlFlow.h src.c/GenDecl.h src.c/ValueNumbering.h src.c/ErrorInstr.h src.c/WriteSymbols.h src.c/WriteGSA.h src.c/Check.h src.c/ConstPropagation.h src.c/ParseExpr.h src.c/ParseStatm.h src.c/WriteGSAvC.h src.c/GenStatm.h src.c/Build.h src.c/CodeGen.h src.c/ParseDecl.h src.c/oo2c.h
+
+
+
+all: cfiles build
+
+stage0/oo2c: $(objs_gen) $(objs_ext)
+	$(CC) $(ALL_CFLAGS) -o $@ $(objs_ext) $(objs_gen) $(ALL_LDFLAGS) $(GCFLAGS)
+
+build: stage0/oo2c
+
+cfiles: $(headers) $(c_gen)
+
+clean:
+	-rm $(objs_gen) stage0/oo2c
+
+o2_clean: clean
+	-rm $(headers)
+	-rm $(c_gen)
+	-rm $(d_gen)
+
+
+
+stage0/__oo2c.o: lib/__oo2c.c lib/__oo2c.h lib/__libc.h
+	$(CC) $(ALL_CFLAGS) -c lib/__oo2c.c -o $@
+stage0/Files.o: lib/Files.c lib/__oo2c.h lib/__libc.h
+	$(CC) $(ALL_CFLAGS) -c lib/Files.c -o $@
+stage0/PosixFileDescr.o: lib/PosixFileDescr.c lib/__oo2c.h lib/__libc.h
+	$(CC) $(ALL_CFLAGS) -c lib/PosixFileDescr.c -o $@
+stage0/SysClock.o: lib/SysClock.c lib/__oo2c.h lib/__libc.h
+	$(CC) $(ALL_CFLAGS) -c lib/SysClock.c -o $@
+stage0/Termination.o: lib/Termination.c lib/__oo2c.h lib/__libc.h
+	$(CC) $(ALL_CFLAGS) -c lib/Termination.c -o $@
+stage0/Rts.o: lib/Rts.c lib/__oo2c.h lib/__libc.h
+	$(CC) $(ALL_CFLAGS) -c lib/Rts.c -o $@
+stage0/Strings.o: src.c/Strings.c lib/__oo2c.h lib/__libc.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Strings.c -o $@
+stage0/Config.o: src.c/Config.c lib/__oo2c.h lib/__libc.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Config.c -o $@
+stage0/Strings2.o: src.c/Strings2.c lib/__oo2c.h lib/__libc.h src.c/Strings.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Strings2.c -o $@
+stage0/Filenames.o: src.c/Filenames.c lib/__oo2c.h lib/__libc.h src.c/Rts.h src.c/Strings.h src.c/Strings2.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Filenames.c -o $@
+stage0/ConvTypes.o: src.c/ConvTypes.c lib/__oo2c.h lib/__libc.h
+	$(CC) $(ALL_CFLAGS) -c src.c/ConvTypes.c -o $@
+stage0/Opcode.o: src.c/Opcode.c lib/__oo2c.h lib/__libc.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Opcode.c -o $@
+stage0/Ascii.o: src.c/Ascii.c lib/__oo2c.h lib/__libc.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Ascii.c -o $@
+stage0/CharClass.o: src.c/CharClass.c lib/__oo2c.h lib/__libc.h src.c/Ascii.h
+	$(CC) $(ALL_CFLAGS) -c src.c/CharClass.c -o $@
+stage0/LongStrings.o: src.c/LongStrings.c lib/__oo2c.h lib/__libc.h
+	$(CC) $(ALL_CFLAGS) -c src.c/LongStrings.c -o $@
+stage0/IntConv.o: src.c/IntConv.c lib/__oo2c.h lib/__libc.h src.c/ConvTypes.h src.c/CharClass.h src.c/Strings.h
+	$(CC) $(ALL_CFLAGS) -c src.c/IntConv.c -o $@
+stage0/IntStr.o: src.c/IntStr.c lib/__oo2c.h lib/__libc.h src.c/ConvTypes.h src.c/IntConv.h
+	$(CC) $(ALL_CFLAGS) -c src.c/IntStr.c -o $@
+stage0/Msg.o: src.c/Msg.c lib/__oo2c.h lib/__libc.h src.c/CharClass.h src.c/IntStr.h src.c/LongStrings.h src.c/Strings.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Msg.c -o $@
+stage0/LongInts.o: src.c/LongInts.c lib/__oo2c.h lib/__libc.h
+	$(CC) $(ALL_CFLAGS) -c src.c/LongInts.c -o $@
+stage0/LowReal.o: src.c/LowReal.c lib/__oo2c.h lib/__libc.h
+	$(CC) $(ALL_CFLAGS) -c src.c/LowReal.c -o $@
+stage0/LowLReal.o: src.c/LowLReal.c lib/__oo2c.h lib/__libc.h src.c/LowReal.h
+	$(CC) $(ALL_CFLAGS) -c src.c/LowLReal.c -o $@
+stage0/LRealConv.o: src.c/LRealConv.c lib/__oo2c.h lib/__libc.h src.c/ConvTypes.h src.c/CharClass.h src.c/LongInts.h src.c/LowLReal.h src.c/Strings.h
+	$(CC) $(ALL_CFLAGS) -c src.c/LRealConv.c -o $@
+stage0/LRealStr.o: src.c/LRealStr.c lib/__oo2c.h lib/__libc.h src.c/ConvTypes.h src.c/LongInts.h src.c/LowLReal.h src.c/LRealConv.h src.c/Strings.h
+	$(CC) $(ALL_CFLAGS) -c src.c/LRealStr.c -o $@
+stage0/RealConv.o: src.c/RealConv.c lib/__oo2c.h lib/__libc.h src.c/ConvTypes.h src.c/CharClass.h src.c/LowReal.h src.c/Strings.h
+	$(CC) $(ALL_CFLAGS) -c src.c/RealConv.c -o $@
+stage0/Time.o: src.c/Time.c lib/__oo2c.h lib/__libc.h src.c/SysClock.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Time.c -o $@
+stage0/Channel.o: src.c/Channel.c lib/__oo2c.h lib/__libc.h src.c/Msg.h src.c/Time.h src.c/Strings.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Channel.c -o $@
+stage0/BinaryRider.o: src.c/BinaryRider.c lib/__oo2c.h lib/__libc.h src.c/Channel.h src.c/Msg.h src.c/Strings.h
+	$(CC) $(ALL_CFLAGS) -c src.c/BinaryRider.c -o $@
+stage0/ProgramArgs.o: src.c/ProgramArgs.c lib/__oo2c.h lib/__libc.h src.c/Channel.h src.c/Time.h src.c/CharClass.h src.c/Msg.h src.c/PosixFileDescr.h
+	$(CC) $(ALL_CFLAGS) -c src.c/ProgramArgs.c -o $@
+stage0/StdChannels.o: src.c/StdChannels.c lib/__oo2c.h lib/__libc.h src.c/Channel.h src.c/Time.h src.c/PosixFileDescr.h src.c/Msg.h src.c/Termination.h
+	$(CC) $(ALL_CFLAGS) -c src.c/StdChannels.c -o $@
+stage0/RCS.o: src.c/RCS.c lib/__oo2c.h lib/__libc.h src.c/Filenames.h src.c/Files.h src.c/Rts.h src.c/Strings.h
+	$(CC) $(ALL_CFLAGS) -c src.c/RCS.c -o $@
+stage0/RealMath.o: src.c/RealMath.c lib/__oo2c.h lib/__libc.h src.c/LowReal.h
+	$(CC) $(ALL_CFLAGS) -c src.c/RealMath.c -o $@
+stage0/LRealMath.o: src.c/LRealMath.c lib/__oo2c.h lib/__libc.h src.c/LowLReal.h src.c/RealMath.h
+	$(CC) $(ALL_CFLAGS) -c src.c/LRealMath.c -o $@
+stage0/RealStr.o: src.c/RealStr.c lib/__oo2c.h lib/__libc.h src.c/ConvTypes.h src.c/LowReal.h src.c/RealConv.h src.c/LRealMath.h src.c/Strings.h
+	$(CC) $(ALL_CFLAGS) -c src.c/RealStr.c -o $@
+stage0/TextRider.o: src.c/TextRider.c lib/__oo2c.h lib/__libc.h src.c/Channel.h src.c/Msg.h src.c/Ascii.h src.c/CharClass.h src.c/ConvTypes.h src.c/IntStr.h src.c/LRealConv.h src.c/LRealStr.h src.c/RealStr.h src.c/Strings.h
+	$(CC) $(ALL_CFLAGS) -c src.c/TextRider.c -o $@
+stage0/Out.o: src.c/Out.c lib/__oo2c.h lib/__libc.h src.c/TextRider.h src.c/StdChannels.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Out.c -o $@
+stage0/Parameter.o: src.c/Parameter.c lib/__oo2c.h lib/__libc.h src.c/BinaryRider.h src.c/Files.h src.c/Filenames.h src.c/IntStr.h src.c/Out.h src.c/ProgramArgs.h src.c/Rts.h src.c/Strings.h src.c/TextRider.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Parameter.c -o $@
+stage0/ParamOptions.o: src.c/ParamOptions.c lib/__oo2c.h lib/__libc.h src.c/Parameter.h src.c/ConvTypes.h src.c/IntStr.h src.c/Out.h src.c/Strings.h
+	$(CC) $(ALL_CFLAGS) -c src.c/ParamOptions.c -o $@
+stage0/ParamPaths.o: src.c/ParamPaths.c lib/__oo2c.h lib/__libc.h src.c/Parameter.h src.c/Filenames.h src.c/Files.h src.c/Out.h src.c/Strings.h src.c/Strings2.h src.c/RCS.h
+	$(CC) $(ALL_CFLAGS) -c src.c/ParamPaths.c -o $@
+stage0/ParamPragmas.o: src.c/ParamPragmas.c lib/__oo2c.h lib/__libc.h src.c/ParamOptions.h src.c/Parameter.h
+	$(CC) $(ALL_CFLAGS) -c src.c/ParamPragmas.c -o $@
+stage0/StdPragmas.o: src.c/StdPragmas.c lib/__oo2c.h lib/__libc.h src.c/ParamOptions.h src.c/Config.h src.c/ParamPragmas.h
+	$(CC) $(ALL_CFLAGS) -c src.c/StdPragmas.c -o $@
+stage0/Error.o: src.c/Error.c lib/__oo2c.h lib/__libc.h src.c/ParamOptions.h src.c/Parameter.h src.c/BinaryRider.h src.c/Config.h src.c/Filenames.h src.c/Files.h src.c/IntStr.h src.c/Out.h src.c/ParamPragmas.h src.c/StdPragmas.h src.c/Strings.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Error.c -o $@
+stage0/Data.o: src.c/Data.c lib/__oo2c.h lib/__libc.h src.c/Parameter.h src.c/Opcode.h src.c/Strings.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Data.c -o $@
+stage0/FileData.o: src.c/FileData.c lib/__oo2c.h lib/__libc.h src.c/Parameter.h src.c/Time.h src.c/Data.h src.c/Files.h src.c/ParamPaths.h src.c/Rts.h src.c/Strings.h src.c/Termination.h
+	$(CC) $(ALL_CFLAGS) -c src.c/FileData.c -o $@
+stage0/External.o: src.c/External.c lib/__oo2c.h lib/__libc.h src.c/BinaryRider.h src.c/Data.h src.c/Parameter.h src.c/Config.h src.c/Error.h src.c/Files.h src.c/IntStr.h src.c/ParamPaths.h src.c/Strings.h
+	$(CC) $(ALL_CFLAGS) -c src.c/External.c -o $@
+stage0/StdTypes.o: src.c/StdTypes.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/ParamOptions.h src.c/Error.h src.c/Opcode.h src.c/ParamPragmas.h
+	$(CC) $(ALL_CFLAGS) -c src.c/StdTypes.c -o $@
+stage0/Scanner.o: src.c/Scanner.c lib/__oo2c.h lib/__libc.h src.c/ParamOptions.h src.c/ParamPragmas.h src.c/Parameter.h src.c/Channel.h src.c/Config.h src.c/Data.h src.c/Error.h src.c/Files.h src.c/IntStr.h src.c/LRealStr.h src.c/ParamPaths.h src.c/RealStr.h src.c/StdTypes.h src.c/Strings.h src.c/Termination.h src.c/RCS.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Scanner.c -o $@
+stage0/SymbolTable.o: src.c/SymbolTable.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Error.h src.c/IntStr.h src.c/StdPragmas.h src.c/StdTypes.h src.c/Strings.h src.c/Strings2.h
+	$(CC) $(ALL_CFLAGS) -c src.c/SymbolTable.c -o $@
+stage0/SystemFlags.o: src.c/SystemFlags.c lib/__oo2c.h lib/__libc.h src.c/BinaryRider.h src.c/Data.h src.c/External.h src.c/Parameter.h src.c/Error.h src.c/Scanner.h src.c/StdPragmas.h src.c/StdTypes.h src.c/Strings.h src.c/SymbolTable.h
+	$(CC) $(ALL_CFLAGS) -c src.c/SystemFlags.c -o $@
+stage0/Attributes.o: src.c/Attributes.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Error.h src.c/Opcode.h src.c/Scanner.h src.c/StdPragmas.h src.c/StdTypes.h src.c/SymbolTable.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Attributes.c -o $@
+stage0/CopyPropagation.o: src.c/CopyPropagation.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Opcode.h
+	$(CC) $(ALL_CFLAGS) -c src.c/CopyPropagation.c -o $@
+stage0/DeadCodeElimination.o: src.c/DeadCodeElimination.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Opcode.h
+	$(CC) $(ALL_CFLAGS) -c src.c/DeadCodeElimination.c -o $@
+stage0/GuardCond.o: src.c/GuardCond.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Opcode.h src.c/SymbolTable.h
+	$(CC) $(ALL_CFLAGS) -c src.c/GuardCond.c -o $@
+stage0/SymbolFile.o: src.c/SymbolFile.c lib/__oo2c.h lib/__libc.h src.c/BinaryRider.h src.c/Data.h src.c/Parameter.h src.c/Config.h src.c/Error.h src.c/Files.h src.c/IntStr.h src.c/ParamPaths.h src.c/StdTypes.h src.c/Strings.h src.c/SymbolTable.h src.c/SystemFlags.h
+	$(CC) $(ALL_CFLAGS) -c src.c/SymbolFile.c -o $@
+stage0/Make.o: src.c/Make.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Parameter.h src.c/BinaryRider.h src.c/Config.h src.c/Error.h src.c/Files.h src.c/Out.h src.c/ParamPaths.h src.c/ParamPragmas.h src.c/Scanner.h src.c/Strings.h src.c/SymbolTable.h src.c/SymbolFile.h src.c/SystemFlags.h src.c/Time.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Make.c -o $@
+stage0/UndefVar.o: src.c/UndefVar.c lib/__oo2c.h lib/__libc.h src.c/Attributes.h src.c/Data.h src.c/GuardCond.h src.c/Error.h src.c/Opcode.h src.c/Scanner.h src.c/SymbolTable.h
+	$(CC) $(ALL_CFLAGS) -c src.c/UndefVar.c -o $@
+stage0/Classify.o: src.c/Classify.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Opcode.h src.c/SymbolTable.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Classify.c -o $@
+stage0/GateReduction.o: src.c/GateReduction.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/GuardCond.h src.c/Opcode.h src.c/SymbolTable.h
+	$(CC) $(ALL_CFLAGS) -c src.c/GateReduction.c -o $@
+stage0/GenInclude.o: src.c/GenInclude.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/TextRider.h src.c/Filenames.h src.c/ParamPaths.h src.c/Parameter.h src.c/StdTypes.h src.c/Strings.h src.c/Strings2.h src.c/SymbolTable.h
+	$(CC) $(ALL_CFLAGS) -c src.c/GenInclude.c -o $@
+stage0/GuardPropagation.o: src.c/GuardPropagation.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/GuardCond.h src.c/Opcode.h src.c/SymbolTable.h
+	$(CC) $(ALL_CFLAGS) -c src.c/GuardPropagation.c -o $@
+stage0/SideEffects.o: src.c/SideEffects.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Attributes.h src.c/Opcode.h src.c/SymbolTable.h
+	$(CC) $(ALL_CFLAGS) -c src.c/SideEffects.c -o $@
+stage0/IntArith.o: src.c/IntArith.c lib/__oo2c.h lib/__libc.h src.c/Opcode.h src.c/StdTypes.h
+	$(CC) $(ALL_CFLAGS) -c src.c/IntArith.c -o $@
+stage0/Worklist.o: src.c/Worklist.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Out.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Worklist.c -o $@
+stage0/AlgebraicTransformation.o: src.c/AlgebraicTransformation.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Out.h src.c/Opcode.h src.c/SymbolTable.h src.c/StdTypes.h src.c/Worklist.h
+	$(CC) $(ALL_CFLAGS) -c src.c/AlgebraicTransformation.c -o $@
+stage0/AliasAnalysis.o: src.c/AliasAnalysis.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Opcode.h src.c/SymbolTable.h src.c/Worklist.h
+	$(CC) $(ALL_CFLAGS) -c src.c/AliasAnalysis.c -o $@
+stage0/GenConst.o: src.c/GenConst.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/TextRider.h src.c/AlgebraicTransformation.h src.c/IntStr.h src.c/LRealStr.h src.c/StdTypes.h src.c/Strings.h src.c/SystemFlags.h
+	$(CC) $(ALL_CFLAGS) -c src.c/GenConst.c -o $@
+stage0/LoopTransformation.o: src.c/LoopTransformation.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Opcode.h src.c/Worklist.h
+	$(CC) $(ALL_CFLAGS) -c src.c/LoopTransformation.c -o $@
+stage0/Schedule.o: src.c/Schedule.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/AliasAnalysis.h src.c/Classify.h src.c/GuardCond.h src.c/Opcode.h src.c/StdTypes.h src.c/SymbolTable.h src.c/Worklist.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Schedule.c -o $@
+stage0/Allocate.o: src.c/Allocate.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Parameter.h src.c/TextRider.h src.c/Classify.h src.c/GenConst.h src.c/IntStr.h src.c/Opcode.h src.c/Out.h src.c/SystemFlags.h src.c/Schedule.h src.c/StdTypes.h src.c/Strings.h src.c/SymbolTable.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Allocate.c -o $@
+stage0/ControlFlow.o: src.c/ControlFlow.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Allocate.h src.c/Classify.h src.c/Opcode.h
+	$(CC) $(ALL_CFLAGS) -c src.c/ControlFlow.c -o $@
+stage0/GenDecl.o: src.c/GenDecl.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/GenConst.h src.c/TextRider.h src.c/Allocate.h src.c/Classify.h src.c/GenInclude.h src.c/IntStr.h src.c/Scanner.h src.c/StdPragmas.h src.c/StdTypes.h src.c/Strings.h src.c/SymbolTable.h src.c/SymbolFile.h src.c/SystemFlags.h
+	$(CC) $(ALL_CFLAGS) -c src.c/GenDecl.c -o $@
+stage0/ValueNumbering.o: src.c/ValueNumbering.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Opcode.h src.c/Worklist.h
+	$(CC) $(ALL_CFLAGS) -c src.c/ValueNumbering.c -o $@
+stage0/ErrorInstr.o: src.c/ErrorInstr.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Error.h src.c/Parameter.h
+	$(CC) $(ALL_CFLAGS) -c src.c/ErrorInstr.c -o $@
+stage0/WriteSymbols.o: src.c/WriteSymbols.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/IntStr.h src.c/LRealStr.h src.c/Out.h src.c/Strings.h src.c/SymbolTable.h
+	$(CC) $(ALL_CFLAGS) -c src.c/WriteSymbols.c -o $@
+stage0/WriteGSA.o: src.c/WriteGSA.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/ParamOptions.h src.c/IntStr.h src.c/Opcode.h src.c/Out.h src.c/Strings.h src.c/WriteSymbols.h
+	$(CC) $(ALL_CFLAGS) -c src.c/WriteGSA.c -o $@
+stage0/Check.o: src.c/Check.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/Opcode.h src.c/Out.h src.c/SymbolTable.h src.c/WriteGSA.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Check.c -o $@
+stage0/ConstPropagation.o: src.c/ConstPropagation.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/ErrorInstr.h src.c/Error.h src.c/WriteGSA.h src.c/IntArith.h src.c/LowLReal.h src.c/Out.h src.c/Opcode.h src.c/StdTypes.h src.c/SymbolTable.h src.c/Termination.h src.c/Worklist.h
+	$(CC) $(ALL_CFLAGS) -c src.c/ConstPropagation.c -o $@
+stage0/ParseExpr.o: src.c/ParseExpr.c lib/__oo2c.h lib/__libc.h src.c/Attributes.h src.c/Data.h src.c/ConstPropagation.h src.c/Error.h src.c/IntArith.h src.c/Opcode.h src.c/Scanner.h src.c/StdPragmas.h src.c/StdTypes.h src.c/Strings.h src.c/SymbolTable.h
+	$(CC) $(ALL_CFLAGS) -c src.c/ParseExpr.c -o $@
+stage0/ParseStatm.o: src.c/ParseStatm.c lib/__oo2c.h lib/__libc.h src.c/Attributes.h src.c/Data.h src.c/Config.h src.c/Error.h src.c/ParseExpr.h src.c/IntStr.h src.c/Opcode.h src.c/Scanner.h src.c/StdPragmas.h src.c/StdTypes.h src.c/SymbolTable.h
+	$(CC) $(ALL_CFLAGS) -c src.c/ParseStatm.c -o $@
+stage0/WriteGSAvC.o: src.c/WriteGSAvC.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/ParamOptions.h src.c/Allocate.h src.c/Classify.h src.c/ControlFlow.h src.c/IntStr.h src.c/Opcode.h src.c/Out.h src.c/Strings.h src.c/WriteSymbols.h
+	$(CC) $(ALL_CFLAGS) -c src.c/WriteGSAvC.c -o $@
+stage0/GenStatm.o: src.c/GenStatm.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/ParamOptions.h src.c/TextRider.h src.c/Allocate.h src.c/Attributes.h src.c/Classify.h src.c/Config.h src.c/ControlFlow.h src.c/GenConst.h src.c/GenDecl.h src.c/IntStr.h src.c/Opcode.h src.c/Out.h src.c/SystemFlags.h src.c/Schedule.h src.c/StdPragmas.h src.c/StdTypes.h src.c/Strings.h src.c/SymbolTable.h src.c/WriteGSAvC.h
+	$(CC) $(ALL_CFLAGS) -c src.c/GenStatm.c -o $@
+stage0/Build.o: src.c/Build.c lib/__oo2c.h lib/__libc.h src.c/External.h src.c/Make.h src.c/ParamOptions.h src.c/Ascii.h src.c/Config.h src.c/Data.h src.c/Error.h src.c/FileData.h src.c/Files.h src.c/GenInclude.h src.c/GenStatm.h src.c/Out.h src.c/ParamPaths.h src.c/Parameter.h src.c/ProgramArgs.h src.c/Rts.h src.c/SystemFlags.h src.c/Scanner.h src.c/StdTypes.h src.c/Strings.h src.c/TextRider.h src.c/RCS.h
+	$(CC) $(ALL_CFLAGS) -c src.c/Build.c -o $@
+stage0/CodeGen.o: src.c/CodeGen.c lib/__oo2c.h lib/__libc.h src.c/Data.h src.c/External.h src.c/Make.h src.c/ParamOptions.h src.c/SymbolTable.h src.c/AlgebraicTransformation.h src.c/AliasAnalysis.h src.c/Allocate.h src.c/Build.h src.c/Check.h src.c/Classify.h src.c/ConstPropagation.h src.c/ControlFlow.h src.c/CopyPropagation.h src.c/DeadCodeElimination.h src.c/Error.h src.c/FileData.h src.c/Files.h src.c/GateReduction.h src.c/GenConst.h src.c/GenDecl.h src.c/GenInclude.h src.c/GenStatm.h src.c/GuardCond.h src.c/GuardPropagation.h src.c/LoopTransformation.h src.c/Opcode.h src.c/Out.h src.c/Schedule.h src.c/SideEffects.h src.c/StdTypes.h src.c/Strings.h src.c/SymbolFile.h src.c/SystemFlags.h src.c/TextRider.h src.c/ValueNumbering.h src.c/WriteGSA.h src.c/WriteGSAvC.h
+	$(CC) $(ALL_CFLAGS) -c src.c/CodeGen.c -o $@
+stage0/ParseDecl.o: src.c/ParseDecl.c lib/__oo2c.h lib/__libc.h src.c/CodeGen.h src.c/Attributes.h src.c/CopyPropagation.h src.c/Data.h src.c/DeadCodeElimination.h src.c/Error.h src.c/ParseExpr.h src.c/Filenames.h src.c/GuardCond.h src.c/Opcode.h src.c/Parameter.h src.c/Scanner.h src.c/ParseStatm.h src.c/StdPragmas.h src.c/StdTypes.h src.c/Strings.h src.c/SymbolTable.h src.c/SymbolFile.h src.c/SystemFlags.h src.c/UndefVar.h
+	$(CC) $(ALL_CFLAGS) -c src.c/ParseDecl.c -o $@
+stage0/oo2c.o: src.c/oo2c.c lib/__oo2c.h lib/__libc.h src.c/Out.h src.c/Filenames.h src.c/Strings.h src.c/Parameter.h src.c/ParamOptions.h src.c/ParamPaths.h src.c/ParamPragmas.h src.c/Config.h src.c/Error.h src.c/Scanner.h src.c/SymbolTable.h src.c/ParseDecl.h src.c/Make.h src.c/CodeGen.h src.c/FileData.h src.c/External.h src.c/Build.h src.c/StdTypes.h src.c/SystemFlags.h src.c/StdPragmas.h src.c/Allocate.h src.c/ProgramArgs.h src.c/TextRider.h
+	$(CC) $(ALL_CFLAGS) -c src.c/oo2c.c -o $@
+stage0/_oo2c.o: src.c/_oo2c.c lib/__oo2c.h lib/__libc.h
+	$(CC) $(ALL_CFLAGS) -c src.c/_oo2c.c -o $@
+

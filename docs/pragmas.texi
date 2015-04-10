@@ -1,0 +1,437 @@
+@node Pragmas, OO2C, Language, Top
+@chapter Pragmas
+
+A @dfn{pragma} is a directive embedded in the source code of an Oberon-2
+module.  Although a pragma is not part of a module's declarations or
+executable code, it influences how the module is translated by the compiler.
+Pragmas provide mechanisms for conditional compilation of pieces of source
+code, for embedding code generation directives into a module, and for
+selection of language features.
+
+Pragmas are not defined as part of the programming language Oberon-2; they
+are an extension added to OOC.  Pragmas are embedded in the source code by
+special delimiters @code{<*} and @code{*>}.  Like comments, they are ignored
+by the parser, but they can change variables that control the compiler's
+behavior and they can ``remove'' text from a module's source code by
+excluding a piece of source text from the translation process.
+Superficially, pragmas resemble preprocessor directives, as known from the
+programming language C, but they are much more restricted, and they are
+tightly integrated into the OOC compiler.
+
+@menu
+* Pragma Syntax::               Syntax of pragma statements.
+* Pragma Semantics::            Meaning of pragmas statements.
+* Predefined Pragma Variables:: Pragma variables predefined by OOC.
+@end menu
+
+@node Pragma Syntax, Pragma Semantics,  , Pragmas
+@section Pragma Syntax
+
+A @dfn{pragma statement} is either a variable definition, an assignment, a
+conditional statement, or a save/restore command.
+
+A @dfn{pragma sequence} consists of zero or more pragma statements, which
+are separated by semicolons.
+
+A @dfn{pragma} starts with a @samp{<*}, followed by a pragma sequence, and
+ends with a @samp{*>}.
+
+The full syntax for pragmas in EBNF is as follows:
+
+@smallexample
+Pragma        = "<*" PragmaSeq "*>".
+PragmaSeq     = PragStatement @{";" PragStatement@}.
+PragStatement = [Assignment | Definition | SaveRestore | Condition].
+
+Assignment    = ident ":=" Expr.
+Definition    = "DEFINE" ident ":=" Expr.
+SaveRestore   = "PUSH" | "POP".
+
+Condition     = IfPart @{ElsifPart@} [ElsePart] EndIfPart.
+IfPart        = "IF" Expr "THEN" PragmaSeq.
+ElsifPart     = "ELSIF" Expr "THEN" PragmaSeq.
+ElsePart      = "ELSE" PragmaSeq.
+EndIfPart     = "END".
+
+Expr          = SimpleExpr [Relation SimpleExpr].
+Relation      = "=" | "#" | "<" | "<=" | ">" | ">=".
+SimpleExpr    = Term @{"OR" term@}.
+Term          = Factor @{"&" Factor@}.
+Factor        = "TRUE" | "FALSE" | "(" Expr ")" | "~" Factor |
+                string | integer | ident.
+@end smallexample
+
+The symbols @samp{ident}, @samp{string}, and @samp{integer} are defined like
+their Oberon-2 counterparts.  An underscore is permitted as part of an
+@samp{ident} in place of a character.  No Oberon-2 keyword, nor the pragma
+keywords @code{TRUE}, @code{FALSE}, @code{PUSH}, @code{POP}, or
+@code{DEFINE} can be used as the name of a variable.
+
+Any Oberon-2 string (including the empty string) and all integer numbers
+(including hexadecimal numbers) are valid values.  Character constants (like
+@samp{20X}) are equivalent to string constants of length 1 (or length 0 in
+the case of @samp{0X}).  Hexadecimal constants are interpreted just like
+Oberon-2 constant literals.
+
+@emph{Example:}
+
+@smallexample
+<* DEFINE CpuType := "AMD" *>
+
+<* IF CpuType="AMD" THEN *>
+IMPORT AMDPrimitives;
+<* ELSIF CpuType="Motorola" THEN *>
+IMPORT MotorolaPrimitives;
+<* END *>
+@end smallexample
+
+Here a variable @samp{CpuType} is introduced and set to the value
+@samp{"AMD"}.  The variable can then be used to switch between two code
+variants: The first variant is used if @samp{CpuType} is set to
+@samp{"AMD"}, and the other is used if it is set to @samp{"Motorola"}.
+Neither of the variants is used if @samp{CpuType} has any other value.
+
+
+@node Pragma Semantics, Predefined Pragma Variables, Pragma Syntax, Pragmas
+@section Pragma Semantics
+
+A pragma (the entire sequence of characters starting with @samp{<*} and
+ending with @samp{*>}) can end with a pragma statement, or between the parts
+of a @code{Condition}.  The parts of a condition, and all other pragma
+statements, must be textually complete within a single pragma:
+
+@smallexample
+<* DEFINE CpuType := "AMD" *>        (* Legal *)
+<* DEFINE CpuType := *> <* "AMD" *>  (* Illegal! *)
+
+<* IF b THEN *>                      (* Legal *)
+<* IF b *> <* THEN *>                (* Illegal! *)
+@end smallexample
+
+Also, note that
+@itemize @bullet
+@item
+A pragma sequence can be empty (e.g., the pragma @samp{<* *>} is legal).
+@item
+Comments and extra whitespace in pragmas are skipped.
+@item
+Pragmas within comments are not recognized (i.e., pragmas can be ``commented
+out'').
+@item
+Pragmas cannot be nested.
+@end itemize
+
+
+@subheading Conditional Compilation
+Conditions are a special type of pragma statement; the parts of a condition
+can extend over several pragmas.  That is, conditions can be, and usually
+are, interspersed with plain Oberon-2 source text, and potentially
+additional pragmas as well.  This provides for @dfn{conditional
+compilation}, which allows lines of source text to be skipped or eliminated
+by the compiler based on the evaluation of a boolean condition.
+
+Pragma conditions assume the various forms of @code{IF} statements: they
+consist of an opening @samp{IfPart}, any number of @samp{ElsifParts}, an
+optional @samp{ElsePart}, and a terminating @samp{EndIfPart}.  Nested
+condition statements are allowed.
+
+If the @samp{Expr} of the @samp{IfPart} is true, the text that follows is
+fully interpreted until reaching the next corresponding @samp{ElsifPart},
+@samp{ElsePart}, or @samp{EndIfPart}; in this case, any remaining text
+(i.e., any @code{ElsifPart} and @code{ElsePart} clauses) is skipped until
+encountering the corresponding @samp{EndIfPart}.  If the @samp{Expr} of the
+@samp{IfPart} is false, the text immediately following the @samp{IfPart} is
+skipped.  If the next condition is an @samp{ElsifPart}, its @samp{Expr} is
+tested, and so on.  If no condition holds, the text following the
+@samp{ElsePart} is interpreted.
+
+``Skipping'' of text means that no interpretation is done except recognition
+of comments and condition statements.  That is, although the pragma syntax
+in the skipped text is checked, the meaning of the pragmas is not
+recognized.  This implies that type errors, or references to undefined
+variables, are ignored in skipped pragmas.
+
+Note that a pragma sequence can appear as part of a condition:
+
+@smallexample
+<* IF Cpu = "Intel" THEN
+  DEFINE HaveManyRegisters := FALSE;
+  DEFINE InsertFunnyRandomBehaviour := TRUE
+END *>
+@end smallexample
+
+The parts of a condition may exist within a single pragma, or may extend
+across several pragmas.  Both of the following are legal:
+
+@smallexample
+<* IF b THEN END *>
+<* IF b THEN *><* END *>
+@end smallexample
+
+
+@subheading Boolean Operators and Relations
+The Oberon-2 type rules apply to boolean operators and relations.  The
+expressions in an @samp{IfPart} and @samp{ElsifPart} have to be of boolean
+type.
+
+The boolean operators @code{&} and @code{OR} are evaluated like their
+Oberon-2 counterparts: if evaluation of the left side is sufficient to know
+the result, the right side is not evaluated.  Expressions are always checked
+syntactically, even if they are not evaluated; this works exactly like
+pragmas that are skipped due to conditional compilation.
+
+
+@subheading Pragma Variables
+New pragma variables are defined by the definition statement @samp{DEFINE
+var := value}.  The identifier @samp{var} must not be already known, or an
+error message is produced.  That is, one cannot override existing variables
+that are predefined by the compiler, or were defined earlier.  But once it
+is defined, the value can be changed with an assignment.  The scope of a
+variable defined in a module extends from the point of its definition to the
+end of the module.
+
+
+@subheading PUSH and POP
+The pragma statements @code{PUSH} and @code{POP} operate on a stack.
+@code{PUSH} saves the current state of all pragma variables, both predefined
+and user-defined.  @code{POP} restores the values of saved variables as set
+by the corresponding @code{PUSH}, and removes the associated states from the
+stack.  Variables introduced after the @code{PUSH} operation are not
+affected by this; a @code{POP} does @emph{not} return variables to an
+undefined state.
+
+
+@node Predefined Pragma Variables,  , Pragma Semantics, Pragmas
+@section Predefined Pragma Variables
+@cindex predefined pragmas
+
+Every implementation of OOC predefines a number of pragma variables.  These
+
+@itemize @bullet
+@item
+control the generation of run-time checks and assertions,
+@item
+select language options,
+@item
+identify the compiler being used, and
+@item
+provide information about the target system.
+@end itemize
+
+The compiler provides safe defaults for all predefined variables.  That is,
+all useful run-time checks are enabled and all compiler specific options are
+disabled.  These values can be redefined in the initialization file, and by
+command line options.  Predefined variables can also be changed through
+pragma assignments.
+
+Example:
+
+@smallexample
+<* IndexCheck := TRUE *>     
+  generate code for index check
+<* RangeCheck := FALSE *>
+  switch off detection of invalid set elements
+@end smallexample
+
+All run-time checks supported by the particular compiler are enabled by
+default.  The compiler issues a warning when an attempt is made to
+
+@itemize @bullet
+@item
+enable an unsupported check (e.g., because the compiler cannot generate code
+for that specific check), or 
+@item
+disable a check that cannot be turned off (e.g., because checking is always
+done by hardware)
+@end itemize
+
+
+The following tables lists the pragma variables that control the generation
+of run-time checks by the compiler.  All variables are of type boolean.
+Setting such a variable to @samp{TRUE} enables the appropriate run-time
+check; this means that code is inserted to raise an exception if the tested
+condition fails.  Setting the variable to @samp{FALSE} disables the checks.
+
+@table @samp
+@item CaseSelectCheck
+@cindex CaseSelectCheck
+Raise an exception if the value of the selection expression of a @code{CASE}
+statement does not match any of the labels and no @code{ELSE} part is
+specified.
+
+@item IndexCheck
+@cindex IndexCheck
+Raise an exception if the value of an array index is not in the range
+@samp{0 <= index < LEN(array)}.
+
+@item DerefCheck
+Raise an exception if a pointer of value @code{NIL} is dereferenced.
+Note that applying a type test or type guard to @code{NIL}, or an
+attempt to activate a procedure value of NIL, also triggers this
+exception.
+
+@item FunctResult
+@cindex FunctResult
+Raise an exception if the end of a function procedure is reached without
+executing a @code{RETURN} statement.
+
+@item RealOverflowCheck
+@cindex RealOverflowCheck
+Raise an exception if a real number operation overflows.
+
+@item RealDivCheck
+@cindex RealDivCheck
+Raise an exception when attempting to divide a real number by zero.
+
+@item RangeCheck
+@cindex RangeCheck
+Raise an exception if a set element is outside the range of possible values
+for the applicable set type.  This applies to @code{INCL()}, @code{EXCL()},
+@code{IN}, and the set constructor @samp{@{a..b@}}.
+
+@item OverflowCheck
+@cindex OverflowCheck
+Raise an exception if the result of an integer operation overflows.
+
+@item IntDivCheck
+@cindex IntDivCheck
+Raise an exception when attempting to divide an integer number by zero.
+Note that this applies to both @code{DIV} and @code{MOD}.
+
+@item TypeGuard
+@cindex TypeGuard
+Raise an exception if a type guard fails.
+
+@item StackCheck
+@cindex StackCheck
+Raise an exception on stack overflow.  More precisely, if @code{StackCheck =
+TRUE}, stack overflows are detected when entering a procedure body @samp{B}.
+
+Note that, even if @samp{B} is compiled with @code{StackCheck = TRUE},
+procedures called from @samp{B} might still overflow the stack undetected,
+unless they have also been compiled with this run-time check enabled.  On
+most systems, stack overflows are detected by the operating system without
+any need for special software stack checks by the program.
+@end table
+
+
+The following pragma variables adjust semantical checks and code
+generation of the compiler:
+
+@table @samp
+@item ConformantMode
+@cindex ConformantMode
+Selects one of two slightly different language variants.  Setting this to
+@samp{TRUE} enables conformant mode, which tells the compiler to behave like
+an ETH compiler; modules compiled with conformant mode enabled should
+generally work with any compiler.  Changing the variable to @samp{FALSE}
+(the default) produces results that more closely match the language report.
+@xref{Non-conformant Mode}, for reasons why non-conformant mode is
+considered preferable.
+
+@item IdentLength
+@cindex IdentLength
+An integer value that determines the maximum number of characters allowed in
+an identifier.  Negative values produce warnings (whereas positive values
+generate errors) when @samp{Length(ident) > ABS(IdentLength)}.  The default
+value is @samp{MIN(LONGINT)} (i.e., no length restriction at all).  The
+Oakwood Guidelines suggest that compilers should support a minimum of 23
+significant characters.
+
+@item StringLength
+@cindex StringLength
+An integer value that sets the maximum number of characters allowed in a
+literal string.  This works like @samp{IdentLength}.
+
+@item Assertions
+@cindex Assertions
+If set to @samp{FALSE}, all @code{ASSERT} statements are discarded.  The
+default value is @samp{TRUE}.  @emph{Caution}: Disabling assertions also
+discards the boolean expression being asserted, including all its
+side-effects.  Therefore, tested expressions in assertions should never
+produce side-effects.
+
+@item Initialize
+@cindex Initialize
+If set to @samp{TRUE}, variables and memory blocks are automatically
+initialized to zero.  The default is @samp{FALSE}.
+
+@item Warnings
+@cindex Warnings
+Tells the compiler whether to generate warnings.  The default is
+@samp{FALSE}, which disables warning messages.
+@end table
+
+
+Pragma variables with the name prefix @samp{COMPILER} identify the compiler
+in use.  Unlike the variables above, changing them has no effect on the
+compilation process.  They should be considered read-only variables, and
+never be modified by the user.
+
+@table @samp
+@item COMPILER
+@cindex COMPILER
+A string describing the compiler or family of compilers.  All
+implementations of OOC define this to @samp{"OOC"}.
+
+@item COMPILER_VERSION
+@cindex COMPILER_VERSION
+A string containing the compiler version, for example
+@samp{"@value{VERSION}"}.
+
+@item COMPILER_MAJOR
+@cindex COMPILER_MAJOR
+Major version number of the compiler.  That is, the first number from the
+version string in integer representation.
+
+@item COMPILER_MINOR
+@cindex COMPILER_MINOR
+Minor version number of the compiler.  That is, the second number from the
+version string in integer representation.
+@end table
+
+
+Information about the target system is provided by variables with the name
+prefix @samp{TARGET}.  In this context the term @dfn{target system} refers
+to the run-time environment for the execution of a compiled program.
+
+@table @samp  
+@item TARGET_OS
+@cindex TARGET_OS
+This string describes the target operating system, for example
+@samp{"Unix"}.
+
+@item TARGET_ARCH
+@cindex TARGET_ARCH
+The value of this variable identifiers the target architecture, that is, the
+CPU family.  Examples are @samp{"ix86"}, @samp{"PPC"}, @samp{"Alpha"}, or,
+for @code{oo2c}, @samp{"ANSI-C"}.
+
+@item TARGET_ARCH_MINOR
+@cindex TARGET_ARCH_MINOR
+If the compiler is set to emit code that only runs on a subclass of the
+general CPU family, this variable names that subset of the family.  For
+example, the @samp{"ix86"} family could be subdivided into @samp{"i386"},
+@samp{"i486"}, and so on.  If the generated code works for all members of
+the target architecture, this variable holds the empty string.
+
+@item TARGET_INTEGER
+@cindex TARGET_INTEGER
+This is the number of bits in the largest integer type supported for the
+target.  The basic types @code{HUGEINT} and @code{SET64} are supported if it
+is @samp{64} or more.
+
+@item TARGET_ADDRESS
+@cindex TARGET_ADDRESS
+Number of bits used to represent a memory address of the target
+architecture.
+
+@item TARGET_BYTE_ORDER
+@cindex TARGET_BYTE_ORDER
+This string describes the byte order convention used by the target system.
+For a little endian target, like @samp{"ix86"}, this is @samp{"0123"}, for a
+big endian target, like @samp{"m68k"}, it is @samp{"3210"}.  If the byte
+order is not known beforehand, as is the case with @code{oo2c}, the variable
+is set to @samp{"unknown"}.
+@end table
+

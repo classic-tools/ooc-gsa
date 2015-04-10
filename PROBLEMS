@@ -1,0 +1,51 @@
+* Libraries(1): If libtool thinks it can deal with shared libraries,
+but fails to do so correctly, you should try to pass --disable-shared
+to libtool's configure when installing libtool.  If static libraries
+are broken, too, you have to disable library support for oo2c by using
+--disable-libs when installing the compiler.
+
+* Libraries(2): On some systems the linker doesn't support linking
+executables against uninstalled shared libraries, like oo2c tries to
+do during installation.  In this case "make install" will install
+broken binaries, or binaries that stop working after the compilation
+directory has been removed.
+Symptoms for this are warnings like
+  "libtool: link: warning: using a buggy system linker"
+  "libtool: link: relinking will be required before `oo2c' can be installed during make", 
+or that after installation (or cleaning the compilation
+directory) binaries complain about a missing library liboo2c.  A
+workaround is to install the shared libraries first and then link the
+oo2c executables against them by doing "make install-libs relink
+install" instead of just "make install".
+
+* Libraries(3): If you get an error line 
+  "Can't find library liboo2c.x.y.z"
+when starting a program, then the configuration of the dynamic loader
+probably does not include the directory in which liboo2c resides.  How
+this can be corrected depends on the system.  Please check the output
+of the command `libtool -n --finish' for information.  Note that
+libtool versions prior to 1.2 are not very helpful here.  Also, see
+any operating system documentation about shared libraries for more
+information, such as the ld(1) and ld.so(8) manual pages.
+
+* HP-UX 9 (10?): If linking against gc.a fails with an error message 
+  "/bin/ld: Unsatisfied symbols: shl_get (code)"
+comment out the line "#define DYNAMIC_LOADING" in the HP_PA section of
+gc/config.h (line 666 for gc version 4.11, 767 for gc4.12), do "make
+clean", and compile the garbage collector again.
+
+* Linux: The garbage collector version 4.12 does not work on
+Linux/ix86 machines running glibc 2.  On such a system you should use
+4.13alpha1 or later.  The most recent version can be found at
+  http://reality.sgi.com/employees/boehm_mti/gc_source/
+
+* NetBSD/arm32: The unsual byte order used to store double precision
+floating point values is not detected correctly.  Before starting to
+install the compiler, replace at the end of `src.c/LowLReal.c' the line
+  LowLReal__InitEndian();
+with
+  LowLReal__isBigEndian = 1;
+and at the end of `lib/LowLReal.Mod' the line
+  InitEndian;   (* check whether target is big endian *)
+with
+  isBigEndian := TRUE;

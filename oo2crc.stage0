@@ -1,0 +1,58 @@
+# this configuration is used to build the C code and the oo2c
+# makefile for the oo2c distribution
+
+OPTIONS
+  verbose := FALSE;
+  errorMessages := "Errors.short";
+  optimize := TRUE;
+
+  cc := "cc";
+  cflags := "";
+  coptflags := "";
+  ldflags := "";
+  gcflags := "gc/gc.a";
+  valueStack := 32000;  
+END
+
+PRAGMAS
+  Warnings := FALSE;
+  Assertions := FALSE;
+  Initialize := FALSE;
+  PoisonHeap := -1;
+  StackCheck := FALSE;
+  ConformantMode := FALSE;
+
+  CaseSelectCheck := FALSE;
+  IndexCheck := FALSE;
+  RangeCheck := FALSE;
+  DerefCheck := FALSE;
+  FunctResult := FALSE;
+  TypeGuard := FALSE;
+  OverflowCheck := FALSE;
+  IntDivCheck := FALSE;
+  RealOverflowCheck := FALSE;
+  RealDivCheck := FALSE;
+
+  TARGET_INTEGER := 32;
+  TARGET_BYTE_ORDER := "unknown";
+END
+
+PATHS
+GET *.Mod [RCS] FROM
+  lib;
+  src/frontend;
+  src/optimizers;
+  src/backend;
+  src/tools;
+GET *.Sym, *.Lib FROM 
+  sym;
+GET *.h, *.d, *.c FROM
+  src.c;
+  lib;
+GET *.o FROM
+  stage0
+END
+
+NEWFILES
+PUT oo2c INTO stage0
+END

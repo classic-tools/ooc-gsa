@@ -1,0 +1,164 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(lib/__oo2c.h)
+AC_CONFIG_HEADER(lib/__config.h)
+
+dnl Checks for programs.
+AC_PROG_CC
+OOC_CHECK_EXE_SUFFIX
+AC_ISC_POSIX
+AC_PROG_INSTALL
+AC_PATH_PROG(LIBTOOL,libtool,)
+AC_PATH_PROG(PERL,perl,/usr/local/bin/perl)
+AC_PATH_PROG(NM,nm,nm)
+
+
+dnl Additional support for libtool
+AC_ARG_ENABLE(libs, [  --disable-libs          don't build library with standard modules [def=yes]],,enable_libs=yes)
+if test $enable_libs = yes; then
+  ldlibdir=" -L\${libdir}"
+  if test -z "$LIBTOOL"; then
+    cat <<\EOF
+
+  ERROR: Configure could not locate GNU libtool.  If you really intend to 
+  build oo2c without support for static/shared libraries, pass the option
+  --disable-libs to configure.  See file INSTALL for more information.
+
+EOF
+    exit 1
+  fi
+else
+  ldlibdir=""
+fi
+# for oo2c's --install-lib we need an install command; cp won't do on some
+# systems, likewise we can't use an absolute path into the installation dir
+if test "`basename \"$INSTALL\"|sed -e \"s: .*$::g\"`" = install-sh; then
+  INSTALL_CMD='${oolibdir}'/`basename \"$INSTALL\"`
+else
+  INSTALL_CMD="$INSTALL_DATA"
+fi
+AC_SUBST(enable_libs)
+AC_SUBST(ldlibdir)
+AC_SUBST(INSTALL_CMD)
+AC_SUBST(LIBTOOL)
+
+
+dnl Checks for libraries.
+dnl Only link against libm if it's present; this is necessary for the
+dnl Metroworks compiler on BeBox
+AC_CHECK_LIB(m, main, have_libm=yes, have_libm=no)
+if test "$have_libm" = yes; then
+  link_libm="-lm";
+  o2_bind_libm='; LIB "m"'
+else
+  link_libm=""
+  o2_bind_libm=""
+fi
+AC_ARG_ENABLE(libm,[  --disable-libm          don't use libm in math modules [default=yes]],,enable_libm=yes)
+if test "$enable_libm" = yes; then
+  target_use_libm=TRUE
+else
+  target_use_libm=FALSE
+fi
+AC_SUBST(link_libm)
+AC_SUBST(o2_bind_libm)
+AC_SUBST(target_use_libm)
+
+dnl Check if Boehm's conservative garbage collector available as
+dnl library, or is present in subdirectory gc/
+AC_CHECK_LIB(gc, main, have_libgc=yes, have_libgc=no)
+AC_ARG_ENABLE(gc, [  --disable-gc            don't use Boehm's conservative garbage collector],,enable_gc=yes)
+AC_MSG_CHECKING("for garbage collector sources")
+if test "$enable_gc" = yes; then
+  if test -f gc/Makefile; then
+    AC_DEFINE(HAVE_GC,1)
+    build_gc=yes
+    have_gc=yes
+  elif test "$have_libgc" = yes; then
+    AC_DEFINE(HAVE_GC,1)
+    build_gc=no
+    have_gc=lib
+  else
+    cat <<\EOF
+
+
+  ERROR: Configure could not locate an installed libgc, nor any garbage
+  collector sources in the subdirectory gc.  If you really intend
+  to build oo2c without garbage collector support, pass the option 
+  --disable-gc to configure.  See file INSTALL for more information.
+
+EOF
+    exit 1
+  fi
+else
+  AC_DEFINE(HAVE_GC,0)
+  build_gc=no
+  have_gc=no
+fi
+AC_MSG_RESULT($have_gc)
+
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS(fcntl.h sys/time.h unistd.h socket.h syslimits.h)
+AC_HEADER_TIME
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_STRUCT_ST_BLKSIZE
+OOC_STRUCT_ST_MTIME_USEC
+OOC_CHECK_INT64_T
+OOC_CHECK_TARGET_BYTE_ORDER
+
+dnl Check whether size_t is long unsigned
+OOC_CHECK_LONG_SIZE_T
+
+dnl Determine the size of the jmp_buf type
+OOC_CHECK_SIZEOF_JMP_BUF
+
+dnl Generate system dependent code for Exceptions.PUSHCONTEXT
+OOC_GEN_PUSHCONTEXT
+
+dnl Checks for library functions.
+AC_FUNC_ALLOCA
+AC_TYPE_SIGNAL
+dnl   ANSI functions:
+AC_CHECK_FUNCS(atexit)
+dnl   POSIX.1 functions:
+AC_CHECK_FUNCS(getcwd strerror)
+dnl   BSD functions:
+AC_CHECK_FUNCS(gettimeofday settimeofday utimes)
+dnl   GNU extensions:
+AC_CHECK_FUNCS(backtrace_symbols)
+
+
+dnl Define some additional substitutions
+if test "$have_gc" = lib; then
+  gc_flags="-lgc"
+  gc_flags_make="-lgc"
+elif test "$have_gc" = yes; then
+  gc_flags="%OOLIBDIR%/gc.a"
+  gc_flags_make="gc/gc.a"
+else
+  gc_flags=""
+  gc_flags_make=""
+fi
+AC_SUBST(build_gc)
+AC_SUBST(gc_flags)
+AC_SUBST(gc_flags_make)
+
+if test "$ac_cv_func_alloca_works" = yes; then
+  value_stack="-1"
+else
+  value_stack="65504"
+fi
+AC_SUBST(value_stack)
+AC_SUBST(COPTFLAGS)
+
+AC_PROG_MAKE_SET
+AC_ARG_PROGRAM
+
+
+AC_OUTPUT(
+Makefile src.c/makefile.oo2c oo2crc.stage1.mk oo2crc.mk 
+src/backend/Config.Mod.mk lib/C.Mod oobacktrace
+)

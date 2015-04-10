@@ -1,0 +1,47 @@
+.TH oowhereis 1
+.UC 5
+.SH NAME
+oowhereis \- OOC file finder
+.SH SYNOPSIS
+.B oowhereis
+.RI [ options ]
+.I <file-name>
+.SH DESCRIPTION
+.B oowhereis
+searches the directories listed in the
+.B PATHS
+sections of the initialization files for a matching file name.  The
+full path (including the directory part) of the first file found is
+written to
+.IR stdout .
+If a RCS master file is found, the name of the associated working file
+is returned by default, even the working file does not exist at the
+time of the query.
+.SH OPTIONS
+.TP
+.B --rcs-master, -r
+If a RCS master file is found, but no associated working file, return
+the name of the master.
+.TP
+.B --config <file>
+Use given file name for the primary initialization file.  An empty
+name disables parsing of the default initialization file.
+.TP
+.B --include-config <file>
+Include the given initialization file in addition to the default
+initialization file.
+.TP
+.B --version
+Write compiler version and exit.
+.TP
+.B --help, -h
+Write short usage summary and exit.
+.SH ENVIRONMENT
+.I OOC_HOME
+holds the name of the primary initialization file.
+.SH DIAGNOSTICS
+Exit status is 0 if a matching file is found, and 1 otherwise.
+.SH SEE ALSO
+oo2c(1), OOC Reference Manual
+.SH AUTHOR
+Michael van Acken <acken@informatik.uni-kl.de>

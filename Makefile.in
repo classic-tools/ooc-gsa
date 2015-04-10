@@ -1,0 +1,423 @@
+# DIST: This is the distribution Makefile for oo2c.  configure can
+# DIST: make most of the changes to this file you might want, so try
+# DIST: that first.
+
+# make all	to compile and build oo2c.
+# make install	to install it.
+#
+# make clean
+#      Delete all files from the current directory that are normally
+#      created by building the program.	 Don't delete the files that
+#      record the configuration.  Also preserve files that could be made
+#      by building, but normally aren't because the distribution comes
+#      with them.
+# 
+# make distclean
+#      Delete all files from the current directory that are created by
+#      configuring or building the program.  If you have unpacked the
+#      source and built the program without creating any other files,
+#      `make distclean' should leave only the files that were in the
+#      distribution.
+
+
+SHELL = /bin/sh
+top_builddir = .
+
+# If Make doesn't predefine MAKE, set it here.
+@SET_MAKE@
+
+# ==================== Things `configure' Might Edit ====================
+
+CC=@CC@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@ @ldlibdir@
+COPTFLAGS=@COPTFLAGS@
+
+# this compiler is used to build the garbage collector
+CC_GC=@CC@
+
+# use this libtool script for library support
+LIBTOOL=@LIBTOOL@
+
+### These help us choose version- and architecture-specific directories
+### to install files in.
+
+### This should be the number of the oo2c version we're building.
+version=1.5.0
+
+### Transformation applied to program names when installing.
+transform=@program_transform_name@
+
+### Should we try to build the garbage collector (yes/no)?
+build_gc=@build_gc@
+
+### Should we install a shared/static library with all oo2c
+### standard modules (yes/no)?
+enable_libs=@enable_libs@
+
+# ==================== Where To Install Things ====================
+
+# The default location for installation.  Everything is placed in
+# subdirectories of this directory.  The default values for many of
+# the variables below are expressed in terms of this one, so you may
+# not need to change them.  This defaults to /usr/local.
+prefix=@prefix@
+
+# Like `prefix', but used for architecture-specific files.
+exec_prefix=@exec_prefix@
+
+# Where to install oo2c and other binaries that people will want to
+# run directly.
+bindir=@bindir@
+
+# Where to install library and other files to run oo2c.
+libdir=@libdir@
+oolibdir="@libdir@/`echo oo2c|sed '$(transform)'`"
+
+# Where should the info files go.
+infodir = @infodir@
+
+# Where to install oo2c's man pages, and what extension they should have.
+mandir=@mandir@/man1
+manext=.1
+
+# Names of intermediate and installed executables.  The empty suffix is used 
+# for Unix, and .exe for Win32.
+exe_suffix=@exe_suffix@
+oo2c_exe=oo2c${exe_suffix}
+oob_exe=oob${exe_suffix}
+oowhereis_exe=oowhereis${exe_suffix}
+ooef_exe=ooef${exe_suffix}
+oocn_exe=oocn${exe_suffix}
+liboo2c_exe=liboo2c${exe_suffix}
+
+# ==================== Utility Programs for the Build ====================
+
+# Allow the user to specify the install program.
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+INSTALL_SCRIPT=@INSTALL_PROGRAM@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_CMD=@INSTALL_CMD@  # used by installed oo2c
+
+# ============================= Targets ==============================
+
+all: ${oo2c_exe} ${oob_exe} ${oowhereis_exe} ${ooef_exe} ${oocn_exe} ${liboo2c_exe} oo2crc \
+     src/tools/emacs/oberon2.el
+
+Makefile: Makefile.in config.status
+	./config.status
+
+# ======================== Auxiliary Targets =========================
+
+lib/__gc.h: Makefile
+	if test $(build_gc) = yes; then \
+	  (cd gc && $(MAKE) CC="$(CC_GC)" gc.a) && cp gc/gc.h lib/__gc.h; \
+	else \
+	  rm -f lib/__gc.h && echo "#include \"gc.h\"" >lib/__gc.h; \
+	fi
+
+stage0/${oo2c_exe}: lib/__gc.h lib/__config.h
+	$(MAKE) -f src.c/makefile.oo2c CC="$(CC_GC)" CFLAGS="$(CFLAGS) $(COPTFLAGS)" LDFLAGS="$(LDFLAGS)" build
+
+stage1/${oo2c_exe}: stage0/${oo2c_exe} src/backend/Config.Mod oo2crc.stage1
+	if test -f patched.src; then \
+	  stage0/${oo2c_exe} --config oo2crc.stage1 -Mv oo2c; \
+	else \
+	  cp stage0/${oo2c_exe} stage1/${oo2c_exe}; \
+	fi
+
+
+${liboo2c_exe}: stage1/${oo2c_exe} oo2crc.stage2
+	if test $(enable_libs) = yes; then \
+	  stage1/${oo2c_exe} --config oo2crc.stage2 --libtool-cmd $(LIBTOOL) --make-lib --lib-path $(libdir) liboo2c && touch ${liboo2c_exe}; \
+	else \
+	  stage1/${oo2c_exe} --config oo2crc.stage2 -Mv liboo2c; \
+	fi
+
+${oo2c_exe}: ${liboo2c_exe}
+	if test $(enable_libs) = yes; then \
+	  stage1/${oo2c_exe} --config oo2crc.stage2 -Mv --libtool-cmd $(LIBTOOL) --libtool-link oo2c; \
+	else \
+	  stage1/${oo2c_exe} --config oo2crc.stage2 -Mv oo2c; \
+	fi
+
+${oob_exe}: ${liboo2c_exe}
+	if test $(enable_libs) = yes; then \
+	  stage1/${oo2c_exe} --config oo2crc.stage2 -Mv --libtool-cmd $(LIBTOOL) --libtool-link oob; \
+	else \
+	  stage1/${oo2c_exe} --config oo2crc.stage2 -Mv oob; \
+	fi
+
+${oowhereis_exe}: ${liboo2c_exe}
+	if test $(enable_libs) = yes; then \
+	  stage1/${oo2c_exe} --config oo2crc.stage2 -Mv --libtool-cmd $(LIBTOOL) --libtool-link oowhereis; \
+	else \
+	  stage1/${oo2c_exe} --config oo2crc.stage2 -Mv oowhereis; \
+	fi
+
+${ooef_exe}: ${liboo2c_exe}
+	if test $(enable_libs) = yes; then \
+	  stage1/${oo2c_exe} --config oo2crc.stage2 -Mv --libtool-cmd $(LIBTOOL) --libtool-link ooef; \
+	else \
+	  stage1/${oo2c_exe} --config oo2crc.stage2 -Mv ooef; \
+	fi
+
+${oocn_exe}: ${liboo2c_exe}
+	if test $(enable_libs) = yes; then \
+	  stage1/${oo2c_exe} --config oo2crc.stage2 -Mv --libtool-cmd $(LIBTOOL) --libtool-link oocn; \
+	else \
+	  stage1/${oo2c_exe} --config oo2crc.stage2 -Mv oocn; \
+	fi
+
+
+oo2crc.stage1: oo2crc.stage1.mk Makefile
+	if test -f oo2crc.stage1; then rm -f oo2crc.stage1; fi
+	sed -e "s:%CC%:$(CC):g" -e "s:%CFLAGS%:$(CFLAGS):g" \
+	    -e "s:%COPTFLAGS%:$(COPTFLAGS):g" -e "s:%LDFLAGS%:$(LDFLAGS):g" \
+	    <oo2crc.stage1.mk >oo2crc.stage1
+
+oo2crc.stage2: oo2crc.stage1
+	if test $(enable_libs) = yes; then \
+	  sed -e "s:^PUT.*$$::g" -e "s:stage1:stage2:g" \
+	      <oo2crc.stage1 >oo2crc.stage2; \
+	else \
+	  sed -e "s:INTO stage1:INTO .:g" -e "s:stage1:stage2:g" \
+	      <oo2crc.stage1 >oo2crc.stage2; \
+	fi
+
+oo2crc.test: oo2crc.stage2
+	sed -e "s:stage2:test:g" <oo2crc.stage2 >oo2crc.test
+
+testing:
+	if test 'basename $(INSTALL_DATA)|sed -e "s: .*$::g"' = install-sh; then \
+	  install_cmd="$(oolibdir)'basename $(INSTALL_DATA)'"; \
+	else \
+	  install_cmd="$(INSTALL_DATA)"; \
+	fi; \
+	echo $$install_cmd
+
+oo2crc: oo2crc.mk Makefile
+	rm -f oo2crc
+	sed -e "s:%OOLIBDIR%:$(oolibdir):g" -e "s:%CC%:$(CC):g" \
+	    -e "s:%CFLAGS%:$(CFLAGS):g" -e "s:%COPTFLAGS%:$(COPTFLAGS):g" \
+	    -e "s:%LDFLAGS%:$(LDFLAGS):g" \
+	    -e "s:%LIBTOOL%:$(LIBTOOL):g" \
+	    -e "s:%INSTALL_CMD%:$(INSTALL_CMD):g" \
+	    -e "s:%LIBPATH%:$(libdir):g" \
+	    <oo2crc.mk >oo2crc
+
+src/backend/Config.Mod: src/backend/Config.Mod.mk Makefile
+	rm -f src/backend/Config.Mod
+	version_major=`echo $(version)|sed -e 's:\..*::g'`; \
+	version_minor=`echo $(version)|sed -e 's:^[^.]*\.::g' -e 's:\..*::g'`;\
+	sed -e "s:%OOLIBDIR%:$(oolibdir):g" -e "s:%CC%:$(CC):g" \
+	    -e "s:%CFLAGS%:$(CFLAGS):g" -e "s:%COPTFLAGS%:$(COPTFLAGS):g" \
+	    -e "s:%LDFLAGS%:$(LDFLAGS):g" \
+	    -e "s:%LIBTOOL%:$(LIBTOOL):g" \
+	    -e "s:%INSTALL_CMD%:$(INSTALL_CMD):g" \
+	    -e "s:%LIBPATH%:$(libdir):g" \
+            -e "s:%version%:$(version):g" \
+            -e "s:%version_major%:$$version_major:g" \
+            -e "s:%version_minor%:$$version_minor:g" \
+	    <src/backend/Config.Mod.mk >src/backend/Config.Mod
+
+src/tools/emacs/oberon2.el: src/tools/emacs/oberon2.el.mk Makefile
+	rm -f src/tools/emacs/oberon2_18.el src/tools/emacs/oberon2.el
+	for i in src/tools/emacs/oberon2_18.el src/tools/emacs/oberon2.el; do \
+	  sed -e "s:%OO2C%:`echo oo2c|sed '$(transform)'`:g" \
+	      -e "s:%OOB%:`echo oob|sed '$(transform)'`:g" \
+	      -e "s:%OOWHEREIS%:`echo oowhereis|sed '$(transform)'`:g" \
+	      -e "s:%OOCN%:`echo oocn|sed '$(transform)'`:g" \
+	      <$$i.mk >$$i; \
+	done
+
+# ==================== Installation ====================
+
+.PHONY: install install-strip mkdir uninstall uninstall-libs install-libs relink install-info uninstall-info install-man uninstall-man uninstall-obsolete-x11
+
+install: all mkdir install-info install-man uninstall-obsolete-x11
+	for i in oo2c oob oowhereis ooef oocn; do \
+	  if test $(enable_libs) = yes && test -x .libs/$$i${exe_suffix}; then \
+	    $(INSTALL_PROGRAM) .libs/$$i${exe_suffix} $(bindir)/`echo $$i|sed '$(transform)'`${exe_suffix}; \
+	  else \
+	    $(INSTALL_PROGRAM) $$i${exe_suffix} $(bindir)/`echo $$i|sed '$(transform)'`${exe_suffix}; \
+	  fi; \
+	done; \
+	$(INSTALL_SCRIPT) oobacktrace $(bindir)/`echo oobacktrace|sed '$(transform)'`${exe_suffix};
+	for i in ooconfig install-sh; do \
+	  $(INSTALL_SCRIPT) $$i $(oolibdir); \
+	done
+	if test $(build_gc) = yes; then $(INSTALL_DATA) gc/gc.a ${oolibdir}; fi
+	-if test $(build_gc) = yes; then umask 022; ranlib ${oolibdir}/gc.a; fi
+	for i in README oo2crc Errors.short Errors.long \
+	         src/tools/emacs/oberon2.el src/tools/emacs/oberon2_18.el \
+	         src/tools/emacs/o2-default.el; do \
+	  $(INSTALL_DATA) $$i ${oolibdir}; \
+	done
+	lib=${oolibdir}; \
+	for i in lib/*.Mod lib/*.[ch]; do \
+	  $(INSTALL_DATA) $$i $$lib/lib; \
+	done
+	lib=${oolibdir}; \
+	for i in lib/*.Mod; do \
+	  base=`basename $$i .Mod`; \
+	  if test -f stage2/$$base.Sym; then \
+	    $(INSTALL_DATA) stage2/$$base.Sym $$lib/sym; \
+	    for i in stage2/$$base.[cdho]; do \
+	      $(INSTALL_DATA) $$i $$lib/obj; \
+	    done; \
+	  fi; \
+	done
+	$(INSTALL_DATA) stage2/__oo2c.o ${oolibdir}/obj
+	sleep 2; touch ${oolibdir}/obj/*.o ${oolibdir}/sym/*.Sym
+	if test $(enable_libs) = yes; then \
+	  for i in stage2/*.Lib; do \
+	    $(INSTALL_DATA) $$i ${oolibdir}/sym; \
+	  done; \
+	  umask 022; stage1/${oo2c_exe}  --install-lib --config oo2crc.stage2 --libtool-cmd $(LIBTOOL) --install-cmd "$(INSTALL_DATA)" --lib-path $(libdir) liboo2c; \
+	fi
+	@if test $(enable_libs) = yes; then \
+	  echo "NOTE: The default linker flags of oo2c include the option@ldlibdir@."; \
+	  echo "Depending on the system configuration, further actions may be necessary to"; \
+	  echo "be able to run the compiled programs.  Check \`libtool -n --finish' (libtool"; \
+	  echo "version >= 1.2) for more information."; \
+	fi
+	@echo ""
+	@echo "The main info file has been installed as $(infodir)/OOCref.info."
+	@echo "The info directory file (e.g. /usr/info/dir) must be adjusted manually to"
+	@echo "include the OOC info files."
+
+
+### Build oo2c and install it, stripping binaries while installing them.
+install-strip:
+	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
+
+### Install the info files.
+install-info: uninstall-info
+	for i in docs/OOCref.info*; do \
+	  $(INSTALL_DATA) $$i $(infodir); \
+	done
+
+### Install manual pages.
+install-man: uninstall-man
+	for i in oo2c oob ooef oowhereis oocn; do \
+	  $(INSTALL_DATA) docs/$$i.1 $(mandir)/$$i$(manext); \
+	done
+
+### Build all the directories we're going to install oo2c in.	Since
+### we may be creating several layers of directories, we use mkinstalldirs
+### instead of mkdir.  Not all systems' mkdir programs have the `-p' flag.
+mkdir: FRC
+	(umask 022; \
+	 ./mkinstalldirs ${bindir} ${libdir} ${oolibdir} \
+	                 ${mandir} ${infodir} \
+	                 ${oolibdir}/lib ${oolibdir}/sym ${oolibdir}/obj )
+
+### Delete all the installed files that the `install' target would
+### create (but not the noninstalled files such as `make all' would
+### create).  Also, installed libraries are _not_ removed.
+uninstall: uninstall-info uninstall-man
+	for i in oo2c oob oowhereis ooef oocn oobacktrace; do \
+	  rm -f $(bindir)/`echo $$i|sed '$(transform)'`${exe_suffix}; \
+	done
+	for i in README gc.a oo2crc Errors.short Errors.long ooconfig \
+	         oberon2.el oberon2_18.el o2-default.el install-sh; do \
+	  rm -f ${oolibdir}/$$i; \
+	done
+	( cd ${oolibdir}; \
+	  for i in lib/*.Mod lib/*.[ch] sym/*.Sym sym/*.Lib obj/*.[cdho]; do \
+	    rm -f $$i; \
+	  done )
+	rmdir ${oolibdir}/lib ${oolibdir}/sym ${oolibdir}/obj ${oolibdir}
+
+# Only remove library files on request.
+uninstall-libs:
+	if test $(enable_libs) = yes; then \
+	  $(LIBTOOL) /bin/rm -f ${libdir}/liboo2c.la; \
+	fi
+
+# Remove OOCref info files.
+uninstall-info: mkdir
+	-rm -f $(infodir)/OOCref.info*
+
+### Remove manual pages.
+uninstall-man:
+	for i in oo2c oob ooef oowhereis oocn; do \
+	  rm -f $(mandir)/$$i$(manext) $(mandir)/$$i$(manext).gz; \
+	done
+
+# Remove obsolete X11 files from pre-1.4.0 distribution
+uninstall-obsolete-x11:
+	for i in X11 Xkeysymdef Xresource Xutil OakXYplane UpdateX11; do \
+	  rm -f ${oolibdir}/lib/$$i.Mod \
+	    ${oolibdir}/sym/$$i.Sym \
+	    ${oolibdir}/obj/$$i.*; \
+	done
+
+# Additional targets to support systems whose linker doesn't allow to
+# link executables against uninstalled libraries.  On these systems
+# do "make install-libs relink install" instead of "make install".
+install-libs: all mkdir
+	if test $(enable_libs) = yes; then \
+	  umask 022; stage1/${oo2c_exe} --install-lib --config oo2crc.stage2 --libtool-cmd $(LIBTOOL) --install-cmd "$(INSTALL_DATA)" --lib-path $(libdir) liboo2c; \
+	fi
+
+relink:
+	if test $(enable_libs) = yes; then \
+	  for i in oo2c oob oowhereis ooef oocn; do \
+	    rm -f $$i${exe_suffix} .libs/$$i${exe_suffix}; \
+	    stage1/${oo2c_exe} --config oo2crc.stage2 -Mv $$i; \
+	  done; \
+	fi
+
+FRC:
+
+
+# ==================== Testing =======================================
+
+.PHONY: test
+
+### `test'
+###      Do an additional compiler bootstrap, putting the generated files
+###      into directory "test".  Afterwards compare all files "test/*" with
+###      their counterparts in "stage2".  There should be no difference.
+test: ${oo2c_exe} oo2crc.test
+	if test ! -d test; then mkdir test; fi
+	${oo2c_exe} --config oo2crc.test -Mv --no-build oo2c
+	(cd test; \
+         for i in *; do \
+	   if ! diff -q ../stage2/$$i $$i; then \
+	     echo "Test failed: stage2/$$i and test$$i differ."; exit 1; \
+	   fi; \
+	 done)
+
+# ==================== Cleaning up and miscellanea ====================
+
+.PHONY: clean distclean
+
+### `clean'
+###      Delete all files from the current directory that are normally
+###      created by building the program.  Don't delete the files that
+###      record the configuration.  Also preserve files that could be made
+###      by building, but normally aren't because the distribution comes
+###      with them.
+clean: FRC
+	if test $(build_gc) = yes; then cd gc && $(MAKE) clean; fi
+	rm -f oo2crc ${oo2c_exe} ${oob_exe} ${oowhereis_exe} ${ooef_exe} ${oocn_exe} ${liboo2c_exe} lib/__gc.h \
+	  obj/* sym/* stage0/* stage1/* stage2/* *.o *.lo liboo2c.la
+	for i in .libs test; do rm -Rf $$i; done
+
+
+### `distclean'
+###      Delete all files from the current directory that are created by
+###      configuring or building the program.  If you have unpacked the
+###      source and built the program without creating any other files,
+###      `make distclean' should leave only the files that were in the
+###      distribution.
+distclean: clean
+	rm -f config.status config.cache config.log Makefile lib/__config.h \
+	  lib/__pushcontext.h oo2crc.stage1 oo2crc.stage1.mk oo2crc.stage2 \
+	  oo2crc oo2crc.mk src.c/makefile.oo2c \
+	  src/backend/Config.Mod src/backend/Config.Mod.mk lib/C.Mod \
+	  src/tools/emacs/oberon2.el src/tools/emacs/oberon2_18.el 

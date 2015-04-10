@@ -1,0 +1,81 @@
+This file lists all known problems and bugs that should be fixed in
+oo2c.  It doesn't address any non-oo2c related installation problems.
+For every item a short description, a workaround, and the email
+address of the responsible developer is listed.
+
+Any help to solve these problems is appreciated.
+
+-- Michael van Acken <acken@informatik.uni-kl.de>
+
+
+------------------------------------------------------------------------
+
+
+Date: Jan 13 1998
+Problem: oo2c 1.3.1+ floating point troubles on SunOS 4(?) 
+Reported by: grieblm@trt.allied.com
+
+Description:
+During installation the compiler aborts with an error message "Number
+out of range" in LowReal.Mod.  This is most likely caused by an error
+in SunOS's libc functions for conversion from string to real values.
+There were no further reports for other systems.  oo2c is known to
+compile on a Solaris 2.6 machine.
+
+Workaround:
+Take the oo2c distrib and replace all RealConv files (.Mod, .c, .d,
+.h) with their counterparts from 1.3.0 before running "make".
+
+Responsible: grieblm@trt.allied.com
+
+--------
+
+Date: since ancient times
+Problem: Error reporting of math libraries does not match the manual
+
+Description:
+The current implementation of the math modules does not report errors
+as described in the OOC Reference Manual.  It uses a proprietary
+mechanism to signal errors, instead of raising the required
+exceptions.
+
+Workaround:
+None.
+
+Responsible: grieblm@trt.allied.com
+
+--------
+
+Date: since ancient times(?)
+Problem: On an Alpha machine, the C compiler reports fp underflows
+
+Description:
+On machines that do not implement IEEE gradual underflow, there are
+still two warnings about numerical underflows in the math modules.
+Nevertheless the math functions seem to work as advertised.
+
+Workaround:
+None.
+
+Responsible: grieblm@trt.allied.com
+
+--------
+
+Date: Jul 9 1999
+Problem: Modules `Rider', `LongRider', and `UnicodeRider' do not exist
+
+Description:
+The OOC Reference Manual describes the modules `Rider', `LongRider',
+and `UnicodeRider', but they are not part of the compiler
+distribution.  The reason for this is, that the module implementations
+do not exist yet.
+
+Workaround:
+Write them.
+
+Responsible: acken@informatik.uni-kl.de
+(Well, technically I am responsible, but I am waiting for someone else
+to put these modules together.)
+
+--------
+

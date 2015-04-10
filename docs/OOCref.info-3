@@ -1,0 +1,1211 @@
+This is Info file OOCref.info, produced by Makeinfo version 1.68 from
+the input file OOCref.texinfo.
+
+   This file documents the Optimizing Oberon-2 Compiler (OOC) and its
+library.
+
+   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
+Library Reference Manual', for Version 1.4.5 or later of oo2c.
+
+   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
+1999 Michael van Acken
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the text of the translation of the section
+entitled "GNU General Public License" must be approved for accuracy by
+the Foundation.
+
+
+File: OOCref.info,  Node: Abstract Class Channel,  Next: Abstract Class Reader,  Up: Channel
+
+Abstract Class Channel
+......................
+
+ - Abstract Class: Channel = POINTER TO ChannelDesc
+     This is the abstract base channel type.  Channel types are used to
+     connect to "data locations" (*note Input/Output Overview::.).
+     `Channel' contains the following fields:
+
+    Field: res-: `INTEGER'
+          `res' is the result (i.e., error flag) signalling failure of
+          a call to `NewReader', `NewWriter', `Flush', `Close', etc.
+          `res' is initialized to `done' when the channel is created.
+
+          Every operation sets this to `done' if successful, or
+          otherwise, to an appropriate error value to indicate the
+          cause of the error (use method `ErrorDescr' to get a plain
+          text error description).  *Note Summary of Channel
+          Constants:: for a list of applicable error codes.
+
+    Field: readable-: `BOOLEAN'
+          `readable' is set to `TRUE' if, and only if, readers can be
+          attached to this channel with `NewReader'.
+
+    Field: writable-: `BOOLEAN'
+          `writable' is set to `TRUE' if, and only if, writers can be
+          attached to this channel with `NewWriter'.
+
+    Field: open-: `BOOLEAN'
+          `open' indicates the channel's status; that is, it is set to
+          `TRUE' on channel creation, and set to `FALSE' by a call to
+          `Close'.  Closing a channel prevents all further read or write
+          operations on it.
+
+    Method: `(CH: Channel)' Length `(): LONGINT'
+          `Length' returns the number of bytes of data for the channel
+          CH.  If CH represents a file, then this value is the file's
+          size.  If CH has no fixed length (e.g., because it's
+          interactive), it returns `noLength'.
+
+    Method: `(CH: Channel)' GetModTime `(VAR MTIME: Time.TimeStamp)'
+          `GetModTime' retrieves the modification time of the data
+          location accessed by channel CH.
+
+          If no such information is available, `CH.res' is set to
+          `noModTime'; otherwise it is set to `done'.
+
+    Method: `(CH: Channel)' NewReader `(): Reader'
+          This method attaches a new reader to the channel CH.  The
+          reader's position is set to the beginning of the channel, and
+          its `res' field is initialized to `done'.
+
+          `CH.res' is set to `done' on success and the new reader is
+          returned.  Otherwise, it returns `NIL' and `CH.res' is set to
+          indicate the error cause.
+
+          *Please note*: if the channel does not support multiple
+          reading positions, the same reader is always returned.
+
+    Method: `(CH: Channel)' NewWriter `(): Writer'
+          This method attaches a new writer to the channel CH.  The
+          writer's position is set to the beginning of the channel, and
+          its `res' field is initialized to `done'.
+
+          `CH.res' is set to `done' on success and the new writer is
+          returned.  Otherwise, it returns `NIL' and `CH.res' is set to
+          indicate the error cause.
+
+          *Please note*: if the channel does not support multiple
+          writing positions, the same writer is always returned.
+
+    Method: `(CH: Channel)' Flush
+          Flushes all buffers related to this channel.  Any pending
+          write operations are passed to the underlying OS and all
+          buffers are marked as invalid.  The next read operation will
+          get its data directly from the channel instead of the buffer.
+          If a writing error occurs, the field `CH.res' will be
+          changed to `writeError', otherwise it's assigned `done'.
+
+          *Please note*: you must check the channel's `res' flag after
+          an explicit `Flush'; none of the attached writers will
+          indicate a write error in this case.
+
+    Method: `(CH: Channel)' Close
+          Flushes all buffers associated with `ch', closes the channel,
+          and frees all system resources allocated to it.  This
+          invalidates all riders attached to `ch'; they can't be used
+          further.  On success, if all read and write operations
+          (including `Flush') have completed successfully, `CH.res' is
+          set to `done'.  An opened channel can only be closed once,
+          successive calls of `Close' are undefined.
+
+          *Please note*: unlike the Oberon System all opened channels
+          have to be closed explicitly.  Otherwise resources allocated
+          to them will remain blocked.
+
+    Method: `(CH: Channel)' ErrorDescr `(VAR DESCR: ARRAY OF CHAR)'
+          Retrieves a descriptive error message string stating the
+          reason why the previous operation (`NewReader', `NewWriter',
+          `Flush', `Close', etc.) failed.  The string starts with a
+          capital letter and does not include any termination
+          punctuation.  DESCR should be large enough to hold a
+          multi-line message (256 characters should suffice).
+
+          If `R.res = done', then DESCR is assigned the empty string.
+
+    Method: `(CH: Channel)' ClearError
+          Sets the result flag `CH.res' to `done'.
+
+
+File: OOCref.info,  Node: Abstract Class Reader,  Next: Abstract Class Writer,  Prev: Abstract Class Channel,  Up: Channel
+
+Abstract Class Reader
+.....................
+
+ - Abstract Class: Reader = POINTER TO ReaderDesc
+     This is the abstract base reader type.  Reader types are used to
+     perform read operations on channels (*note Input/Output
+     Overview::.).  `Reader' contains the following fields:
+
+    Field: base-: `Channel'
+          `base' refers to the channel the reader is connected to.
+
+    Field: res-: `INTEGER'
+          `res' is a result (error) flag that signals failure of a call
+          to `ReadByte', `ReadBytes', or `SetPos'.  `res' is
+          initialized to `done' when creating a reader or by calling
+          `ClearError'.  The first failed read operation (or `SetPos')
+          changes this to indicate the error, all further calls to
+          `ReadByte', `ReadBytes', or `SetPos' will be ignored until
+          `ClearError' resets this flag.
+
+          This means that the successful completion of an arbitrary
+          complex sequence of read operations can be ensured by
+          asserting that `res' equals `done' beforehand and also after
+          the last operation.
+
+          Use the method `ErrorDescr' to get a plain text error
+          description of this error code.  *Note Summary of Channel
+          Constants:: for a list of applicable error codes.
+
+    Field: bytesRead-: `LONGINT'
+          `bytesRead' is set by `ReadByte' and `ReadBytes' to indicate
+          the number of bytes that were successfully read.
+
+    Field: positionable-: `BOOLEAN'
+          `positionable' is set to `TRUE' if, and only if, the reader
+          can be moved to another position with `SetPos'; for channels
+          that can only be read sequentially, like input from the
+          keyboard, this is set to `FALSE'.
+
+    Method: `(R: Reader)' Pos `(): LONGINT'
+          Returns the current reading position associated with the
+          reader R in channel `R.base', i.e., the index of the first
+          byte that is read by the next call to `ReadByte' or
+          `ReadBytes'.  This procedure returns `noPosition' if the
+          reader has no concept of a reading position (e.g., if it
+          corresponds to input from keyboard), otherwise the result is
+          non-negative.
+
+    Method: `(R: Reader)' Available `(): LONGINT'
+          Returns the number of bytes available for the next reading
+          operation.  For a file this is the length of the channel
+          `R.base' minus the current reading position, for an
+          sequential channel (or a channel designed to handle slow
+          transfer rates) this is the number of bytes that can be
+          accessed without additional waiting.
+
+          The result is `-1' if `Close()' was called for the channel (or
+          the channel has been otherwise disconnected), or no more
+          bytes are available.
+
+          *Please note*: the number returned may be an approximation of
+          the number of bytes that could be read at once; it could be
+          lower than the actual value.  For some channels or systems,
+          this value may be as low as 1 even if more bytes are waiting
+          to be processed.
+
+    Method: `(R: Reader)' SetPos `(NEWPOS: LONGINT)'
+          Sets the reading position to NEWPOS.  Using a negative value
+          of NEWPOS, or calling this procedure for a reader that
+          doesn't allow positioning, will set `R.res' to `outOfRange'.
+          A value larger than the channel's length is legal, but the
+          next read operation will most likely fail with an
+          `readAfterEnd' error (unless the channel has grown beyond
+          this position in the meantime).
+
+          Calls to this procedure while `R.res # done' will be ignored;
+          in particular, a call with `R.res = readAfterEnd' error will
+          not reset `res' to `done'.
+
+    Method: `(R: Reader)' ReadByte `(VAR X: SYSTEM.BYTE)'
+          Reads a single byte from the channel `R.base' at the reading
+          position associated with R and places it in X.  The reading
+          position is moved forward by one byte on success, otherwise
+          `R.res' is changed to indicate the error cause.  Calling this
+          procedure with the reader R placed at the end (or beyond the
+          end) of the channel will set `R.res' to `readAfterEnd'.
+
+          `R.bytesRead' will be `1' on success and `0' on failure.
+
+          Calls to this procedure while `R.res # done' will be ignored.
+
+    Method: `(R: Reader)' ReadBytes `(VAR X: ARRAY OF SYSTEM.BYTE; START, N: LONGINT)'
+          Reads N bytes from the channel `R.base' at the reading
+          position associated with R and places them in X beginning at
+          index START.  The reading position is moved forward by N bytes
+          on success, otherwise `R.res' is changed to indicate the error
+          cause.
+
+          Calling this procedure with the reader R positioned less than
+          N bytes before the end of the channel will will set `R.res' to
+          `readAfterEnd'.
+
+          `R.bytesRead' will hold the number of bytes that were actually
+          read (being equal to N on success).  Calls to this procedure
+          while `R.res # done' will be ignored.
+
+          *Pre-condition*: N and START are non-negative.  Also, there
+          is enough space in array X, starting at index START, to hold
+          N bytes.
+
+    Method: `(R: Reader)' ErrorDescr `(VAR DESCR: ARRAY OF CHAR)'
+          Retrieves a descriptive error message string stating the
+          reason why one of the previous operations (`SetPos',
+          `ReadByte', or `ReadBytes') failed.  The string starts with a
+          capital letter and does not include any termination
+          punctuation.  DESCR should be large enough to hold a
+          multi-line message (256 characters should suffice).
+
+          If `R.RES = done', then DESCR is assigned the empty string.
+
+    Method: `(R: Reader)' ClearError
+          Sets the result flag `R.res' to `done', re-enabling further
+          read operations on R.
+
+
+File: OOCref.info,  Node: Abstract Class Writer,  Next: Channel Procedures,  Prev: Abstract Class Reader,  Up: Channel
+
+Abstract Class Writer
+.....................
+
+ - Abstract Class: Writer = POINTER TO WriterDesc
+     This is the abstract base writer type.  Writer types are used to
+     perform write operations on channels (*note Input/Output
+     Overview::.).  `Writer' contains the following fields:
+
+    Field: base-: `Channel'
+          This field refers to the channel the writer is connected to.
+
+    Field: res-: `INTEGER'
+          `res' is a result (error) flag that signals failure of a call
+          to `WriteByte', `WriteBytes', or `SetPos'.  It is initialized
+          to `done' when creating a writer or by calling `ClearError'.
+          The first failed writing (or `SetPos') operation changes
+          `res' to indicate the error, all further calls to `WriteByte',
+          `WriteBytes', or `SetPos' will be ignored until `ClearError'
+          resets this flag.
+
+          This means that the successful completion of an arbitrary
+          complex sequence of write operations can be ensured by
+          asserting that `res' equals `done' beforehand and also after
+          the last operation.
+
+          Use the method `ErrorDescr' to get a plain text error
+          description of this error code.  *Note Summary of Channel
+          Constants:: for a list of applicable error codes.
+
+          *Please note*: due to buffering, a write error may occur when
+          flushing or closing the underlying channel; you have to check
+          the channel's `res' field after any `Flush()' or the final
+          `Close()' because a writer's `res' field may not indicate a
+          write error in that case.
+
+    Field: bytesWritten-: `LONGINT'
+          Set by `WriteByte' and `WriteBytes' to indicate the number of
+          bytes that were successfully written.
+
+    Field: positionable-: `BOOLEAN'
+          `TRUE' if, and only if, the writer can be moved to another
+          position with `SetPos'; for channels that can only be written
+          sequentially, like output to a terminal, this is `FALSE'.
+
+    Method: `(W: Writer)' Pos `(): LONGINT'
+          Returns the current writing position associated with the
+          writer W in channel `W.base', i.e., the index of the first
+          byte that is written by the next call to `WriteByte' or
+          `WriteBytes'.  This procedure returns `noPosition' if the
+          writer has no concept of a writing position (e.g., if it
+          corresponds to output to terminal), otherwise the result is
+          non-negative.
+
+    Method: `(W: Writer)' SetPos `(NEWPOS: LONGINT)'
+          Sets the writing position to NEWPOS.  A negative value of
+          NEWPOS, or calling this procedure for a writer that doesn't
+          allow positioning, will set `W.res' to `outOfRange'.  A value
+          larger than the channel's length is legal, however, the next
+          write operation "zero fills" the intervening space.  That is,
+          the gap from the previous end of the channel to NEWPOS are
+          filled with `0X' bytes.
+
+          Calls to this procedure while `W.res # done' are ignored.
+
+    Method: `(W: Writer)' WriteByte `(X: SYSTEM.BYTE)'
+          Writes a single byte X to the channel `W.base' at the writing
+          position associated with W.  The writing position is moved
+          forward by one byte on success, otherwise `W.res' is set to
+          indicate the error cause.
+
+          `W.bytesWritten' will be `1' on success and `0' on failure.
+
+          Calls to this procedure while `W.res # done' are ignored.
+
+    Method: `(W: Writer)' WriteBytes `(VAR X: ARRAY OF SYSTEM.BYTE;  START, N: LONGINT)'
+          Writes N bytes from X, beginning at index START, to the
+          channel `W.base' at the writing position associated with W.
+          The writing position is moved forward by N bytes on success,
+          otherwise `W.res' is set to indicate the error cause.
+          `W.bytesWritten' will hold the number of bytes that were
+          actually written (being equal to N on success).
+
+          Calls to this procedure while `W.res # done' are ignored.
+
+          *Pre-condition*: N and START are non-negative.  Also, this
+          method requires that accessing N bytes in array X, starting
+          from index START, will not go past the end of the array.
+
+    Method: `(W: Writer)' ErrorDescr `(VAR DESCR: ARRAY OF CHAR)'
+          Retrieves a descriptive error message string stating the
+          reason why one of the previous operations (`SetPos',
+          `WriteByte', or
+          `WriteBytes') failed.  The string starts with a capital
+          letter and does not include any termination punctuation.
+          DESCR should be large enough to hold a multi-line message
+          (256 characters should suffice).
+
+          If `R.res = done', then DESCR is assigned the empty string.
+
+    Method: `(W: Writer)' ClearError
+          Sets the result flag `W.res' to `done', re-enabling further
+          write operations on W.
+
+
+File: OOCref.info,  Node: Channel Procedures,  Next: Summary of Channel Constants,  Prev: Abstract Class Writer,  Up: Channel
+
+Channel Procedures
+..................
+
+ - Procedure: ErrorDescr `(RES: INTEGER; VAR DESCR: ARRAY OF CHAR)'
+     Translates this module's error codes into strings (*note Summary
+     of Channel Constants::.).  The string starts with a capital letter
+     and does not include any termination punctuation.  DESCR should be
+     large enough to hold a multi-line message (256 characters should
+     suffice).
+
+     If `RES=done', then DESCR is assigned the empty string.
+
+     Note: This procedure should only be used to determine the result
+     code of a failed attempt to create a new instance of a channel
+     (i.e., whenever one of the functions `New()' or `Old()' returned
+     `NIL').  You should use the type-bound `ErrorDescr' procedures
+     (individual class' methods) for all other situations.
+
+
+File: OOCref.info,  Node: Summary of Channel Constants,  Prev: Channel Procedures,  Up: Channel
+
+Summary of Channel Constants
+............................
+
+ - Constant: noLength
+     A result value for `Channel.Length'.
+
+ - Constant: noPosition
+     A possible return value for `Reader.Pos()' or `Writer.Pos()'
+     meaning that the reader or writer has no concept of a position
+     (e.g., if it corresponds to input from keyboard or output to a
+     terminal).
+
+   A specific channel implementation (e.g., *note Files::.) defines its
+own list of codes, containing aliases for the codes below (where
+appropriate) plus error codes of its own.  Every module provides a
+procedure `ErrorDescr' to translate any code into a human readable
+message, and type-bound procedures for its `Channel', `Reader', and
+`Writer' types for the same purpose.
+
+   The user should use the type-bound procedures whenever possible.
+
+   The following values may appear in the `res' field of `Channel',
+`Reader', or `Writer'.  *Please note*: These codes only cover the most
+typical errors.
+
+ - Constant: done
+     This indicates successful completion of the last operation.
+
+ - Constant: invalidChannel
+     The channel isn't valid.  For example, because it wasn't opened in
+     the first place or was somehow corrupted.
+
+ - Constant: writeError
+     A write error occured; usually this error happens with a writer,
+     but for buffered channels this may also occur during a `Flush' or a
+     `Close'.
+
+ - Constant: noRoom
+     A write operation failed because there isn't any space left on the
+     device.  For example, the disk is full or you exeeded your quota;
+     usually this error happens with a writer, but for buffered
+     channels this may also occur during a `Flush' or a `Close'.
+
+   The following constants only apply to `Reader.res' and `Writer.res':
+
+ - Constant: outOfRange
+     `SetPos' has been called with a negative argument or it has been
+     called on a rider that doesn't support positioning.
+
+ - Constant: readAfterEnd
+     A call to `ReadByte' or `ReadBytes' has tried to access a byte
+     beyond the end of the channel.  This means that there weren't
+     enough bytes left or the read operation started at (or after) the
+     end.
+
+ - Constant: channelClosed
+     The rider's channel has been closed, preventing any further read
+     or write operations.  This means there was a call to
+     `Channel.Close()' (in which case, you probably made a programming
+     error), or the channel has been otherwise disconnected (e.g., the
+     process at the other end of the channel, say a pipe or TCP stream,
+     closed the connection).
+
+ - Constant: readError
+     An unspecified read error.
+
+ - Constant: invalidFormat
+     Set by a mapper (e.g., TextRiders.Reader) if the byte stream at
+     the current reading position doesn't represent an object of the
+     requested type.
+
+   The following constants only apply to `Channel.res':
+
+ - Constant: noReadAccess
+     `NewReader' was called to create a reader on a channel that doesn't
+     allow read access.
+
+ - Constant: noWriteAccess
+     `NewWriter' was called to create a writer on a channel that doesn't
+     allow write access.
+
+ - Constant: closeError
+     An attempt to close the channel failed.
+
+ - Constant: noModTime
+     No modification time is available for the given channel.
+
+ - Constant: noTmpName
+     Creation of a temporary file failed because the system was unable
+     to assign an unique name to it (closing or registering an existing
+     temporary file beforehand might help in this case).
+
+ - Constant: freeErrorCode
+     Free error code number.  This is provided so that a specific
+     channel implemenatation can start defining new error codes from
+     this value.
+
+
+File: OOCref.info,  Node: Files,  Next: StdChannels,  Prev: Channel,  Up: Channels
+
+Module Files
+------------
+
+   Most computer systems provide some way of storing "persistent data"--
+information that exists between one program activation and the next.
+The most common way of accessing persistent data is through a "file
+system".  A "file" is generally a collection of data that is held on
+some physical medium like a hard disk or magnetic tape.  A "file
+system" provides a means to manage files; grouping them logically into
+entities called "directories", and otherwise accessing them through
+"file names".  As these are typical, basic computer concepts, this
+document will assume some familiarity with file systems.
+
+   Module Files provides facilities for accessing files using channel
+and rider abstractions.  Files provides three related classes: `File',
+`Reader', and `Writer'.  These classes are concrete subclasses of their
+conterparts in module Channel (*note Channel::.).
+
+   Class `File' is derived from the base channel type and adds
+additional methods for file specific operations.  Files are probably
+the most frequently used channel implementation and, at the same time,
+the first channel to be used by a novice user.  Therefore the
+description below incorporates all the relevant parts from the chapter
+about the abstract base type `Channel'.
+
+   As with all basic riders, `Reader' and `Writer' operate on sequences
+of bytes.  Consequently, most of the time, after a file is opened, a
+mapper would be attached to provide more useful read/write operations
+(*note BinaryRider::. and *Note TextRider::)
+
+     *Please note*: Most Unix systems only allow a fixed number of files
+     (and sockets) to be open simultaneously.  If this limit is
+     reached, no new file can be opened or socket be created until an
+     old file/socket is closed.  For any POSIX compliant system at
+     least 16 open files are supported, most implementations provide a
+     much larger number.
+
+* Menu:
+
+* Class File::                  Specific features of class File.
+* Class Reader (for File)::     Specific features of the reader class
+                                 associated with class File.
+* Class Writer (for File)::     Specific features of the writer class
+                                 associated with class File.
+* File Locators::               Locators used for opening files.
+* Other File Operations::       Free-standing procedures in module Files.
+* Summary of File Constants::   Summarized list of constants in module
+                                 Files.
+
+
+File: OOCref.info,  Node: Class File,  Next: Class Reader (for File),  Up: Files
+
+Class File
+..........
+
+   Class File allows access to files as contiguous sequences of bytes.
+
+   *Example:*
+
+     VAR  f: Files.File;
+     
+     f := Files.Old ("example.dat", {Files.read, Files.write}, res);
+     IF (res # Files.done) THEN
+         (* Error processing: failed to open "old" file.  *)
+     END; ...
+     
+     f.Close; (* Be sure to close the file so that resources are freed. *)
+
+ - Class: File = POINTER TO FileDesc
+     This is the concrete subclass of `Channel' that corresponds to
+     actual files.  `File' inherits the following fields:
+
+    Field: res-: `INTEGER'
+          `res' is the result (i.e., error flag) signalling failure of
+          a call to `NewReader', `NewWriter', `Flush', `Close', etc.
+          `res' is initialized to `done' when the file is created.
+          Every operation sets this to `done' if successful, or
+          otherwise, to an appropriate error value to indicate the
+          cause of the error (use the method `ErrorDescr' to get a
+          plain text error description).  *Note Summary of File
+          Constants:: for a list of applicable error codes.
+
+    Field: readable-: `BOOLEAN'
+          `readable' is set to `TRUE' if, and only if, readers can be
+          attached to this file with `NewReader'.
+
+    Field: writable-: `BOOLEAN'
+          `writable' is set to `TRUE' if, and only if, writers can be
+          attached to this file with `NewWriter'.
+
+    Field: open-: `BOOLEAN'
+          `open' indicates the file's status; that is, it is set to
+          `TRUE' on file creation, and set to `FALSE' by a call to
+          `Close'.  Closing a file prevents all further read or write
+          operations on it.
+
+   `File' inherits the following methods from the abstract class
+`Channel':
+
+Method: `(F: File)' Length `(): LONGINT'
+     `Length' returns the number of bytes of data for the file F.  If F
+     represents a genuine file, this value is the file's size.  If F
+     has no fixed length (e.g., because it's a FIFO special file), it
+     returns `noLength'.
+
+     *Example:*
+
+          (* For file,
+           -rw-rw-r--   1 nikitin      8641 Jun  6 08:14 misc.txt
+          *)
+          
+          VAR len: LONGINT;
+          
+          len := f.Length();
+              => len = 8641
+
+Method: `(F: File)' GetModTime `(VAR MTIME: Time.TimeStamp)'
+     `GetModTime' retrieves the modification time of the data location
+     accessed by file F.
+
+     If no such information is available, `F.res' is set to
+     `noModTime'; otherwise to `done'.  For more on time stamps *Note
+     Time::.
+
+     *Example:*
+
+          (* For file,
+           -rw-rw-r--   1 nikitin      8641 Jun  6 08:14 misc.txt
+          *)
+          
+          VAR fTime: Time.TimeStamp;
+          
+          f.GetModTime(fTime);
+              => fTime.days = 50605
+              => fTime.msecs = 44064000
+
+Method: `(F: File)' NewReader `(): Reader'
+     This method attaches a new (basic) reader to the file F (you will
+     most likely never need to call this directly; you'd normally
+     connect a mapper instead).
+
+     The reader's position is set to the beginning of the file, and its
+     `res' field is initialized to `done'.
+
+     `F.res' is set to `done' on success and the new reader is
+     returned.  Otherwise, it returns `NIL' and `F.res' is set to
+     indicate the error cause.
+
+     *Please note*: if the file does not support multiple reading
+     positions (e.g., because it's a FIFO special file), the same
+     reader is always returned.
+
+     *Example:*
+
+          VAR r: Files.Reader;
+          
+          r := f.NewReader();
+          IF (f. res # Files.done) THEN
+             (* Error processing:  failed to attach a new reader.  *)
+          END;
+
+Method: `(F: File)' NewWriter `(): Writer'
+     This method attaches a new writer to the file F (you will most
+     likely never need to call this directly; you'd normally connect a
+     mapper instead).  The writer's position is set to the very start
+     of the file, and its `res' field is initialized to `done'.
+
+     `F.res' is set to `done' on success and the new writer is
+     returned.  Otherwise, it returns `NIL' and `F.res' is set to
+     indicate the error cause.
+
+     *Please note*: if the file does not support multiple writing
+     positions (e.g., because it's a FIFO special file), the same
+     writer is always returned.
+
+     *Example:*
+
+          VAR w: Files.Writer;
+          
+          w := f.NewWriter();
+          IF (f. res # Files.done) THEN
+             (* Error processing:  failed to attach a new writer.  *)
+          END;
+
+Method: `(F: File)' Flush
+     Flushes all buffers related to this file.  Any pending write
+     operations are passed to the underlying OS and all buffers are
+     marked as invalid.  The next read operation will get its data
+     directly from the channel instead of the buffer.  If a writing
+     error occurs, the field `F.res' will be changed to `writeError',
+     otherwise it's assigned `done'.
+
+     *Please note*: you must check the file's `res' flag after an
+     explicit `Flush'; none of the attached writers will indicate a
+     write error in this case.
+
+     *Example:*
+
+          f.Flush;
+          IF (f.res # Files.done) THEN
+             (* Error processing:  write error when flushing buffers. *)
+          END;
+
+Method: `(F: File)' Close
+     Flushes all buffers associated with F, closes the file, and frees
+     all system resources allocated to it.  This invalidates all riders
+     attached to F; they can't be used further.  On success, if all
+     read and write operations (including `Flush') have completed
+     successfully, `F.res' is set to `done'.  An opened file can only
+     be closed once, successive calls of `Close' are undefined.
+
+     *Please note*: unlike the Oberon System all opened Files have to be
+     closed explicitly.  Otherwise resources allocated to them will
+     remain blocked.
+
+     *Example:*
+
+          f.Close;
+          IF (f. res # Files.done) THEN
+             (* Error processing:  error occured as file was closed.  *)
+          END;
+
+Method: `(F: File)' ErrorDescr `(VAR DESCR: ARRAY OF CHAR)'
+     Retrieves a descriptive error message string stating the reason
+     why the previous operation (`NewReader', `NewWriter', `Flush',
+     `Close', etc.) failed.  The string starts with a capital letter and
+     does not include any termination punctuation.  DESCR should be
+     large enough to hold a multi-line message (256 characters should
+     suffice).
+
+     If `R.res = done', then DESCR is assigned the empty string.
+
+     *Example:*
+
+          (* Attempting to connect a writer to a file opened
+             only for reading *)
+          
+          f := Files.Old ("example.dat", {Files.read}, res);
+          
+          w := f. NewWriter();
+             => f.res = noWriteAccess
+          f.ErrorDescr (str);
+             => str = "No write permission for file"
+
+Method: `(F: File)' ClearError
+     Sets the result flag `F.res' to `done'.
+
+     *Example:*
+
+          f.ClearError;
+             => f.res = done
+
+   Besides its inherited methods, `File' has the following additional
+method:
+
+Method: `(F: File)' Register
+     Registers the file F in the directory structure if it has been
+     created with the `Tmp' procedure (*note File Locators::.).
+     Registration happens atomically, i.e., it is guaranteed that any
+     previously existing file is replaced by the newly registered one
+     without any "in between" state.  If the operation is interrupted,
+     then either the old file still exists on the file system, or it
+     has been replaced completely by the new one.
+
+     Calling `Tmp' and `Register' successively has the same effect as
+     calling `New'.  Calling this procedure has no effect if the file F
+     has been created with `New' or has been registered previously.
+
+     Registration fails with an `anonymousFile' error if it was created
+     by calling `Tmp' with an empty file name, and with a
+     `channelClosed' error if F is closed.
+
+     *Example:*
+
+          (* open named temporary file *)
+          f := Files.Tmp ("temp.fil", {Files.write}, res);
+          
+          f.Close;
+          f.Register;
+             => f.res = channelClosed
+          f.ErrorDescr (str);
+             => str = "File has been closed"
+          
+          (* open anonymous temporary file *)
+          f := Files.Tmp ("", {Files.write}, res);
+          
+          f.Register;
+             => f.res = anonymousFile
+          f.ErrorDescr (str);
+             => str = "Can't register anonymous file"
+
+
+File: OOCref.info,  Node: Class Reader (for File),  Next: Class Writer (for File),  Prev: Class File,  Up: Files
+
+Class Reader
+............
+
+   Class Reader provides primitive read operations on Files; that is,
+reading of bytes from a file.  Most programmers would not use this
+class directly; a mapper class like `BinaryRider.Reader' or
+`TextRider.Reader' would be used instead (*note BinaryRider::. and
+*Note TextRider::)
+
+ - Class: Reader = POINTER TO ReaderDesc
+     This is a concrete rider type for reading bytes from files.
+     `Reader' inherits the following fields from the base reader type:
+
+    Field: base-: `Channel.Channel'
+          `base' refers to the file the reader is connected to.
+
+    Field: res-: `INTEGER'
+          `res' is a result (error) flag that signals failure of a call
+          to `ReadByte', `ReadBytes', or `SetPos'.  `res' is
+          initialized to `done' when creating a reader or by calling
+          `ClearError'.  The first failed read operation (or `SetPos')
+          changes this to indicate the error, all further calls to
+          `ReadByte', `ReadBytes', or `SetPos' will be ignored until
+          `ClearError' resets this flag.
+
+          This means that the successful completion of an arbitrary
+          complex sequence of read operations can be ensured by
+          asserting that `res' equals `done' beforehand and also after
+          the last operation.
+
+          Use method `ErrorDescr' to get a plain text error description
+          of this error code.  *Note Summary of File Constants:: for a
+          list of applicable error codes.
+
+    Field: bytesRead-: `LONGINT'
+          `bytesRead' is set by `ReadByte' and `ReadBytes' to indicate
+          the number of bytes that were successfully read.
+
+    Field: positionable-: `BOOLEAN'
+          `positionable' is set to `TRUE' if, and only if, the reader
+          can be moved to another position with `SetPos'; for files
+          that can only be read sequentially, this is set to `FALSE'.
+
+   `Reader' inherits the following methods from the abstract reader
+class:
+
+Method: `(R: Reader)' Pos `(): LONGINT'
+     Returns the current reading position associated with the reader R
+     in file `R.base', i.e., the index of the first byte that is read by
+     the next call to `ReadByte' or `ReadBytes'.  This procedure
+     returns a non-negative result.
+
+Method: `(R: Reader)' Available `(): LONGINT'
+     Returns the number of bytes available for the next reading
+     operation.  For a file this is the length of the file `R.base'
+     minus the current reading position.
+
+     The result is `-1' if `Close()' was called for the file (or the
+     file has been otherwise closed), or no more bytes are available.
+
+Method: `(R: Reader)' SetPos `(NEWPOS: LONGINT)'
+     Sets the reading position to NEWPOS.  Using a negative value of
+     NEWPOS, or calling this procedure for a reader that doesn't allow
+     positioning, will set `R.res' to `outOfRange'.  A value larger
+     than the file's length is legal, but the following read operation
+     will most likely fail with an `readAfterEnd' error (unless the
+     file has grown beyond this position in the meantime).
+
+     Calls to this procedure while `R.res # done' will be ignored, in
+     particular a call with `R.res = readAfterEnd' error will not reset
+     `res' to `done'.
+
+     *Example:*
+
+          (* For file,
+           -r--r--r--   1 nikitin     12265 Jun  9 11:16 test.dat
+          *)
+          
+          VAR pos, avail: LONGINT;
+              r: Files.Reader;
+              f: Files.File;
+          
+          f := Files.Old("test.dat", {Files.read}, res);
+          r := f. NewReader();
+          
+          pos := r.Pos();
+             => pos = 0
+          
+          avail := r.Available();
+             => avail = 12265
+          
+          r.SetPos(6000);
+          
+          pos := r.Pos();
+             => pos = 6000
+          
+          avail := r.Available();
+             => avail = 6265
+
+Method: `(R: Reader)' ReadByte `(VAR X: SYSTEM.BYTE)'
+     Reads a single byte from the file `R.base' at the reading position
+     associated with R and places it in X.  The reading position is
+     moved forward by one byte on success, otherwise `R.res' is changed
+     to indicate the error cause.  Calling this procedure with the
+     reader R placed at the end (or beyond the end) of the file will
+     set `R.res' to `readAfterEnd'.
+
+     `R.bytesRead' will be `1' on success and `0' on failure.
+
+     Calls to this procedure while `R.res # done' will be ignored.
+
+     *Example:*
+
+          (* OOC assumes that `SIZE(SYSTEM.BYTE) = SIZE(SHORTINT)' *)
+          VAR byte: SHORTINT;
+              ch  : CHAR;
+          
+          r.ReadByte(byte);
+          r.ReadByte(ch);
+
+Method: `(R: Reader)' ReadBytes `(VAR X: ARRAY OF SYSTEM.BYTE; START, N: LONGINT)'
+     Reads N bytes from the file `R.base' at the reading position
+     associated with R and places them in X, beginning at index START.
+     The reading position is moved forward by N bytes on success,
+     otherwise `R.res' is changed to indicate the error cause.
+
+     Calling this procedure with the reader R positioned less than N
+     bytes before the end of the file will will set `R.res' to
+     `readAfterEnd'.
+
+     `R.bytesRead' will hold the number of bytes that were actually
+     read (being equal to N on success).  Calls to this procedure while
+     `R.res # done' will be ignored.
+
+     *Pre-condition*: N and START are non-negative. Also, there is
+     enough space in array X, starting at index START, to hold N bytes.
+
+     *Example:*
+
+          VAR byteArr: ARRAY 256 OF SHORTINT;
+          
+          r.ReadBytes(byteArr, 0, 16);
+             => reads the next 16 bytes from r.base into byteArr[0..15]
+          
+          r.ReadBytes(byteArr, 16, 100);
+             => reads the next 100 bytes from r.base into
+                  byteArr[16..115]
+
+Method: `(R: Reader)' ErrorDescr `(VAR DESCR: ARRAY OF CHAR)'
+     Retrieves a descriptive error message string stating the reason
+     why one of the previous operations (`SetPos', `ReadByte', or
+     `ReadBytes') failed.  The string starts with a capital letter and
+     does not include any termination punctuation.  DESCR should be
+     large enough to hold a multi-line message (256 characters should
+     suffice).
+
+     If `R.res = done', then DESCR is assigned the empty string.
+
+     *Example:*
+
+          r.SetPos(-1);
+             => r.res = outOfRange
+          r.ErrorDescr(str);
+             => str = "Trying to set invalid position"
+
+Method: `(R: Reader)' ClearError
+     Sets the result flag `R.res' to `done', re-enabling further read
+     operations on R.
+
+     *Example:*
+
+          r.ClearError
+             => r.res = done
+
+
+File: OOCref.info,  Node: Class Writer (for File),  Next: File Locators,  Prev: Class Reader (for File),  Up: Files
+
+Class Writer
+............
+
+   Class Writer provides primitive write operations on Files; that is,
+writing of bytes to a file.  Most programmers would not use this class
+directly; a mapper class like `BinaryRider.Writer' or
+`TextRider.Writer' would be used instead (*note BinaryRider::. and
+*note TextRider::.)
+
+ - Class: Writer = POINTER TO WriterDesc
+     This is a concrete rider type for writing bytes to files.  `Writer'
+     inherits the following fields from the base writer type:
+
+    Field: base-: `Channel.Channel'
+          This field refers to the file the Writer is connected to.
+
+    Field: res-: `INTEGER'
+          `res' is a result (error) flag that signals failure of a call
+          to `WriteByte', `WriteBytes', or `SetPos'.  It is initialized
+          to `done' when creating a writer or by calling `ClearError'.
+          The first failed writing (or `SetPos') operation changes
+          `res' to indicate the error, all further calls to `WriteByte',
+          `WriteBytes', or `SetPos' will be ignored until `ClearError'
+          resets this flag.
+
+          This means that the successful completion of an arbitrary
+          complex sequence of write operations can be ensured by
+          asserting that `res' equals `done' beforehand and also after
+          the last operation.
+
+          Use `ErrorDescr' to get a plain text error description of
+          this error code.  *Note Summary of File Constants:: for a
+          list of applicable error codes.
+
+          *Please note*: due to buffering, a write error may occur when
+          flushing or closing the underlying file; you have to check
+          the file's `res' field after any `Flush()' or the final
+          `Close()'.
+
+    Field: bytesWritten-: `LONGINT'
+          Set by `WriteByte' and `WriteBytes' to indicate the number of
+          bytes that were successfully written.
+
+    Field: positionable-: `BOOLEAN'
+          `TRUE' if, and only if, the writer can be moved to another
+          position with `SetPos'; for files that can only be written
+          sequentially, this is `FALSE'.
+
+   `Writer' inherits the following methods from the abstract writer
+class:
+
+Method: `(W: Writer)' Pos `(): LONGINT'
+     Returns the current writing position associated with the writer W
+     in file `W.base', i.e., the index of the first byte that is written
+     by the next call to `WriteByte' or `WriteBytes'.  This procedure
+     returns a non-negative result.
+
+Method: `(W: Writer)' SetPos `(NEWPOS: LONGINT)'
+     Sets the writing position to NEWPOS.  A negative value of NEWPOS,
+     or calling this procedure for a writer that doesn't allow
+     positioning, will set `W.res' to `outOfRange'.  A value larger
+     than the file's length is legal, however, the next write operation
+     "zero fills" the intervening space.  That is, the gap from the
+     previous end of the file to NEWPOS are filled with `0X' bytes.
+
+     Calls to this procedure while `W.res # done' are ignored.
+
+     *Example:*
+
+          (* For file,
+           -r--r--r--   1 nikitin     12265 Jun  9 11:16 test.dat
+          *)
+          
+          VAR pos, LONGINT;
+              w: Channel.Writer;
+              f: Files.File;
+          
+          f := Files.Old("test.dat", {Files.write}, res);
+          w := f. NewWriter();
+          
+          pos := w.Pos();
+             => pos = 0
+          
+          w.SetPos(6000);
+          
+          pos := w.Pos();
+             => pos = 6000
+
+Method: `(W: Writer)' WriteByte `(X: SYSTEM.BYTE)'
+     Writes a single byte X to the file `W.base' at the writing
+     position associated with W.  The writing position is moved forward
+     by one byte on success, otherwise `W.res' is set to indicate the
+     error cause.
+
+     `W.bytesWritten' will be `1' on success and `0' on failure.
+
+     Calls to this procedure while `W.res # done' are ignored.
+
+     *Example:*
+
+          (* OOC assumes that SIZE(SYSTEM.BYTE) = SIZE(SHORTINT) *)
+          VAR byte: SHORTINT;
+          
+          byte = ODH;
+          w.WriteByte(byte);
+          w.WriteByte("A");
+
+Method: `(W: Writer)' WriteBytes `(VAR X: ARRAY OF SYSTEM.BYTE;  START, N: LONGINT)'
+     Writes N bytes from X, starting at index START in X, to the file
+     `W.base' at the writing position associated with W.  The writing
+     position is moved forward by N bytes on success, otherwise `W.res'
+     is set to indicate the error cause.  `W.bytesWritten' will hold
+     the number of bytes that were actually written (being equal to N
+     on success).
+
+     Calls to this procedure while `W.res # done' are ignored.
+
+     *Pre-condition*: N and START are non-negative.  Also, this method
+     requires that accessing N bytes in array X, starting from index
+     START, will not go past the end of the array.
+
+     *Example:*
+
+          (* OOC assumes that SIZE(SYSTEM.BYTE) = SIZE(CHAR). *)
+          VAR charArr: ARRAY 256 OF CHAR;
+          
+          charArr := "abcdefghijklmnopqrstuvwxyz";
+                  (* Note charArr[26] = 0X *)
+          
+          w.WriteBytes(charArr, 0, 16);
+             => writes exactly 16 values
+                (i.e., 0X is not automatically written)
+             => abcdefghijklmnop
+          
+          w.WriteBytes(charArr, 16, 11);
+             => writes exactly 11 values
+                (i.e., 0X is written from charArr[26])
+             => qrstuvwxyz0X
+
+Method: `(W: Writer)' ErrorDescr `(VAR DESCR: ARRAY OF CHAR)'
+     Retrieves a descriptive error message string stating the reason
+     why one of the previous operations (`SetPos', `WriteByte', or
+     `WriteBytes') failed.  The string starts with a capital letter and
+     does not include any termination punctuation.  DESCR should be
+     large enough to hold a multi-line message (256 characters should
+     suffice).
+
+     If `W.res = done', then DESCR is assigned the empty string.
+
+     *Example:*
+
+          f.Close;
+          w.WriteByte("A");
+             => w.res = channelClosed
+          w.ErrorDescr(str);
+             => str = "File has been closed"
+
+Method: `(W: Writer)' ClearError
+     Sets the result flag `W.res' to `done', re-enabling further write
+     operations on W.
+
+     *Example:*
+
+          w.ClearError
+             => w.res = done
+
+   Besides its inherited methods, `Writer' has the following additional
+methods:
+
+Method: `(VAR W: Writer)' Truncate `(VAR NEWLENGTH: LONGINT)'
+     Causes the file associated with W to have the specified length.  If
+     the file was previously larger than NEWLENGTH, the extra data is
+     lost.  If it was previously shorter, bytes between the old and new
+     lengths are read as "null bytes" (i.e., `0X' bytes).  The writer's
+     position is not modified in either case.
+
+     *Please note*: On systems that do not support shortening files
+     directly it is implemented as a partial file copy.
+
+
+File: OOCref.info,  Node: File Locators,  Next: Other File Operations,  Prev: Class Writer (for File),  Up: Files
+
+File Locators
+.............
+
+   The following locator procedures are provided for opening files.
+Possible values for the FLAGS parameter are `read', `write', `tryRead',
+`tryWrite' (*note Summary of File Constants::.).
+
+ - Function: New `(VAR FILE: ARRAY OF CHAR; VAR FLAGS: SET;  VAR RES:
+          INTEGER): File'
+     Creates a new file under the name FILE.  On success, the new file
+     object is returned, and RES is set to `done'.  Otherwise, it
+     returns `NIL' and RES and will indicate the problem.
+
+     Use procedure `ErrorDescr' to get a plain text error description of
+     this error code.  *Note Summary of File Constants:: for a list of
+     applicable error codes.
+
+     *Please note*: that in terms of the Oberon System this procedure
+     combines the procedures New and Register.
+
+ - Function: Old `(VAR FILE: ARRAY OF CHAR; VAR FLAGS: SET;  VAR RES:
+          INTEGER): File'
+     Opens an existing file.  On success the new file object is
+     returned and RES is set to `done'.  Otherwise, it returns `NIL' and
+     RES will indicate the problem.
+
+     Use procedure `ErrorDescr' to get a plain text error description of
+     this error code.  *Note Summary of File Constants:: for a list of
+     applicable error codes.
+
+ - Function: Tmp `(VAR FILE: ARRAY OF CHAR; VAR FLAGS: SET;  VAR RES:
+          INTEGER): File'
+     Creates a temporary file that can be registered later on.  On
+     success the new file object is returned and RES is set to `done'.
+     Otherwise, it returns `NIL' and RES will indicate the problem.
+
+     Use `ErrorDescr' to get a plain text error description of this
+     error code.  *Note Summary of File Constants:: for a list of
+     applicable error codes.
+
+     Temporary files are created with an empty permission list, the
+     permissions are extended upon registration.  The files are deleted
+     if they haven't been registered and are closed, or the program
+     terminates.
+
+     An unique temporary file name is created if the given file name is
+     the empty string.  Such a file can't be registered later.  Note
+     that some systems may have a low limit for the number of temporary
+     file names.  The limit is never less than 25.  To be safe, you
+     should never have more than 25 anonymous temporary files open
+     simultaneously, or check that the TMP_MAX macro in
+     /usr/include/stdio.h is large enough for your purposes.
+
+     With oo2c if FILE isn't empty, the new name is derived from the old
+     one by appending "^", "^1", "^2", etc. in turn, until a file name
+     is found that doesn't exist already.  If such call to `Tmp' returns
+     `nameTooLong', then this refers to the constructed temporary name,
+     not the one in FILE.
+
+     This function corresponds to Oberon System's New.
+

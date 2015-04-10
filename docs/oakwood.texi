@@ -1,0 +1,739 @@
+@node Oakwood Compliant Modules, Exception Handling, Date and Time, Top
+@chapter Oakwood Compliant Modules
+
+In order to support @cite{the Oakwood Guildlines}, OOC provides a set of
+basic library modules that comply with the Oakwood specification.  (Note
+that all Oakwood modules may not be available.)  All Oakwood compliant
+modules begin with the prefix ``Oak''.
+
+@menu
+* OakStrings::                  String manipulation.  
+* OakFiles::                    File access.  
+* OakIn::                       Basic functions for formatted input.
+* OakOut::                      Basic functions for formatted output.
+* OakMath and OakMathL::        Mathematical functions for @code{REAL}.
+                                  and @code{LONGREAL}.
+@end menu
+
+@node OakStrings, OakFiles,  , Oakwood Compliant Modules
+@section Module OakStrings
+
+Module Strings provides a set of operations on strings (i.e., on string
+constants and character arrays, both of which contain the character
+@code{0X} as a terminator).  All positions in strings start at @code{0}.
+
+(@cite{The Oakwood Guildlines} remark that string assignments and string
+comparisons are already supported by the language Oberon-2.)
+
+
+@subheading Procedures
+
+@deffn Function Length @code{(@var{s}: ARRAY OF CHAR): INTEGER}
+Returns the number of characters in @var{s} up to and excluding the first
+@code{0X}.
+@end deffn
+
+@deffn Procedure Insert @code{(@var{src}: ARRAY OF CHAR; @var{pos}: INTEGER; VAR @var{dst}: ARRAY OF CHAR)}
+Inserts the string @var{src} into the string @var{dst} at position @var{pos}
+(@code{0<=@var{pos}<=Length(@var{dst})}).  If
+@code{@var{pos}=Length(@var{dst})}, @var{src} is appended to @var{dst}.  If
+the size of @var{dst} is not large enough to hold the result of the
+operation, the result is truncated so that @var{dst} is always terminated
+with a @code{0X}.
+@end deffn
+
+@deffn Procedure Append @code{(@var{s}: ARRAY OF CHAR; VAR @var{dst}: ARRAY OF CHAR)}
+Has the same effect as @code{Insert(@var{s}, Length(@var{dst}), @var{dst})}.
+@end deffn
+
+@deffn Procedure Delete @code{(VAR @var{s}: ARRAY OF CHAR; @var{pos}, @var{n}: INTEGER)}
+Deletes @var{n} characters from @var{s} starting at position @var{pos}
+(@code{0<=@var{pos}<=Length(@var{s})}).  If
+@code{@var{n}>Length(@var{s})-@var{pos}}, the new length of @var{s} is
+@var{pos}.
+@end deffn
+
+@deffn Procedure Replace @code{(@var{src}: ARRAY OF CHAR; @var{pos}: INTEGER; VAR @var{dst}: ARRAY OF CHAR)}
+Has the same effect as 
+@code{Delete(@var{dst}, @var{pos}, Length(@var{src}))}
+followed by 
+@format
+@code{Insert(@var{src}, @var{pos}, @var{dst})}.
+@end format
+@end deffn
+
+@deffn Procedure Extract @code{(@var{src}: ARRAY OF CHAR; @var{pos}, @var{n}: INTEGER; VAR @var{dst}: ARRAY OF CHAR)}
+Extracts a substring @var{dst} with @var{n} characters from position
+@var{pos} (@code{0<=@var{pos}<= Length(@var{src})}) in @var{src}.  If
+@code{@var{n}>Length(@var{src})-@var{pos}}, @var{dst} is only the part of
+@var{src} from @var{pos} to the end of @var{src}, i.e. @code{Length(src)-1}.
+If the size of @var{dst} is not large enough to hold the result of the
+operation, the result is truncated so that @var{dst} is always terminated
+with a @code{0X}.
+@end deffn
+
+@deffn Function Pos @code{(@var{pat}, @var{s}: ARRAY OF CHAR; @var{pos}: INTEGER): INTEGER}
+Returns the position of the first occurrence of @var{pat} in @var{s}.
+Searching starts at position @var{pos}.  If @var{pat} is not found,
+@samp{-1} is returned.
+@end deffn
+
+@deffn Procedure Cap @code{(VAR @var{s}: ARRAY OF CHAR)}
+Replaces each lower case letter within @var{s} by its upper case equivalent.
+@end deffn
+
+
+
+@node OakFiles, OakIn, OakStrings, Oakwood Compliant Modules
+@section Module OakFiles
+
+Module @file{OakFiles} provides operations on files and the file directory.
+
+@cite{The Oakwood Guildlines} define the type @code{File} as representing a
+stream of bytes ususally stored on an external medium.  A @code{File} has a
+certain length as well as the date and time of its last modification.
+
+A @dfn{file directory} is a mapping from file names to files.  A file that
+is not registered in the directory is considered temporary.
+
+The type @code{Rider} holds a read/write position in a file (positions start
+with 0).  There may be multiple riders set to the same file.  The field
+@code{eof} is set to @code{TRUE} if an attempt was made to read beyond the
+end of the file.  The field @code{res} reports the success of
+@code{ReadBytes} and @code{WriteBytes} operations.  Writing data overwrites
+old data at the rider position.  When data is written beyond the end of the
+file, the file length increases.
+
+@subheading Operations for Unformatted Input and Output
+
+In general, all operations must use the following format for external
+representation:
+
+@itemize @bullet
+@item
+``Little endian'' representation (i.e., the least significant byte of a word
+is the one with the lowest address on the file).
+@item
+Numbers: @code{SHORTINT} 1 byte, @code{INTEGER} 2 bytes, @code{LONGINT} 4
+bytes
+@item
+Sets: 4 bytes, element 0 is the least significant bit
+@item
+Booleans: single byte with @code{FALSE} = 0, @code{TRUE} = 1
+@item
+Reals: IEEE standard; @code{REAL} 4 bytes, @code{LONGREAL} 8 bytes
+@item
+Strings: with terminating @code{0X}
+@end itemize
+
+@emph{Example:}  
+
+@smallexample
+  VAR f: Files.File; r: Files.Rider; ch: CHAR;
+@end smallexample
+
+Reading from an existing file:
+@smallexample
+  f := Files.Old ("xxx");
+  IF f # NIL THEN
+    Files.Set (r, f, 0);
+    Files.Read (r, ch);
+    WHILE ~ r.eof DO
+      Files.Read (r, ch)
+    END
+  END
+@end smallexample
+
+Writing to a new file yyy:
+@smallexample
+  f := Files.New ("yyy");
+  Files.Set (r, f, 0);
+  Files.WriteInt (r, 8);
+  Files.WriteString (r, " bytes");
+  Files.Register (f)
+@end smallexample
+
+@quotation
+@strong{Please note:} This module implements virtual file descriptors; that
+is, an unlimited number of files can be open at the same time.  These files
+share the limited number of file descriptors provided by the operating
+system.
+@end quotation
+
+@subheading Remarks
+
+@cite{The Oakwood Guildlines} provide the following specifications:
+
+@code{WriteNum} and @code{ReadNum}, should use the following encoding
+algorithms for conversion to and from external format:
+
+@smallexample
+PROCEDURE WriteNum (VAR r: Rider; x: LONGINT);
+BEGIN
+   WHILE (x < - 64) OR (x > 63) DO 
+       Write(r, CHR(x MOD 128 + 128)); x := x DIV 128
+   END;
+   Write(r, CHR(x MOD 128))
+END WriteNum;
+
+PROCEDURE ReadNum (VAR r: Rider; VAR x: LONGINT);
+   VAR s: SHORTINT; ch: CHAR; n: LONGINT;
+BEGIN 
+   s := 0; n := 0;
+   Read(r, ch);
+   WHILE ORD(ch) >= 128 DO
+      INC(n, ASH(ORD(ch) - 128, s) );
+      INC(s, 7);
+      Read(r, ch)
+   END;
+   x := n + ASH(ORD(ch) MOD 64 - ORD(ch) DIV 64 * 64, s)
+END ReadNum;
+@end smallexample
+
+The reason for the specification of the file name in the operation
+@code{New} is to allow allocation of the file on the correct medium from the
+beginning (if the operating system supports multiple media).
+
+The operations @code{Read}, @code{Write}, @code{ReadBytes} and
+@code{WriteBytes} require the existence of a type @code{SYSTEM.BYTE} with
+the following characteristics:
+
+@itemize @bullet
+@item
+If a formal parameter is of type @code{SYSTEM.BYTE}, the corresponding
+actual parameter may be of type @code{CHAR}, @code{SHORTINT}, or
+@code{SYSTEM.BYTE}.
+
+@item
+If a formal variable parameter is of type @code{ARRAY OF SYSTEM.BYTE}, the
+corresponding actual parameter may be of any type.  Note that this feature
+is dangerous and inherently unportable.  Its use should therefore be
+restricted to system-level modules.
+@end itemize
+
+
+@subheading Types
+
+@deftp {Data type} File = POINTER TO FileDesc
+@end deftp
+
+@deftp Record FileDesc = RECORD
+@end deftp
+
+@deftp Record Rider = RECORD
+@table @asis
+@item Field: @b{eof}@minus{}: @code{BOOLEAN}
+Set to @code{TRUE} if an attempt was made to read beyond the end of the
+file.
+
+@item Field: @b{res}@minus{}: @code{INTEGER}
+See @code{ReadBytes} and @code{WriteBytes} below for possible values of
+@code{res}.
+@end table
+@end deftp
+
+
+@subheading Operations on Files and the File Directory
+
+@deffn Function Old @code{(@var{name}: ARRAY OF CHAR): File}
+@code{Old(@var{name})} searches for the @var{name} in the directory and
+returns the corresponding file.  If the @var{name} is not found, it returns
+@code{NIL}.
+@end deffn
+
+@deffn Function New @code{(@var{name}: ARRAY OF CHAR): File}
+@code{New(@var{name})} creates and returns a new file.  The @var{name} is
+remembered for the later use of the operation @code{Register}.  The file is
+only entered into the directory when @code{Register} is called.
+@end deffn
+
+@deffn Procedure Register @code{(@var{f}: File)}
+@code{Register(@var{f})} enters the file @var{f} into the directory together
+with the name provided in the operation @code{New} that created @var{f}.
+The file buffers are written back.  Any existing mapping of this name to
+another file is overwritten.
+@end deffn
+
+@deffn Procedure Close @code{(VAR @var{f}: File)}
+@code{Close(@var{f})} writes back the file buffers of @var{f}.  The file is
+still accessible by its handle @var{f} and the riders positioned on it.  If
+a file is not modified, it is not necessary to close it.  
+
+@quotation
+@strong{Please note:} The above holds only for @code{permanentClose=FALSE}.
+Otherwise, the buffers are flushed and the file handle is deallocated (and
+@var{f} is set to @code{NIL}); at this time, all riders on this file become
+invalid.  This behaviour, and the variable @code{permanentClose}, are not
+part of @cite{The Oakwood Guidelines}.
+@end quotation
+@end deffn
+
+@deffn Procedure Purge @code{(@var{f}: File)}
+@code{Purge(@var{f})} resets the length of file @var{f} to @code{0}.
+@end deffn
+
+@deffn Procedure Delete @code{(@var{name}: ARRAY OF CHAR; VAR @var{res}: INTEGER)}
+@code{Delete(@var{name}, @var{res})} removes the directory entry for the
+file @code{name} without deleting the file.  If @code{res=0} the file has
+been successfully deleted.  If there are variables referring to the file
+while @code{Delete} is called, they can still be used.
+@end deffn
+
+@deffn Procedure Rename @code{(@var{old}, @var{new}: ARRAY OF CHAR; VAR @var{res}: INTEGER)}
+@code{Rename(@var{old}, @var{new}, @var{res})} renames the directory entry
+@var{old} to @var{new}.  If @code{res=0}, the file has been successfully
+renamed.  If there are variables referring to the file while @code{Rename}
+is called, they can still be used.
+@end deffn
+
+@deffn Function Length @code{(@var{f}: File): LONGINT}
+@code{Length(@var{f})} returns the number of bytes in file @var{f}.
+@end deffn
+
+@deffn Procedure GetDate @code{(@var{f}: File; VAR @var{t}, @var{d}: LONGINT)}
+@code{GetDate(@var{f}, @var{t}, @var{d})} returns the time @var{t} and date
+@var{d} of the last modification of file @var{f}.  
+
+The encoding is as follows: 
+@smallexample
+hour = t DIV 4096; 
+minute = t DIV 64 MOD 64; 
+second = t MOD 64; 
+
+year = d DIV 512; 
+month = d DIV 32 MOD 16; 
+day = d MOD 32.
+@end smallexample
+@end deffn
+
+
+@subheading Operations on Riders
+
+@deffn Procedure Set @code{(VAR @var{r}: Rider; @var{f}: File; @var{pos}: LONGINT)}
+@code{Set(@var{r}, @var{f}, @var{pos})} sets the rider @var{r} to position
+@var{pos} in file @var{f}.  The field @code{r.eof} is set to FALSE.  The
+operation requires that @code{0 <= pos <= Length(@var{f})}.
+@end deffn
+
+@deffn Function Pos @code{(VAR @var{r}: Rider): LONGINT}
+@code{Pos(@var{r})} returns the position of the rider @var{r}.
+@end deffn
+
+@deffn Function Base @code{(VAR @var{r}: Rider): File}
+@code{Base(@var{r})} returns the file to which the rider @var{r} has been
+set.
+@end deffn
+
+
+@subsubheading Reading
+
+@deffn Procedure Read @code{(VAR @var{r}: Rider; VAR @var{x}: SYSTEM.BYTE)}
+@code{Read(@var{r}, @var{x})} reads the next byte @var{x} from rider @var{r}
+and advances @var{r} accordingly.
+@end deffn
+
+@deffn Procedure ReadInt @code{(VAR @var{r}: Rider; VAR @var{i}: INTEGER)}
+@code{ReadInt(@var{r}, @var{i})} reads a integer number @var{i} from rider
+@var{r} and advances @var{r} accordingly.
+@end deffn
+
+@deffn Procedure ReadLInt @code{(VAR @var{r}: Rider; VAR @var{i}: LONGINT)}
+@code{ReadLInt(@var{r}, @var{i})} reads a long integer number @var{i} from
+rider @var{r} and advances @var{r} accordingly.
+@end deffn
+
+@deffn Procedure ReadReal @code{(VAR @var{r}: Rider; VAR @var{x}: REAL)}
+@code{ReadReal(@var{r}, @var{x})} reads a real number @var{x} from rider
+@var{r} and advances @var{r} accordingly.
+@end deffn
+
+@deffn Procedure ReadLReal @code{(VAR @var{r}: Rider; VAR @var{x}: LONGREAL)}
+@code{ReadLReal(@var{r}, @var{x})} reads a long real number @var{x} from
+rider @var{r} and advances @var{r} accordingly.
+@end deffn
+
+@deffn Procedure ReadNum @code{(VAR @var{r}: Rider; VAR @var{i}: LONGINT)}
+@code{ReadNum(@var{r}, @var{i}} reads an integer number @var{i} from rider
+@var{r} and advances @var{r} accordingly.  The number @var{i} is compactly
+encoded (see the ``Remarks'' section above).
+@end deffn
+
+@deffn Procedure ReadString @code{(VAR @var{r}: Rider; VAR @var{s}: ARRAY OF CHAR)}
+@code{ReadString(@var{r}, @var{s})} reads a sequence of characters
+(including the terminating @code{0X}) from rider @var{r} and returns it in
+@code{s}.  The rider is advanced accordingly.  The actual parameter
+corresponding to @var{s} must be long enough to hold the character sequence
+plus the terminating @code{0X}.
+@end deffn
+
+@deffn Procedure ReadSet @code{(VAR @var{r}: Rider; VAR @var{s}: SET)}
+@code{ReadSet(@var{r}, @var{s})} reads a set @var{s} from rider @var{r} and
+advances @var{r} accordingly.
+@end deffn
+
+@deffn Procedure ReadBool @code{(VAR @var{r}: Rider; VAR @var{b}: BOOLEAN)}
+@code{ReadBool(@var{r}, @var{b})} reads a Boolean value @var{b} from rider
+@var{r} and advances @var{r} accordingly.
+@end deffn
+
+@deffn Procedure ReadBytes @code{(VAR @var{r}: Rider; VAR @var{buf}: ARRAY OF SYSTEM.BYTE; @var{n}: LONGINT)}
+@code{ReadBytes(@var{r}, @var{buf}, @var{n})} reads @var{n} bytes into
+buffer @var{buf} starting at the rider position @var{r}.  The rider is
+advanced accordingly.  If less than @var{n} bytes could be read,
+@code{@var{r}.res} contains the number of requested but unread bytes.
+@end deffn
+
+@subsubheading Writing
+
+@deffn Procedure Write @code{(VAR @var{r}: Rider; @var{x}: SYSTEM.BYTE)}
+@code{Write(@var{r}, @var{x})} writes the byte @var{x} to rider @var{r} and
+advances @var{r} accordingly.
+@end deffn
+
+@deffn Procedure WriteInt @code{(VAR @var{r}: Rider; @var{i}: INTEGER)}
+@code{WriteInt(@var{r}, @var{i})} writes the integer number @var{i} to rider
+@var{r} and advances @var{r} accordingly.
+@end deffn
+
+@deffn Procedure WriteLInt @code{(VAR @var{r}: Rider; @var{i}: LONGINT)}
+@code{WriteLInt(@var{r}, @var{i})} writes the long integer number @var{i} to
+rider @var{r} and advances @var{r} accordingly.
+@end deffn
+
+@deffn Procedure WriteReal @code{(VAR @var{r}: Rider; @var{x}: REAL)}
+@code{WriteReal(@var{r}, @var{x})} writes the real number @var{x} to rider
+@var{r} and advances @var{r} accordingly.
+@end deffn
+
+@deffn Procedure WriteLReal @code{(VAR @var{r}: Rider; @var{x}: LONGREAL)}
+@code{WriteLReal(@var{r}, @var{x})} write the long real number @var{x} to
+rider @var{r} and advance @var{r} accordingly.
+@end deffn
+
+@deffn Procedure WriteNum @code{(VAR @var{r}: Rider; @var{i}: LONGINT)}
+@code{WriteNum(@var{r}, @var{i})} writes the integer number @var{i} to rider
+@var{r} and advances @var{r} accordingly.  The number @var{i} is compactly
+encoded (see the ``Remarks'' section above).
+@end deffn
+
+@deffn Procedure WriteString @code{(VAR @var{r}: Rider; @var{s}: ARRAY OF CHAR)}
+@code{WriteString(@var{r}, @var{s})} writes the sequence of characters
+@var{s} (including the terminating @code{0X}) to rider @var{r} and advances
+@var{r} accordingly.
+@end deffn
+
+@deffn Procedure WriteSet @code{(VAR @var{r}: Rider; @var{s}: SET)}
+@code{WriteSet(@var{r}, @var{s})} writes the set @var{s} to rider @var{r}
+and advances @var{r} accordingly.
+@end deffn
+
+@deffn Procedure WriteBool @code{(VAR @var{r}: Rider; @var{b}: BOOLEAN)}
+@code{WriteBool(@var{r}, @var{b})} writes the Boolean value @var{b} to rider
+@var{r} and advances @var{r} accordingly.
+@end deffn
+
+@deffn Procedure WriteBytes @code{(VAR @var{r}: Rider; VAR @var{buf}: ARRAY OF SYSTEM.BYTE; @var{n}: LONGINT)}
+@code{WriteBytes(@var{r}, @var{buf}, @var{n})} writes the first @var{n}
+bytes from buf to rider @var{r} and advances @var{r} accordingly.
+@code{@var{r}.res} contains the number of bytes that could not be written
+(e.g., due to a disk full error).
+@end deffn
+
+
+@node OakIn, OakOut, OakFiles, Oakwood Compliant Modules
+@section Module OakIn
+
+Module @file{In} provides a set of basic routines for formatted input of
+characters, character sequences, numbers, and names.  It assumes a standard
+input stream with a current position that can be reset to the beginning of
+the stream.  A call to procedure @code{Open} initializes module @file{In}
+and sets it to read from the standard input channel
+@code{StdChannels.stdin} (@pxref{StdChannels})
+
+Module @file{In} has a concept of a @dfn{current position}, which is the
+character position in the input stream from where the next symbol is read.
+@code{Open} (re)sets it to the beginning of the input stream.  After reading
+a symbol, the current position is set to the position immediately after this
+symbol.  Before the first call to @code{Open}, the current position is
+undefined.
+
+
+@subheading Variables
+
+@defvr {Read-only Variable} Done: BOOLEAN
+Indicates the success of an input operation.  If @code{Done} is @code{TRUE}
+after an input operation, the operation was successful and its result is
+valid.  An unsuccessful input operation sets @code{Done} to @code{FALSE}; it
+remains @code{FALSE} until the next call to @code{Open}.  In particular,
+@code{Done} is set to @code{FALSE} if an attempt is made to read beyond the
+end of the input stream.
+@end defvr
+
+
+@subheading Procedures
+
+@deffn Procedure Open
+(Re)sets the current position to the beginning of the input stream.
+@code{Done} indicates if the operation was successful.
+@end deffn
+
+@deffn Procedure Char @code{(VAR @var{ch}: CHAR)}
+Returns the character @var{ch} at the current position.
+@end deffn
+
+@deffn Procedure LongInt @code{(VAR @var{n}: LONGINT)}
+Returns the long integer constant @var{n} at the current position according
+to the format:
+@smallexample
+IntConst = digit @{digit@} | digit @{hexDigit@} "H".
+@end smallexample
+@end deffn
+
+@deffn Procedure Int @code{(VAR @var{n}: INTEGER)}
+Returns the integer constant @var{n} at the current position according to
+the format:
+@smallexample
+IntConst = digit @{digit@} | digit @{hexDigit@} "H".
+@end smallexample
+@end deffn
+
+@deffn Procedure LongReal @code{(VAR @var{n}: LONGREAL)}
+Returns the long real constant @var{n} at the current position according to
+the format:
+@smallexample
+LongRealConst = digit @{digit@} ["." @{digit@} 
+                [("D" | "E") ("+" | "-") digit @{digit@}]].
+@end smallexample
+@end deffn
+
+@deffn Procedure Real @code{(VAR @var{n}: REAL)}
+Returns the real constant @var{n} at the current position according to the
+format:
+@smallexample
+RealConst = digit @{digit@} ["." @{digit@} 
+            ["E" ("+" | "-") digit @{digit@}]].
+@end smallexample
+@end deffn
+
+@deffn Procedure String @code{(VAR @var{s}: ARRAY OF CHAR)}
+Returns the string @var{s} at the current position according to the format:
+@smallexample
+StringConst = '"' char @{char@} '"'.
+@end smallexample
+The string must not contain characters less than blank such as @code{EOL} or
+@code{TAB}.
+@end deffn
+
+@deffn Procedure Name @code{(VAR @var{s}: ARRAY OF CHAR)}
+Returns the name @var{s} at the current position according to the file name
+format of the underlying operating system (e.g., "lib/My.Mod" under Unix).
+Note: This implementation defines a name as @samp{Name = char @{char@}},
+where @samp{char} is any character greater than blank.
+@end deffn
+
+
+@node OakOut, OakMath and OakMathL, OakIn, Oakwood Compliant Modules
+@section Module OakOut
+
+Module @file{Out} provides a set of basic routines for formatted output of
+characters, numbers, and strings.  It assumes a standard output stream to
+which the symbols are written.
+
+@deffn Procedure Open
+Initializes the output stream.
+@end deffn
+
+@deffn Procedure Char @code{(@var{ch}: CHAR)}
+Writes the character @var{ch} to the end of the output stream.
+@end deffn
+
+@deffn Procedure String @code{(@var{s}: ARRAY OF CHAR)}
+Writes the null-terminated character sequence @var{s} to the end of the
+output stream (without @code{0X}).
+@end deffn
+
+@deffn Procedure Int @code{(@var{i}, @var{n}: LONGINT)}
+Writes the integer number @var{i} to the end of the output stream.  If the
+textual representation of @var{i} requires @code{m} characters, @var{i} is
+right adjusted in a field of @code{Max(@var{n}, m)} characters padded with
+blanks at the left end.  A plus sign is not written.
+@end deffn
+
+@deffn Procedure Real @code{(@var{x}: REAL; @var{n}: INTEGER)}
+Writes the real number @var{x} to the end of the output stream using an
+exponential form.  If the textual representation of @var{x} requires
+@code{m} characters (including a two-digit signed exponent), @var{x} is
+right adjusted in a field of @code{Max(n, m)} characters padded with blanks
+at the left end.  A plus sign of the mantissa is not written.
+@end deffn
+
+@deffn Procedure LongReal @code{(@var{x}: LONGREAL; @var{n}: INTEGER)}
+Writes the long real number @var{x} to the end of the output stream using an
+exponential form.  If the textual representation of @var{x} requires
+@code{m} characters (including a three-digit signed exponent), @var{x} is
+right adjusted in a field of @code{Max(n, m)} characters padded with blanks
+at the left end.  A plus sign of the mantissa is not written.
+@end deffn
+
+@deffn Procedure Ln
+Writes an end-of-line symbol to the end of the output stream.
+@end deffn
+
+
+@node OakMath and OakMathL,  , OakOut, Oakwood Compliant Modules
+@section Modules OakMath and OakMathL
+
+
+@subheading Constants
+
+@cite{The Oakwood Guildlines} requires the definition of the following
+mathematical constants (i.e., implementation-defined approximations):
+
+@defvr {Constant} pi
+@end defvr
+
+@defvr {Constant} e
+@end defvr
+
+
+@subheading Procedures
+
+@deffn Function sqrt @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function sqrt @code{(@var{x}: LONGREAL): LONGREAL}
+@code{sqrt(@var{x})} returns the square root of @var{x}, where @var{x} must
+be positive.
+@end deffn
+
+@deffn Function sin @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function sin @code{(@var{x}: LONGREAL): LONGREAL}
+@code{sin(@var{x})} returns the sine value of @var{x}, where @var{x} is in
+radians.
+@end deffn
+
+@deffn Function cos @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function cos @code{(@var{x}: LONGREAL): LONGREAL}
+@code{cos(@var{x})} returns the cosine value of @var{x}, where @var{x} is in
+radians.
+@end deffn
+
+@deffn Function tan @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function tan @code{(@var{x}: LONGREAL): LONGREAL}
+@code{tan(@var{x})} returns the tangent value of @var{x}, where @var{x} is
+in radians.
+@end deffn
+
+@deffn Function arcsin @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function arcsin @code{(@var{x}: LONGREAL): LONGREAL}
+@code{arcsin(@var{x})} returns the arcsine value in radians of @var{x},
+where @var{x} is in the sine value.
+@end deffn
+
+@deffn Function arccos @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function arccos @code{(@var{x}: LONGREAL): LONGREAL}
+@code{arcos(@var{x})} returns the arcos value in radians of @var{x}, where
+@var{x} is in the cosine value.
+@end deffn
+
+@deffn Function arctan @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function arctan @code{(@var{x}: LONGREAL): LONGREAL}
+@code{arctan(@var{x})} returns the arctan value in radians of @var{x}, where
+@var{x} is in the tangent value.
+@end deffn
+
+@deffn Function power @code{(@var{x}, @var{base}: REAL): REAL}
+@end deffn
+@deffn Function power @code{(@var{x}, @var{base}: LONGREAL): LONGREAL}
+@code{power(@var{x}, @var{base})} returns the @var{x} to the power
+@var{base}.
+@end deffn
+
+@deffn Function round @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function round @code{(@var{x}: LONGREAL): LONGREAL}
+@code{round(@var{x})} if fraction part of @var{x} is in range @code{0.0} to
+@code{0.5}, then the result is the largest integer not greater than @var{x},
+otherwise the result is @var{x} rounded up to the next highest whole number.
+Note that integer values cannot always be exactly represented in
+@code{LONGREAL} or @code{REAL} format.
+@end deffn
+
+@deffn Function ln @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function ln @code{(@var{x}: LONGREAL): LONGREAL}
+@code{ln(@var{x})} returns the natural logarithm (base e) of @var{x}.
+@end deffn
+
+@deffn Function exp @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function exp @code{(@var{x}: LONGREAL): LONGREAL}
+@code{exp(@var{x})} is the exponential of @var{x} base e.  @var{x} must not
+be so small that this exponential underflows nor so large that it overflows.
+@end deffn
+
+@deffn Function log @code{(@var{x}, @var{base}: REAL): REAL}
+@end deffn
+@deffn Function log @code{(@var{x}, @var{base}: LONGREAL): LONGREAL}
+@code{log(@var{x}, @var{base})} is the logarithm of @var{x} base @var{base}.
+All positive arguments are allowed.  The base @var{base} must be positive.
+@end deffn
+
+@deffn Function arctan2 @code{(@var{xn}, @var{xd}: REAL): REAL}
+@end deffn
+@deffn Function arctan2 @code{(@var{xn}, @var{xd}: LONGREAL): LONGREAL}
+@code{arctan2(@var{xn},@var{xd})} is the quadrant-correct arc tangent
+@samp{atan(@var{xn}/@var{xd})}.  If the denominator @var{xd} is zero, then
+the numerator @var{xn} must not be zero.  All arguments are legal except
+@code{@var{xn} = @var{xd} = 0}.
+@end deffn
+
+@deffn Function sinh @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function sinh @code{(@var{x}: LONGREAL): LONGREAL}
+@code{sinh(@var{x})} is the hyperbolic sine of @var{x}.  The argument
+@var{x} must not be so large that @code{exp(|@var{x}|)} overflows.
+@end deffn
+
+@deffn Function cosh @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function cosh @code{(@var{x}: LONGREAL): LONGREAL}
+@code{cosh(@var{x})} is the hyperbolic cosine of @var{x}.  The argument
+@var{x} must not be so large that @code{exp(|@var{x}|)} overflows.
+@end deffn
+
+@deffn Function tanh @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function tanh @code{(@var{x}: LONGREAL): LONGREAL}
+@code{tanh(@var{x})} is the hyperbolic tangent of @var{x}.  All arguments
+are legal.
+@end deffn
+
+@deffn Function arcsinh @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function arcsinh @code{(@var{x}: LONGREAL): LONGREAL}
+@code{arcsinh(@var{x})} is the arc hyperbolic sine of @var{x}.  All
+arguments are legal.
+@end deffn
+
+@deffn Function arccosh @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function arccosh @code{(@var{x}: LONGREAL): LONGREAL}
+@code{arccosh(@var{x})} is the arc hyperbolic cosine of @var{x}.  All
+arguments greater than or equal to @code{1} are legal.
+@end deffn
+
+@deffn Function arctanh @code{(@var{x}: REAL): REAL}
+@end deffn
+@deffn Function arctanh @code{(@var{x}: LONGREAL): LONGREAL}
+@code{arctanh(@var{x})} is the arc hyperbolic tangent of @var{x}.
+@code{|@var{x}| < 1 - sqrt(em)}, where @samp{em} is machine epsilon.  Note
+that @code{|@var{x}|} must not be so close to @code{1} that the result is
+less accurate than half precision.
+@end deffn
+

@@ -1,0 +1,190 @@
+@node I/O Subsystem, Mathematics, Real/String Conversion, Top
+@chapter I/O Subsystem
+
+   Most programs need to perform input (reading data), output (writing
+data), or both in order to be useful.  The OOC library attempts to simplify
+these Input/Output (@dfn{I/O}) operations by providing several related
+abstractions that relate to I/O.
+
+The two primary abstractions are @dfn{channels} and @dfn{riders}.  The
+entire I/O Subsystem of the OOC library revolves around these two concepts.
+
+@menu
+* Input/Output Overview::       An introduction to the basic concepts of
+                                 I/O in the OOC library.  
+* Channels::                    Details of the various channel modules.  
+* Standard Mappers::            Descriptions of the standard mapper types.  
+* Standard I/O::                Simple interfaces to standard input, output
+                                 and error channels.  
+@end menu
+
+@node Input/Output Overview, Channels,  , I/O Subsystem
+@section Input/Output Overview
+
+In order to provide uniform access to different sorts of @dfn{devices}
+(files, program arguments, sockets, and so forth) the I/O subsystem consists
+of several interrelated class hierarchies of related abstractions.  The two
+primary abstractions are @dfn{channels} and @dfn{riders}.
+
+The intention of these abstractions is to allow similar handling of devices;
+even, potentially, to the level of such exotic devices as a screen pixelmap,
+a windowing system, or a speech output device.
+
+The benefit of this unified I/O handling approach allows a programmer to
+write procedures that operate on any kind of I/O channel.  A program writing
+to @code{stdout} could be easily converted to allow writing into a file
+instead.  Or, similarly, it could serve as a remote telnet connection.
+
+All channels can share the same operations for text based I/O
+(@code{ReadInt}, @code{WriteInt}, and so forth).  Riders (readers and
+writers) can then be attached to the channel, allowing standard I/O,
+regardless of the actual device used.
+
+@menu
+* I/O Concepts::                Basic I/O concepts of the OOC library.  
+* Riders and Mappers::          Discussion of the functions of riders and
+                                 mappers.  
+* Locators & Opening Channels:: Description of the use of locators to 
+                                 open channels.  
+@end menu
+
+@node I/O Concepts, Riders and Mappers,  , Input/Output Overview
+@subsection I/O Concepts
+@cindex i/o concepts
+
+There are several conceptual layers to the I/O process that are modeled by
+various abstractions in the OOC library.  Their relationships are shown
+here:
+
+@smallexample
+  @dfn{data locations} - where data resides (raw data).  
+      |  (e.g., hard disk, memory block, keyboard port, RS232 links)
+      |
+      |
+  @dfn{channels} - connections to data locations in the form of byte streams.  
+      |  (e.g., files - on disk and in memory, pipes, 
+      |   TCP/IP connections)
+      |
+  @dfn{basic riders} - basic operations on bytes.  
+      | (e.g., SetPos, ReadByte, ReadBytes, WriteByte, WriteBytes)
+      |
+      |
+  @dfn{mappers} - translations of high level data to and from a byte stream.  
+        (e.g., binary reader/writer, text reader/writer)
+@end smallexample
+
+A @dfn{data location} (or simply @dfn{location}) is a source of input data
+or destination of output data.  It it the physical or logical place where
+data exists; say a hard disk, or keyboard buffer.
+
+A @dfn{channel} is a connection to a data location.  A channel is envisioned
+as a contiguous sequence, or @dfn{stream}, of bytes.  Channels may be
+@dfn{sequential} as in the case of terminal I/O, a TCP stream, pipes, and so
+forth; or @dfn{positionable} like Files and ProgramArgs.
+
+@dfn{Riders} are associated with a channel and provide read and write access
+of a location; they operate directly on a stream of bytes (i.e., a channel).
+Multiple readers and writers can exist for a single channel.
+
+A @dfn{mapper} is a high-level rider; it operates on a particular format of
+data, like textual or binary representation of elementary data types.
+Mappers rely on the primitive operations of basic riders to build more
+complex operations.
+
+The benefit of differentiating these layers is allowing a way to distinguish
+between the simple access layer, that doesn't know a thing about the byte
+stream being read or written, and the interpretation layer that transforms
+bytes into useful data.
+
+@node Riders and Mappers, Locators & Opening Channels, I/O Concepts, Input/Output Overview
+@subsection Riders and Mappers
+@cindex riders
+@cindex mappers
+
+The term @dfn{rider} can be used to describe any operator that provides read
+or write operations on channels.  However, there is a distinction between
+low-level (@dfn{basic riders}) and high-level operations (@dfn{mappers}).
+
+@dfn{Basic riders} are associated directly with a particular channel type.
+Notice that the rider, not the channel, has a @dfn{position} property (the
+place where reading or writing occurs).  Several riders can operate on the
+same channel at the same time.  Riders may provide @dfn{sequential} or
+@dfn{positionable} (i.e., random) access depending on the type of channel.
+
+In general, there are only two types of basic riders: @dfn{readers} and
+@dfn{writers}.
+
+@dfn{Mappers} are similar to basic riders and, like riders, may be either
+readers or writers.  They translate between a sequence of data items and an
+uninterpreted sequence of bytes.  But mappers may also provide more
+sophisticated read/write operations; for instance, @dfn{scanners} are
+mappers that can distinguish between different types of data within a
+particular format, and then read in that data based on the type.
+@xref{TextRider} and @xref{BinaryRider} for descriptions of the simplest
+mappers.
+
+@quotation
+@strong{Please note}: a basic rider is dependent on the implementation of
+its channel, (e.g., a file rider must know how to position itself within a
+file).  When a channel type is extended, usually the rider must be extended
+as well.
+
+Mappers, on the other hand, are independent of a particular channel's
+implementation; mappers use riders in their implementation.  This
+independence means that every mapper may be used on any compatible rider
+without the need to implement all combinations of mappers and riders
+individually.
+@end quotation
+
+@node Locators & Opening Channels,  , Riders and Mappers, Input/Output Overview
+@subsection Locators and Opening Channels
+@cindex locators
+@cindex channels, opening
+
+   Before reading or writing to a location, a connection must be created by
+@dfn{opening} a channel on the location.  The operations for opening
+channels are collectively called @dfn{locators}.  The primary function of
+locators is to resolve a data location (as specified by a file name, URL,
+etc.), and then open a channel to that location.
+
+Locators may be simply a set of functions; for instance:  
+@example
+  PROCEDURE New* (...): ChannelType;
+
+  PROCEDURE Old* (...): ChannelType;
+@end example
+
+For channels that correspond to a location that can be both read and
+changed, @code{New()} will create a new channel for the given data location,
+deleting all data previously contained in it.  @code{Old()} will open a
+channel to existing data.
+
+For channels representing a unidirectional byte stream (like output to/
+input from terminal, or a TCP stream), only a procedure @code{New()} is
+provided.  It will create a connection with the designated location.
+
+The formal parameters of these procedures will normally include some kind of
+reference to the data being opened (e.g., a file name) and, optionally, flags
+that modify the way the channel is opened (e.g., read-only, write-only, etc).
+Their use (and therefore, interface) depends on the type of channel to be
+opened.
+
+In more complex circumstances, actual locator types may be required; in that
+case, the locator type might provide type-bound procedures @code{Old} and
+@code{New} to create a new channel.
+
+When finished reading to or writing from the location, the connection can be
+terminated by @dfn{closing} the channel ((each channel provides a
+@code{Close} method for this purpose; locators do not supply any close
+operations).  This will free all resources allocated by the system for the
+channel.  Once a channel is closed, no further input or output operations
+can be performed on it.
+
+@quotation
+@strong{Please note}: A channel implementation may limit the number of
+channels that can be open simultaneously.  It's common for an OS to only
+support a limited number of open files or open sockets at the same time.
+See individual channel types for these limitations (if such limitations
+exist for that type).
+@end quotation
+

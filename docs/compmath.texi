@@ -1,0 +1,219 @@
+@node Complex Numbers, Random Numbers, Arbitrary Precision Integers, Mathematics
+@section Complex Numbers
+@pindex ComplexMath
+@pindex LComplexMath
+@cindex complex numbers
+@cindex mathematical functions
+@cindex COMPLEX, mathematical functions
+@cindex LONGCOMPLEX, mathematical functions
+
+The modules @code{ComplexMath} and @code{LComplexMath} provide facilities
+for complex numbers, which includes common mathematical functions for types
+@code{COMPLEX} and @code{LONGCOMPLEX}.
+
+Instances of the following two classes are used to represent complex
+numbers:
+
+@deftp {Data type} COMPLEX = POINTER TO COMPLEXDesc
+The @emph{real} and @emph{imaginary} parts of this type are represented as
+type @code{REAL}
+@end deftp
+
+@deftp {Data type} LONGCOMPLEX = POINTER TO LONGCOMPLEXDesc
+The @emph{real} and @emph{imaginary} parts of this type are represented as
+type @code{LONGREAL}
+@end deftp
+
+@strong{Please note:} To create initial instances of @code{COMPLEX} and
+@code{LONGCOMPLEX}, you must use the corresponding @code{CMPLX()} function.
+
+The following are instances of the corresponding complex number type.  They
+are provided for convenience and have values that represent the specified
+complex number:
+
+@defvr {Read-only Variable} i
+The value of @code{i} is initialized to @code{CMPLX (0.0, 1.0)}.
+@end defvr
+
+@defvr {Read-only Variable} one
+The value of @code{one} is initialized to @code{CMPLX (1.0, 0.0)}.
+@end defvr
+
+@defvr {Read-only Variable} zero
+The value of @code{zero} is initialized to @code{CMPLX (0.0, 0.0)}.
+@end defvr
+
+The following functions are provided in either @code{ComplexMath} (for
+@code{COMPLEX}) or @* @code{LComplexMath} (for @code{LONGCOMPLEX}):
+
+@deffn Function CMPLX @code{(@var{r}, @var{i}: REAL): COMPLEX}
+@end deffn
+@deffn Function CMPLX @code{(@var{r}, @var{i}: LONGREAL): LONGCOMPLEX}
+This function returns an instance of the corresponding complex number type
+whose real part has a value of @var{r} and imaginary part has a value of
+@var{i}.
+@end deffn
+
+@deffn Function Copy @code{(@var{z}: COMPLEX): COMPLEX}
+@end deffn
+@deffn Function Copy @code{(@var{z}: LONGCOMPLEX): LONGCOMPLEX}
+This function returns a copy of @var{z}.  
+
+@strong{Please note:} This function provides the only reliable way to assign
+complex number values.  If @code{a} and @code{b} are complex numbers,
+@emph{do not} use @code{a := b}.
+@end deffn
+
+@deffn Function RealPart @code{(@var{z}: COMPLEX): REAL}
+@end deffn
+@deffn Function RealPart @code{(@var{z}: LONGCOMPLEX): LONGREAL}
+This function returns the real part of the complex number @var{z}.
+@end deffn
+
+@deffn Function ImagPart @code{(@var{z}: COMPLEX): REAL}
+@end deffn
+@deffn Function ImagPart @code{(@var{z}: LONGCOMPLEX): LONGREAL}
+This function returns the imaginary part of the complex number @var{z}.
+@end deffn
+
+@deffn Function add @code{(@var{z1}, @var{z2}: COMPLEX): COMPLEX}
+@end deffn
+@deffn Function add @code{(@var{z1}, @var{z2}: LONGCOMPLEX): LONGCOMPLEX}
+This function returns the value of @var{z1} added to @var{z2}.
+@end deffn
+
+@deffn Function sub @code{(@var{z1}, @var{z2}: COMPLEX): COMPLEX}
+@end deffn
+@deffn Function sub @code{(@var{z1}, @var{z2}: LONGCOMPLEX): LONGCOMPLEX}
+This function returns the value of @var{z2} subtracted from @var{z1}.
+@end deffn
+
+@deffn Function mul @code{(@var{z1}, @var{z2}: COMPLEX): COMPLEX}
+@end deffn
+@deffn Function mul @code{(@var{z1}, @var{z2}: LONGCOMPLEX): LONGCOMPLEX}
+This function returns the value of @var{z1} multiplied by @var{z2}.
+@end deffn
+
+@deffn Function div @code{(@var{z1}, @var{z2}: COMPLEX): COMPLEX}
+@end deffn
+@deffn Function div @code{(@var{z1}, @var{z2}: LONGCOMPLEX): LONGCOMPLEX}
+This function returns the value of @var{z1} divided by @var{z2}.
+@end deffn
+
+@deffn Function abs @code{(@var{z}: COMPLEX): REAL}
+@end deffn
+@deffn Function abs @code{(@var{z}: LONGCOMPLEX): LONGREAL}
+This function returns an approximation to the length (also known as the
+absolute value, or modulus) of @var{z}.
+
+@strong{Please note:} An overflow exception may be raised in this
+computation, even when the complex number itself is well defined.
+@end deffn
+
+@deffn Function arg @code{(@var{z}: COMPLEX): REAL}
+@end deffn
+@deffn Function arg @code{(@var{z}: LONGCOMPLEX): LONGREAL}
+This function returns an approximation to the angle that @var{z} subtends to
+the positive real axis in the complex plane.  The result will be in radians
+in the range @code{[-pi, pi]}.  If the modulus (@code{abs(@var{x})}) of
+@var{z} is zero, an exception is raised.
+@end deffn
+
+@deffn Function conj @code{(@var{z}: COMPLEX): COMPLEX}
+@end deffn
+@deffn Function conj @code{(@var{z}: LONGCOMPLEX): LONGCOMPLEX}
+This function returns an approximation to the complex conjugate of @var{z}.
+@end deffn
+
+@deffn Function power @code{(@var{base}: COMPLEX; @var{exponent}: REAL): COMPLEX}
+@end deffn
+@deffn Function power @code{(@var{base}: LONGCOMPLEX; @var{exponent}: LONGREAL): LONGCOMPLEX}
+This function returns an approximation to the value of the number @var{base}
+raised to the power @var{exponent}.
+@end deffn
+
+@deffn Function sqrt @code{(@var{z}: COMPLEX): COMPLEX}
+@end deffn
+@deffn Function sqrt @code{(@var{z}: LONGCOMPLEX): LONGCOMPLEX}
+This function returns an approximation to the principal square root of
+@var{z}.
+
+@strong{Please note:} The result is the complex number with an @code{arg()}
+of half the value of the @code{arg()} of z, and whose @code{abs()} is the
+positive square root of the @code{abs()} of @var{z}.
+@end deffn
+
+@deffn Function exp @code{(@var{z}: COMPLEX): COMPLEX}
+@end deffn
+@deffn Function exp @code{(@var{z}: LONGCOMPLEX): LONGCOMPLEX}
+This function returns an approximation to the mathematical constant @code{e}
+raised to the power of @var{z}.
+@end deffn
+
+@deffn Function ln @code{(@var{z}: COMPLEX): COMPLEX}
+@end deffn
+@deffn Function ln @code{(@var{z}: LONGCOMPLEX): LONGCOMPLEX}
+This function returns an approximation to the principal value of the natural
+logarithm of @var{z}.
+@end deffn
+
+@deffn Function sin @code{(@var{z}: COMPLEX): COMPLEX}
+@end deffn
+@deffn Function sin @code{(@var{z}: LONGCOMPLEX): LONGCOMPLEX}
+This function returns an approximation to the complex sine of @var{z}.
+@end deffn
+
+@deffn Function cos @code{(@var{z}: COMPLEX): COMPLEX}
+@end deffn
+@deffn Function cos @code{(@var{z}: LONGCOMPLEX): LONGCOMPLEX}
+This function returns an approximation to the complex cosine of @var{z}.
+@end deffn
+
+@deffn Function tan @code{(@var{z}: COMPLEX): COMPLEX}
+@end deffn
+@deffn Function tan @code{(@var{z}: LONGCOMPLEX): LONGCOMPLEX}
+This function returns an approximation to the complex tangent of @var{z}.
+If @var{z} is an odd multiple of @code{pi/2}, an exception is raised.
+@end deffn
+
+@deffn Function arcsin @code{(@var{z}: COMPLEX): COMPLEX}
+@end deffn
+@deffn Function arcsin @code{(@var{z}: LONGCOMPLEX): LONGCOMPLEX}
+This function returns an approximation to the principal value of the complex
+arcsine of @var{z}.
+@end deffn
+
+@deffn Function arccos @code{(@var{z}: COMPLEX): COMPLEX}
+@end deffn
+@deffn Function arccos @code{(@var{z}: LONGCOMPLEX): LONGCOMPLEX}
+This function returns an approximation to the complex arccosine of @var{z}.
+@end deffn
+
+@deffn Function arctan @code{(@var{z}: COMPLEX): COMPLEX}
+@end deffn
+@deffn Function arctan @code{(@var{z}: LONGCOMPLEX): LONGCOMPLEX}
+This function returns an approximation to the complex arctangent of @var{z}.
+@end deffn
+ 
+@deffn Function polarToComplex @code{(@var{abs}, @var{arg}: REAL): COMPLEX}
+@end deffn
+@deffn Function polarToComplex @code{(@var{abs}, @var{arg}: LONGREAL): LONGCOMPLEX}
+This function returns an approximation to the complex number with the
+specified polar coordinates.  The result will have a length of @var{abs} and
+angle of @var{arg}).
+@end deffn
+
+@deffn Function scalarMult @code{(@var{scalar}: REAL; @var{z}: COMPLEX): COMPLEX}
+@end deffn
+@deffn Function scalarMult @code{(@var{scalar}: LONGREAL; @var{z}: LONGCOMPLEX): LONGCOMPLEX}
+This function returns an approximation to the scalar product of @var{scalar}
+with @var{z}.
+@end deffn
+
+@deffn Function IsCMathException @code{(): BOOLEAN}
+This function returns @code{TRUE} if the current process is in the
+exceptional execution state because of the raising of the corresponding
+@code{ComplexMath} or @code{LComplexMath} exception; otherwise, it returns
+@code{FALSE}.
+@end deffn
+

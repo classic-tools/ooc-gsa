@@ -1,0 +1,1076 @@
+@node Date and Time, Oakwood Compliant Modules, Mathematics, Top
+@chapter Date and Time
+
+This chapter describes the facilities for manipulating dates and times,
+including getting and setting the date and time, and conversions between
+formats.  
+
+@menu
+* Time::                        Manipulation of time stamps and time 
+                                 intervals.
+* JulianDay::                   Convert between day/month/year and 
+                                 Modified Julian Days.
+* SysClock::                    Reading and setting the system clock.
+* Calendar::                    Conversion between calender dates, time 
+                                 stamps, and date/time string formats.
+@end menu
+
+@node Time, JulianDay,  , Date and Time
+@section Module Time
+@pindex Time
+@cindex time stamps
+@cindex time intervals
+
+Module @code{Time} provides facilites for time stamp and time interval
+manipulation.
+
+A @dfn{time stamp} represents a particular instant in time.  
+
+A @dfn{time interval} is the duration between two instants read on the same
+time scale.
+
+Another way to view time stamps and intervals is to consider them in the
+context of a one-dimensional vector space: A time stamp is a point, a time
+interval a vector.  Seen in this way, some functions perform vector
+arithmetic on time intervals.
+
+@quotation
+@strong{Please note:} Date and time modules refer to @dfn{UTC}, which is
+Coordinated Universal Time (or Universal Time Coordinated).  UTC replaces
+Greenwich Mean Time (GMT) and is recommended for all general timekeeping
+applications.  UTC and GMT are effectively equivalent; the difference being
+that UTC is adjusted by an integral number of seconds called @dfn{leap
+seconds} (see @url{http://www.boulder.nist.gov/timefreq/glossary.htm} for
+more precise definitions).  
+
+No provision is made for leap seconds in the date and time modules.
+@end quotation
+
+The following constants are defined:
+
+@defvr Constant msecPerSec 
+The number of milliseconds per second.
+@end defvr
+
+@defvr Constant msecPerMin 
+The number of milliseconds per minute.
+@end defvr
+
+@defvr Constant msecPerHour
+The number of milliseconds per hour.
+@end defvr
+       
+@defvr Constant msecPerDay 
+The number of milliseconds per day.
+@end defvr
+
+Module @code{Time} declares the following types for time intervals and time
+stamps:
+ 
+@deftp Class Interval = RECORD
+This type is used to represent a delta time measure, which can be used to
+increment a time or find the time difference between two times.
+
+The maximum number of milliseconds in an interval is the value
+@code{msecPerDay}.
+
+The fields are defined as follows:
+
+@table @asis
+@item Field: @b{dayInt}@minus{}: @code{LONGINT}
+The number of days in this interval.
+
+@item Field: @b{msecInt}@minus{}: @code{LONGINT}
+The number of milliseconds in this interval.
+@end table
+@end deftp
+
+The following are operations on @code{Interval}:
+
+@deffn Procedure InitInterval @code{(VAR @var{int}: Interval; @var{days}, @var{msecs}: LONGINT)}
+This procedure is used to initialize an @code{Interval} @var{int} with
+@var{days} days and @var{msecs} milliseconds.
+
+@strong{Pre-condition}: @var{msecs} is not negative.
+@end deffn
+
+@table @asis
+@item Method: @code{(VAR @var{a}: Interval)} @b{Add} @code{(@var{b}: Interval)}
+This method computes the value of @var{a} added to @var{b}.  The result is
+assigned to @var{a}.
+
+@item Method: @code{(VAR @var{a}: Interval)} @b{Sub} @code{(@var{b}: Interval)}
+This method computes the value of @var{b} subtracted from @var{a}.  The
+result is assigned to @var{a}.
+@end table
+
+@emph{Example:}  
+
+@smallexample
+VAR int1, int2: Time.Interval;
+
+Time.InitInterval(int1, 10, 0);
+
+Time.InitInterval(int2, 5, 0);
+   @result{} int2.dayInt = 5, int2.msecInt = 0
+ 
+int1.Add(int2);  (* @equiv{} int1 = int1 + int2 *)
+   @result{} int1.dayInt = 15, int1.msecInt = 0
+
+int1.Add(int1);  (* @equiv{} int1 = int1 + int1 *)
+   @result{} int1.dayInt = 30, int1.msecInt = 0
+
+int1.Sub(int2);  (* @equiv{} int1 = int1 - int2 *)
+   @result{} int1.dayInt = 25, int1.msecInt = 0
+
+Time.InitInterval(int1, 0, 43200000);  (* @equiv{} 12 hours *)
+   @result{} int1.dayInt = 0, int1.msecInt = 43200000
+
+int1.Add(int1);  (* 12 hrs + 12 hrs = 24 hrs @equiv{} 1 day *)
+   @result{} int1.dayInt = 1, int1.msecInt = 0
+
+Time.InitInterval(int2, 0, 1800000);  (* @equiv{} 30 minutes *)
+   @result{} int2.dayInt = 0, int2.msecInt = 1800000
+
+int2.Add(int2);  (* 30 mins + 30 mins = 60 mins @equiv{} 1 hr *)
+   @result{} int2.dayInt = 0, int2.msecInt = 3600000
+
+int1.Sub(int2);  (* 24 hrs - 1 hr = 23 hrs @equiv{} 82800000 *)
+   @result{} int1.dayInt = 0, int1.msecInt = 82800000
+@end smallexample
+
+@table @asis
+@item Method: @code{(VAR @var{a}: Interval)} @b{Cmp} @code{(@var{b}: Interval): SHORTINT}
+This method compares the values of @var{a} and @var{b} and returns the
+following result:
+
+@format
+  If @code{a > b}, return @code{1}
+  If @code{a = b}, return @code{0}
+  If @code{a < b}, return @code{-1}
+@end format
+
+@item Method: @code{(VAR @var{a}: Interval)} @b{Scale} @code{(@var{b}: LONGREAL)}
+This method scales the value of @var{a} by @var{b} (i.e., @var{a} multiplied
+by @var{b}).  The result is assigned to @var{a}.
+
+@strong{Pre-condition}: @var{b} is not negative.
+
+@item Method: @code{(VAR @var{a}: Interval)} @b{Fraction} @code{(@var{b}: Interval): LONGREAL}
+This method computes the fraction @var{b} of the interval @var{a} (i.e,
+@var{a} divided by @var{b}).
+
+@strong{Pre-condition}: @var{b} is not zero.
+@end table
+
+@emph{Example:}  
+
+@smallexample
+VAR int1, int2: Time.Interval;
+    result: SHORTINT;
+    frac: LONGREAL;
+
+Time.InitInterval(int1, 0, 82800000);  (* @equiv{} 23 hours *)
+   @result{} int1.dayInt = 0, int1.msecInt = 82800000
+
+Time.InitInterval(int2, 0, 3600000);  (* @equiv{} 1 hr *)
+   @result{} int2.dayInt = 0, int2.msecInt = 3600000
+
+result := int1.Cmp(int2);
+   @result{} result = 1  (* @equiv{} int1 > int2 *)
+
+result := int2.Cmp(int1);
+   @result{} result = -1  (* @equiv{} int2 < int1 *)
+
+result := int1.Cmp(int1);
+   @result{} result = 0  (* @equiv{} int1 = int1 *)
+
+int2.Scale(23);  (* 1 hr * 23 = 23 hrs *)
+   @result{} int2.dayInt = 0, int2.msecInt = 82800002
+        (* approximately equal to 23 hrs. *)
+
+int2.Scale(2);  (* 23 hrs * 2 = 46 hours *)
+   @result{} int2.dayInt = 1, int2.msecInt = 79199997
+        (* approximately @equiv{} 1 day and 22 hours *)
+
+frac := int2.Fraction(int1); (* 46 hrs / 23 hrs = 2 *)
+   @result{} frac = 2.00000006219615  (* approx. 2 *)
+
+frac := int1.Fraction(int2); (* 23 hrs / 46 hrs = 0.5 *)
+   @result{} frac = 4.99999984450962E-1  (* approx. 0.5 *)
+@end smallexample
+
+@deftp Class TimeStamp = RECORD
+This type represents an instant in time using a compressed date/time format.
+
+@strong{Please note:} @code{TimeStamp} is in Coordinated Universal Time
+(UTC) on systems that support time zones.  Without such support, it is
+assumed that they refer to the local time zone with an unspecified time zone
+offset.
+
+The fields are defined as follows:
+
+@table @asis
+@item Field: @b{days}@minus{}: @code{LONGINT}
+Modified Julian days since midnight 17 Nov 1858.  This quantity can be
+negative to represent dates occuring before day zero.
+
+@item Field: @b{msecs}@minus{}: @code{LONGINT}
+Milliseconds since 00:00.
+@end table
+@end deftp
+
+The following are operations on @code{TimeStamp}:
+
+@deffn Procedure InitTimeStamp @code{(VAR @var{t}: TimeStamp; @var{days}, @var{msecs}: LONGINT)}
+This procedure is used to initialize a @code{TimeStamp} @var{t} with
+@var{days} days and @var{msecs} milliseconds.
+
+@strong{Pre-condition}: @var{msecs} is not negative.
+@end deffn
+
+@table @asis
+@item Method: @code{(VAR @var{a}: TimeStamp)} @b{Add} @code{(@var{b}: Interval)}
+This method adds the interval @var{b} to the time stamp @var{a}.
+
+@item Method: @code{(VAR @var{a}: TimeStamp)} @b{Sub} @code{(@var{b}: Interval)}
+This method subtracts the interval @var{b} from the time stamp @var{a}.
+
+@item Method: @code{(VAR @var{a}: TimeStamp)} @b{Delta} @code{(@var{b}: TimeStamp; VAR @var{c}: Interval)}
+This method subtracts the value of time stamp @var{b} from the time stamp
+@var{a}.  The result is assigned to the interval @var{c}.
+
+@item Method: @code{(VAR @var{a}: TimeStamp)} @b{Cmp} @code{(@var{b}: TimeStamp): SHORTINT}
+This method compares the values of @var{a} and @var{b} and returns the
+following result:
+
+@format
+  If @code{a > b}, return @code{1}
+  If @code{a = b}, return @code{0}
+  If @code{a < b}, return @code{-1}
+@end format
+@end table
+
+@emph{Example:}  
+
+@smallexample
+VAR ts1, ts2: Time.TimeStamp;
+    int1  : Time.Interval;
+    result: SHORTINT;
+
+Time.InitTimeStamp(ts1, 40000, 0);
+   @result{} ts1.days = 40000, ts1.msecs = 0
+        (* @equiv{} midnight 24 May 1968 *)
+
+Time.InitInterval(int1, 10, 3600000);
+ts1.Add(int1);
+   @result{} ts1.days = 40010, ts1.msecs = 3600000
+        (* @equiv{} 1:00 3 Jun 1968 *)
+
+Time.InitInterval(int1, 5000, 21600000);  
+        (* @equiv{} 5000 days, 6 hours *)
+ts1.Sub(int1);
+   @result{} ts1.days = 35009, ts1.msecs = 68400000
+        (* @equiv{} 19:00 24 Sep 1954 *)
+
+Time.InitTimeStamp(ts2, 50000, 43200000); 
+   @result{} ts1.days = 50000, ts1.msecs = 43200000
+        (* @equiv{} noon 10 October 1995 *)
+
+ts2.Delta(ts1, int1);
+   @result{} int1.dayInt = 14990, int1.msecInt = 61200000
+
+result := ts2.Cmp(ts1);
+   @result{} result = 1  
+        (* @equiv{} ts2 > ts1  i.e., ts2 occurs after ts1 *)
+@end smallexample
+
+@node JulianDay, SysClock, Time, Date and Time
+@section Module JulianDay
+@pindex JulianDay
+@cindex julian days
+@cindex days, julian
+
+The module @code{JulianDay} provides facilities for convertion between day/
+month/ year and various forms of Julian Days.  Julian Days are a standard
+convention used for describing dates with the least possible ambiguity.
+
+The @dfn{Julian Day Number} (JDN) is a whole number representing the number
+of consecutive days since noon 1 January 4713 B.C. (this is Julian Day 0).
+
+The @dfn{Julian Date} (JD) is an extension of Julian Day Number, which
+includes a fractional part representing the elapsed fraction of a day since
+the preceding noon.
+
+The @dfn{Modified Julian Day} (MJD) begins instead at midnight (in keeping
+with more standard conventions) 17 November 1858.  This allows the first two
+digits of the Julian Day to be removed; that is, this date is Julian Day
+2400000.  So,
+
+@example
+MJD = JD - 2400000.5
+@end example
+
+The @dfn{Modified Julian Date} is the Julian Date minus 2400000.5.
+
+The @dfn{Truncated Julian Day} (TJD) is the Modified Julian Day truncated to
+four digits.  When TJD first came into use, its origin date (i.e., "epoch")
+was at midnight 24 May 1968 (i.e., JDN 2440000).  However, it "recycled" at
+midnight 10 October 1995 (i.e., JDN 2450000), so currently
+
+@example 
+TJD = MJD - 50000
+@end example
+
+@quotation 
+@strong{Please note:} The various Julian Days are integer values and are
+distinct from Julian Dates, which are real number values.  You should keep
+this in mind when using the facilities in module @code{JulianDay}.
+@end quotation
+
+Several constants are provided for use in Julian Day and Date calculations:
+
+@defvr Constant startMJD
+Zero basis (i.e, "epoch") for modified Julian Day expressed as a Julian
+Date.  (This number will be @code{2400000.5D0}.)
+@end defvr
+
+@defvr Constant startTJD
+Zero basis (i.e, "epoch") for Truncated Julian Day.
+@end defvr
+
+The following is provided to test for use of the Gregorian calendar:
+
+@quotation
+The @dfn{Gregorian Calendar} is the calendar system now in general use
+throughout the world.  It was adopted because the @emph{Julian Calendar}
+(used in the Roman empire and then by the Roman Catholic Church) accumulated
+an error of one day every 128 years (thus it is currently 13 days behind the
+Gregorian Calendar).
+
+The Gregorian Calendar (first prescribed in 1582 by Pope Gregory XIII)
+adjusts the Julian year to the astronomical year by dropping three leap
+years every 400 years.  That is, at the end of each century, there is no
+leap year, except in the years 1600, 2000, 2400, and so forth.
+@end quotation
+
+@defvr {Read-only Variable} UseGregorian
+A boolean value that is @code{TRUE} when the Gregorian Calendar is being
+used by module @code{JulianDay}.  See also the procedure
+@code{SetGregorianStart}.
+@end defvr
+
+Conversion facilities are provided as follows:
+
+@deffn Function DateToJD @code{(@var{day}, @var{month}: SHORTINT; @var{year}: INTEGER): LONGREAL}
+This function returns the Julian Date for the given @var{day}, @var{month},
+and @var{year} at 0000 UTC (midnight).  Any date with a positive year is
+valid.  The returned value is the number of days since noon 1 January 4713
+B.C.  (Note that the result will always have a fractional part equal to
+@samp{.5}.)
+@end deffn
+
+@deffn Procedure JDToDate @code{(@var{jd}: LONGREAL; VAR @var{day}, @var{month}: SHORTINT; VAR @var{year}: INTEGER)}
+This procedure converts a Julian Date @var{jd} to a date given by the
+@var{day}, @var{month}, and @var{year}.
+@end deffn
+
+Algorithms for @code{DateToJD} and @code{JDToDate} by William H. Jefferys
+(with some modifications) at
+
+@url{http://quasar.as.utexas.edu/BillInfo/JulianDatesG.html}
+
+@emph{Example:}  
+
+@smallexample
+VAR date: LONGREAL;
+    day, month: SHORTINT;
+    year: INTEGER;
+    
+date := JulianDay.DateToJD(10, 10, 1995);
+   @result{} date = 2450000.5
+JulianDay.JDToDate(date, day, month, year);
+   @result{} day = 10, month = 10, year = 1995
+
+date := JulianDay.DateToJD(17, 11, 1858);
+   @result{} date = 2400000.5
+JulianDay.JDToDate(date, day, month, year);
+   @result{} day = 17, month = 11, year = 1858
+@end smallexample
+
+@deffn Function DateToDays @code{(@var{day}, @var{month}: SHORTINT; @var{year}: INTEGER): LONGINT}
+This function returns the Modified Julian Day for the given @var{day},
+@var{month}, and @var{year} at 0000 UTC (midnight).  Any date with a
+positive year is valid.  The returned value is the number of days since
+midnight 17 November 1858.
+@end deffn
+
+@deffn Procedure DaysToDate @code{(@var{jd}: LONGINT; VAR @var{day}, @var{month}: SHORTINT; VAR @var{year}: INTEGER)}
+This procedure converts a Modified Julian Day @var{jd} to a date given by
+the @var{day}, @var{month}, and @var{year}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR days: LONGINT;
+    day, month: SHORTINT;
+    year: INTEGER;
+
+days := JulianDay.DateToDays(10, 10, 1995);
+   @result{} days = 50000
+JulianDay.DaysToDate(days, day, month, year);
+   @result{} day = 10, month = 10, year = 1995
+
+days := JulianDay.DateToDays(17, 11, 1858);
+   @result{} days = 0
+JulianDay.DaysToDate(days, day, month, year);
+   @result{} day = 17, month = 11, year = 1858
+
+days := JulianDay.DateToDays(8, 4, 1513);
+   @result{} days = -126222
+JulianDay.DaysToDate(days, day, month, year);
+   @result{} day = 8, month = 4, year = 1513
+@end smallexample
+
+@deffn Function DateToTJD @code{(@var{day}, @var{month}: SHORTINT; @var{year}: INTEGER): LONGINT}
+This function returns the Truncated Julian Day for the given @var{day},
+@var{month}, and @var{year} at 0000 UTC (midnight).  Any date with a
+positive year is valid.  The returned value is the number of days since
+midnight 10 October 1995.
+@end deffn
+
+@deffn Procedure TJDToDate @code{(@var{jd}: LONGINT; VAR @var{day}, @var{month}: SHORTINT; VAR @var{year}: INTEGER)}
+This procedure converts a Truncated Julian Day @var{jd} to a date given by
+the @var{day}, @var{month}, and @var{year}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR days: LONGINT;
+    day, month: SHORTINT;
+    year: INTEGER;
+
+days := JulianDay.DateToTJD(10, 10, 1995);
+   @result{} days = 0
+JulianDay.TJDToDate(days, day, month, year);
+   @result{} day = 10, month = 10, year = 1995
+
+days := JulianDay.DateToTJD(25, 12, 1997);
+   @result{} days = 807
+JulianDay.TJDToDate(days, day, month, year);
+   @result{} day = 25, month = 12, year = 1997
+
+days := JulianDay.DateToTJD(17, 11, 1858);
+   @result{} days = -50000
+JulianDay.TJDToDate(days, day, month, year);
+   @result{} day = 17, month = 11, year = 1858
+@end smallexample
+
+@deffn Procedure SetGregorianStart @code{(@var{day}, @var{month}: SHORTINT; @var{year}: INTEGER)}
+Sets the start date when the Gregorian Calendar was first used where the
+date in @var{day}, @var{month}, and @var{year} according to the Julian
+Calendar.
+
+The default date used is @samp{3 Sep 1752} (when the Gregorian Calendar was
+adopted in England).  (At that time, the Julian Calendar was 11 days behind
+the Gregorian Calendar.  And so, @samp{3 Sep 1752} according to the Julian
+Calendar is @samp{14 Sep 1752} according the the Gregorian Calendar.)
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR date: LONGREAL;
+    day, month: SHORTINT;
+    year: INTEGER;
+
+date := JulianDay.DateToJD(2, 9, 1752);
+   @result{} date = 2361220.5
+
+JulianDay.SetGregorianStart(15, 10, 1582);
+   (* move start date to before @samp{3 Sep 1752} *)
+
+JulianDay.JDToDate(date, day, month, year);
+   @result{} day = 13, month = 9, year = 1752
+   (* When Gregorian start date occurs at an earlier date,
+      Julian Calendar date @samp{2 Sep 1752} is corrected to 
+      the Gregorian date @samp{13 Sep 1752}.
+   *)   
+@end smallexample
+
+@node SysClock, Calendar, JulianDay, Date and Time
+@section Module SysClock
+@pindex SysClock
+@cindex clock, system
+
+Module @code{SysClock} provides facilities for accessing a system clock that
+records the date and time of day.  This includes a @code{DateTime} type,
+which represents a system-independent time format.  Note that the module
+@code{Calendar} provides additional operations for @code{DateTime}.
+     
+@strong{Please note:} 
+@itemize @bullet
+@item
+No provision is made for leap seconds.
+
+@item
+The field @code{summerTimeFlag} is present for information only.  @code{UTC}
+can always be obtained by subtracting the @code{zone} (time zone) value from
+the time data, regardless of the value of the @code{summerTimeFlag}.
+However, its presence does allow a program to know whether or not the date
+and time data represents standard time for that location, or "summer time".
+A program could therefore be written to change the system clock to summer
+time automatically on a certain date, provided it had not already been
+changed.
+@end itemize
+
+The following constants are defined:
+
+@defvr Constant maxSecondParts
+Accuracy of measure for "parts of a second" (@samp{fractions}) (Most
+systems have just millisecond accuracy: @samp{maxSecondParts = 999}.)
+@end defvr
+  
+@defvr Constant zoneMin
+Used as a minimum range limit for time zone (@samp{zone}) in minutes.
+@end defvr
+
+@defvr Constant zoneMax
+Used as a maximum range limit for time zone (@samp{zone}) in minutes.
+@end defvr
+
+The following constants are used as possible time zone values for
+@code{zone}:
+
+@defvr Constant localTime
+Indicates that time zone is inactive and time is local.
+@end defvr
+
+@defvr Constant unknownZone
+Indicates that time zone is unknown.
+@end defvr
+
+The following constants are used as possible daylight savings mode values
+for @* @code{summerTimeFlag}:
+
+@defvr Constant unknown
+Indicates that current daylight savings status is unknown.
+@end defvr
+
+@defvr Constant inactive
+Indicates that daylight savings adjustments are not in effect.
+@end defvr
+
+@defvr Constant active
+Indicates that daylight savings adjustments are being used.
+@end defvr
+    
+@deftp Record DateTime
+This type represents an instant in time using a combination of fields for
+date and time information.  The fields are defined as follows:
+
+@table @asis
+@item Field: @b{year}: @code{INTEGER}
+A positive value representing a four digit year.  
+
+@item Field: @b{month}: @code{SHORTINT}
+A value in the range @samp{1..12}.
+
+@item Field: @b{day}: @code{SHORTINT}
+A value in the range @samp{1..31}.
+
+@item Field: @b{hour}: @code{SHORTINT}
+A value in the range @samp{0..23}.
+
+@item Field: @b{minute}: @code{SHORTINT}
+A value in the range @samp{0..59}.
+
+@item Field: @b{second}: @code{SHORTINT}
+A value in the range @samp{0..59}.
+
+@item Field: @b{fractions}: @code{INTEGER}
+A value in the range @samp{0..@code{maxSecondParts}} representing parts of a
+second in milliseconds.
+
+@item Field: @b{zone}: @code{INTEGER}
+A value in the range @samp{@code{zoneMin}..@code{zoneMax}}.  This represents
+a time zone differential factor, which is the number of minutes to add to
+local time to obtain UTC or is set to @code{localTime} when time zones are
+inactive.
+
+@strong{Please note:} @samp{-780..720} is the typical range for @code{zone}.
+
+@item Field: @b{summerTimeFlag}: @code{SHORTINT}
+This value represents the current status of daylight savings mode.
+Interpretation of this flag depends on local usage.  However, the constants
+@code{unknown}, @code{active}, and @code{inactive} are provided as possible
+values.
+@end table
+@end deftp
+
+The following procedures are provided in module @code{SysClock}:
+
+@deffn Function CanGetClock @code{(): BOOLEAN}
+This function returns @code{TRUE} if there is a system clock, which the
+program is permitted to read.  Otherwise, it returns @code{FALSE}.
+@end deffn
+   
+@deffn Function CanSetClock @code{(): BOOLEAN}
+This function returns @code{TRUE} if there is a system clock, which the
+program is permitted to set.  Otherwise, it returns @code{FALSE}.
+@end deffn
+
+@deffn Function IsValidDateTime @code{(@var{d}: DateTime): BOOLEAN}
+This function returns @code{TRUE} if the value of @var{d} represents a valid
+date and time.  Otherwise, it returns @code{FALSE}.
+@end deffn
+
+@deffn Procedure GetClock @code{(VAR @var{userData}: DateTime)}
+This procedure assigns the system date and time to the fields of
+@var{userData} (i.e., @var{userData} is set to local time).
+
+If an error occurs, @var{userData} is set to @samp{1 Jan 1970}.
+@end deffn
+   
+@deffn Procedure SetClock @code{(@var{userData}: DateTime)}
+This procedure sets the system clock to the date and time specified by
+@var{userData}.  If the program cannot set the system clock, a call of
+@code{SetClock} has no effect.
+
+The behavior of @code{SetClock} is undefined if @var{userData} represents a
+invalid date and time.
+@end deffn
+
+@deffn Procedure MakeLocalTime @code{(VAR @var{c}: DateTime)}
+This procedure sets the daylight savings mode @code{summerTimeFlag} and time
+zone @code{zone} for calendar date @var{c}.  This assumes that @var{c}
+describes a valid local time.  The previous values of @code{summerTimeFlag}
+and @code{zone} are ignored and are overwritten by a call to
+@code{MakeLocalTime}.
+
+@strong{Please note:} 
+@enumerate
+@item
+On most Unix systems the time zone information is only available for dates
+falling approximately within 1 Jan 1902 to 31 Dec 2037.  Outside this range
+the field @code{zone} will be set to the unspecified @code{localTime} value
+, and @code{summerTimeFlag} will be set to @code{unknown}.
+
+@item
+The time zone information might not be fully accurate for past (and future)
+years that apply different Daylight Savings Time (DST) rules than the
+current year.  Usually, the current set of rules is used for all years
+between 1902 and 2037.
+
+@item
+With DST there is one hour in the year that happens twice: the hour after
+which the clock is turned back for a full hour.  It is undefined which time
+zone will be selected for dates refering to this hour; that is, whether DST
+or normal time zone will be chosen.
+@end enumerate
+@end deffn
+
+@node Calendar,  , SysClock, Date and Time
+@section Module Calendar
+@pindex Calendar
+@cindex date conversions
+@cindex time conversions
+
+Module @code{Calendar} provides facilities for manipulation of dates and
+times.  These facilities include procedures to convert between
+@code{SysClock.DateTime} and @code{Time.TimeStamp}, as well as conversions
+between @code{DateTime} and various string formats.
+
+The following constants are defined for the days of the week:
+
+@defvr Constant sunday
+@end defvr
+@defvr Constant monday
+@end defvr
+@defvr Constant tuesday
+@end defvr
+@defvr Constant wednesday
+@end defvr
+@defvr Constant thursday
+@end defvr
+@defvr Constant friday
+@end defvr
+@defvr Constant saturday
+@end defvr
+  
+And the following constants are defined for the months of the year:
+
+@defvr Constant january
+@end defvr
+@defvr Constant february
+@end defvr
+@defvr Constant march
+@end defvr
+@defvr Constant april
+@end defvr
+@defvr Constant may
+@end defvr
+@defvr Constant june
+@end defvr
+@defvr Constant july
+@end defvr
+@defvr Constant august
+@end defvr
+@defvr Constant september
+@end defvr
+@defvr Constant october
+@end defvr
+@defvr Constant november
+@end defvr
+@defvr Constant december
+@end defvr
+
+The following procedures are used to initialize instances of
+@code{DateTime}:
+
+@deffn Procedure SetLocalTime @code{(VAR @var{c}: SysClock.DateTime; @var{d}, @var{m}: SHORTINT; @var{y}: INTEGER; @var{h}, @var{min}, @var{s}: SHORTINT)}
+This procedure initializes the calendar @var{c} with the local date from
+@var{d} days, @var{m} months, @var{y} years; and the local time from @var{h}
+hours, @var{min} minutes, and @var{s} seconds.  These values must be in the
+valid ranges for each field:
+
+@table @code
+@item year 
+@code{@var{y} > 0}.
+
+@item month
+@var{m} in the range @samp{1..12}.
+
+@item day
+@var{d} in the range @samp{1..31}.
+
+@item hour
+@var{h} in the range @samp{0..23}.
+
+@item minute
+@var{min} in the range @samp{0..59}.
+
+@item second 
+@var{s} in the range @samp{0..59}.
+@end table
+
+The other fields of @var{c} are set as follows:
+
+@itemize @bullet
+@item
+@code{fractions} is set to @code{0}.
+
+@item
+@code{zone} is set to the number of minutes needed to add to local time to
+obtain UTC.  
+
+@item 
+@code{summerTimeFlag} is set to one of @code{active}, @code{inactive}, or
+@code{unknown}.
+@end itemize
+
+@strong{Please note:} @code{SetLocalTime} utilizes
+@code{SysClock.MakeLocalTime} to obtain time zone and daylight savings mode
+information.  All restrictions on @code{MakeLocalTime} also apply to
+@code{SetLocalTime}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR
+  c: SysClock.DateTime;
+
+Calendar.SetLocalTime(c, 31, 12, 1997, 15, 30, 00);
+   @result{} c = Wednesday, 31 Dec 1997, 15:30:00.0 
+@end smallexample
+
+@deffn Procedure SetUTC @code{(VAR @var{c}: SysClock.DateTime; @var{d}, @var{m}: SHORTINT; @var{y}: INTEGER; @var{h}, @var{min}, @var{s}: SHORTINT)}
+This procedure initializes the calendar @var{c} exactly like
+@code{SetLocalTime} except for the following differences:
+
+@itemize @bullet
+@item
+@code{@var{c}.zone} is always set to @code{0}.
+
+@item
+@code{@var{c}.summerTimeFlag} is always set to @code{inactive}.
+@end itemize
+@end deffn
+
+The following procedures are used to convert between
+@* @code{SysClock.DateTime} and @code{Time.TimeStamp}:
+
+@deffn Procedure GetTimeStamp @code{(VAR @var{c}: SysClock.DateTime; @var{s}: Time.TimeStamp)}
+This procedure sets the calendar @var{c} from the time stamp @var{s} based
+on local time (i.e., @code{@var{c}.zone} and @code{@var{c}.summerTimeFlag}
+are set as in @code{SetLocalTime}).
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR
+  c: SysClock.DateTime;
+  ts: Time.TimeStamp;
+
+Time.InitTimeStamp(ts, 50000, 43200000); 
+        (* @equiv{} noon 10 October 1995 UTC *)
+Calendar.GetTimeStamp(c, ts);
+   @result{} c = Tuesday, 10 Oct 1995, 08:00:00
+   @result{} c.zone = 240  
+        (* i.e., local time is 4 hours behind UTC *)
+@end smallexample
+
+@deffn Procedure SetTimeStamp @code{(@var{c}: SysClock.DateTime; VAR @var{t}: T.TimeStamp)}
+This procedure converts the calendar date @code{c} to a time stamp @var{t}.
+@end deffn
+
+The following functions provide useful information about a particular
+@code{DateTime} value:
+
+@deffn Function DayOfWeek @code{(@var{c}: SysClock.DateTime): SHORTINT}
+This function returns the day of the week of @var{c} as one of the constant
+values @* @samp{sunday..saturday}.
+@end deffn
+
+@deffn Function IsLeapYear @code{(@var{c}: SysClock.DateTime): BOOLEAN}
+This function returns @code{TRUE} if @var{c} occurs within a leap year.
+Otherwise, it returns @code{FALSE}.
+@end deffn
+
+@deffn Function DaysPerMonth @code{(@var{c}: SysClock.DateTime): SHORTINT}
+This function returns the total number of days in the month of @var{c}
+(i.e., one of @samp{28}, @samp{29}, @samp{30}, or @samp{31}).  Leap years
+are taken into account.
+@end deffn
+
+@deffn Function WeekNumber @code{(@var{c}: SysClock.DateTime; @var{startday}: SHORTINT): INTEGER}
+This function returns the week number of @var{c} based on each week
+beginning on @var{startday}.  The value of @var{startday} is one of the
+constant values @* @samp{sunday..saturday}.  The first week of a month is
+recognized as having 4 or more days in that month where each week begins on
+@var{startday}.
+@end deffn
+
+@deffn Function DayOfYear @code{(@var{c}: SysClock.DateTime): INTEGER}
+This function returns the day of the year of @var{c} in the range
+@samp{1..366}.  For instance, January first for any year returns @samp{1}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR
+  c: SysClock.DateTime;
+  day, week, dayOfYear, daysInMon: INTEGER;
+
+Calendar.SetLocalTime(c, 31, 12, 1996, 12, 00, 00);
+   @result{} c = Tuesday, 31 Dec 1996, 12:00:00
+day := Calendar.DayOfWeek(c);
+   @result{} day = Calendar.tuesday 
+week := Calendar.WeekNumber(c, Calendar.sunday);
+   @result{} week = 1
+dayOfYear := Calendar.DayOfYear(c);
+   @result{} dayOfYear = 366
+IF Calendar.IsLeapYear(c) THEN @dots{}
+   @result{} TRUE
+
+Calendar.SetLocalTime(c, 31, 12, 1997, 15, 30, 00);
+   @result{} c = Wednesday, 31 Dec 1997, 15:30:00
+day := Calendar.DayOfWeek(c);
+   @result{} day = Calendar.wednesday
+week := Calendar.WeekNumber(c, Calendar.sunday);
+   @result{} week = 53
+dayOfYear := Calendar.DayOfYear(c);
+   @result{} dayOfYear = 365
+IF Calendar.IsLeapYear(c) THEN @dots{}
+   @result{} FALSE
+
+Calendar.SetLocalTime(c, 1, 2, 1996, 00, 00, 00);
+   @result{} c = Thursday, 1 Feb 1996, 00:00:00
+IF Calendar.IsLeapYear(c) THEN @dots{}
+   @result{} TRUE
+daysInMon := Calendar.DaysPerMonth(c);
+   @result{} daysInMon = 29
+
+Calendar.SetLocalTime(c, 1, 2, 1997, 00, 00, 00);
+   @result{} c = Saturday, 1 Feb 1997, 00:00:00
+IF Calendar.IsLeapYear(c) THEN @dots{}
+   @result{} FALSE
+daysInMon := Calendar.DaysPerMonth(c);
+   @result{} daysInMon = 28
+@end smallexample
+
+The following procedures are used to convert between
+@code{SysClock.DateTime} and time-formatted strings:
+
+@deffn Procedure TimeToStr @code{(VAR @var{c}: SysClock.DateTime; @var{pattern}: ARRAY OF CHAR; VAR @var{dateStr}: ARRAY OF CHAR)}
+This procedure converts @var{c} to a string @var{dateStr} using the format
+template @var{pattern}.  Allowable conversion specifiers for @var{pattern}
+are specialized for printing the date and time components of @var{c}
+according to the locale currently specified for time conversion
+(@pxref{Locales}).
+
+Normal characters appearing in @var{pattern} are copied verbatim to the
+output string @var{dateStr}; this can include multibyte character sequences.
+Conversion specifiers are introduced by a @samp{%} character, and are
+replaced in the output string as follows:
+
+@table @samp
+@item %a
+The abbreviated weekday name according to the current locale.
+
+@item %A
+The full weekday name according to the current locale.
+
+@item %b
+The abbreviated month name according to the current locale.
+
+@item %B
+The full month name according to the current locale.
+
+@item %c
+The preferred date and time representation for the current locale.
+
+@item %d
+The day of the month as a decimal number (in the range @samp{01} 
+to @samp{31}).
+
+@item %D
+The day of the month as above, but with no leading zero.
+
+@item %H
+The hour as a decimal number, using a 24-hour clock (in the range 
+@samp{00} to @samp{23}).
+
+@item %I
+The hour as a decimal number, using a 12-hour clock (in the range
+@samp{01} to @samp{12}).
+
+@item %i
+The hour as a decimal number, using a 12-hour clock, but with no 
+leading zero.
+
+@item %j
+The day of the year as a decimal number (in the range @samp{001} 
+to @samp{366}).
+
+@item %m
+The month as a decimal number (in the range @samp{01} to 
+@samp{12}).
+
+@item %M
+The minute as a decimal number.
+
+@item %p
+One of @samp{AM} or @samp{PM}, according to the given time value; 
+or the corresponding strings for the current locale.
+
+@item %S
+The second as a decimal number.
+
+@item %U
+The week number of the current year as a decimal number,
+starting with the first Sunday as the first day of the first week.
+
+@item %W
+The week number of the current year as a decimal number,
+starting with the first Monday as the first day of the first week.
+
+@item %w
+The day of the week as a decimal number, Sunday being @samp{0}.
+
+@item %x
+The preferred date representation for the current locale, but
+without the time.
+
+@item %X
+The preferred time representation for the current locale, but
+with no date.
+
+@item %y
+The year as a decimal number, but without a century (in the range 
+@samp{00} to @samp{99}).
+
+@item %Y
+The year as a decimal number, including the century.
+
+@item %Z
+The time zone or name or abbreviation (empty if the time zone
+cannot be determined).
+
+@item %%
+A literal `%' character.
+@end table
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR
+  c: SysClock.DateTime;
+  str: ARRAY 256 OF CHAR;
+
+(* c initialized to Wednesday, 25 Dec 1996, 15:30:00 *)
+
+Calendar.TimeToStr(c, "%A, %D %b %Y, %H:%M:%S", str); 
+   @result{} str = "Wednesday, 25 Dec 1996, 15:30:00"
+Calendar.TimeToStr(c, "%a, %d/%m/%y, %H:%M:%S %Z", str); 
+   @result{} str = "Wed, 25/12/96, 15:30:00 UTC-0500"
+Calendar.TimeToStr(c, "%A, %D %B %Y, %I:%M:%S %p", str); 
+   @result{} str = "Wednesday, 25 December 1996, 03:30:00 PM"
+Calendar.TimeToStr(c, "%b %D, %Y is %A and the %jth day.", str); 
+   @result{} str = "Dec 25, 1996 is Wednesday and the 360th day."
+@end smallexample
+
+@deffn Function StrToTime @code{(VAR @var{c}: SysClock.DateTime; @var{dateStr}: ARRAY OF CHAR; @var{pattern}: ARRAY OF CHAR): BOOLEAN}
+This function converts the string @var{dateStr} into a calendar @var{c}
+using the format template @var{pattern}.  Allowable conversion specifiers
+for @var{pattern} the same as in the @code{TimeToStr} procedure.  However,
+only date and time components are used in the conversion; any other
+information, such as the day of the week and the week number, are ignored.
+
+For names appearing in @var{dateStr}, upper and lower-case distinctions are
+ignored.
+
+Unspecified time or date components are set to the lower-bound value for
+that component (after adjustment for the current time zone): For example,
+incomplete times will assume the zero time for missing time elements; and
+missing date elements will assume the corresponding date element from the
+reference date @samp{1 Jan 1970}.
+
+If @var{dateStr} is successfully parsed into a valid calendar date according
+to the @var{pattern}, @code{StrToTime} returns @code{TRUE}.  Otherwise, it
+returns @code{FALSE}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR
+  c: SysClock.DateTime;
+
+IF Calendar.StrToTime(c, "Sunday, Oct 12, 1995", "%A, %b %D, %Y") THEN 
+   @result{} TRUE, c = Thursday, 12 Oct 1995, 00:00:00
+        (* Note that day of week is ignored, 
+           and correct value assigned to c *)
+
+IF Calendar.StrToTime(c, "jul 4, 1776", "%b %D, %Y") THEN
+   @result{} TRUE, c = Thursday, 4 Jul 1776, 00:00:00
+
+IF Calendar.StrToTime(c, "3:30 pm, 25 December 96", 
+                      "%i:%M %p, %D %B %y") THEN
+   @result{} TRUE, c = Wednesday, 25 Dec 1996, 15:30:00
+
+IF Calendar.StrToTime(c, "1963 14:15:30", "%Y %H:%M:%S") THEN
+   @result{} TRUE, c = Tuesday, 1 Jan 1963, 14:15:30
+
+IF Calendar.StrToTime(c, "05/30/97", "%m/%d/%y") THEN
+   @result{} TRUE, c = Friday, 30 May 1997, 00:00:00
+
+IF Calendar.StrToTime(c, "31 Feb 1997", "%D %b %Y") THEN
+   @result{} FALSE, c = undefined
+@end smallexample

@@ -1,0 +1,1353 @@
+This is Info file OOCref.info, produced by Makeinfo version 1.68 from
+the input file OOCref.texinfo.
+
+   This file documents the Optimizing Oberon-2 Compiler (OOC) and its
+library.
+
+   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
+Library Reference Manual', for Version 1.4.5 or later of oo2c.
+
+   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
+1999 Michael van Acken
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the text of the translation of the section
+entitled "GNU General Public License" must be approved for accuracy by
+the Foundation.
+
+
+File: OOCref.info,  Node: Out,  Next: Err,  Prev: In,  Up: Standard I/O
+
+Module Out
+----------
+
+   Module `Out' provides a set of basic write operations for text.  It
+is initially set to write to the standard output channel
+`StdChannels.stdout' (*note StdChannels::.), but this may be changed
+with the `SetWriter' procedure.
+
+ - Read-only Variable: writer
+     The writer used for all write operations in module `Out'.  The
+     type of `writer' is `TextRider.Writer', and it is initialized to
+     refer to a text reader connected to the channel
+     `StdChannels.stdout'.
+
+     The `SetWriter' procedure may be used to change this to refer to
+     another `TextRider.Writer'.
+
+ - Function: Done `(): BOOLEAN'
+     This function returns `FALSE' after an unsuccessful write
+     operation.  This may happen when underlying writer has encountered
+     an error.  Further writing is not possible until the error is
+     cleared using the `ClearError' procedure.
+
+ - Procedure: ClearError
+     Clears error conditions, re-enabling further read operations.
+
+ - Procedure: SetWriter `(W: TextRider.Writer)'
+     This procedure is used to change the writer used by all write
+     operations in module `Out'.  Refer to *Note TextRider:: for
+     details on how to open other writers.  If W=NIL, the writer is set
+     to write to `StdChannels.stdout'.
+
+ - Procedure: Flush
+     Flushes all buffers associated with `Out.writer'.  Any pending
+     write operations are passed to the underlying system.  If a
+     writing error occurs while flushing buffers, `Out.Done()' will
+     subsequently return `FALSE'.  Otherwise, `Out.Done()' will return
+     `TRUE'.
+
+ - Procedure: Bool `(BOOL: BOOLEAN)'
+     Writes the value of BOOL as text.  That is, either `TRUE' or
+     `FALSE'.
+
+ - Procedure: Char `(CH: CHAR)'
+     Writes a single character value CH.
+
+     *Example:*
+
+          Out.Char("A");
+             => writes one character = "A"
+
+ - Procedure: Hex `(LINT: LONGINT; N: LONGINT)'
+     Writes the value of LINT as an unsigned hexadecimal number with a
+     minimum field width of N.  Leading zeros are written if the value
+     of LINT requires less than N places.  If N is less than or equal
+     to zero, field width is 8.
+
+     *Example:*
+
+          Out.Hex(127, 4);
+             => writes "007F"
+          Out.Hex(-128, 0);
+             => writes "FFFFFF80"
+
+ - Procedure: Int `(INT: INTEGER; N: LONGINT)'
+     Writes the value of INT as a decimal number with a minimum field
+     width of N.  Leading spaces are written if the value of INT
+     requires less than N places.  A sign is written only for negative
+     values.
+
+     *Example:*
+
+          Out.Int(54321, 0);
+             => writes "54321"
+          Out.Int(54321, 10);
+             => writes "     54321"
+
+ - Procedure: LongInt `(LINT: LONGINT; N: LONGINT)'
+     This procedure provides the same facility as `Int', except that it
+     deals with `LONGINT' values.
+
+ - Procedure: ShortInt `(SINT: SHORTINT; N: LONGINT)'
+     This procedure provides the same facility as `Int', except that it
+     deals with `SHORTINT' values.
+
+ - Procedure: Real `(REAL: REAL; N, K: LONGINT)'
+     Writes the value of REAL as a floating-point number with a minimum
+     field width of N.
+
+     If the value of K is greater than 0, that number of significant
+     digits is included.  Otherwise, an implementation-defined number
+     of significant digits is included.  The decimal point is not
+     included if there are no significant digits in the fractional part.
+
+     The number is scaled with one digit in the whole number part.  A
+     sign is included only for negative values.
+
+     *Example:*
+
+          Out.Real(3923009, 0, 0);
+             => writes "3.923009E+6"
+          Out.Real(3923009, 10, 1);
+             => writes "      4E+6"
+          
+          Out.Real(-39.23009, 12, 2);
+             => writes "     -3.9E+1"
+          
+          Out.Real(0.0003923009, 6, 1);
+             => writes "  4E-4"
+
+ - Procedure: LongReal `(LREAL: LONGREAL; N, K: LONGINT)'
+     This procedure provides the same facility as `Real', except that it
+     deals with `LONGREAL' values.
+
+ - Procedure: RealEng `(REAL: REAL; N, K: LONGINT)'
+     This procedure provides the same facility as `Real', except that
+     the number is scaled with one to three digits in the whole number
+     part and has an exponent that is a multiple of three.
+
+     *Example:*
+
+          Out.RealEng(39.23009, 10, 5);
+             => writes "    39.230"
+          
+          Out.RealEng(-3923009, 7, 3);
+             => writes " -3.92E+6"
+          
+          Out.RealEng(0.0003923009, 1, 1);
+             => writes "400E-6"
+          Out.RealEng(0.0003923009, 4, 2);
+             => writes "  390E-6"
+
+ - Procedure: LongRealEng `(LREAL: LONGREAL; N, K: LONGINT)'
+     This procedure provides the same facility as `RealEng', except
+     that it deals with `LONGREAL' values.
+
+ - Procedure: RealFix `(REAL: REAL; N, K: LONGINT)'
+     Writes the value of REAL as a fixed-point number with a minimum
+     field width of N.
+
+     The value is rounded to the given value of K relative to the
+     decimal point.  The decimal point is suppressed if K is less than
+     0.
+
+     The number will have at least one digit in the whole number part.
+     A sign is included only for negative values.
+
+     *Example:*
+
+          Out.RealFix(3923009, 0, -5);
+             => writes "3920000"  (* rounded to the
+                                  ten-thousands place *)
+          
+          Out.RealFix(3923.5, 0, -1);
+             => writes "3924" (* rounded to the "ones" place *)
+          
+          Out.RealFix(-39.23009, 10, 1);
+             => writes "     -39.2"
+          
+          Out.RealFix(0.0003923009, 11, 4);
+             => writes "     0.0004"
+
+ - Procedure: LongRealFix `(LREAL: LONGREAL; N, K: LONGINT)'
+     This procedure provides the same facility as `RealFix', except
+     that it deals with `LONGREAL' values.
+
+ - Procedure: Set `(S: SET)'
+     Writes the value of S as an Oberon-2 set constructor, including
+     curly braces, commas, and range indicators (`..') where
+     appropriate.
+
+     *Example:*
+
+          Out.Set({1,6,10});
+             => writes "{1, 6, 10}"
+          Out.Set({0, 1, 2, 3, 4, 5});
+             => writes "{0..5}"
+          Out.Set({0, 2, 4, 6} + {1, 3, 5, 7});
+             => writes "{0..7}"
+
+ - Procedure: String `(S: ARRAY OF CHAR)'
+     Writes a string value up to, but not including, the terminating
+     `0X' character.  The behaviour of this procedure is undefined if S
+     is an unterminated character array.
+
+     *Please note:* `In.String' and `Out.String' *are not* symmetric.
+     That is,
+     `Out.String' does not enclose the written string in quote marks;
+     only the actual character values contained in S are written.
+
+ - Procedure: Ln
+     Writes an end-of-line marker (i.e., a "newline").
+
+
+File: OOCref.info,  Node: Err,  Prev: Out,  Up: Standard I/O
+
+Module Err
+----------
+
+   Module `Err' provides a set of basic write operations for text, which
+exactly mirror those in module `Out'.  The difference is that `Err' is
+initially set to write to the standard error channel
+`StdChannels.stderr' (*note StdChannels::.).  Also note that the call
+`Err.SetWriter(NIL)' will reset the writer for `Err' to
+`StdChannels.stderr'.
+
+   Because the interfaces of `Out' and `Err' are identical, decriptions
+of facilities are not duplicated here.
+
+
+File: OOCref.info,  Node: Mathematics,  Next: Date and Time,  Prev: I/O Subsystem,  Up: Top
+
+Mathematics
+***********
+
+   The mathematics modules described in this chapter serve several
+purposes.  They provide access to the underlying representation of
+`REAL' and `LONGREAL' values, as well as facilities for common
+mathematical functions and constants.
+
+   The `REAL' and `LONGREAL' types, collectively referred to as the
+"real numeric types", are used to represent "floating-point numbers",
+which may be stored in various ways on a computer.  The actual values
+are approximations of real numbers and may not be wholely accurate.
+Hence, precise details of the floating-point representation are often
+required when creating operations that involve real numeric types in
+order to minimize errors and calculate error bounds.
+
+   A full discourse on floating-point numbers, as well as more complete
+descriptions of algorithms used for manipulating floating-point data, is
+beyond the scope of this manual.  For further information, consult the
+following references:
+
+`IEEE Standard for Binary Floating-Point Arithmetic'
+(ANSI/IEEE STD 754-1985) (R1990)
+Institute of Electrical and Electronics Engineers, Inc. (IEEE)
+
+`IEEE Standard for Radix-Independent Floating-Point Arithmetic'
+(ANSI/IEEE STD 854-1987) (R1994)
+Institute of Electrical and Electronics Engineers, Inc. (IEEE)
+
+`Information technology -- Language independent arithmetic --
+Part 1: Integer and floating point arithmetic'
+(ISO/IEC 10967-1:1994(E))
+International Organization for Standardization (ISO)
+
+`What Every Computer Scientist Should Know About Floating-Point Arithmetic'
+David Goldberg
+ACM Computing Surveys, Vol. 23, No. 1, March 1991, pp. 5-48
+
+`Software Manual for the Elementary Functions'
+William James Cody
+Prentice Hall, July 1980
+
+`Computer Approximations'
+John F. Hart
+Krieger Publishing Company, June 1978
+
+* Menu:
+
+* Low-level Numeric Properties:: Access to underlying properties of types
+                                  `REAL' and `LONGREAL'.
+* Mathematical Functions::      Mathematical functions on `REAL'
+                                  and `LONGREAL' values.
+* Arbitrary Precision Integers:: Arbitrary precision integer operations.
+* Complex Numbers::             Mathematical functions for types
+                                  `COMPLEX' and `LONGCOMPLEX'.
+* Random Numbers::              Psuedo-random number generators.
+
+
+File: OOCref.info,  Node: Low-level Numeric Properties,  Next: Mathematical Functions,  Up: Mathematics
+
+Low-level Numeric Properties
+============================
+
+   The modules `LowReal' and `LowLReal' give access to the underlying
+properties of the types `REAL' and `LONGREAL'.
+
+   Default properties of the real numeric types are defined by the
+constants in these modules.  (An implementation may provide facilities
+for dynamically changing properties from these defaults.)
+
+   *Please note:*
+
+   * The value of PLACES, and the other facilities in these modules,
+     refers only to the representation used to store values.  It is
+     possible for expressions to be computed to greater precision than
+     that used to store values.
+
+   * If the implementation of the corresponding real numeric type
+     conforms to `ISO/IEC 10967-1:199x (LIA-1)', the following
+     correspondences hold:
+
+          OOC lib         LIA-1
+          --------        --------
+          radix           r
+          places          p
+          gUnderflow      denorm
+          small           fmin_N
+          expoMin         emin
+          expoMax         emax
+
+   * The value of the parameter `fmax', which is required by `ISO/IEC
+     10967-1:199x', is given by the predefined function `MAX' when
+     applied to the corresponding real numeric type.
+
+ - Constant: radix
+     The whole number value of the radix (base number system) used to
+     represent the corresponding real number values.  (Most modern
+     computers use IEEE 754, which defines the radix to be 2.)
+
+ - Constant: places
+     A whole number value representing of the number of `radix' places
+     used to store values of the corresponding real numeric type.
+
+ - Constant: expoMax
+     A whole number value representing the largest possible exponent of
+     the corresponding real numeric type.
+
+ - Constant: expoMin
+     A whole number value representing the smallest possible exponent
+     of the corresponding real numeric type.
+
+     *Please note:* It is possible that `expoMin = expoMax', which is
+     likely for the case of fixed point representation.
+
+ - Constant: large
+     The largest possible value of the corresponding real numeric type.
+
+     *Please note:* On some systems, `large' may be a machine
+     representation of infinity.
+
+ - Constant: small
+     The smallest possible positive value of the corresponding real
+     numeric type, represented to maximal precision.
+
+     *Please note:* If an implementation has stored values strictly
+     between `0.0' and `small', then presumbly the implementation
+     supports gradual underflow.
+
+ - Constant: IEC559
+     A boolean value that is `TRUE' if, and only if, the implementation
+     of the corresponding real numeric type conforms to `IEC 559:1989
+     (IEEE 754:1987)' in all regards.
+
+     *Please note:*
+        * If `IEC559' is `TRUE', the value of `radix' is `2'.
+
+        * If `LowReal.IEC559' is `TRUE', the 32-bit format of `IEC
+          559:1989' is used for the type `REAL'.
+
+        * If `LowLReal.IEC559' is `TRUE', the 64-bit format of `IEC
+          559:1989' is used for the type `LONGREAL'.
+
+ - Constant: LIA1
+     A boolean value that is `TRUE' if, and only if, the implementation
+     of the corresponding real numeric type conforms to `ISO/IEC
+     10967-1:199x (LIA-1)' in all regards: parameters, arithmetic,
+     exceptions, and notification.
+
+ - Constant: rounds
+     A boolean value that is `TRUE' if, and only if, each operation
+     produces a result that is one of the values of the corresponding
+     real numeric type nearest to the mathematical result.
+
+     *Please note:* If `rounds' is `TRUE', and the mathematical result
+     lies mid-way between two values of the corresponding real numeric
+     type, then the selection from the two possible values is
+     implementation-dependent.
+
+ - Constant: gUnderflow
+     A boolean value that is `TRUE' if, and only if, there are values
+     of the corresponding real numeric type between `0.0' and `small'.
+
+ - Constant: exception
+     A boolean value that is `TRUE' if, and only if, every operation
+     that attempts to produce a real value out of range raises an
+     exception.
+
+ - Constant: extend
+     A boolean value that is `TRUE' if, and only if, expressions of the
+     corresponding real numeric type are computed to higher precision
+     than the stored values.
+
+     *Please note:* If `extend' is `TRUE', then values greater than
+     `large' can be computed in expressions, but cannot be stored in
+     variables.
+
+ - Constant: nModes
+     A whole number value giving the number of bit positions needed for
+     the status flags for mode control.
+
+ - Data type: Modes = SET
+     This type is used to represent the status flags that apply to the
+     underlying implementation of the corresponding real numeric type.
+     This type is used for the `setMode' and `currentMode()' procedures.
+
+   The following functions are provided in either `LowReal' (for
+`REAL') or `LowLReal' (for `LONGREAL'):
+
+ - Function: exponent `(X: REAL): INTEGER'
+
+ - Function: exponent `(X: LONGREAL): INTEGER'
+     This function returns the exponent value of X, which must lie
+     between `expoMin' and `expoMax'.  If `X=0.0', an exception occurs
+     and may be raised.
+
+ - Function: fraction `(X: REAL): REAL'
+
+ - Function: fraction `(X: LONGREAL): LONGREAL'
+     This function returns the significand (or significant) part of X.
+     Hence, the following relationship holds:
+
+          X = scale(fraction(X), exponent(X))
+
+ - Function: IsInfinity `(REAL: REAL): BOOLEAN'
+
+ - Function: IsInfinity `(REAL: LONGREAL): BOOLEAN'
+     This function returns `TRUE' if, and only if, REAL is a
+     representation of Infinity (either positive or negative).
+
+ - Function: IsNaN `(REAL: REAL): BOOLEAN'
+
+ - Function: IsNaN `(REAL: LONGREAL): BOOLEAN'
+     This function returns `TRUE' if, and only if, REAL is a NaN ("Not
+     a Number") representation.
+
+     *Please note:* The routines `IsInfinity' and `IsNaN' allow, for
+     example, for string formatting routines to have a reasonably
+     portable way to check whether they are dealing with out of range
+     or illegal numbers.
+
+ - Function: sign `(X: REAL): REAL'
+
+ - Function: sign `(X: LONGREAL): LONGREAL'
+     This function returns the sign of X as follows:
+
+       If `x > 0.0', return `1.0'
+       If `x = 0.0', return either `1.0' or `-1.0'
+       If `x < 0.0', return `-1.0'
+
+     *Please note:* The uncertainty about the handling of `0.0' is to
+     allow for systems that distinguish between `+0.0' and `-0.0' (such
+     as IEEE 754 systems).
+
+ - Function: succ `(X: REAL): REAL'
+
+ - Function: succ `(X: LONGREAL): LONGREAL'
+     This function returns the next value of the corresponding real
+     numeric type greater than X, if such a value exists; otherwise, an
+     exception occurs and may be raised.
+
+ - Function: ulp `(X: REAL): REAL'
+
+ - Function: ulp `(X: LONGREAL): LONGREAL'
+     This function returns the value of the corresponding real numeric
+     type equal to a unit in the last place of X, if such a value
+     exists; otherwise, an exception occurs and may be raised.
+
+     *Please note:* When this value exists, one, or both, of the
+     following is true: `ulp(x) = succ(x)-x' or `ulp(x) = x-pred(x)'.
+
+ - Function: pred `(X: REAL): REAL'
+
+ - Function: pred `(X: LONGREAL): LONGREAL'
+     This function returns the next value of the corresponding real
+     numeric type less than X, if such a value exists; otherwise, an
+     exception occurs and may be raised.
+
+ - Function: intpart `(X: REAL): REAL'
+
+ - Function: intpart `(X: LONGREAL): LONGREAL'
+     This function returns the integral part of X.  For negative values,
+     this is `-intpart(abs(X))'.
+
+ - Function: fractpart `(X: REAL): REAL'
+
+ - Function: fractpart `(X: LONGREAL): LONGREAL'
+     This function returns the fractional part of X.  This satisfies the
+     relationship `fractpart(X) + intpart(X) = X'.
+
+ - Function: scale `(X: REAL; N: INTEGER): REAL'
+
+ - Function: scale `(X: LONGREAL; N: INTEGER): LONGREAL'
+     This function returns `X*radix^n', if such a value exists;
+     otherwise, an exception occurs and may be raised.
+
+ - Function: trunc `(X: REAL; N: INTEGER): REAL'
+
+ - Function: trunc `(X: LONGREAL; N: INTEGER): LONGREAL'
+     This function returns the value of the most significant N places of
+     X.  If N is less than or equal to zero, an exception occurs and
+     may be raised.
+
+ - Function: round `(X: REAL; N: INTEGER): REAL'
+
+ - Function: round `(X: LONGREAL; N: INTEGER): LONGREAL'
+     This function returns the value of X rounded to the most
+     significant N places.  If such a value does not exist, or if N is
+     less than or equal to zero, an exception occurs and may be raised.
+
+ - Function: synthesize `(EXPART: INTEGER; FRAPART: REAL): REAL'
+
+ - Function: synthesize `(EXPART: INTEGER; FRAPART: LONGREAL): LONGREAL'
+     This function returns a value of the corresponding real numeric
+     type contructed from the value of EXPART and FRAPART.  This value
+     satisfies the relationship
+
+          synthesize(exponent(X), fraction(X)) = X.
+
+ - Procedure: setMode `(M: Modes)'
+     This procedure sets status flags from the value of M, appropriate
+     to the underlying implementation of the corresponding real numeric
+     type.
+
+     *Please note:*
+        * Many implementations of floating-point provide options for
+          setting flags within the system, which control details of the
+          handling of the type.  Although two procedures are provided,
+          one for each real numeric type, the effect may be the same.
+          Typical effects that can be obtained by this means are as
+          follows:
+
+             * Ensuring that overflow will raise an exception.
+
+             * Allowing underflow to raise an exception.
+
+             * Controlling the rounding.
+
+             * Allowing special values to be produced (e.g., `NaN's in
+               implementations conforming to `IEC 559:1989 (IEEE
+               754:1987)').
+
+             * Ensuring that special value access will raise an
+               exception.
+
+          Because these effects are so varied, the values of type
+          `Modes' that may be used are not specified by this manual.
+
+        * The effect of `setMode' on operations on values of the
+          corresponding real numeric type in processes other than the
+          calling process is not defined.  Implementations are not
+          required to preserve the status flags (if any) with the
+          process state.
+
+ - Function: currentMode `(): Modes'
+     This function returns the current status flags (in the form set by
+     `setMode'), or the default status flags (if `setMode' is not used).
+
+     *Please note:* The returned value is not necessarily the value set
+     by `setMode', because a call of `setMode' might attempt to set
+     flags that cannot be set by the program.
+
+ - Function: IsLowException `(): BOOLEAN'
+     This function returns `TRUE' if the current process is in the
+     exceptional execution state because of the raising of the
+     corresponding `LowReal' or `LowLReal' exception; otherwise, it
+     returns `FALSE'.
+
+
+File: OOCref.info,  Node: Mathematical Functions,  Next: Arbitrary Precision Integers,  Prev: Low-level Numeric Properties,  Up: Mathematics
+
+Mathematical Functions
+======================
+
+   The modules `RealMath' and `LRealMath' provide facilities for common
+mathematical functions and constants for `REAL' and `LONGREAL' numeric
+types.
+
+   *Please note:* The angle in all trigonometric functions is measured
+in radians.
+
+   The following useful mathematical constants are provided:
+
+ - Constant: pi
+     An implementation-defined approximation to the mathematical
+     constant "pi".
+
+ - Constant: exp1
+     An implementation-defined approximation to the mathematical
+     constant "e".
+
+   *Please note:* Due to the approximations involved, `sin(pi)' might
+not exactly equal zero.  Similarly, `exp1' might not exactly equal
+`exp(1)'.
+
+   The following are mathematical functions provided in either
+`RealMath' (for `REAL') or `LRealMath' (for `LONGREAL'):
+
+ - Function: sqrt `(X: REAL): REAL'
+
+ - Function: sqrt `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the positive square root
+     of X.  If X is negative, an exception is raised.
+
+ - Function: exp `(X: REAL): REAL'
+
+ - Function: exp `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the mathematical
+     constant `e' raised to the power of X.
+
+ - Function: ln `(X: REAL): REAL'
+
+ - Function: ln `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the natural logarithm of
+     X.  If X is zero or negative, an exception is raised.
+
+ - Function: sin `(X: REAL): REAL'
+
+ - Function: sin `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the sine of X for all
+     values of X.
+
+ - Function: cos `(X: REAL): REAL'
+
+ - Function: cos `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the cosine of X for all
+     values of X.
+
+ - Function: tan `(X: REAL): REAL'
+
+ - Function: tan `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the tangent of X.  If X
+     is an odd multiple of `pi/2', an exception is raised.
+
+ - Function: arcsin `(X: REAL): REAL'
+
+ - Function: arcsin `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the arcsine of X.  The
+     result will be in the range `[-pi/2, pi/2]'.  If the absolute
+     value of X is greater than one, an exception is raised.
+
+ - Function: arccos `(X: REAL): REAL'
+
+ - Function: arccos `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the arccosine of X.  The
+     result will be in the range `[0, pi]'.  If the absolute value of X
+     is greater than one, an exception is raised.
+
+ - Function: arctan `(X: REAL): REAL'
+
+ - Function: arctan `(X: LONGREAL): LONGREAL'
+     This function returns an approximation to the arctangent of X for
+     all values of X.  The result will be in the range `[-pi/2, pi/2]'.
+
+ - Function: power `(BASE, EXPONENT: REAL): REAL'
+
+ - Function: power `(BASE, EXPONENT: LONGREAL): LONGREAL'
+     This function returns an approximation to the value of BASE raised
+     to the power EXPONENT.  If BASE is zero or negative, an exception
+     is raised.
+
+     *Please note:* This function is mathematically equivalent to
+     `exp(EXPONENT * ln(BASE))', but may be computed differently.
+
+ - Function: round `(X: REAL): LONGINT'
+
+ - Function: round `(X: LONGREAL): LONGINT'
+     This function returns the nearest integer to the value of X.  If
+     the mathematical result is not within the range of the type
+     `LONGINT', an exception occurs and may be raised.
+
+     *Please note:* If the value of X is midway between two integer
+     values, the result is an implementation-defined selection of one
+     of the two possible values.
+
+ - Function: IsRMathException `(): BOOLEAN'
+     This function returns `TRUE' if the current process is in the
+     exceptional execution state because of the raising of the
+     corresponding `RealMath' or `LRealMath' exception; otherwise, it
+     returns `FALSE'.
+
+
+File: OOCref.info,  Node: Arbitrary Precision Integers,  Next: Complex Numbers,  Prev: Mathematical Functions,  Up: Mathematics
+
+Arbitrary Precision Integers
+============================
+
+   Very often, a program requires numbers with a greater range or
+accuracy than exists with the built-in Oberon-2 integer types.  Hence,
+the module `Integers' provides facilities for "arbitrary precision"
+integer operations.
+
+   For further information on how these kinds of facilites may be
+implemented, consult the following reference:
+
+`The Art Of Computer Programming:
+Volume 2, Seminumerical Algorithms, Second Edition'
+Donald E. Knuth
+Addison-Wesley Publishing Co., January 1981
+
+ - Data type: Integer = POINTER TO IntegerDesc
+     Instances of this type are used to represent arbitrary precision
+     integers.
+
+   The following operations are used to create initial instances of
+`Integer' and convert `Integer's to standard numeric types.
+
+ - Function: Entier `(X: LONGREAL): Integer'
+     This function returns an instance of `Integer' whose value is the
+     largest integer not greater than X.
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+     
+     n:=Integers.Entier(1.0D20);
+        => n = 100000000000000000000
+     
+     n:=Integers.Entier(1111111111.5D0);
+        => n = 1111111111
+     
+     n:=Integers.Entier(0.0);
+        => n = 0
+
+ - Function: Float `(X: Integer): LONGREAL'
+     This function returns an approximation to the value of X converted
+     to a `LONGREAL'.  If the result cannot be represented as a
+     `LONGREAL' because the value of X is either too large or too
+     small, this function returns either `MIN(LONGREAL)' or
+     `MAX(LONGREAL)'.
+
+ - Function: Long `(X: LONGINT): Integer'
+     This function returns an instance of `Integer' whose value is X.
+
+ - Function: Short `(X: Integer): LONGINT'
+     This function returns the value of X converted to a `LONGINT'.  If
+     the result cannot be represented as a `LONGINT' because the value
+     of X is either too large or too small, this function returns either
+     `MIN(LONGINT)' or `MAX(LONGINT)'.
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+         s: LONGINT;
+         f: LONGREAL;
+     
+     n:=Integers.Long(1234);
+     s:=Integers.Short(n);
+        => s = 1234
+     f:=Integers.Float(n);
+        => f = 1.23400000000000E+3
+     
+     n:=Integers.Long(80000000H);
+     s:=Integers.Short(n);
+        => s = -2147483648
+     f:=Integers.Float(n);
+        => f = -2.14748364800000E+9
+     
+     n:=Integers.Long(7FFFFFFFH);
+     s:=Integers.Short(n);
+        => s = 2147483647
+     f:=Integers.Float(n);
+        => f = 2.14748364700000E+9
+
+   The following are common mathematical operations, which operate on
+`Integer's:
+
+ - Function: Abs `(X: Integer): Integer'
+     This function returns the absolute value of X.
+
+ - Function: Odd `(X: Integer): BOOLEAN'
+     This function returns `TRUE' if X is an odd number, and `FALSE' if
+     it is even.
+
+ - Function: Compare `(X, Y: Integer): LONGINT'
+     This function compares the values of X and Y and gives the
+     following result:
+
+       If `x > y', return `1'
+       If `x = y', return `0'
+       If `x < y', return `-1'
+
+ - Function: Difference `(X, Y: Integer): Integer'
+     This function returns the difference of X and Y (i.e., `x-y').
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+     
+     n:=Integers.Difference(Integers.Long(2000000), Integers.Long(999));
+        => n = 1999001
+     
+     n:=Integers.Difference(Integers.Long(999), Integers.Long(-2000000));
+        => n = -2000999
+     
+     n:=Integers.Difference(Integers.Long(-999), Integers.Long(999));
+        => n = -1998
+     
+     n:=Integers.Difference(Integers.Long(-2000000), Integers.Long(-999));
+        => n = -1999001
+
+ - Function: Sum `(X, Y: Integer): Integer'
+     This function returns the sum of X and Y (i.e., `x+y').
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+     
+     n:=Integers.Sum(Integers.Long(999), Integers.Long(2000000));
+        => n = 2000999
+     
+     n:=Integers.Sum(Integers.Long(999), Integers.Long(-2000000));
+        => n = -1999001
+     
+     n:=Integers.Sum(Integers.Long(-999), Integers.Long(999));
+        => n = 0
+     
+     n:=Integers.Sum(Integers.Long(-2000000), Integers.Long(-999));
+        => n = -2000999
+
+ - Function: Product `(X, Y: Integer): Integer'
+     This function returns the product of X and Y (i.e., `x*y').
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+     
+     n:=Integers.Product(Integers.Long(100000000), Integers.Long(100000000));
+        => n = 10000000000000000
+     
+     n:=Integers.Product(Integers.Long(71234), Integers.Long(66000));
+        => n = 4701444000
+
+ - Function: Quotient `(X, Y: Integer): Integer'
+     This function returns the quotient of X divided by Y (i.e., `x DIV
+     y').
+
+     *Pre-condition*: Y is not zero.
+
+ - Function: Remainder `(X, Y: Integer): Integer'
+     This function returns the remainder of X divided by Y (i.e., `x
+     MOD y').
+
+     *Pre-condition*: Y is not zero.
+
+   *Example:*
+
+     VAR m, n: Integers.Integer;
+     
+     n:=Integers.Quotient(Integers.Long(2000000000), Integers.Long(1234));
+     m:=Integers.Remainder(Integers.Long(2000000000), Integers.Long(1234));
+        => n = 1620745, m = 670
+     
+     n:=Integers.Quotient(Integers.Long(2000000000), Integers.Long(123456));
+     m:=Integers.Remainder(Integers.Long(2000000000), Integers.Long(123456));
+        => n = 16200, m = 12800
+
+ - Procedure: QuoRem `(X, Y: Integer; VAR QUO, REM: Integer)'
+     This procedure calculates both the quotient and remainder of X
+     divided by Y.
+
+     *Pre-condition*: Y is not zero.
+
+   *Example:*
+
+     VAR m, n: Integers.Integer;
+     
+     Integers.QuoRem(Integers.Long(2000000000), Integers.Long(1234), n, m);
+        => n = 1620745, m = 670
+     
+     Integers.QuoRem(Integers.Long(2000000000), Integers.Long(123456), n, m);
+        => n = 16200, m = 12800
+
+ - Function: GCD `(X, Y: Integer): Integer'
+     This function returns the greatest common divisor of X and Y.
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+     
+     n:=Integers.GCD(Integers.Long(40902), Integers.Long(24140));
+        => n = 34
+     
+     n:=Integers.GCD(Integers.Long(27182818), Integers.Long(10000000));
+        => n = 2
+     
+     n:=Integers.GCD(Integers.Long(2940), Integers.Long(238));
+        => n = 14
+
+ - Function: Power `(X: Integer; EXP: LONGINT): Integer'
+     This function returns the value of X raised to the power EXP.
+
+     *Pre-condition*: EXP is greater than zero.
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+     
+     n:=Integers.Power(Integers.Long(2940), 2);
+        => n = 8643600
+     
+     n:=Integers.Power(Integers.Long(2), 33);
+        => n = 8589934592
+     
+     n:=Integers.Power(Integers.Long(10), 9);
+        => n = 1000000000
+     
+     n:=Integers.Power(Integers.Long(2), 100);
+        => n = 1267650600228229401496703205376
+
+ - Function: Sign `(X: Integer): SHORTINT'
+     This function returns the sign of X as follows:
+
+       If `x > 0', return `1'
+       If `x = 0', return `0'
+       If `x < 0', return `-1'
+
+ - Function: Factorial `(X: LONGINT): Integer'
+     This function returns X factorial (i.e.,
+     `x!=x(x-1)(x-2)...(2)(1)').
+
+     *Pre-condition*: X is not negative.
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+     
+     n:=Integers.Factorial(13);
+        => n = 6227020800
+     
+     n:=Integers.Factorial(20);
+        => n = 2432902008176640000
+
+   The following operations are used to extract pieces of `Integers':
+
+ - Function: ThisDigit10 `(X: Integer; EXP10: LONGINT): CHAR'
+     This function returns a single character, which represents the
+     digit in X located at position EXP10.  Note that the right most
+     digit (i.e., the "ones" place) has position zero.
+
+     *Pre-condition*: EXP10 is not negative.
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+         c: CHAR;
+     
+     Integers.ConvertFromString("1267650600228229401496703205376", n);
+     
+     c:=Integers.ThisDigit10(n, 0);
+        => c = "6"
+     
+     c:=Integers.ThisDigit10(n, 10);
+        => c = "9"
+     
+     c:=Integers.ThisDigit10(n, 30);
+        => c = "1"
+
+ - Function: Digits10Of `(X: Integer): LONGINT'
+     This function returns the value of the last ten digits of X (i.e.,
+     it returns `x MOD 1000000000').
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+         s: LONGINT;
+     
+     Integers.ConvertFromString("1267650600228229401496703205376", n);
+     
+     s:=Integers.Digits10Of(n);
+        => s = 703205376
+
+   The following operations are used to convert between strings and
+`Integers':
+
+ - Procedure: ConvertFromString `(S: ARRAY OF CHAR; VAR X: Integer)'
+     This procedure converts S to an `Integer' value, which is assigned
+     to X.  Leading spaces and tab characters in S are skipped.
+
+     *Pre-condition*: S is in the form of a signed whole number (*note
+     Syntax of Text Tokens::.)
+
+ - Procedure: ConvertToString `(X: Integer; VAR S: ARRAY OF CHAR)'
+     This procedure converts X to a string value, which is assigned to
+     S.
+
+   *Example:*
+
+     VAR n: Integers.Integer;
+         str: ARRAY 1024 OF CHAR;
+     
+     Integers.ConvertFromString("1234567890", n);
+        => n = 1234567890
+     Integers.ConvertToString(n, str);
+        => str = "1234567890"
+     
+     Integers.ConvertFromString("  -9999999999", n);
+        => n = -9999999999
+     Integers.ConvertToString(n, str);
+        => str = "-9999999999"
+     
+     Integers.ConvertFromString(" 12345678901234567890123456789", n);
+        => n = 12345678901234567890123456789
+     Integers.ConvertToString(n, str);
+        => str = "12345678901234567890123456789"
+
+   The following operations can be used to internalize and externalize
+`Integers' (i.e., read from and write to channels):
+
+ - Procedure: Externalize `(VAR W: BinaryRider.Writer; X: Integer)'
+     Writes the value of X to a channel using writer W.
+
+ - Procedure: Internalize `(VAR R: BinaryRider.Reader; VAR X: Integer)'
+     Retrieves a stored `Integer' value from a channel using reader R,
+     and assigns it to X.
+
+
+File: OOCref.info,  Node: Complex Numbers,  Next: Random Numbers,  Prev: Arbitrary Precision Integers,  Up: Mathematics
+
+Complex Numbers
+===============
+
+   The modules `ComplexMath' and `LComplexMath' provide facilities for
+complex numbers, which includes common mathematical functions for types
+`COMPLEX' and `LONGCOMPLEX'.
+
+   Instances of the following two classes are used to represent complex
+numbers:
+
+ - Data type: COMPLEX = POINTER TO COMPLEXDesc
+     The *real* and *imaginary* parts of this type are represented as
+     type `REAL'
+
+ - Data type: LONGCOMPLEX = POINTER TO LONGCOMPLEXDesc
+     The *real* and *imaginary* parts of this type are represented as
+     type `LONGREAL'
+
+   *Please note:* To create initial instances of `COMPLEX' and
+`LONGCOMPLEX', you must use the corresponding `CMPLX()' function.
+
+   The following are instances of the corresponding complex number
+type.  They are provided for convenience and have values that represent
+the specified complex number:
+
+ - Read-only Variable: i
+     The value of `i' is initialized to `CMPLX (0.0, 1.0)'.
+
+ - Read-only Variable: one
+     The value of `one' is initialized to `CMPLX (1.0, 0.0)'.
+
+ - Read-only Variable: zero
+     The value of `zero' is initialized to `CMPLX (0.0, 0.0)'.
+
+   The following functions are provided in either `ComplexMath' (for
+`COMPLEX') or
+`LComplexMath' (for `LONGCOMPLEX'):
+
+ - Function: CMPLX `(R, I: REAL): COMPLEX'
+
+ - Function: CMPLX `(R, I: LONGREAL): LONGCOMPLEX'
+     This function returns an instance of the corresponding complex
+     number type whose real part has a value of R and imaginary part
+     has a value of I.
+
+ - Function: Copy `(Z: COMPLEX): COMPLEX'
+
+ - Function: Copy `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns a copy of Z.
+
+     *Please note:* This function provides the only reliable way to
+     assign complex number values.  If `a' and `b' are complex numbers,
+     *do not* use `a := b'.
+
+ - Function: RealPart `(Z: COMPLEX): REAL'
+
+ - Function: RealPart `(Z: LONGCOMPLEX): LONGREAL'
+     This function returns the real part of the complex number Z.
+
+ - Function: ImagPart `(Z: COMPLEX): REAL'
+
+ - Function: ImagPart `(Z: LONGCOMPLEX): LONGREAL'
+     This function returns the imaginary part of the complex number Z.
+
+ - Function: add `(Z1, Z2: COMPLEX): COMPLEX'
+
+ - Function: add `(Z1, Z2: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns the value of Z1 added to Z2.
+
+ - Function: sub `(Z1, Z2: COMPLEX): COMPLEX'
+
+ - Function: sub `(Z1, Z2: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns the value of Z2 subtracted from Z1.
+
+ - Function: mul `(Z1, Z2: COMPLEX): COMPLEX'
+
+ - Function: mul `(Z1, Z2: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns the value of Z1 multiplied by Z2.
+
+ - Function: div `(Z1, Z2: COMPLEX): COMPLEX'
+
+ - Function: div `(Z1, Z2: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns the value of Z1 divided by Z2.
+
+ - Function: abs `(Z: COMPLEX): REAL'
+
+ - Function: abs `(Z: LONGCOMPLEX): LONGREAL'
+     This function returns an approximation to the length (also known
+     as the absolute value, or modulus) of Z.
+
+     *Please note:* An overflow exception may be raised in this
+     computation, even when the complex number itself is well defined.
+
+ - Function: arg `(Z: COMPLEX): REAL'
+
+ - Function: arg `(Z: LONGCOMPLEX): LONGREAL'
+     This function returns an approximation to the angle that Z
+     subtends to the positive real axis in the complex plane.  The
+     result will be in radians in the range `[-pi, pi]'.  If the
+     modulus (`abs(X)') of Z is zero, an exception is raised.
+
+ - Function: conj `(Z: COMPLEX): COMPLEX'
+
+ - Function: conj `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the complex conjugate of
+     Z.
+
+ - Function: power `(BASE: COMPLEX; EXPONENT: REAL): COMPLEX'
+
+ - Function: power `(BASE: LONGCOMPLEX; EXPONENT: LONGREAL):
+          LONGCOMPLEX'
+     This function returns an approximation to the value of the number
+     BASE raised to the power EXPONENT.
+
+ - Function: sqrt `(Z: COMPLEX): COMPLEX'
+
+ - Function: sqrt `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the principal square
+     root of Z.
+
+     *Please note:* The result is the complex number with an `arg()' of
+     half the value of the `arg()' of z, and whose `abs()' is the
+     positive square root of the `abs()' of Z.
+
+ - Function: exp `(Z: COMPLEX): COMPLEX'
+
+ - Function: exp `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the mathematical
+     constant `e' raised to the power of Z.
+
+ - Function: ln `(Z: COMPLEX): COMPLEX'
+
+ - Function: ln `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the principal value of
+     the natural logarithm of Z.
+
+ - Function: sin `(Z: COMPLEX): COMPLEX'
+
+ - Function: sin `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the complex sine of Z.
+
+ - Function: cos `(Z: COMPLEX): COMPLEX'
+
+ - Function: cos `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the complex cosine of Z.
+
+ - Function: tan `(Z: COMPLEX): COMPLEX'
+
+ - Function: tan `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the complex tangent of Z.
+     If Z is an odd multiple of `pi/2', an exception is raised.
+
+ - Function: arcsin `(Z: COMPLEX): COMPLEX'
+
+ - Function: arcsin `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the principal value of
+     the complex arcsine of Z.
+
+ - Function: arccos `(Z: COMPLEX): COMPLEX'
+
+ - Function: arccos `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the complex arccosine of
+     Z.
+
+ - Function: arctan `(Z: COMPLEX): COMPLEX'
+
+ - Function: arctan `(Z: LONGCOMPLEX): LONGCOMPLEX'
+     This function returns an approximation to the complex arctangent
+     of Z.
+
+ - Function: polarToComplex `(ABS, ARG: REAL): COMPLEX'
+
+ - Function: polarToComplex `(ABS, ARG: LONGREAL): LONGCOMPLEX'
+     This function returns an approximation to the complex number with
+     the specified polar coordinates.  The result will have a length of
+     ABS and angle of ARG).
+
+ - Function: scalarMult `(SCALAR: REAL; Z: COMPLEX): COMPLEX'
+
+ - Function: scalarMult `(SCALAR: LONGREAL; Z: LONGCOMPLEX):
+          LONGCOMPLEX'
+     This function returns an approximation to the scalar product of
+     SCALAR with Z.
+
+ - Function: IsCMathException `(): BOOLEAN'
+     This function returns `TRUE' if the current process is in the
+     exceptional execution state because of the raising of the
+     corresponding `ComplexMath' or `LComplexMath' exception;
+     otherwise, it returns `FALSE'.
+
+
+File: OOCref.info,  Node: Random Numbers,  Prev: Complex Numbers,  Up: Mathematics
+
+Random Numbers
+==============
+
+   "Random number" generating routines, like those provided in module
+`RandomNumbers', are more correctly called "pseudo-random number
+generators" because they have only the appearance of randomness, and
+actually exhibit a specific, repeatable pattern.  However, the generated
+sequence of numbers should pass certain statistical tests *as if* it
+were a truly random sequence.
+
+   The algorithm implemented by `RandomNumbers' is "good" in the sense
+that it passes many of these statistical tests, but it is not
+necessarily useful in all cases.  A different algorithm might be better
+suited to a particular application simply because the inherent
+structure of the generated number sequence better satisfies the
+application's required properties.
+
+   Because of the deterministic quality of random number generators,
+the user is required to specify an initial value, or "seed".  Sequences
+generated using the same seed (and the same algorithm) will always
+produce the same results.  To get a different sequence, simply use a
+different seed.  A common way to generate different seeds is to
+initialize using the system's clock time.  (This is not done directly
+within `RandomNumbers' because then it is not possible to reproduce
+results, which could cause difficulties during, say, testing and
+debugging.)
+
+   Also note that sequences *will* repeat themselves eventually.  In
+this case, a sequence will start to repeat after, at most, `modulo-1'
+elements, and possibly much sooner than that.
+
+   A complete discussion of random number generating algorithms is
+beyond the scope of this manual.  For more information about the
+algorithm used in this module, and other random number generators,
+consult the following references:
+
+`Random number generators: good ones are hard to find'
+S.K. Park and K.W. Miller
+Communications of the ACM, Vol. 31, No. 10, October 1988, pp. 1192-1201
+
+`The Art Of Computer Programming:
+Volume 2, Seminumerical Algorithms, Second Edition'
+Donald E. Knuth
+Addison-Wesley Publishing Co., January 1981
+
+ - Constant: modulo
+     The determing parameter of the linear congruential generator being
+     used by `RandomNumbers'.
+
+ - Procedure: GetSeed `(VAR SEED: LONGINT)'
+     This procedure gets the seed value currently in use by routines in
+     module `RandomNumbers'.
+
+ - Procedure: PutSeed `(SEED: LONGINT)'
+     This procedure sets SEED as the new seed value for routines in
+     `RandomNumbers'.  Any value for SEED is allowed, but all values
+     will be mapped into the range `[1..modulo-1]'.
+
+ - Function: RND `(RANGE: LONGINT): LONGINT'
+     This function calculates a new "random" number.  RANGE has to be in
+     the range `[1..modulo-1]', and the result is a number in the
+     interval `[0, RANGE-1]'.
+
+ - Function: Random `(): REAL'
+     This function calculates a new "random" number.  The result is a
+     number in the interval `[0, 1)'.
+
+   *Example:*
+
+     VAR l: LONGINT;
+         r: REAL;
+     
+     RandomNumbers.PutSeed(314159);
+     
+     l := RandomNumbers.RND(100);
+        => l = 19
+     l := RandomNumbers.RND(10000);
+        => l = 5610
+     l := RandomNumbers.RND(9999999);
+        => l = 6158792
+     l := RandomNumbers.RND(365);
+        => l = 54
+     
+     RandomNumbers.GetSeed(l);
+        => l = 143441039
+     
+     r := RandomNumbers.Random();
+        => r = 0.6225381
+     r := RandomNumbers.Random();
+        => r = 0.9990177
+     r := RandomNumbers.Random();
+        => r = 0.4895853
+     r := RandomNumbers.Random();
+        => r = 0.4605866
+     
+     RandomNumbers.GetSeed(l);
+        => l = 989102265
+
+
+File: OOCref.info,  Node: Date and Time,  Next: Oakwood Compliant Modules,  Prev: Mathematics,  Up: Top
+
+Date and Time
+*************
+
+   This chapter describes the facilities for manipulating dates and
+times, including getting and setting the date and time, and conversions
+between formats.
+
+* Menu:
+
+* Time::                        Manipulation of time stamps and time
+                                 intervals.
+* JulianDay::                   Convert between day/month/year and
+                                 Modified Julian Days.
+* SysClock::                    Reading and setting the system clock.
+* Calendar::                    Conversion between calender dates, time
+                                 stamps, and date/time string formats.
+

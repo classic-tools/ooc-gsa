@@ -1,0 +1,105 @@
+#	$Id: THISDIR,v 1.20 1998/04/21 15:48:02 acken Exp $	
+Maintainer: Michael van Acken
+
+This directory contains the modules that comprise the compilers front-
+end, i.e., everything from reading the source file upto generating the
+first (unoptimized) GSA code representation.  The front-end imports
+the modules `Config.Mod', `StdTypes.Mod', `SystemFlags.Mod', and
+`CodeGen.Mod'.  They have to be provided by the back-end.  See their
+(mostly) empty sample definitions in backend/demo/ for details, or if
+you want a more elaborate example, look at backend/ansi-c/.
+
+Typically a back-end or optimizer implementor will only come into
+contact with the following modules: Data, Opcode, and (to a lesser
+degree) SymbolTable.
+
+
+
+Parameter.Mod
+ParamOptions.Mod
+ParamPaths.Mod
+ParamPragmas.Mod
+  Configuration file and command line parsing.
+
+RCS.Mod
+  Interface between ParamPaths.Mod and Scanner.Mod, and the RCS
+  version control system.  
+
+IntArith.Mod
+  Implements functions for integer arithmetics that detect overflow.  
+
+Data.Mod
+  Definitions for the internal data structure plus basic procedures
+  operating on them.  This module specifies how GSA code is
+  represented internally, it doesn't know about GSA instructions and
+  their format.  This information is part of module Opcode below.
+
+Opcode.Mod
+  Defines symbolic constants for the opcodes used in instructions (i.e.,
+  the values for `Data.Instruction. opcode', and defines the format of
+  the various GSA instructions.  Also contains some procedures working
+  on instructions.
+
+StdPragmas.Mod
+  Defines the variables for the OOC standard pragma variables.
+
+Error.Mod
+ErrorInstr.Mod
+  Read error messages from file, collect errors, print error messages.
+
+Scanner.Mod
+  Lexical analysis of the input file.
+
+SymbolTable.Mod
+  Provides procedures to create, manipulate, and search the symbol
+  table.  Most of it can be safely ignored by back-ends and optimizers, 
+  although some of the predicates working on types are quite handy.
+
+SymbolFile.Mod
+  Externalizes and internalizes symbol tables.  In plain words: it
+  writes and reads symbol files.
+
+UndefVar.Mod
+  Checks for use of undefined variables and if any paths through a
+  function procedure contain no RETURN statement.
+
+SideEffects.Mod
+  Fixes information about nonlocal reads and writes of forward calls.
+
+WriteSymbols.Mod
+  Provides procedures to print a module's symbol table.  For debugging
+  purposes. 
+
+WriteGSA.Mod
+  Writes readable GSA code to stdout.  For debugging purposes. 
+
+Statistics.Mod
+  Counts instructions and instruction classes in GSA code.
+  Writes out tables of the results.  Useful when evaluating the effect
+  of code transformations.
+
+ParseDecl.Mod
+ParseExpr.Mod
+ParseStatm.Mod
+  Parse the input file, detect syntactic and semantic errors, build
+  the symbol table, and create the first version of the intermediate
+  GSA code.  The first module handles declarations, the second
+  expressions, and the third statements.
+
+Make.Mod
+  Determines import dependencies between modules and brings all files
+  into a valid compilation order.  Detects missing or not up to date
+  symbol files.
+
+Check.Mod
+  Contains procedures to test some invariants of the GSA code
+  structure.  Used to detect invalid code transformations by
+  optimizing phases.
+
+Test/ and first_steps/ contain various small Oberon-2 modules.  The
+ones in first_steps/ are used to test GSA code generation and should
+generally work (i.e., contain no syntax errors and don't break the
+compiler). 
+
+The directory doc/ holds some additional information.
+

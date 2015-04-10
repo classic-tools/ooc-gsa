@@ -1,0 +1,1229 @@
+This is Info file OOCref.info, produced by Makeinfo version 1.68 from
+the input file OOCref.texinfo.
+
+   This file documents the Optimizing Oberon-2 Compiler (OOC) and its
+library.
+
+   This is Edition 0.09 DRAFT, last updated 9 July 1999, of `The OOC
+Library Reference Manual', for Version 1.4.5 or later of oo2c.
+
+   Copyright (C) 1997-1999 Eric Nikitin Part II Copyright (C) 1998,
+1999 Michael van Acken
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the text of the translation of the section
+entitled "GNU General Public License" must be approved for accuracy by
+the Foundation.
+
+
+File: OOCref.info,  Node: Compare & Searching Strings,  Next: Misc. Strings Procedures,  Prev: Copying and Concatenation,  Up: Strings
+
+Comparing & Searching Strings
+-----------------------------
+
+   These procedures provide for the comparison of string values, and
+for the location of substrings within strings.
+
+ - Function: Compare `(STRINGVAL1, STRINGVAL2: ARRAY OF CHAR):
+          CompareResults'
+
+ - Function: Compare `(STRINGVAL1, STRINGVAL2: ARRAY OF LONGCHAR):
+          CompareResults'
+     Returns `less', `equal', or `greater', according as STRINGVAL1 is
+     lexically less than, equal to, or greater than STRINGVAL2.
+
+     *Please note*: Oberon-2 already contains predefined comparison
+     operators on strings.
+
+      - Data type: CompareResults = SHORTINT
+          `CompareResults' and its related constants are used with
+          procedure `Compare'.  The following constants are defined for
+          its value:
+
+           - Constant: less
+
+           - Constant: equal
+
+           - Constant: greater
+
+   *Example:*
+
+     VAR stringVal1, stringVal2: ARRAY 4 OF CHAR;
+     
+     stringVal1 := "abc"; stringVal2 := "abc";
+     Strings.Compare (stringVal1, stringVal2);
+        => equal
+     
+     stringVal1 := "abc"; stringVal2 := "abd";
+     Strings.Compare (stringVal1, stringVal2);
+        => less
+     
+     stringVal1 := "ab"; stringVal2 := "abc";
+     Strings.Compare (stringVal1, stringVal2);
+        => less
+     
+     stringVal1 := "abd"; stringVal2 := "abc";
+     Strings.Compare (stringVal1, stringVal2);
+        => greater
+
+ - Function: Equal `(STRINGVAL1, STRINGVAL2: ARRAY OF CHAR): BOOLEAN'
+
+ - Function: Equal `(STRINGVAL1, STRINGVAL2: ARRAY OF LONGCHAR):
+          BOOLEAN'
+     Returns `STRINGVAL1=STRINGVAL2'.  That is, `Equal' returns `TRUE'
+     if the string value of STRINGVAL1 is the same as the string value
+     of STRINGVAL2; otherwise, it returns `FALSE'.  Unlike the
+     predefined operator `=', this procedure can be assigned to a
+     procedure variable.
+
+   *Example:*
+
+     VAR stringVal1, stringVal2: ARRAY 4 OF CHAR;
+     
+     stringVal1 := "abc"; stringVal2 := "abc";
+     Strings.Equal (stringVal1, stringVal2);
+        => TRUE
+     
+     stringVal1 := "abc"; stringVal2 := "abd";
+     Strings.Equal (stringVal1, stringVal2);
+        => FALSE
+     
+     stringVal1 := "ab"; stringVal2 := "abc";
+     Strings.Equal (stringVal1, stringVal2);
+        => FALSE
+
+ - Procedure: FindNext `(PATTERN, STRINGTOSEARCH: ARRAY OF CHAR;
+          STARTPOS: INTEGER; VAR PATTERNFOUND: BOOLEAN;  VAR
+          POSOFPATTERN: INTEGER)'
+
+ - Procedure: FindNext `(PATTERN, STRINGTOSEARCH: ARRAY OF LONGCHAR;
+          STARTPOS: INTEGER; VAR PATTERNFOUND: BOOLEAN;  VAR
+          POSOFPATTERN: INTEGER)'
+     This procedure is used to locate a pattern string within another
+     string.  It searches forward through STRINGTOSEARCH for next
+     occurrence of PATTERN; STARTPOS is the starting position of the
+     search (within STRINGTOSEARCH).
+
+     If `STARTPOS<Length(STRINGTOSEARCH)' and PATTERN is found,
+     PATTERNFOUND is returned as `TRUE' and POSOFPATTERN contains the
+     start position in STRINGTOSEARCH of PATTERN (i.e., POSOFPATTERN is
+     in the range
+
+     `[STARTPOS..Length(STRINGTOSEARCH)-1]')
+
+     Otherwise, PATTERNFOUND is returned as `FALSE' and POSOFPATTERN is
+     unchanged.
+
+     If `STARTPOS>Length(STRINGTOSEARCH)-Length(PATTERN)', then
+     PATTERNFOUND is returned as `FALSE'.
+
+     *Pre-condition*: STARTPOS is not negative.
+
+   *Example:*
+
+     VAR pattern:        ARRAY 4 OF CHAR;
+         stringToSearch: ARRAY 9 OF CHAR;
+         found: BOOLEAN;
+         posOfPattern: INTEGER;
+     
+     pattern := "ab"; stringToSearch := "ababcaba";
+     Strings.FindNext (pattern, stringToSearch, 0, found, posOfPattern);
+        => TRUE, posOfPattern = 0
+     Strings.FindNext (pattern, stringToSearch, 1, found, posOfPattern);
+        => TRUE, posOfPattern = 2
+     Strings.FindNext (pattern, stringToSearch, 2, found, posOfPattern);
+        => TRUE, posOfPattern = 2
+     Strings.FindNext (pattern, stringToSearch, 3, found, posOfPattern);
+        => TRUE, posOfPattern = 5
+     Strings.FindNext (pattern, stringToSearch, 4, found, posOfPattern);
+        => TRUE, posOfPattern = 5
+     Strings.FindNext (pattern, stringToSearch, 5, found, posOfPattern);
+        => TRUE, posOfPattern = 5
+     Strings.FindNext (pattern, stringToSearch, 6, found, posOfPattern);
+        => FALSE, posOfPattern unchanged
+     
+     pattern := ""; stringToSearch := "abc";
+     Strings.FindNext (pattern, stringToSearch, 2, found, posOfPattern);
+        => TRUE, posOfPattern = 2
+     Strings.FindNext (pattern, stringToSearch, 3, found, posOfPattern);
+        => FALSE, posOfPattern unchanged
+
+ - Procedure: FindPrev `(PATTERN, STRINGTOSEARCH: ARRAY OF CHAR;
+          STARTPOS: INTEGER; VAR PATTERNFOUND: BOOLEAN;  VAR
+          POSOFPATTERN: INTEGER)'
+
+ - Procedure: FindPrev `(PATTERN, STRINGTOSEARCH: ARRAY OF LONGCHAR;
+          STARTPOS: INTEGER; VAR PATTERNFOUND: BOOLEAN;  VAR
+          POSOFPATTERN: INTEGER)'
+     This procedure is used to locate a pattern string within another
+     string.  It searches backward through STRINGTOSEARCH for a
+     previous occurrence of PATTERN; STARTPOS is the starting position
+     of the search (within STRINGTOSEARCH).
+
+     If PATTERN is found, PATTERNFOUND is returned as `TRUE' and
+     POSOFPATTERN contains the start position in STRINGTOSEARCH of
+     PATTERN (i.e., POSOFPATTERN is in the range `[0..STARTPOS]').
+
+     Otherwise, PATTERNFOUND is returned as `FALSE' and POSOFPATTERN is
+     unchanged (in this case, the pattern might be found at STARTPOS).
+
+     The search will fail if STARTPOS is negative.
+
+     If `STARTPOS>Length(STRINGTOSEARCH)-Length(PATTERN)' the whole
+     string value is searched.
+
+   *Example:*
+
+     VAR pattern:        ARRAY 4 OF CHAR;
+         stringToSearch: ARRAY 9 OF CHAR;
+         found: BOOLEAN;
+         posOfPattern: INTEGER;
+     
+     pattern := "abc"; stringToSearch := "ababcaba";
+     Strings.FindPrev(pattern, stringToSearch, 1, found, posOfPattern);
+        => FALSE, posOfPattern unchanged
+     Strings.FindPrev(pattern, stringToSearch, 2, found, posOfPattern);
+        => TRUE, posOfPattern = 2
+     Strings.FindPrev(pattern, stringToSearch, 3, found, posOfPattern);
+        => TRUE, posOfPattern = 2
+     
+     pattern := "ab"; stringToSearch := "ababcaba";
+     Strings.FindPrev(pattern, stringToSearch, 0, found, posOfPattern);
+        => TRUE, posOfPattern = 0
+     Strings.FindPrev(pattern, stringToSearch, 1, found, posOfPattern);
+        => TRUE, posOfPattern = 0
+     Strings.FindPrev(pattern, stringToSearch, 2, found, posOfPattern);
+        => TRUE, posOfPattern = 2
+     Strings.FindPrev(pattern, stringToSearch, 3, found, posOfPattern);
+        => TRUE, posOfPattern = 2
+     Strings.FindPrev(pattern, stringToSearch, 4, found, posOfPattern);
+        => TRUE, posOfPattern = 2
+     Strings.FindPrev(pattern, stringToSearch, 5, found, posOfPattern);
+        => TRUE, posOfPattern = 5
+     
+     pattern := ""; stringToSearch := "abc";
+     Strings.FindPrev(pattern, stringToSearch, -1, found, posOfPattern);
+        => FALSE, posOfPattern unchanged
+     Strings.FindPrev(pattern, stringToSearch, 0, found, posOfPattern);
+        => TRUE, posOfPattern = 0
+     Strings.FindPrev(pattern, stringToSearch, 4, found, posOfPattern);
+        => TRUE, posOfPattern = 3
+
+ - Procedure: FindDiff `(STRINGVAL1, STRINGVAL2: ARRAY OF CHAR;  VAR
+          DIFFERENCEFOUND: BOOLEAN; VAR POSOFDIFFERENCE: INTEGER)'
+
+ - Procedure: FindDiff `(STRINGVAL1, STRINGVAL2: ARRAY OF LONGCHAR;
+          VAR DIFFERENCEFOUND: BOOLEAN; VAR POSOFDIFFERENCE: INTEGER)'
+     Compares the string values in STRINGVAL1 and STRINGVAL2 for
+     differences.  If they are equal, DIFFERENCEFOUND is returned as
+     `FALSE'; and `TRUE' otherwise.
+
+     If DIFFERENCEFOUND is `TRUE', POSOFDIFFERENCE is set to the
+     position of the first difference; otherwise POSOFDIFFERENCE is
+     unchanged.
+
+   *Example:*
+
+     VAR stringVal1, stringVal2: ARRAY 4 OF CHAR;
+         diffFound: BOOLEAN;
+         posOfDiff: INTEGER;
+     
+     stringVal1 := "abc"; stringVal2 := "abc";
+     Strings.FindDiff(stringVal1, stringVal2, diffFound, posOfDiff);
+        => FALSE, posOfDifference unchanged
+     
+     stringVal1 := "ab"; stringVal2 := "ac";
+     Strings.FindDiff(stringVal1, stringVal2, diffFound, posOfDiff);
+        => TRUE, posOfDifference = 1
+     
+     stringVal1 := "ab"; stringVal2 := "a";
+     Strings.FindDiff(stringVal1, stringVal2, diffFound, posOfDiff);
+        => TRUE, posOfDifference = 1
+
+
+File: OOCref.info,  Node: Misc. Strings Procedures,  Prev: Compare & Searching Strings,  Up: Strings
+
+Miscellaneous Strings Procedures
+--------------------------------
+
+ - Function: Length `(STRINGVAL: ARRAY OF CHAR): INTEGER'
+
+ - Function: Length `(STRINGVAL: ARRAY OF LONGCHAR): INTEGER'
+     Returns the string length of STRINGVAL.  This is equal to the
+     number of characters in STRINGVAL up to and excluding the first
+     `0X'.
+
+   *Example:*
+
+     Strings.Length("Hello, world");
+         => 12
+     
+     VAR stringVal: ARRAY 6 OF CHAR;
+     stringVal := "";
+     Strings.Length(stringVal);
+         => 0
+     stringVal := "12";
+     Strings.Length(stringVal);
+         => 2
+
+   Recall that if you instead need the *total* size of the character
+array, you should use the standard Oberon-2 function procedure `LEN':
+
+     VAR aString: ARRAY 32 OF CHAR;
+     aString := "Hello, world";
+     LEN(aString)
+         => 32
+
+ - Procedure: Capitalize `(VAR STRINGVAR: ARRAY OF CHAR)'
+
+ - Procedure: Capitalize `(VAR STRINGVAR: ARRAY OF LONGCHAR)'
+     Applies the function `CAP' to each character of the string value in
+     STRINGVAR.
+
+   *Example:*
+
+     VAR stringVar: ARRAY 6 OF CHAR;
+     
+     stringVar := "abc";
+     Strings.Capitalize (stringVar);
+        => stringVar = "ABC"
+     
+     stringVar := "0aB";
+     Strings.Capitalize (stringVar);
+        => stringVar = "0AB"
+
+
+File: OOCref.info,  Node: Integer/String Conversion,  Next: Real/String Conversion,  Prev: Character & String Handling,  Up: Top
+
+Integer/String Conversion
+*************************
+
+   The OOC Library supplies various procedures to convert between
+string values and numeric representation.  These include procedures for
+conversions of both `INTEGER' and `LONGINT' variables to and from
+string format.
+
+   As module IntConv is low-level, the average application programmer
+will most likely find module IntStr more interesting and useful.
+
+* Menu:
+
+* ConvTypes::                   Common types used in the string conversion
+                                 modules.
+* IntConv::                     Low-level integer/string conversions.
+* IntStr::                      Integer-number/string conversions.
+
+
+File: OOCref.info,  Node: ConvTypes,  Next: IntConv,  Up: Integer/String Conversion
+
+Module ConvTypes
+================
+
+   Module ConvTypes declares common types, and appropriate related
+constants, which are used in the various string conversion modules.
+
+ - Data type: ConvResults = SHORTINT
+     Values of type `ConvResults' are used to express the status of
+     attempts to format a string via the string-to-number conversion
+     procedures.  The following constants are defined for its value:
+
+      - Constant: strAllRight
+          The string format is correct for the corresponding conversion.
+
+      - Constant: strOutOfRange
+          The string is well-formed but the value cannot be represented.
+
+      - Constant: strWrongFormat
+          The string is in the wrong format for the conversion.
+
+      - Constant: strEmpty
+          The given string is empty.
+
+ - Data type: ScanClass = SHORTINT
+     Values of the type `ScanClass' are used to classify input to finite
+     state scanners.  The following constants are defined for its value:
+
+      - Constant: padding
+          A leading or padding character at this point in the scan -
+          ignore it.
+
+      - Constant: valid
+          A valid character at this point in the scan - accept it.
+
+      - Constant: invalid
+          An invalid character at this point in the scan - reject it.
+
+      - Constant: terminator
+          A terminating character at this point in the scan (not part
+          of token).
+
+ - Data type: ScanState = POINTER TO ScanDesc
+     `ScanState' is the type of lexical scanning control procedures.
+     It has a single field of `PROCEDURE' type:
+
+    Field: p: `PROCEDURE (CH: CHAR; VAR CL: ScanClass; VAR ST: ScanState)'
+
+
+File: OOCref.info,  Node: IntConv,  Next: IntStr,  Prev: ConvTypes,  Up: Integer/String Conversion
+
+Module IntConv
+==============
+
+   Module IntConv provides low-level integer/string conversions.
+
+ - Data type: ConvResults
+     `ConvResults' is a local equivalent to `ConvTypes.ConvResults'.
+     This type has associated constants with the same meanings as in
+     module ConvTypes (*note ConvTypes::.)
+
+     Constants `strAllRight', `strOutOfRange', `strWrongFormat', and
+     `strEmpty' are all valid values for `ConvResults'.
+
+ - Procedure: ScanInt `(INPUTCH: CHAR; VAR CHCLASS:
+          ConvTypes.ScanClass;  VAR NEXTSTATE: ConvTypes.ScanState)'
+     Represents the start state of a finite state scanner for signed
+     whole numbers--assigns class of INPUTCH to CHCLASS and a procedure
+     representing the next state to NEXTSTATE (*note ConvTypes::.)
+
+     *Please note*: `ScanInt' is used by procedures `FormatInt' and
+     `ValueInt'.
+
+ - Function: FormatInt `(STR: ARRAY OF CHAR): ConvResults'
+     Returns the format of the string value for conversion to `LONGINT'.
+
+ - Procedure: ValueInt `(STR: ARRAY OF CHAR): LONGINT'
+     If STR is well-formed, returns the value corresponding to the
+     signed whole number represented by the string value STR.
+     Otherwise, its behavior is undefined.
+
+ - Procedure: LengthInt `(INT: LONGINT): INTEGER'
+     Returns the number of characters in the string representation of
+     INT.  This value corresponds to the capacity of an array STR,
+     which is of the minimum capacity needed to avoid truncation of the
+     result in the call `IntStr.IntToStr(int,str)' (*note IntStr::.)
+
+ - Procedure: IsIntConvException `(): BOOLEAN'
+     This function returns `TRUE' if the current process is in the
+     exceptional execution state because of the raising of the IntConv
+     exception; otherwise, it returns `FALSE'.
+
+
+File: OOCref.info,  Node: IntStr,  Prev: IntConv,  Up: Integer/String Conversion
+
+Module IntStr
+=============
+
+   Module IntStr provides integer-number/ string conversions for
+numbers in the form of signed whole numbers (*note Syntax of Text
+Tokens::.).
+
+ - Data type: ConvResults
+     `ConvResults' is a local equivalent to `ConvTypes.ConvResults'.
+     This type has associated constants with the same meanings as in
+     module ConvTypes (*note ConvTypes::.)
+
+     Constants `strAllRight', `strOutOfRange', `strWrongFormat', and
+     `strEmpty' are all valid values for `ConvResults'.
+
+ - Procedure: StrToInt `(STR: ARRAY OF CHAR; VAR INT: LONGINT;  VAR
+          RES: ConvResults)'
+     This procedure converts a string to an integer value.  `StrToInt'
+     ignores any leading spaces in STR.  If the subsequent characters in
+     STR are in the format of a signed whole number, it assigns a
+     corresponding value to INT.
+
+     RES indicates the result of the conversion based on the format of
+     STR.
+
+   *Example:*
+
+     VAR stringVar: ARRAY 32 OF CHAR;
+         intVar:    LONGINT;
+         res:       IntStr.ConvResults;
+     
+     stringVar := "   54321";
+     IntStr.StrToInt(stringVar, intVar, res);
+        => intVar = 54321, res = strAllRight
+     
+     stringVar := "12345678901234567890";
+     IntStr.StrToInt(stringVar, intVar, res);
+        => intVar is undefined, res = strOutOfRange
+     
+     stringVar := "54321.0";
+     IntStr.StrToInt(stringVar, intVar, res);
+        => intVar is undefined, res = strWrongFormat
+     
+     stringVar := "   ";
+     IntStr.StrToInt(stringVar, intVar, res);
+        => intVar is undefined, res = strEmpty
+
+ - Procedure: IntToStr `(INT: LONGINT; VAR STR: ARRAY OF CHAR)'
+     This procedure converts the value of INT to string form and copies
+     the possibly truncated result to STR.
+
+   *Example:*
+
+     VAR stringVar: ARRAY 6 OF CHAR;
+         intVar:    LONGINT;
+     
+     intVar := 54321;
+     IntStr.IntToStr(intVar, stringVar);
+        => stringVar = "54321"
+     
+     intVar := 1234567890;
+     IntStr.IntToStr(intVar, stringVar);
+        => stringVar = "12345"
+
+
+File: OOCref.info,  Node: Real/String Conversion,  Next: I/O Subsystem,  Prev: Integer/String Conversion,  Up: Top
+
+Real/String Conversion
+**********************
+
+   The OOC Library supplies various procedures to convert between
+string values and numeric representation (*note Integer/String
+Conversion::.) The modules described in this chapter have procedures to
+convert both `REAL' and `LONGREAL' values to and from string format.
+
+   The modules RealConv and LRealConv are both low-level and the average
+application programmer will most likely find modules RealStr and
+LRealStr more interesting and useful.
+
+   (Also *note ConvTypes::.)
+
+     *Please note*: When using the procedures described in this chapter,
+     keep in mind that computer representations of `REAL' and `LONGREAL'
+     values are of "finite precision".  That is, only a limited number
+     of significant digits are stored.
+
+* Menu:
+
+* RealConv::                    Low-level `REAL'/string conversions.
+* RealStr::                     `REAL'/string conversions.
+* LRealConv::                   Low-level `LONGREAL'/string conversions.
+* LRealStr::                    `LONGREAL'/string conversions.
+
+
+File: OOCref.info,  Node: RealConv,  Next: RealStr,  Up: Real/String Conversion
+
+Module RealConv
+===============
+
+   Module RealConv provides low-level `REAL'/string conversions.
+
+ - Constant: SigFigs
+     A value representing the accuracy of `REAL's.
+
+ - Data type: ConvResults
+     `ConvResults' is a local equivalent to `ConvTypes.ConvResults'.
+     This type has associated constants with the same meanings as in
+     module ConvTypes (*note ConvTypes::.)
+
+     Constants `strAllRight', `strOutOfRange', `strWrongFormat', and
+     `strEmpty' are all valid values for `ConvResults'.
+
+ - Procedure: ScanReal `(VAR INPUTCH: CHAR; VAR CHCLASS:
+          Conv.ScanClass; VAR NEXTSTATE: ConvTypes.ScanState)'
+     Represents the start state of a finite state scanner for real
+     numbers--assigns class of INPUTCH to CHCLASS and a procedure
+     representing the next state to NEXTSTATE (*note ConvTypes::.)
+
+ - Function: FormatReal `(VAR STR: ARRAY OF CHAR): ConvResults'
+     Returns the format of the string value for conversion to `REAL'.
+
+ - Function: ValueReal `(VAR STR: ARRAY OF CHAR): REAL'
+     If STR is well-formed, returns the value corresponding to the real
+     number represented by the string value STR.  Otherwise, its
+     behavior is undefined.
+
+ - Function: LengthFloatReal `(VAR REAL: REAL; VAR SIGFIGS: INTEGER):
+          INTEGER'
+     Returns the number of characters in the floating-point string
+     representation of REAL with SIGFIGS significant figures.  This
+     value corresponds to the capacity of an array STR which is of the
+     minimum capacity needed to avoid truncation of the result in the
+     call
+
+     `RealStr.RealToFloat(real,sigFigs,str)'
+
+ - Function: LengthEngReal `(VAR REAL: REAL; VAR SIGFIGS: INTEGER):
+          INTEGER'
+     Returns the number of characters in the floating-point engineering
+     string representation of REAL with SIGFIGS significant figures.
+     This value corresponds to the capacity of an array STR which is of
+     the minimum capacity needed to avoid truncation of the result in
+     the call
+
+     `RealStr.RealToEng(real,sigFigs,str)'
+
+ - Function: LengthFixedReal `(VAR REAL: REAL; VAR PLACE: INTEGER):
+          INTEGER'
+     Returns the number of characters in the fixed-point string
+     representation of REAL rounded to the given PLACE relative to the
+     decimal point.  This value corresponds to the capacity of an array
+     STR which is of the minimum capacity needed to avoid truncation of
+     the result in the call
+
+     `RealStr.RealToFixed(real,sigFigs,str)'
+
+ - Function: IsRConvException `(): BOOLEAN'
+     This function returns `TRUE' if the current process is in the
+     exceptional execution state because of the raising of the
+     `RealConv' exception; otherwise, returns `FALSE'.
+
+
+File: OOCref.info,  Node: RealStr,  Next: LRealConv,  Prev: RealConv,  Up: Real/String Conversion
+
+Module RealStr
+==============
+
+   Module RealStr provides real number/ string conversions for `REAL'
+values.  Two text formats for real numbers are supported: "signed
+fixed-point real" and "signed floating-point" (*note Syntax of Text
+Tokens::.)
+
+   The valid string format of a signed fixed-point real number is
+
+ - Data type: ConvResults
+     `ConvResults' is a local equivalent to `ConvTypes.ConvResults'.
+     This type has associated constants with the same meanings as in
+     module ConvTypes (*note ConvTypes::.)
+
+     Constants `strAllRight', `strOutOfRange', `strWrongFormat', and
+     `strEmpty' are all valid values for `ConvResults'.
+
+ - Procedure: StrToReal `(VAR STR: ARRAY OF CHAR; VAR REAL: REAL; VAR
+          RES: ConvResults)'
+     This procedure converts a string to a real value.  `StrToReal'
+     ignores any leading spaces in STR and, depending on the subsequent
+     characters in STR, the values of REAL and RES are set as follows:
+
+     If `RES = strAllRight', STR represents a complete signed real
+     number in the range of `REAL'.  The value of this number is
+     assigned to REAL.
+
+     If `RES = strOutOfRange', STR represents a complete signed real
+     number, but its value is out of the range of `REAL'.  `MAX(REAL)'
+     or `MIN(REAL)' is assigned to REAL depending on the sign of the
+     number.
+
+     If `RES = strWrongFormat', STR is not in the form of a complete
+     signed real number.  The value of REAL is undefined.
+
+     If `RES = strEmpty', there are no remaining characters in STR.
+     The value of REAL is undefined.
+
+   *Example:*
+
+     VAR stringVar: ARRAY 36 OF CHAR;
+         realVar:   REAL;
+         res:       RealStr.ConvResults;
+     
+     stringVar := "   76.54321";
+     RealStr.StrToReal(stringVar, realVar, res);
+        => realVar = 76.54321, res = strAllRight
+     
+     stringVar := " 76.543E+100";
+     RealStr.StrToReal(stringVar, realVar, res);
+        => realVar is undefined, res = strOutOfRange
+     
+     stringVar := "76_54321";
+     RealStr.StrToReal(stringVar, realVar, res);
+        => realVar is undefined, res = strWrongFormat
+     
+     stringVar := "   ";
+     RealStr.StrToReal(stringVar, realVar, res);
+        => realVar is undefined, res = strEmpty
+
+ - Procedure: RealToFloat `(VAR REAL: REAL; VAR SIGFIGS: INTEGER; VAR
+          STR: ARRAY OF CHAR)'
+     `RealToFloat' converts the value of REAL to floating-point string
+     format and copies the possibly truncated result to STR.
+
+     If the value of SIGFIGS is greater than 0, that number of
+     significant digits is included.  Otherwise, an
+     implementation-defined number of significant digits is included.
+     The decimal point is not included if there are no significant
+     digits in the fractional part.
+
+     The number is scaled with one digit in the whole number part.  A
+     sign is included only for negative values.
+
+   *Example:*
+
+     VAR stringVar: ARRAY 32 OF CHAR;
+         realVar:   REAL;
+     
+     realVar := 3923009;
+     RealStr.RealToFloat(realVar, 0, stringVar);
+        => stringVar = "3.923009E+6"
+     
+     RealStr.RealToFloat(realVar, -1, stringVar);
+        => stringVar = "3.923009E+6"
+     
+     RealStr.RealToFloat(realVar, 1, stringVar);
+        => stringVar = "4E+6"
+     RealStr.RealToFloat(realVar, 2, stringVar);
+        => stringVar = "3.9E+6"
+     RealStr.RealToFloat(realVar, 5, stringVar);
+        => stringVar = "3.9230E+6"
+     
+     realVar := -39.23009;
+     RealStr.RealToFloat(realVar, 1, stringVar);
+        => stringVar = "-4E+1"
+     RealStr.RealToFloat(realVar, 2, stringVar);
+        => stringVar = "-3.9E+1"
+     RealStr.RealToFloat(realVar, 5, stringVar);
+        => stringVar = "-3.9230E+1"
+     
+     realVar := 0.0003923009;
+     RealStr.RealToFloat(realVar, 1, stringVar);
+        => stringVar = "4E-4"
+     RealStr.RealToFloat(realVar, 2, stringVar);
+        => stringVar = "3.9E-4"
+     RealStr.RealToFloat(realVar, 5, stringVar);
+        => stringVar = "3.9230E-4"
+
+ - Procedure: RealToEng `(VAR REAL: REAL; VAR SIGFIGS: INTEGER; VAR
+          STR: ARRAY OF CHAR)'
+     `RealToEng' converts the value of REAL to floating-point string
+     format and copies the possibly truncated result to STR.
+
+     If the value of SIGFIGS is greater than 0, that number of
+     significant digits is included.  Otherwise, an
+     implementation-defined number of significant digits is included.
+     The decimal point is not included if there are no significant
+     digits in the fractional part.
+
+     The number is scaled with one to three digits in the whole number
+     part and with an exponent that is a multiple of three.  A sign is
+     included only for negative values.
+
+   *Example:*
+
+     VAR stringVar: ARRAY 32 OF CHAR;
+         realVar:   REAL;
+     
+     realVar := -3923009;
+     RealStr.RealToEng(realVar, 1, stringVar);
+        => stringVar = "-4E+6"
+     RealStr.RealToEng(realVar, 2, stringVar);
+        => stringVar = "-3.9E+6"
+     RealStr.RealToEng(realVar, 5, stringVar);
+        => stringVar = "-3.9230E+6"
+     
+     realVar := 39.23009;
+     RealStr.RealToEng(realVar, 1, stringVar);
+        => stringVar = "40"
+     RealStr.RealToEng(realVar, 2, stringVar);
+        => stringVar = "39"
+     RealStr.RealToEng(realVar, 5, stringVar);
+        => stringVar = "39.230"
+     
+     realVar := 0.0003923009;
+     RealStr.RealToEng(realVar, 1, stringVar);
+        => stringVar = "400E-6"
+     RealStr.RealToEng(realVar, 2, stringVar);
+        => stringVar = "390E-6"
+     RealStr.RealToEng(realVar, 5, stringVar);
+        => stringVar = "392.30E-6"
+
+ - Procedure: RealToFixed `(VAR REAL: REAL; VAR PLACE: INTEGER; VAR
+          STR: ARRAY OF CHAR)'
+     `RealToFixed' converts the value of REAL to fixed-point string
+     format and copies the possibly truncated result to STR.
+
+     The value is rounded to the given value of PLACE relative to the
+     decimal point.  The decimal point is suppressed if PLACE is less
+     than 0.
+
+     The number will have at least one digit in the whole number part.
+     A sign is included only for negative values.
+
+   *Example:*
+
+     VAR stringVar: ARRAY 32 OF CHAR;
+         realVar:   REAL;
+     
+     realVar := 3923009;
+     RealStr.RealToFixed(realVar, -5, stringVar);
+        => stringVar = "3920000"  (* rounded to the ten-thousands place *)
+     RealStr.RealToFixed(realVar, -2, stringVar);
+        => stringVar = "3923010"  (* rounded to the tens place *)
+     RealStr.RealToFixed(realVar, 1, stringVar);
+        => stringVar = "3923009.0"
+     RealStr.RealToFixed(realVar, 4, stringVar);
+        => stringVar = "3923009.0000"
+     
+     realVar := 3923.5;
+     RealStr.RealToFixed(realVar, -1, stringVar);
+        => stringVar = "3924"  (* rounded to the "ones" place *)
+     RealStr.RealToFixed(realVar, 0, stringVar);
+        => stringVar = "3924."  (* same as above,
+                             but writes a decimal point *)
+     
+     realVar := -39.23009;
+     RealStr.RealToFixed(realVar, 1, stringVar);
+        => stringVar = "-39.2"
+     RealStr.RealToFixed(realVar, 4, stringVar);
+        => stringVar = "-39.2301"
+     
+     realVar := 0.0003923009;
+     RealStr.RealToFixed(realVar, 1, stringVar);
+        => stringVar = "0.0"
+     RealStr.RealToFixed(realVar, 4, stringVar);
+        => stringVar = "0.0004"
+
+ - Procedure: RealToStr `(VAR REAL: REAL; VAR STR: ARRAY OF CHAR)'
+     `RealToStr' converts the value of REAL to string format and copies
+     the possibly truncated result to STR.
+
+     If the sign and magnitude of REAL can be shown within the capacity
+     of STR, `RealToStr' behaves exactly the same as `RealToFixed' with
+     a number of decimal places chosen to fill exactly the remainder of
+     STR.
+
+     Otherwise, `RealToStr' behaves as `RealToFloat' with at least one
+     significant digit.  The actual number of significant digits is
+     limited to the number that can be included together with the sign
+     and exponent part in STR.
+
+   *Example:*
+
+     VAR str32Var: ARRAY 32 OF CHAR;
+         str10Var: ARRAY 10 OF CHAR;
+         realVar:   REAL;
+     
+     realVar := 3.0;
+     RealStr.RealToStr(realVar, str32Var);
+        => str32Var = "3.00000000000000000000000000000"
+     RealStr.RealToStr(realVar, str10Var);
+        => str10Var = "3.0000000"
+     
+     realVar := 3.1;
+     RealStr.RealToStr(realVar, str32Var);
+        => str32Var = "3.10000000000000000000000000000"
+     RealStr.RealToStr(realVar, str10Var);
+        => str10Var = "3.1000000"
+     
+     realVar := 32923009999.;
+     RealStr.RealToStr(realVar, str32Var);
+        => str32Var = "3923010000.00000000000000000000"
+     RealStr.RealToStr(realVar, str10Var);
+        => str10Var = "3.9230E+9"
+     
+     realVar := -39.23009999E+30;
+     RealStr.RealToStr(realVar, str32Var);
+        => str32Var = "-3.923010000000000000000000E+31"
+     RealStr.RealToStr(realVar, str10Var);
+        => str10Var = "-3.92E+31"
+     
+     realVar := 0.00032923009999;
+     RealStr.RealToStr(realVar, str32Var);
+        => str32Var = "0.00032923010000000000000000000"
+     RealStr.RealToStr(realVar, str10Var);
+        => str10Var = "3.9230E-4"
+
+
+File: OOCref.info,  Node: LRealConv,  Next: LRealStr,  Prev: RealStr,  Up: Real/String Conversion
+
+Module LRealConv
+================
+
+   Module LRealConv provides low-level `LONGREAL'/string conversions.
+
+ - Constant: SigFigs
+     A value representing the accuracy of `LONGREAL's.
+
+ - Data type: ConvResults
+     `ConvResults' is a local equivalent to `ConvTypes.ConvResults'.
+     This type has associated constants with the same meanings as in
+     module ConvTypes (*note ConvTypes::.)
+
+     Constants `strAllRight', `strOutOfRange', `strWrongFormat', and
+     `strEmpty' are all valid values for `ConvResults'.
+
+ - Procedure: ScanReal `(VAR INPUTCH: CHAR; VAR CHCLASS:
+          Conv.ScanClass; VAR NEXTSTATE: ConvTypes.ScanState)'
+     Represents the start state of a finite state scanner for real
+     numbers-- assigns class of INPUTCH to CHCLASS and a procedure
+     representing the next state to NEXTSTATE (*note ConvTypes::.)
+
+ - Function: FormatReal `(VAR STR: ARRAY OF CHAR): ConvResults'
+     Returns the format of the string value for conversion to
+     `LONGREAL'.
+
+ - Function: ValueReal `(VAR STR: ARRAY OF CHAR): LONGREAL'
+     If STR is well-formed, returns the value corresponding to the real
+     number represented by the string value STR.  Otherwise, its
+     behavior is undefined.
+
+ - Function: LengthFloatReal `(VAR REAL: LONGREAL; VAR SIGFIGS:
+          INTEGER): INTEGER'
+     Returns the number of characters in the floating-point string
+     representation of REAL with SIGFIGS significant figures.  This
+     value corresponds to the capacity of an array STR which is of the
+     minimum capacity needed to avoid truncation of the result in the
+     call
+
+     `LRealStr.RealToFloat(real,sigFigs,str)'
+
+ - Function: LengthEngReal `(VAR REAL: LONGREAL; VAR SIGFIGS: INTEGER):
+          INTEGER'
+     Returns the number of characters in the floating-point engineering
+     string representation of REAL with SIGFIGS significant figures.
+     This value corresponds to the capacity of an array STR which is of
+     the minimum capacity needed to avoid truncation of the result in
+     the call
+
+     `LRealStr.RealToEng(real,sigFigs,str)'
+
+ - Function: LengthFixedReal `(VAR REAL: LONGREAL; VAR PLACE: INTEGER):
+          INTEGER'
+     Returns the number of characters in the fixed-point string
+     representation of REAL rounded to the given PLACE relative to the
+     decimal point.  This value corresponds to the capacity of an array
+     STR which is of the minimum capacity needed to avoid truncation of
+     the result in the call
+
+     `LRealStr.RealToFixed(real,sigFigs,str)'
+
+ - Function: IsRConvException `(): BOOLEAN'
+     This function returns `TRUE' if the current process is in the
+     exceptional execution state because of the raising of the
+     `LRealConv' exception; otherwise, it returns `FALSE'.
+
+
+File: OOCref.info,  Node: LRealStr,  Prev: LRealConv,  Up: Real/String Conversion
+
+Module LRealStr
+===============
+
+   *Please note*: Because module LRealStr is very similar to module
+RealStr and in order to avoid redundancy, full descriptions of
+procedures and examples of their use are not provided in this section.
+Refer back to module RealStr for more information (*note RealStr::.)
+
+   Module LRealStr provides real number/ string conversions for
+`LONGREAL' values.  Two text formats for real numbers are supported:
+"signed fixed-point real" and "signed floating-point" (*note Syntax of
+Text Tokens::.)
+
+ - Data type: ConvResults
+     `ConvResults' is a local equivalent to `ConvTypes.ConvResults'.
+     This type has associated constants with the same meanings as in
+     module ConvTypes (*note ConvTypes::.)
+
+     Constants `strAllRight', `strOutOfRange', `strWrongFormat', and
+     `strEmpty' are all valid values for `ConvResults'.
+
+ - Procedure: StrToReal `(VAR STR: ARRAY OF CHAR; VAR REAL: LONGREAL;
+          VAR RES: ConvResults)'
+     This procedure converts a string to a real value.  `StrToReal'
+     ignores any leading spaces in STR and, if the subsequent
+     characters in STR are in the format of a signed real number, the
+     value is assigned to REAL.  RES is assigned a value indicating the
+     format of STR.
+
+ - Procedure: RealToFloat `(VAR REAL: LONGREAL; VAR SIGFIGS: INTEGER;
+          VAR STR: ARRAY OF CHAR)'
+     `RealToFloat' converts the value of REAL to floating-point string
+     format, with SIGFIGS significant digits, and copies the possibly
+     truncated result to STR.
+
+ - Procedure: RealToEng `(VAR REAL: LONGREAL; VAR SIGFIGS: INTEGER; VAR
+          STR: ARRAY OF CHAR)'
+     `RealToEng' converts the value of REAL to floating-point string
+     format, with SIGFIGS significant digits, and copies the possibly
+     truncated result to STR.
+
+     The number is scaled with one to three digits in the whole number
+     part and with an exponent that is a multiple of three.
+
+ - Procedure: RealToFixed `(VAR REAL: LONGREAL; VAR PLACE: INTEGER; VAR
+          STR: ARRAY OF CHAR)'
+     `RealToFixed' converts the value of REAL to fixed-point string
+     format, rounded to the given value of PLACE relative to the decimal
+     point, and copies the possibly truncated result to STR.
+
+     The number will have at least one digit in the whole number part.
+
+ - Procedure: RealToStr `(VAR REAL: LONGREAL; VAR STR: ARRAY OF CHAR)'
+     `RealToStr' converts the value of REAL to string format and copies
+     the possibly truncated result to STR.
+
+     If the sign and magnitude of REAL can be shown within the capacity
+     of STR, `RealToStr' behaves exactly the same as `RealToFixed' with
+     a number of decimal places chosen to fill exactly the remainder of
+     STR.
+
+     Otherwise, `RealToStr' behaves as `RealToFloat' with at least one
+     significant digit.  The actual number of significant digits is
+     limited to the number that can be included together with the sign
+     and exponent part in STR.
+
+
+File: OOCref.info,  Node: I/O Subsystem,  Next: Mathematics,  Prev: Real/String Conversion,  Up: Top
+
+I/O Subsystem
+*************
+
+   Most programs need to perform input (reading data), output (writing
+data), or both in order to be useful.  The OOC library attempts to
+simplify these Input/Output ("I/O") operations by providing several
+related abstractions that relate to I/O.
+
+   The two primary abstractions are "channels" and "riders".  The
+entire I/O Subsystem of the OOC library revolves around these two
+concepts.
+
+* Menu:
+
+* Input/Output Overview::       An introduction to the basic concepts of
+                                 I/O in the OOC library.
+* Channels::                    Details of the various channel modules.
+* Standard Mappers::            Descriptions of the standard mapper types.
+* Standard I/O::                Simple interfaces to standard input, output
+                                 and error channels.
+
+
+File: OOCref.info,  Node: Input/Output Overview,  Next: Channels,  Up: I/O Subsystem
+
+Input/Output Overview
+=====================
+
+   In order to provide uniform access to different sorts of "devices"
+(files, program arguments, sockets, and so forth) the I/O subsystem
+consists of several interrelated class hierarchies of related
+abstractions.  The two primary abstractions are "channels" and "riders".
+
+   The intention of these abstractions is to allow similar handling of
+devices; even, potentially, to the level of such exotic devices as a
+screen pixelmap, a windowing system, or a speech output device.
+
+   The benefit of this unified I/O handling approach allows a
+programmer to write procedures that operate on any kind of I/O channel.
+A program writing to `stdout' could be easily converted to allow
+writing into a file instead.  Or, similarly, it could serve as a remote
+telnet connection.
+
+   All channels can share the same operations for text based I/O
+(`ReadInt', `WriteInt', and so forth).  Riders (readers and writers)
+can then be attached to the channel, allowing standard I/O, regardless
+of the actual device used.
+
+* Menu:
+
+* I/O Concepts::                Basic I/O concepts of the OOC library.
+* Riders and Mappers::          Discussion of the functions of riders and
+                                 mappers.
+* Locators & Opening Channels:: Description of the use of locators to
+                                 open channels.
+
+
+File: OOCref.info,  Node: I/O Concepts,  Next: Riders and Mappers,  Up: Input/Output Overview
+
+I/O Concepts
+------------
+
+   There are several conceptual layers to the I/O process that are
+modeled by various abstractions in the OOC library.  Their
+relationships are shown here:
+
+       "data locations" - where data resides (raw data).
+           |  (e.g., hard disk, memory block, keyboard port, RS232 links)
+           |
+           |
+       "channels" - connections to data locations in the form of byte streams.
+           |  (e.g., files - on disk and in memory, pipes,
+           |   TCP/IP connections)
+           |
+       "basic riders" - basic operations on bytes.
+           | (e.g., SetPos, ReadByte, ReadBytes, WriteByte, WriteBytes)
+           |
+           |
+       "mappers" - translations of high level data to and from a byte stream.
+             (e.g., binary reader/writer, text reader/writer)
+
+   A "data location" (or simply "location") is a source of input data
+or destination of output data.  It it the physical or logical place
+where data exists; say a hard disk, or keyboard buffer.
+
+   A "channel" is a connection to a data location.  A channel is
+envisioned as a contiguous sequence, or "stream", of bytes.  Channels
+may be "sequential" as in the case of terminal I/O, a TCP stream,
+pipes, and so forth; or "positionable" like Files and ProgramArgs.
+
+   "Riders" are associated with a channel and provide read and write
+access of a location; they operate directly on a stream of bytes (i.e.,
+a channel).  Multiple readers and writers can exist for a single
+channel.
+
+   A "mapper" is a high-level rider; it operates on a particular format
+of data, like textual or binary representation of elementary data types.
+Mappers rely on the primitive operations of basic riders to build more
+complex operations.
+
+   The benefit of differentiating these layers is allowing a way to
+distinguish between the simple access layer, that doesn't know a thing
+about the byte stream being read or written, and the interpretation
+layer that transforms bytes into useful data.
+
+
+File: OOCref.info,  Node: Riders and Mappers,  Next: Locators & Opening Channels,  Prev: I/O Concepts,  Up: Input/Output Overview
+
+Riders and Mappers
+------------------
+
+   The term "rider" can be used to describe any operator that provides
+read or write operations on channels.  However, there is a distinction
+between low-level ("basic riders") and high-level operations
+("mappers").
+
+   "Basic riders" are associated directly with a particular channel
+type.  Notice that the rider, not the channel, has a "position"
+property (the place where reading or writing occurs).  Several riders
+can operate on the same channel at the same time.  Riders may provide
+"sequential" or "positionable" (i.e., random) access depending on the
+type of channel.
+
+   In general, there are only two types of basic riders: "readers" and
+"writers".
+
+   "Mappers" are similar to basic riders and, like riders, may be either
+readers or writers.  They translate between a sequence of data items
+and an uninterpreted sequence of bytes.  But mappers may also provide
+more sophisticated read/write operations; for instance, "scanners" are
+mappers that can distinguish between different types of data within a
+particular format, and then read in that data based on the type.  *Note
+TextRider:: and *Note BinaryRider:: for descriptions of the simplest
+mappers.
+
+     *Please note*: a basic rider is dependent on the implementation of
+     its channel, (e.g., a file rider must know how to position itself
+     within a file).  When a channel type is extended, usually the
+     rider must be extended as well.
+
+     Mappers, on the other hand, are independent of a particular
+     channel's implementation; mappers use riders in their
+     implementation.  This independence means that every mapper may be
+     used on any compatible rider without the need to implement all
+     combinations of mappers and riders individually.
+
+
+File: OOCref.info,  Node: Locators & Opening Channels,  Prev: Riders and Mappers,  Up: Input/Output Overview
+
+Locators and Opening Channels
+-----------------------------
+
+   Before reading or writing to a location, a connection must be
+created by "opening" a channel on the location.  The operations for
+opening channels are collectively called "locators".  The primary
+function of locators is to resolve a data location (as specified by a
+file name, URL, etc.), and then open a channel to that location.
+
+   Locators may be simply a set of functions; for instance:
+       PROCEDURE New* (...): ChannelType;
+     
+       PROCEDURE Old* (...): ChannelType;
+
+   For channels that correspond to a location that can be both read and
+changed, `New()' will create a new channel for the given data location,
+deleting all data previously contained in it.  `Old()' will open a
+channel to existing data.
+
+   For channels representing a unidirectional byte stream (like output
+to/ input from terminal, or a TCP stream), only a procedure `New()' is
+provided.  It will create a connection with the designated location.
+
+   The formal parameters of these procedures will normally include some
+kind of reference to the data being opened (e.g., a file name) and,
+optionally, flags that modify the way the channel is opened (e.g.,
+read-only, write-only, etc).  Their use (and therefore, interface)
+depends on the type of channel to be opened.
+
+   In more complex circumstances, actual locator types may be required;
+in that case, the locator type might provide type-bound procedures
+`Old' and `New' to create a new channel.
+
+   When finished reading to or writing from the location, the
+connection can be terminated by "closing" the channel ((each channel
+provides a `Close' method for this purpose; locators do not supply any
+close operations).  This will free all resources allocated by the
+system for the channel.  Once a channel is closed, no further input or
+output operations can be performed on it.
+
+     *Please note*: A channel implementation may limit the number of
+     channels that can be open simultaneously.  It's common for an OS
+     to only support a limited number of open files or open sockets at
+     the same time.  See individual channel types for these limitations
+     (if such limitations exist for that type).
+
+
+File: OOCref.info,  Node: Channels,  Next: Standard Mappers,  Prev: Input/Output Overview,  Up: I/O Subsystem
+
+Channels
+========
+
+   This section describes the channel types provided by the OOC
+library.  Each module contains both the channel and its associated
+basic riders.  Constant values that are relevant to a particular
+channel type are also declared within the defining module.
+
+* Menu:
+
+* Channel::                     Defines abtract channel and rider types.
+* Files::                       File access.
+* StdChannels::                 Interface to standard input, output, and
+                                 error channels.
+* ProgramArgs::                 Facilities to access program arguments.
+
+
+File: OOCref.info,  Node: Channel,  Next: Files,  Up: Channels
+
+Module Channel
+--------------
+
+   Module Channel provides three "abstract classes": `Channel',
+`Reader', and `Writer'.
+
+   All types and procedures declared in this module are considered
+abstract; they are never instanciated or called.  Module Channel is of
+interest, however, because like all abstract classes, its types define
+the interface elements that are required for any concrete classes,
+which are derived from them.
+
+   Abstract class `Channel' is the base for all channel types.
+
+   Abstract classes `Reader' and `Writer' are the required basic rider
+types that must be declared for each channel.  Notice that these define
+only read/ write operations for sequences of bytes (*note Riders and
+Mappers::.)
+
+   See the various concrete channel classes for more detail and
+examples of usage (like *Note Files::, *Note StdChannels::, or *Note
+ProgramArgs::).  In particular, the chapter about Files can be read
+without any prior knowledge about channels.
+
+* Menu:
+
+* Abstract Class Channel::      Elements of abtract channel types.
+* Abstract Class Reader::       Elements of abstract reader types.
+* Abstract Class Writer::       Elements of abstract writer types.
+* Channel Procedures::          Free-standing procedures in module
+                                 Channel.
+* Summary of Channel Constants::Summarized list of constants in module
+                                 Channel.
+

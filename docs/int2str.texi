@@ -1,0 +1,199 @@
+@node Integer/String Conversion, Real/String Conversion, Character & String Handling, Top
+@chapter Integer/String Conversion
+
+The OOC Library supplies various procedures to convert between string values
+and numeric representation.  These include procedures for conversions of
+both @code{INTEGER} and @code{LONGINT} variables to and from string format.
+
+As module IntConv is low-level, the average application programmer will most
+likely find module IntStr more interesting and useful.
+
+@menu
+* ConvTypes::                   Common types used in the string conversion 
+                                 modules.  
+* IntConv::                     Low-level integer/string conversions.  
+* IntStr::                      Integer-number/string conversions.  
+@end menu
+
+@node ConvTypes, IntConv,  , Integer/String Conversion
+@section Module ConvTypes
+@pindex ConvTypes
+@cindex string conversion types
+@cindex converting, types
+
+Module ConvTypes declares common types, and appropriate related constants,
+which are used in the various string conversion modules.
+
+@deftp {Data type} ConvResults = SHORTINT  
+Values of type @code{ConvResults} are used to express the status of attempts
+to format a string via the string-to-number conversion procedures.  The
+following constants are defined for its value:  
+
+@defvr Constant strAllRight    
+The string format is correct for the corresponding conversion.  
+@end defvr
+
+@defvr Constant strOutOfRange
+The string is well-formed but the value cannot be represented.  
+@end defvr
+
+@defvr Constant strWrongFormat
+The string is in the wrong format for the conversion.  
+@end defvr
+
+@defvr Constant strEmpty
+The given string is empty.  
+@end defvr
+@end deftp
+
+@deftp {Data type} ScanClass = SHORTINT
+Values of the type @code{ScanClass} are used to classify input to finite
+state scanners.  The following constants are defined for its value:  
+
+@defvr Constant padding
+A leading or padding character at this point in the scan - ignore it.
+@end defvr
+
+@defvr Constant valid
+A valid character at this point in the scan - accept it.  
+@end defvr
+
+@defvr Constant invalid
+An invalid character at this point in the scan - reject it.  
+@end defvr
+
+@defvr Constant terminator
+A terminating character at this point in the scan (not part of token).  
+@end defvr
+@end deftp
+
+@deftp {Data type} ScanState = POINTER TO ScanDesc
+@code{ScanState} is the type of lexical scanning control procedures.  It has
+a single field of @code{PROCEDURE} type:
+
+@table @asis
+@item Field: @b{p}: @code{PROCEDURE (@var{ch}: CHAR; VAR @var{cl}: ScanClass; VAR @var{st}: ScanState)}
+@end table
+@end deftp
+
+@node IntConv, IntStr, ConvTypes, Integer/String Conversion
+@section Module IntConv
+@pindex IntConv
+@cindex integer conversions, low level
+@cindex converting, integers
+
+Module IntConv provides low-level integer/string conversions.
+
+@deftp {Data type} ConvResults
+@code{ConvResults} is a local equivalent to @code{ConvTypes.ConvResults}.
+This type has associated constants with the same meanings as in module
+ConvTypes (@pxref{ConvTypes})
+
+ Constants @code{strAllRight}, @code{strOutOfRange}, @code{strWrongFormat},
+and @code{strEmpty} are all valid values for @code{ConvResults}.
+@end deftp
+
+@deffn Procedure ScanInt @code{(@var{inputCh}: CHAR; VAR @var{chClass}: ConvTypes.ScanClass;  VAR @var{nextState}: ConvTypes.ScanState)}
+Represents the start state of a finite state scanner for signed whole
+numbers---assigns class of @var{inputCh} to @var{chClass} and a procedure
+representing the next state to @var{nextState} (@pxref{ConvTypes})
+
+@strong{Please note}: @code{ScanInt} is used by procedures @code{FormatInt}
+and @code{ValueInt}.
+@end deffn
+
+@deffn Function FormatInt @code{(@var{str}: ARRAY OF CHAR): ConvResults}
+Returns the format of the string value for conversion to @code{LONGINT}.
+@end deffn
+
+@deffn Procedure ValueInt @code{(@var{str}: ARRAY OF CHAR): LONGINT}
+If @var{str} is well-formed, returns the value corresponding to the signed
+whole number represented by the string value @var{str}.  Otherwise, its
+behavior is undefined.
+@end deffn
+
+@deffn Procedure LengthInt @code{(@var{int}: LONGINT): INTEGER}
+Returns the number of characters in the string representation of @var{int}.
+This value corresponds to the capacity of an array @var{str}, which is of
+the minimum capacity needed to avoid truncation of the result in the call
+@code{IntStr.IntToStr(int,str)} (@pxref{IntStr})
+@end deffn
+
+@deffn Procedure IsIntConvException @code{(): BOOLEAN}
+This function returns @code{TRUE} if the current process is in the
+exceptional execution state because of the raising of the IntConv exception;
+otherwise, it returns @code{FALSE}.
+@end deffn
+
+@node IntStr,  , IntConv, Integer/String Conversion
+@section Module IntStr
+@pindex IntStr
+@cindex integer conversions, strings
+@cindex strings, integer conversions
+@cindex converting, integers/strings
+
+Module IntStr provides integer-number/ string conversions for numbers in the
+form of signed whole numbers (@pxref{Syntax of Text Tokens}).
+
+@deftp {Data type} ConvResults
+@code{ConvResults} is a local equivalent to @code{ConvTypes.ConvResults}.
+This type has associated constants with the same meanings as in module
+ConvTypes (@pxref{ConvTypes}) 
+
+ Constants @code{strAllRight}, @code{strOutOfRange}, @code{strWrongFormat},
+and @code{strEmpty} are all valid values for @code{ConvResults}.
+@end deftp
+
+@deffn Procedure StrToInt @code{(@var{str}: ARRAY OF CHAR; VAR @var{int}: LONGINT;  VAR @var{res}: ConvResults)}
+This procedure converts a string to an integer value.  @code{StrToInt}
+ignores any leading spaces in @var{str}.  If the subsequent characters in
+@var{str} are in the format of a signed whole number, it assigns a
+corresponding value to @var{int}.  
+
+ @var{res} indicates the result of the conversion based on the format of
+@var{str}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR stringVar: ARRAY 32 OF CHAR; 
+    intVar:    LONGINT;
+    res:       IntStr.ConvResults;
+
+stringVar := "   54321"; 
+IntStr.StrToInt(stringVar, intVar, res);
+   @result{} intVar = 54321, res = strAllRight
+
+stringVar := "12345678901234567890"; 
+IntStr.StrToInt(stringVar, intVar, res);
+   @result{} intVar is undefined, res = strOutOfRange
+
+stringVar := "54321.0"; 
+IntStr.StrToInt(stringVar, intVar, res);
+   @result{} intVar is undefined, res = strWrongFormat
+
+stringVar := "   "; 
+IntStr.StrToInt(stringVar, intVar, res);
+   @result{} intVar is undefined, res = strEmpty
+@end smallexample
+
+@deffn Procedure IntToStr @code{(@var{int}: LONGINT; VAR @var{str}: ARRAY OF CHAR)}
+This procedure converts the value of @var{int} to string form and copies the
+possibly truncated result to @var{str}.
+@end deffn
+
+@emph{Example:}  
+
+@smallexample
+VAR stringVar: ARRAY 6 OF CHAR; 
+    intVar:    LONGINT;
+
+intVar := 54321;
+IntStr.IntToStr(intVar, stringVar);
+   @result{} stringVar = "54321"
+
+intVar := 1234567890;
+IntStr.IntToStr(intVar, stringVar);
+   @result{} stringVar = "12345"
+@end smallexample

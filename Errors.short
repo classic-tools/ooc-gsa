@@ -1,0 +1,195 @@
+*1: Comment not terminated
+*2: Illegal character in string
+*3: String not terminated
+*4: No comment started
+*5: Illegal cipher
+*6: Number out of range
+*7: Not a valid character constant
+*8: Illegal symbol
+*9: Illegal exponent format
+*10: Illegal character
+*11: No pragma command started
+*12: Nested `<*' not allowed
+*13: `IF' statement lacks `END'
+*14: No open `IF' statement
+*15: `ELSE' part already defined
+*16: Pragma stack empty
+*17: Undeclared pragma variable
+*18: Pragma variable already defined
+*19: Value cannot be assigned to % variable
+*20: Boolean expression expected
+*21: Illegal variable name
+*30: String too long (maximum is % characters)
+*31: Warning: String longer than % characters
+*32: Identifier too long (maximum is % characters)
+*33: Warning: Identifier longer than % characters
+*34: Warning: Hexadecimal constant is mapped to negative value
+*35: Malformed module identifier
+*100: Identifier expected
+*109: `=' expected
+*118: `.' expected
+*119: `,' expected
+*120: `:' expected
+*122: `)' expected
+*123: `]' expected
+*124: `}' expected
+*125: `OF' expected
+*126: `THEN' expected
+*127: `DO' expected
+*128: `TO' expected
+*130: `(' expected
+*134: `:=' expected
+*137: String expected
+*139: `;' expected
+*141: `END' expected
+*144: `UNTIL' expected
+*163: `MODULE' expected
+*166: `*>' expected
+*180: Unexpected symbol
+*181: Factor starts with illegal symbol
+*182: Data type expected
+*183: Statement expected
+*197: Undeclared identifier
+*198: Identifier `%' expected
+*199: %
+*200: Export only possible on top level
+*201: Can only be exported with `*'
+*202: Has to be exported like inherited declaration
+*203: Can't use type constructor here
+*204: Receiver has to be a record or a record pointer
+*205: Illegal type for function result
+*206: Can't use type constructor here
+*207: Illegal pointer base type
+*208: Open array can't be used here
+*209: This has to be an integer constant
+*210: Arrays of negative length are not allowed
+*211: Data type expected
+*212: This record type cannot be extended
+*213: This has to be a record type
+*214: Receiver of pointer type has to be a value parameter
+*215: Receiver of record type has to be a variable parameter
+*216: Illegal receiver type
+*217: This has to be a top level type
+*218: Type-bound procedure has to be declared on top level
+*219: Multiple forward declaration of same name
+*220: Formal parameters don't match forward declaration
+*221: Receiver doesn't match forward declaration
+*222: Export mark differs from forward declaration
+*223: Formal parameters don't match inherited declaration
+*224: Receiver doesn't match inherited declaration
+*225: Field of this name already declared in extension `%'
+*226: This procedure has already been declared in extension `%'
+*227: Not a record (is `%')
+*228: Not a pointer (is `%')
+*229: `%' has no base type
+*230: Procedure `%' not declared in base type
+*231: Operator not applicable to type `%'
+*232: Value expected instead of a data type
+*233: Operand incompatible to left hand side `%'
+*234: % expression expected (instead of `%')
+*235: This item has no memory address
+*236: Lower bound has to be less or equal to upper bound
+*237: This has to be a character constant
+*238: This has to be a constant expression
+*239: Not assignment compatible to type `%'
+*240: This isn't a function procedure
+*241: Missing function result
+*242: `EXIT' not within a `LOOP'
+*243: Not an array (is `%')
+*244: This isn't a variable designator
+*245: This is imported read-only
+*246: Too many parameters (maximum is %)
+*247: Not a procedure (is `%')
+*248: More actual than formal parameters
+*249: Parameter expected
+*250: Not array compatible to formal parameter `%'
+*251: Not compatible to formal variable parameter `%'
+*252: This isn't a proper procedure
+*253: This isn't a function procedure
+*254: This has to be a simple identifier
+*255: Has to be a nonzero integer constant
+*256: Too large with respect to control variable of type `%'
+*257: This variable has no dynamic type
+*258: This isn't a record pointer
+*259: This type is no extension of the variable's type
+*260: Integer or character expression expected
+*261: Case label not included in type of case selector
+*262: Case labels (%..%) already used
+*263: Has to be a (qualified) identifier
+*264: This type has no `MIN'/`MAX' value
+*265: Value incompatible with variable
+*266: This type has no fixed size
+*267: Illegal definition for a previously used pointer base type
+*268: Cannot copy this value to `%'
+*269: Cannot modify value parameter that has no local copy
+*280: No information on length of variable available
+*281: This type has no type descriptor
+*282: NEW cannot allocate memory for this type
+*300: Unresolved forward declaration
+*301: Multiple declaration of same name
+*302: `%' imports `%' with illegal key
+*303: Can't open/read symbol file of module `%'
+*304: Symbol file `%' starts with illegal key
+*305: Unexpected end of symbol file `%'
+*306: A module cannot import itself
+*307: Can't find module `%'
+*308: Invalid symbol file format (format id is %)
+*309: This name is already defined in base type `%'
+*310: Invalid symbol file version (version is %)
+*350: Overflow during constant folding
+*351: Division by zero
+*352: Constant not representable as `%'
+*353: Set element out of range %
+*354: Index out of range %
+*355: Constant parameter out of range %
+*400: Warning: Module name differs from file name `%'
+*401: Warning: Symbol file imported as `%' calls itself `%'
+*402: Warning: Ignoring last % bytes of file `%'
+*403: Warning: Parameter name differs from forward declaration
+*404: Warning: Variable is used uninitialized
+*405: Warning: Variable may be used uninitialized
+*406: Warning: Function procedure contains no `RETURN' statement
+*407: Warning: Control reaches end of function procedure
+*408: Warning: Loop will never terminate
+*409: Warning: Redundant type guard
+*410: Warning: Type test always evaluates to `TRUE'
+*411: Warning: Formal parameter type modified by `WITH' statement
+*412: Warning: Guard never reached
+*413: Warning: Cast converts between types of different size
+*414: Warning: Procedure may read uninitialized `%'
+*415: Warning: Variable parameter may be used uninitialized
+*416: Warning: Call may change guarded variable `%'
+*417: Warning: Cast converts to type with higher alignment
+*418: Warning: Defining an array of size zero
+*419: Warning: Allocating an array of size zero
+*420: Warning: Unused object
+*450: Type must not be abstract
+*451: Type-bound procedure `%' still abstract
+*452: Receiver type is not declared "abstract"
+*453: No BEGIN section permitted in abstract procedure
+*454: Super call to abstract procedure
+*455: Abstract procedure must be exported
+*500: % expected
+*501: Undefined flag name
+*502: This flag only applies to types
+*503: This flag only applies to declarations
+*504: Can't define procedure body unless interface has CODE_FILE
+*505: This flag cannot be used here
+*506: FILE, OBJ, or LIB expected
+*507: FOREIGN or INTERFACE expected
+*508: Calling convention not supported
+*509: System flags not enabled for this module
+*510: Link name already specified
+*511: Flag or string expected
+*512: Flag expected
+*513: Can't create a library if a module links in an object file
+*514: Can't open file `%'
+*515: File with library summary doesn't start with right key
+*516: Flag % not applicable to this object
+*517: Varargs parameter must follow a normal parameter
+*518: Calling convention `%' does not support varargs parameter 
+*519: CSTRING not applicable to this pointer type
+*600: Warning: This flag is already set
+*601: Warning: Runtime check `%' not supported
+*602: Library imported as `%' calls itself `%'
+*999: Unexpected compiler termination
