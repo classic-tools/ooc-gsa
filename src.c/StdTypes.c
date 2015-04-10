@@ -634,7 +634,7 @@ l0:
   Error__ErrIns((int)pos, (short int)-601, (const unsigned char*)i0, i1);
   i0 = *(int*)((int)pragma-4);
   i0 = (int)((_Type)i0)->tbprocs[4];
-  ((void(*)(ParamOptions__BooleanOption, unsigned char))i0)((ParamOptions__BooleanOption)(int)pragma, (unsigned char)0);
+  ((_TBP_ParamOptions__BooleanOptionDesc_Set)i0)((ParamOptions__BooleanOption)(int)pragma, (unsigned char)0);
 l1:
   ;
 }

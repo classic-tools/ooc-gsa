@@ -262,7 +262,7 @@ l7:
 l8:
   i4 = *(int*)((int)r-4);
   i4 = (int)((_Type)i4)->tbprocs[0];
-  i4 = (int)((Data__GlobalRegion(*)(Data__Node))i4)((Data__Node)(int)r);
+  i4 = (int)((_TBP_Data__NodeDesc_Greg)i4)((Data__Node)(int)r);
   i2 = i6 + 52;
   i2 = *(int*)i2;
 l9:
@@ -275,7 +275,7 @@ l10:
 l11:
   i2 = *(int*)(i6-4);
   i2 = (int)((_Type)i2)->tbprocs[1];
-  ((void(*)(Data__Usable, Data__Usable))i2)((Data__Usable)i6, (Data__Usable)i4);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i2)((Data__Usable)i6, (Data__Usable)i4);
   goto l13;
 l12:
   i4 = (int)value;

@@ -15,12 +15,12 @@ void GenInclude__IncludeFile(TextRider__Writer w, const unsigned char* name__ref
   i2 = *(int*)((int)w-4);
   i0 = (int)((_Type)i2)->tbprocs[5];
   i1 = (int)((_Type)i2)->tbprocs[19];
-  ((void(*)(TextRider__Writer))i1)((TextRider__Writer)(int)w);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c0, 11);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)name, name_0d);
+  ((_TBP_TextRider__WriterDesc_WriteLn)i1)((TextRider__Writer)(int)w);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c0, 11);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)name, name_0d);
   i1 = (int)((_Type)i2)->tbprocs[7];
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)suffix, suffix_0d);
-  ((void(*)(TextRider__Writer, unsigned char))i1)((TextRider__Writer)(int)w, (unsigned char)34);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)suffix, suffix_0d);
+  ((_TBP_TextRider__WriterDesc_WriteChar)i1)((TextRider__Writer)(int)w, (unsigned char)34);
   _top_vs = _old_top_vs;
 }
 

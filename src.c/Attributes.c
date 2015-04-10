@@ -168,7 +168,7 @@ Data__GlobalRegion Attributes__CreateGreg(Data__Object bodyOf) {
   register int i0, i1, i2, i3;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(92+8);
+    _mem = GC_malloc(_not_zero(92)+8);
     if (!_mem) _new_failed(_P(6668));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__GlobalRegionDesc_td.td;

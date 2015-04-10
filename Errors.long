@@ -1,4 +1,4 @@
-#	$Id: Errors.lst,v 1.44 1999/07/16 19:09:06 acken Exp $
+#	$Id: Errors.lst,v 1.45 2000/07/21 17:03:09 ooc-devel Exp $
 # Each line starting with a "*" is expected to be of the form
 # "* <number>: <text>", where <number> is a decimal constant in the 
 # range 1..999, and <text> a short description of the associated error
@@ -1103,6 +1103,15 @@ make.
 *455: Abstract procedure must be exported
      All abstract procedures must be declared with an export mark.
 
+*456: Variables of this type are not allowed
+     Instances of this type can only be created using NEW.  It cannot
+     serve as the type of a variable declaration, a record field 
+     declaration, or array base type.
+
+*457: Cannot perform super call for this receiver type
+     The receiver type's base type has no type descriptor, and therefore
+     does not permit static calls to its type-bound procedures.
+
 *999: Unexpected compiler termination
      Either the process was killed by an external signal, or the
      compiler aborted due to an internal run-time error.  The latter
@@ -1132,6 +1141,7 @@ make.
 *517: Varargs parameter must follow a normal parameter
 *518: Calling convention `%' does not support varargs parameter 
 *519: CSTRING not applicable to this pointer type
+*520: VTABLE can only be set on records without base type
 
 *600: Warning: This flag is already set
 *601: Warning: Runtime check `%' not supported

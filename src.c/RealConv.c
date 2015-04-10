@@ -857,76 +857,83 @@ void RealConv__Test(void) {
 }
 
 void RealConv_init(void) {
-  register int i0, i1, i2, i3, i4, i5, i6;
+  register int i0, i1, i2, i3, i4;
   _mid = _register_module(&RealConv_md.md, NULL);
   {
     char *_mem, *_var;
-    _mem = GC_malloc_atomic(4+8);
+    _mem = GC_malloc_atomic(_not_zero(4)+8);
     if (!_mem) _new_failed(_P(13316));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
     i0 = (int)_var;
   }
+  RealConv__RS = (void*)i0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc_atomic(4+8);
+    _mem = GC_malloc_atomic(_not_zero(4)+8);
     if (!_mem) _new_failed(_P(13325));
+    _var = _mem+8;
+    ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
+    i0 = (int)_var;
+  }
+  RealConv__P = (void*)i0;
+  {
+    char *_mem, *_var;
+    _mem = GC_malloc_atomic(_not_zero(4)+8);
+    if (!_mem) _new_failed(_P(13333));
+    _var = _mem+8;
+    ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
+    i0 = (int)_var;
+  }
+  RealConv__F = (void*)i0;
+  i4 = (int)RealConv__RS;
+  {
+    char *_mem, *_var;
+    _mem = GC_malloc_atomic(_not_zero(4)+8);
+    if (!_mem) _new_failed(_P(13341));
+    _var = _mem+8;
+    ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
+    i0 = (int)_var;
+  }
+  RealConv__E = (void*)i0;
+  i0 = (int)RealConv__P;
+  {
+    char *_mem, *_var;
+    _mem = GC_malloc_atomic(_not_zero(4)+8);
+    if (!_mem) _new_failed(_P(13349));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
     i1 = (int)_var;
   }
+  RealConv__SE = (void*)i1;
+  i1 = (int)RealConv__F;
   {
     char *_mem, *_var;
-    _mem = GC_malloc_atomic(4+8);
-    if (!_mem) _new_failed(_P(13333));
+    _mem = GC_malloc_atomic(_not_zero(4)+8);
+    if (!_mem) _new_failed(_P(13358));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
     i2 = (int)_var;
   }
+  RealConv__WE = (void*)i2;
+  i2 = (int)RealConv__E;
   {
     char *_mem, *_var;
-    _mem = GC_malloc_atomic(4+8);
-    if (!_mem) _new_failed(_P(13341));
+    _mem = GC_malloc_atomic(_not_zero(4)+8);
+    if (!_mem) _new_failed(_P(13367));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
     i3 = (int)_var;
   }
-  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i0 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&RealConv__RSState;
-  {
-    char *_mem, *_var;
-    _mem = GC_malloc_atomic(4+8);
-    if (!_mem) _new_failed(_P(13349));
-    _var = _mem+8;
-    ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
-    i4 = (int)_var;
-  }
-  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i1 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&RealConv__PState;
-  {
-    char *_mem, *_var;
-    _mem = GC_malloc_atomic(4+8);
-    if (!_mem) _new_failed(_P(13358));
-    _var = _mem+8;
-    ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
-    i5 = (int)_var;
-  }
-  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i2 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&RealConv__FState;
-  {
-    char *_mem, *_var;
-    _mem = GC_malloc_atomic(4+8);
-    if (!_mem) _new_failed(_P(13367));
-    _var = _mem+8;
-    ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
-    i6 = (int)_var;
-  }
-  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i3 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&RealConv__EState;
-  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i4 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&RealConv__SEState;
-  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i5 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&RealConv__WEState;
-  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i6 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&RealConv__ScanReal;
-  RealConv__RS = (void*)i0;
-  RealConv__P = (void*)i1;
-  RealConv__F = (void*)i2;
-  RealConv__E = (void*)i3;
-  RealConv__SE = (void*)i4;
-  RealConv__WE = (void*)i5;
-  RealConv__SR = (void*)i6;
+  RealConv__SR = (void*)i3;
+  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i4 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&RealConv__RSState;
+  i3 = (int)RealConv__SE;
+  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i0 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&RealConv__PState;
+  i0 = (int)RealConv__WE;
+  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i1 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&RealConv__FState;
+  i1 = (int)RealConv__SR;
+  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i2 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&RealConv__EState;
+  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i3 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&RealConv__SEState;
+  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i0 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&RealConv__WEState;
+  *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i1 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&RealConv__ScanReal;
 }

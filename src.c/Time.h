@@ -17,31 +17,31 @@ typedef struct Time__Interval {
 extern void Time__InitTimeStamp(Time__TimeStamp *t, _Type t__tag, int days, int msecs);
 extern void Time__GetTime(Time__TimeStamp *t, _Type t__tag);
 extern void Time__InitInterval(Time__Interval *int_, _Type int___tag, int days, int msecs);
-#define _TBP_Time__TimeStamp_Add void(*)(Time__TimeStamp *a, _Type a__tag, const Time__Interval *b)
+typedef void(* _TBP_Time__TimeStamp_Add)(Time__TimeStamp *a, _Type a__tag, const Time__Interval *b);
 #define _TBN_Time__TimeStamp_Add 0
 extern void Time__TimeStamp_Add(Time__TimeStamp *a, _Type a__tag, const Time__Interval *b);
-#define _TBP_Time__TimeStamp_Sub void(*)(Time__TimeStamp *a, _Type a__tag, const Time__Interval *b)
+typedef void(* _TBP_Time__TimeStamp_Sub)(Time__TimeStamp *a, _Type a__tag, const Time__Interval *b);
 #define _TBN_Time__TimeStamp_Sub 1
 extern void Time__TimeStamp_Sub(Time__TimeStamp *a, _Type a__tag, const Time__Interval *b);
-#define _TBP_Time__TimeStamp_Delta void(*)(Time__TimeStamp *a, _Type a__tag, const Time__TimeStamp *b, Time__Interval *c, _Type c__tag)
+typedef void(* _TBP_Time__TimeStamp_Delta)(Time__TimeStamp *a, _Type a__tag, const Time__TimeStamp *b, Time__Interval *c, _Type c__tag);
 #define _TBN_Time__TimeStamp_Delta 2
 extern void Time__TimeStamp_Delta(Time__TimeStamp *a, _Type a__tag, const Time__TimeStamp *b, Time__Interval *c, _Type c__tag);
-#define _TBP_Time__TimeStamp_Cmp signed char(*)(Time__TimeStamp *a, _Type a__tag, const Time__TimeStamp *b)
+typedef signed char(* _TBP_Time__TimeStamp_Cmp)(Time__TimeStamp *a, _Type a__tag, const Time__TimeStamp *b);
 #define _TBN_Time__TimeStamp_Cmp 3
 extern signed char Time__TimeStamp_Cmp(Time__TimeStamp *a, _Type a__tag, const Time__TimeStamp *b);
-#define _TBP_Time__Interval_Add void(*)(Time__Interval *a, _Type a__tag, const Time__Interval *b__ref)
+typedef void(* _TBP_Time__Interval_Add)(Time__Interval *a, _Type a__tag, const Time__Interval *b__ref);
 #define _TBN_Time__Interval_Add 0
 extern void Time__Interval_Add(Time__Interval *a, _Type a__tag, const Time__Interval *b__ref);
-#define _TBP_Time__Interval_Sub void(*)(Time__Interval *a, _Type a__tag, const Time__Interval *b__ref)
+typedef void(* _TBP_Time__Interval_Sub)(Time__Interval *a, _Type a__tag, const Time__Interval *b__ref);
 #define _TBN_Time__Interval_Sub 1
 extern void Time__Interval_Sub(Time__Interval *a, _Type a__tag, const Time__Interval *b__ref);
-#define _TBP_Time__Interval_Cmp signed char(*)(Time__Interval *a, _Type a__tag, const Time__Interval *b)
+typedef signed char(* _TBP_Time__Interval_Cmp)(Time__Interval *a, _Type a__tag, const Time__Interval *b);
 #define _TBN_Time__Interval_Cmp 2
 extern signed char Time__Interval_Cmp(Time__Interval *a, _Type a__tag, const Time__Interval *b);
-#define _TBP_Time__Interval_Scale void(*)(Time__Interval *a, _Type a__tag, double b)
+typedef void(* _TBP_Time__Interval_Scale)(Time__Interval *a, _Type a__tag, double b);
 #define _TBN_Time__Interval_Scale 3
 extern void Time__Interval_Scale(Time__Interval *a, _Type a__tag, double b);
-#define _TBP_Time__Interval_Fraction double(*)(Time__Interval *a, _Type a__tag, const Time__Interval *b)
+typedef double(* _TBP_Time__Interval_Fraction)(Time__Interval *a, _Type a__tag, const Time__Interval *b);
 #define _TBN_Time__Interval_Fraction 4
 extern double Time__Interval_Fraction(Time__Interval *a, _Type a__tag, const Time__Interval *b);
 extern struct _TD Time__TimeStamp_td;

@@ -1,7 +1,7 @@
-(*	$Id: CNHTML.Mod,v 1.12 1999/11/29 10:01:43 ooc-devel Exp $	*)
+(*	$Id: CNHTML.Mod,v 1.13 2000/04/22 15:03:10 ooc-devel Exp $	*)
 MODULE CNHTML;
 (*  Converts an Oberon-2 source text into a fully hyperlinked HTML document.
-    Copyright (C) 1998, 1999  Michael van Acken
+    Copyright (C) 1998-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -236,6 +236,7 @@ PROCEDURE WriteSymbols* (module: AST.Module; fileSuffix: ARRAY OF CHAR;
     start: S.StartSymbol;
     lineNumSize: INTEGER;
     lineNumIncr: LONGINT;
+    filename: S.Filename;
     
   PROCEDURE WriteLineNum (num: LONGINT);
     BEGIN
@@ -273,17 +274,22 @@ PROCEDURE WriteSymbols* (module: AST.Module; fileSuffix: ARRAY OF CHAR;
     END FillIn;
   
   PROCEDURE WriteModule (node: AST.Node);
+    VAR
+      filename: ARRAY 256 OF CHAR;
     BEGIN
       WHILE ~(node IS AST.Module) DO
         node := node. up
       END;
-      WriteText (node(AST.Module). name. name. str^)
+      COPY (node(AST.Module). name. name. str^, filename);
+      Output.FixModuleName (filename);
+      WriteText (filename)
     END WriteModule;
   
   PROCEDURE WriteIdent;
     VAR
       id: ARRAY 1024 OF CHAR;
       str: ARRAY 16 OF CHAR;
+      filename: S.Filename;
     BEGIN
       Decl.DeclarationID (sym. up(AST.Ident), "_", id);
       IF (sym. up. up IS AST.Module) THEN  (* module name *)
@@ -301,7 +307,9 @@ PROCEDURE WriteSymbols* (module: AST.Module; fileSuffix: ARRAY OF CHAR;
         IF (sym. up. up(AST.Import). becomes = NIL) OR
            (sym. up. up(AST.Import). module = sym. up) THEN
           w. WriteString ('<A HREF="');
-          w. WriteString (sym. up(AST.Ident). name. str^);
+          COPY (sym. up(AST.Ident). name. str^, filename);
+          Output.FixModuleName (filename);
+          w. WriteString (filename);
           w. WriteString (fileSuffix);
           w. WriteString ('.html"');
           IF xref THEN
@@ -529,7 +537,9 @@ PROCEDURE WriteSymbols* (module: AST.Module; fileSuffix: ARRAY OF CHAR;
               (sym. up. up(AST.Import). module = sym. up) THEN
           (* add link from import clause to imported module *)
           w. WriteString ('<A HREF="');
-          w. WriteString (sym. str^);
+          COPY (sym. str^, filename);
+          Output.FixModuleName (filename);
+          w. WriteString (filename);
           w. WriteString (fileSuffix);
           w. WriteString ('.html">');
           WriteIdent;

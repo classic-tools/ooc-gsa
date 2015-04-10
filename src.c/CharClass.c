@@ -105,5 +105,9 @@ unsigned char CharClass__IsEol(unsigned char ch) {
 }
 
 void CharClass_init(void) {
+  register int i0;
   _mid = _register_module(&CharClass_md.md, NULL);
+  i0 = (int)CharClass__systemEol + 1;
+  *(unsigned char*)(int)CharClass__systemEol = 10;
+  *(unsigned char*)i0 = 0;
 }

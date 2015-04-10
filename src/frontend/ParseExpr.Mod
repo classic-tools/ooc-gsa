@@ -1,4 +1,4 @@
-(* 	$Id: ParseExpr.Mod,v 1.117 2000/02/27 16:29:31 ooc-devel Exp $	 *)
+(* 	$Id: ParseExpr.Mod,v 1.119 2000/07/20 18:24:52 ooc-devel Exp $	 *)
 MODULE ParseExpr;
 (*  Parses Oberon-2 expressions and translates them to GSA.
     Copyright (C) 1995-2000  Michael van Acken
@@ -155,7 +155,10 @@ PROCEDURE AccessVar* (region: D.Region; var: D.Object): D.Usable;
       instr. Operand (Sym.store. currValue);
       var. currValue := instr
       
-    ELSIF (var. localTo # Sym.currScope) THEN
+    ELSIF (var. localTo # Sym.currScope) OR (var. level = Sym.globalLevel) THEN
+      (* within the module body, global variables of the own module are
+         treated as non-local, because they are visibile to all procedures
+         of the module and can also be modified by them *)
       IF Attr.TracesToEmptyStore (var, Sym.store. currValue) THEN
         (* add nonlocal object to enter instruction *)
         res := Attr.FindAddEnterResult (region, var, D.symLocObject,
@@ -928,11 +931,17 @@ PROCEDURE Designator* (region: D.Region; VAR x: Attr.Item);
                  `x. adr' *)
               x. pos := S.currSymPos;
               S.GetSym;
-              (* get type tag and store it in x.ttHint  *)              
-              IF (S.sym = S.arrow) THEN (* super call: use static base type *)
-                x. ttHint := Attr.TypeTag (region, x, 1)
-              ELSE                      (* use dynamic type *)
-                x. ttHint := Attr.TypeTag (region, x, -1)
+              
+              IF (D.structVTableField IN type. flags) THEN
+                (* no type tag, but record has virtual method table *)
+                x. ttHint := x. currValue
+              ELSE
+                (* get type tag and store it in x.ttHint  *)              
+                IF (S.sym = S.arrow) THEN (* super call: use static base type *)
+                  x. ttHint := Attr.TypeTag (region, x, 1)
+                ELSE                      (* use dynamic type *)
+                  x. ttHint := Attr.TypeTag (region, x, -1)
+                END
               END;
               
               x. adr := D.constUndef;  (* use this value in case of error *)
@@ -946,6 +955,8 @@ PROCEDURE Designator* (region: D.Region; VAR x: Attr.Item);
                 ELSIF AbstractSuperCall (obj, type. base) THEN
                   E.Err (x. pos, 454)
                   (* passing control to inherited abstract procedure *)
+                ELSIF (D.structNoDescriptor IN type. base. flags) THEN
+                  E.Err (x. pos, 457)    (* can't do super call *)
                 ELSE
                   obj := Sym.BaseDefinition (obj. data(D.Object), obj. name^);
                   x. adr := Attr.TBProcAdr (region, x. ttHint, type. base, 

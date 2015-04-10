@@ -1,7 +1,7 @@
-(*	$Id: GenStatm.Mod,v 1.51 1999/07/16 17:02:31 acken Exp $	*)
+(*	$Id: GenStatm.Mod,v 1.53 2000/06/25 19:09:57 ooc-devel Exp $	*)
 MODULE GenStatm;
 (*  Translates GSA opcodes to C statements.
-    Copyright (C) 1996-1999  Michael van Acken
+    Copyright (C) 1996-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -782,17 +782,28 @@ PROCEDURE ArrayLength (instr: D.Instruction);
 PROCEDURE TBProcAddress (instr: D.Instruction);
   VAR
     proc: D.Object;
+    type: D.Struct;
     index: LONGINT;
   BEGIN
+    type := instr. opndList. nextOpnd. arg(D.Struct);
     proc := instr. opndList. nextOpnd. nextOpnd. arg(D.Object);
     index := proc. offset;
     NewLine;
     WriteLocation (instr);
     w. WriteString (" = ");
     GenDecl.WriteScalarCast (w, D.struct[D.strAddress], FALSE, FALSE, FALSE);
-    w. WriteString ("((_Type)");
-    WriteNthArg (0, instr);
-    w. WriteString (")->tbprocs[");
+    
+    IF (D.structVTableField IN type. flags) THEN
+      w. WriteString ("(*(void***)");
+      WriteNthArg (0, instr);
+      w. WriteString (")")
+    ELSE
+      w. WriteString ("((_Type)");
+      WriteNthArg (0, instr);
+      w. WriteString (")->tbprocs")
+    END;
+    
+    w. WriteString ("[");
     IF (index < 0) THEN
       w. WriteString ("_TB");
       GenDecl.RegisterTBCall (proc)
@@ -1060,6 +1071,11 @@ PROCEDURE NewInstr (instr: D.Instruction; opc: INTEGER);
 
     PROCEDURE WriteSize(instr: D.Instruction; type: D.Struct; offset: LONGINT);
       BEGIN
+        (* the gc does not consider pointers to the end of a memory segment
+           to be keeping this segment alive; therefore, pointers must always
+           refer a byte _in_ a heap object, which requires that heap objects
+           are never empty *)
+        w. WriteString ("_not_zero(");
         IF (type = NIL) THEN
           WriteNthArg (0, instr)
         ELSE
@@ -1073,6 +1089,7 @@ PROCEDURE NewInstr (instr: D.Instruction; opc: INTEGER);
           END;
           w. WriteLInt (t. size, 0)
         END;
+        w. WriteString (")");
         w. WriteChar ("+");
         w. WriteLInt (offset, 0)
       END WriteSize;
@@ -1188,7 +1205,15 @@ PROCEDURE NewInstr (instr: D.Instruction; opc: INTEGER);
         NewLine;
         w. WriteString ("((_Type*)_var)[-1] = &");
         GenDecl.TypeDescrName (w, type, TRUE);
-        w. WriteString (".td;")
+        w. WriteString (".td;");
+        
+        IF (D.structVTableField IN type. flags) THEN
+          (* fill in the `_vtbl' field if the record was flagged with VTABLE *)
+          NewLine;
+          w. WriteString ("*(void**)_var = (void*)");
+          GenDecl.TypeDescrName (w, type, TRUE);
+          w. WriteString (".td.tbprocs;")
+        END
       ELSIF (type. form = D.strOpenArray) THEN
         NewLine;
         w. WriteString ("_dim_ptr = (void*)(_var-");

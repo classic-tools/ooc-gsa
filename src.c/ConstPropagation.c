@@ -1351,7 +1351,7 @@ ConstPropagation__Lattice ConstPropagation__ConstLattice(Data__Const const_) {
   if (i0) goto l0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(20+8);
+    _mem = GC_malloc(_not_zero(20)+8);
     if (!_mem) _new_failed(_P(21059));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConstPropagation__LatticeDesc_td.td;
@@ -2135,7 +2135,7 @@ l0:
   if (!(i3)) goto l1;
   i3 = (int)Data__InstructionDesc_NthArgument((Data__Instruction)i6, (short int)i5);
   i1 = (int)((_Type)i1)->tbprocs[1];
-  ((void(*)(Data__Usable, Data__Usable))i1)((Data__Usable)i6, (Data__Usable)i3);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i1)((Data__Usable)i6, (Data__Usable)i3);
   i3 = (int)*(void**)i2;
   Data__InstructionDesc_Delete((Data__Instruction)i3);
 l1:
@@ -2173,7 +2173,7 @@ l0:
   i1 += 16;
   i0 = (int)((_Type)i0)->tbprocs[1];
   i1 = (int)*(void**)i1;
-  ((void(*)(Data__Usable, Data__Usable))i0)((Data__Usable)i5, (Data__Usable)i1);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i0)((Data__Usable)i5, (Data__Usable)i1);
   Data__InstructionDesc_Delete((Data__Instruction)i5);
   goto l4;
 l1:
@@ -2266,7 +2266,7 @@ void ConstPropagation__ConstPropagation_ReplaceRegions_ReplaceSingleRegion(Data_
   i2 = *(int*)((int)merge-4);
   Data__RegionDesc_MoveInstructions((Data__Region)i1, (Data__Region)(int)merge);
   i2 = (int)((_Type)i2)->tbprocs[1];
-  ((void(*)(Data__Usable, Data__Usable))i2)((Data__Usable)(int)merge, (Data__Usable)i1);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i2)((Data__Usable)(int)merge, (Data__Usable)i1);
   i2 = (int)merge + 28;
   i3 = (int)*(void**)i2;
   i2 = i3 == 0;
@@ -2294,7 +2294,7 @@ l2:
   i3 = *(int*)(i1-4);
   i2 = (int)*(void**)i2;
   i3 = (int)((_Type)i3)->tbprocs[1];
-  ((void(*)(Data__Usable, Data__Usable))i3)((Data__Usable)i1, (Data__Usable)i2);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i3)((Data__Usable)i1, (Data__Usable)i2);
   Data__InstructionDesc_Delete((Data__Instruction)i1);
 l3:
   ;
@@ -2343,7 +2343,7 @@ l1:
   i3 = *(int*)(i5-4);
   i2 = (int)*(void**)i2;
   i3 = (int)((_Type)i3)->tbprocs[1];
-  ((void(*)(Data__Usable, Data__Usable))i3)((Data__Usable)i5, (Data__Usable)i2);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i3)((Data__Usable)i5, (Data__Usable)i2);
   Data__InstructionDesc_Delete((Data__Instruction)i5);
 l2:
   ConstPropagation__ConstPropagation_ReplaceRegions_ReplaceConstantRegions((Data__Region)i5, &*ConstPropagation__ConstPropagation_ReplaceRegions_changed);
@@ -2374,7 +2374,7 @@ l5:
   i2 = *(int*)(i5-4);
   i1 = (int)*(void**)i1;
   i2 = (int)((_Type)i2)->tbprocs[1];
-  ((void(*)(Data__Usable, Data__Usable))i2)((Data__Usable)i5, (Data__Usable)i1);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i2)((Data__Usable)i5, (Data__Usable)i1);
   Data__InstructionDesc_Delete((Data__Instruction)i5);
   *ConstPropagation__ConstPropagation_ReplaceRegions_changed = 1;
   i3 = 0;
@@ -2436,7 +2436,7 @@ l2:
   i0 = *(int*)(i3-4);
   i0 = _type_test(i0, &Data__RegionDesc_td.td, 5);
   if (!(i0)) goto l3;
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Result, Worklist__UsingHook))i4)((Worklist__Worklist *)(int)ConstPropagation__ConstPropagation_worklist, &Worklist__Worklist_td.td, (Data__Result)i3, (Worklist__UsingHook)(int)&ConstPropagation__UsingHook);
+  ((_TBP_Worklist__Worklist_AddUsingInstr)i4)((Worklist__Worklist *)(int)ConstPropagation__ConstPropagation_worklist, &Worklist__Worklist_td.td, (Data__Result)i3, (Worklist__UsingHook)(int)&ConstPropagation__UsingHook);
   ConstPropagation__ConstPropagation_MarkUnreachable((Data__Region)i3, &*ConstPropagation__ConstPropagation_worklist);
 l3:
   i0 = i3 + 36;
@@ -2462,10 +2462,10 @@ l0:
   i2 = (int)ConstPropagation__unreachableLattice;
   i1 = i1 != i2;
   if (i1) goto l1;
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Result, Worklist__UsingHook))i4)((Worklist__Worklist *)(int)ConstPropagation__ConstPropagation_worklist, &Worklist__Worklist_td.td, (Data__Result)i3, (Worklist__UsingHook)(int)&ConstPropagation__UsingHook);
+  ((_TBP_Worklist__Worklist_AddUsingInstr)i4)((Worklist__Worklist *)(int)ConstPropagation__ConstPropagation_worklist, &Worklist__Worklist_td.td, (Data__Result)i3, (Worklist__UsingHook)(int)&ConstPropagation__UsingHook);
   goto l2;
 l1:
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i0)((Worklist__Worklist *)(int)ConstPropagation__ConstPropagation_worklist, &Worklist__Worklist_td.td, (Data__Info)i3);
+  ((_TBP_Worklist__Worklist_AddTail)i0)((Worklist__Worklist *)(int)ConstPropagation__ConstPropagation_worklist, &Worklist__Worklist_td.td, (Data__Info)i3);
 l2:
   i1 = *(int*)(i3-4);
   i1 = _type_test(i1, &Data__RegionDesc_td.td, 5);
@@ -2531,18 +2531,18 @@ void ConstPropagation__ConstPropagation(Data__Region greg) {
   Data__GlobalRegionDesc_NumberDominanceTree((Data__GlobalRegion)(int)greg);
   i9 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[13];
   ConstPropagation__RegionInitLattices((Data__Region)(int)greg);
-  ((void(*)(Worklist__Worklist *, _Type wl__tag))i0)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  ((_TBP_Worklist__Worklist_Init)i0)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   ConstPropagation__ConstPropagation_InitialWorklist((Data__Region)(int)greg, (unsigned char)1, &worklist);
-  i0 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i9)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  i0 = ((_TBP_Worklist__Worklist_IsEmpty)i9)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   if (i0) goto l6;
   i3 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[15];
   i2 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[18];
   i1 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[24];
   i0 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[22];
 l0:
-  i7 = (int)((Data__Info(*)(Worklist__Worklist *, _Type wl__tag))i3)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  i7 = (int)((_TBP_Worklist__Worklist_GetHead)i3)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   i6 = i7 + 4;
-  ((void(*)(Worklist__Worklist *, _Type wl__tag))i2)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  ((_TBP_Worklist__Worklist_RemoveHead)i2)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   i4 = (int)ConstPropagation__NewLattice((Data__Instruction)i7);
   i5 = i4 + 12;
   i10 = (int)*(void**)i6;
@@ -2576,7 +2576,7 @@ l1:
   if (i6) goto l3;
   i6 = i7;
 l2:
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Result, Worklist__UsingHook))i1)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td, (Data__Result)i6, (Worklist__UsingHook)(int)&ConstPropagation__UsingHook);
+  ((_TBP_Worklist__Worklist_AddUsingInstr)i1)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td, (Data__Result)i6, (Worklist__UsingHook)(int)&ConstPropagation__UsingHook);
   i6 += 12;
   i6 = (int)*(void**)i6;
   i10 = i6 != 0;
@@ -2591,12 +2591,12 @@ l3:
   i6 = (int)ConstPropagation__falseLattice;
   i6 = i4 == i6;
   if (i6) goto l4;
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Region, Worklist__InitHook))i0)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td, (Data__Region)i7, (Worklist__InitHook)0);
+  ((_TBP_Worklist__Worklist_AddInstr)i0)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td, (Data__Region)i7, (Worklist__InitHook)0);
   goto l5;
 l4:
   ConstPropagation__ConstPropagation_MarkUnreachable((Data__Region)i7, &worklist);
 l5:
-  i4 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i9)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  i4 = ((_TBP_Worklist__Worklist_IsEmpty)i9)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   if (!(i4)) goto l0;
 l6:
   ConstPropagation__ConstPropagation_AssertCorrectMarking((Data__Region)(int)greg);
@@ -2611,39 +2611,42 @@ void ConstPropagation__TerminationProc(void) {
 void ConstPropagation_init(void) {
   register int i0, i1, i2, i3, i4;
   _mid = _register_module(&ConstPropagation_md.md, &ConstPropagation__LatticeDesc_td.td);
+  ConstPropagation__counter = 0;
+  Termination__RegisterProc((Termination__Proc)(int)&ConstPropagation__TerminationProc);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(20+8);
+    _mem = GC_malloc(_not_zero(20)+8);
     if (!_mem) _new_failed(_P(45755));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConstPropagation__LatticeDesc_td.td;
     i0 = (int)_var;
   }
+  ConstPropagation__unclassifiedLattice = (void*)i0;
+  i0 = (int)ConstPropagation__unclassifiedLattice;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(20+8);
+    _mem = GC_malloc(_not_zero(20)+8);
     if (!_mem) _new_failed(_P(45784));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConstPropagation__LatticeDesc_td.td;
     i1 = (int)_var;
   }
+  ConstPropagation__nonConstLattice = (void*)i1;
+  i1 = (int)ConstPropagation__nonConstLattice;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(20+8);
+    _mem = GC_malloc(_not_zero(20)+8);
     if (!_mem) _new_failed(_P(45809));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConstPropagation__LatticeDesc_td.td;
     i2 = (int)_var;
   }
+  ConstPropagation__unreachableLattice = (void*)i2;
+  i2 = (int)ConstPropagation__unreachableLattice;
   i4 = i0 + 12;
-  Termination__RegisterProc((Termination__Proc)(int)&ConstPropagation__TerminationProc);
   i3 = i1 + 12;
   *(int*)i4 = 4;
   i4 = i2 + 12;
   *(int*)i3 = 1;
   *(int*)i4 = 0;
-  ConstPropagation__counter = (int)0;
-  ConstPropagation__unclassifiedLattice = (void*)i0;
-  ConstPropagation__nonConstLattice = (void*)i1;
-  ConstPropagation__unreachableLattice = (void*)i2;
 }

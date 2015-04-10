@@ -169,6 +169,8 @@
 *453: No BEGIN section permitted in abstract procedure
 *454: Super call to abstract procedure
 *455: Abstract procedure must be exported
+*456: Variables of this type are not allowed
+*457: Cannot perform super call for this receiver type
 *500: % expected
 *501: Undefined flag name
 *502: This flag only applies to types
@@ -189,6 +191,7 @@
 *517: Varargs parameter must follow a normal parameter
 *518: Calling convention `%' does not support varargs parameter 
 *519: CSTRING not applicable to this pointer type
+*520: VTABLE can only be set on records without base type
 *600: Warning: This flag is already set
 *601: Warning: Runtime check `%' not supported
 *602: Library imported as `%' calls itself `%'

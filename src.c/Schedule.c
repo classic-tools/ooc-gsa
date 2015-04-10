@@ -701,7 +701,7 @@ Schedule__ScheduleInfo Schedule__InitSelection_NewScheduleInfo(void) {
 l0:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(19451));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Schedule__ScheduleInfoDesc_td.td;
@@ -752,7 +752,7 @@ void Schedule__InitSelection(Data__Region r) {
   register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10;
   Worklist__Worklist list;
   i0 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[0];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag))i0)((Worklist__Worklist *)(int)&list, &Worklist__Worklist_td.td);
+  ((_TBP_Worklist__Worklist_Init)i0)((Worklist__Worklist *)(int)&list, &Worklist__Worklist_td.td);
   i0 = (int)r + 56;
   i2 = (int)*(void**)i0;
   i0 = i2 != 0;
@@ -778,7 +778,7 @@ l2:
   r = (void*)i8;
   i3 = Schedule__InitSelection_EndOfRegion((Data__Instruction)i2, (Data__Region *)&r);
   if (!(i3)) goto l3;
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i0)((Worklist__Worklist *)(int)&list, &Worklist__Worklist_td.td, (Data__Info)i2);
+  ((_TBP_Worklist__Worklist_AddHead)i0)((Worklist__Worklist *)(int)&list, &Worklist__Worklist_td.td, (Data__Info)i2);
   i1 = (int)*(void**)i1;
   i3 = i1 + 4;
   *(unsigned char*)i3 = 1;
@@ -795,14 +795,14 @@ l5:
   if (i1) goto l1;
 l6:
   i9 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[13];
-  i0 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i9)((Worklist__Worklist *)(int)&list, &Worklist__Worklist_td.td);
+  i0 = ((_TBP_Worklist__Worklist_IsEmpty)i9)((Worklist__Worklist *)(int)&list, &Worklist__Worklist_td.td);
   if (i0) goto l19;
   i1 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[15];
   i10 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[18];
   i0 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[9];
 l7:
-  i2 = (int)((Data__Info(*)(Worklist__Worklist *, _Type wl__tag))i1)((Worklist__Worklist *)(int)&list, &Worklist__Worklist_td.td);
-  ((void(*)(Worklist__Worklist *, _Type wl__tag))i10)((Worklist__Worklist *)(int)&list, &Worklist__Worklist_td.td);
+  i2 = (int)((_TBP_Worklist__Worklist_GetHead)i1)((Worklist__Worklist *)(int)&list, &Worklist__Worklist_td.td);
+  ((_TBP_Worklist__Worklist_RemoveHead)i10)((Worklist__Worklist *)(int)&list, &Worklist__Worklist_td.td);
   i3 = i2 + 44;
   i4 = *(short int*)i3;
   i5 = i4 == 82;
@@ -883,7 +883,7 @@ l16:
   i2 += 4;
   i2 = *(unsigned char*)i2;
   if (i2) goto l17;
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i0)((Worklist__Worklist *)(int)&list, &Worklist__Worklist_td.td, (Data__Info)i3);
+  ((_TBP_Worklist__Worklist_AddTail)i0)((Worklist__Worklist *)(int)&list, &Worklist__Worklist_td.td, (Data__Info)i3);
   i7 = (int)*(void**)i7;
   i3 = i7 + 4;
   *(unsigned char*)i3 = 1;
@@ -893,7 +893,7 @@ l17:
   i2 = i5 != 0;
   if (i2) goto l16;
 l18:
-  i2 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i9)((Worklist__Worklist *)(int)&list, &Worklist__Worklist_td.td);
+  i2 = ((_TBP_Worklist__Worklist_IsEmpty)i9)((Worklist__Worklist *)(int)&list, &Worklist__Worklist_td.td);
   if (!(i2)) goto l7;
 l19:
   i0 = i8 + 64;
@@ -1749,28 +1749,32 @@ l10:
 }
 
 void Schedule_init(void) {
-  register int i0, i1;
+  register int i0;
   _mid = _register_module(&Schedule_md.md, &Schedule__ScheduleInfoDesc_td.td);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(76+8);
+    _mem = GC_malloc(_not_zero(76)+8);
     if (!_mem) _new_failed(_P(38819));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ObjectDesc_td.td;
     i0 = (int)_var;
   }
+  Schedule__auxObj = (void*)i0;
+  i0 = (int)Schedule__auxObj;
   Data__InitObject((Data__Object)i0, (const unsigned char*)(int)_c0, 1, (signed char)9, (int)-1);
+  i0 = (int)Schedule__auxObj;
   i0 = (int)Data__CreateSymLocation((Data__Addressable)i0, (short int)-3);
+  Schedule__auxLocation = (void*)i0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(80+8);
+    _mem = GC_malloc(_not_zero(80)+8);
     if (!_mem) _new_failed(_P(38955));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__RegionDesc_td.td;
-    i1 = (int)_var;
+    i0 = (int)_var;
   }
-  Data__InitRegion((Data__Region)i1, (int)-1);
-  Schedule__auxLocation = (void*)i0;
-  Schedule__ready = (void*)i1;
+  Schedule__ready = (void*)i0;
+  i0 = (int)Schedule__ready;
+  Data__InitRegion((Data__Region)i0, (int)-1);
   Schedule__infoList = (void*)0;
 }

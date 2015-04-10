@@ -21,7 +21,7 @@ void Scanner__EndOfLine(void) {
     char *_mem, *_var;
     int* _dim_ptr;
     if(i5 < 0) _invalid_length(i5, _P(7484));
-    _mem = GC_malloc_atomic(i5*4+8);
+    _mem = GC_malloc_atomic(_not_zero(i5*4)+8);
     if (!_mem) _new_failed(_P(7458));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -288,7 +288,7 @@ l3:
     char *_mem, *_var;
     int* _dim_ptr;
     if(i0 < 0) _invalid_length(i0, _P(13295));
-    _mem = GC_malloc_atomic(i0*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
     if (!_mem) _new_failed(_P(13254));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -321,7 +321,7 @@ l5:
   i7 = *(int*)(i0-4);
   i1 = *(int*)(i2-8);
   i7 = (int)((_Type)i7)->tbprocs[3];
-  i0 = (int)((ParamOptions__Option(*)(ParamOptions__OptionsSection, const unsigned char*, int name_0d))i7)((ParamOptions__OptionsSection)i0, (const unsigned char*)i2, i1);
+  i0 = (int)((_TBP_ParamOptions__OptionsSectionDesc_Find)i7)((ParamOptions__OptionsSection)i0, (const unsigned char*)i2, i1);
   i2 = i0 != 0;
   if (i2) goto l7;
   if (!(eval)) goto l6;
@@ -707,7 +707,7 @@ void Scanner__ParsePragma_PushCond(unsigned char *Scanner__ParsePragma_evalText)
   register int i0, i1, i2, i3;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(16932));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Scanner__ConditionStackDesc_td.td;
@@ -772,7 +772,7 @@ l1:
   i2 = *(int*)(i0-4);
   i8 = *(int*)(i1-8);
   i2 = (int)((_Type)i2)->tbprocs[3];
-  i4 = (int)((ParamOptions__Option(*)(ParamOptions__OptionsSection, const unsigned char*, int name_0d))i2)((ParamOptions__OptionsSection)i0, (const unsigned char*)i1, i8);
+  i4 = (int)((_TBP_ParamOptions__OptionsSectionDesc_Find)i2)((ParamOptions__OptionsSection)i0, (const unsigned char*)i1, i8);
   i1 = (int)Scanner__str;
   i3 = i4 == 0;
   i6 = Scanner__currSymPos;
@@ -826,7 +826,7 @@ l9:
   i2 = (int)ParamPragmas__pragmas;
   i8 = *(int*)(i2-4);
   i8 = (int)((_Type)i8)->tbprocs[4];
-  ((void(*)(ParamOptions__OptionsSection, ParamOptions__Option))i8)((ParamOptions__OptionsSection)i2, (ParamOptions__Option)i4);
+  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i8)((ParamOptions__OptionsSection)i2, (ParamOptions__Option)i4);
 l10:
   if (i3) goto l17;
   i0 = i4 == 0;
@@ -848,7 +848,7 @@ l11:
   i3 = *(int*)(i8-8);
   *Scanner__ParsePragma_err = i7;
   (void)memcpy((void*) (int)Scanner__ParsePragma_ins, (const void*) (int)_c7, 7);
-  ((void(*)(ParamOptions__StringOption, const unsigned char*, int value_0d))i2)((ParamOptions__StringOption)i4, (const unsigned char*)i8, i3);
+  ((_TBP_ParamOptions__StringOptionDesc_Set)i2)((ParamOptions__StringOption)i4, (const unsigned char*)i8, i3);
 l12:
   i3 = ! i1;
   goto l15;
@@ -859,7 +859,7 @@ l13:
   *Scanner__ParsePragma_err = i1;
   i1 = *(int*)i7;
   (void)memcpy((void*) (int)Scanner__ParsePragma_ins, (const void*) (int)_c8, 8);
-  ((void(*)(ParamOptions__IntegerOption, int))i8)((ParamOptions__IntegerOption)i4, (int)i1);
+  ((_TBP_ParamOptions__IntegerOptionDesc_Set)i8)((ParamOptions__IntegerOption)i4, (int)i1);
   i3 = 0;
   goto l15;
 l14:
@@ -869,7 +869,7 @@ l14:
   *Scanner__ParsePragma_err = i5;
   i5 = *(unsigned char*)i2;
   (void)memcpy((void*) (int)Scanner__ParsePragma_ins, (const void*) (int)_c5, 8);
-  ((void(*)(ParamOptions__BooleanOption, unsigned char))i0)((ParamOptions__BooleanOption)i4, (unsigned char)i5);
+  ((_TBP_ParamOptions__BooleanOptionDesc_Set)i0)((ParamOptions__BooleanOption)i4, (unsigned char)i5);
   i3 = 0;
 l15:
   if (i3) goto l17;
@@ -1109,7 +1109,7 @@ void Scanner__Close(void) {
   if (i1) goto l0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
-  ((void(*)(Files__File))i1)((Files__File)i0);
+  ((_TBP_Files__FileDesc_Close)i1)((Files__File)i0);
   i0 = Scanner__incrementalRead;
   Scanner__inFile = (void*)0;
   Scanner__finished = 1;
@@ -1138,7 +1138,7 @@ void Scanner__ReadBlock(void) {
   i2 = *(int*)(i3-8);
   i1 = (int)((_Type)i1)->tbprocs[4];
   i0 = Scanner__fileLen;
-  ((void(*)(Channel__Reader, unsigned char*, int x_0d, int, int))i1)((Channel__Reader)i4, (unsigned char*)i3, i2, (int)0, (int)i0);
+  ((_TBP_Channel__ReaderDesc_ReadBytes)i1)((Channel__Reader)i4, (unsigned char*)i3, i2, (int)0, (int)i0);
   i4 = Scanner__fileLen;
   Scanner__currLen = i4;
   goto l2;
@@ -1155,7 +1155,7 @@ l1:
   i0 = *(int*)(i3-4);
   i1 = *(int*)(i2-8);
   i0 = (int)((_Type)i0)->tbprocs[4];
-  ((void(*)(Channel__Reader, unsigned char*, int x_0d, int, int))i0)((Channel__Reader)i3, (unsigned char*)i2, i1, (int)i4, (int)i5);
+  ((_TBP_Channel__ReaderDesc_ReadBytes)i0)((Channel__Reader)i3, (unsigned char*)i2, i1, (int)i4, (int)i5);
   i4 = Scanner__currLen;
   i4 = i5 + i4;
   Scanner__currLen = i4;
@@ -1265,7 +1265,7 @@ l0:
     char *_mem, *_var;
     int* _dim_ptr;
     if(i0 < 0) _invalid_length(i0, _P(25199));
-    _mem = GC_malloc_atomic(i0*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
     if (!_mem) _new_failed(_P(25189));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -2249,7 +2249,7 @@ Scanner__ConditionStack Scanner__SaveScanPos_Copy(Scanner__ConditionStack cond) 
   if (i0) goto l0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(38111));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Scanner__ConditionStackDesc_td.td;
@@ -2370,7 +2370,7 @@ l1:
     char *_mem, *_var;
     int* _dim_ptr;
     if(i0 < 0) _invalid_length(i0, _P(41235));
-    _mem = GC_malloc_atomic(i0*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
     if (!_mem) _new_failed(_P(41191));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -2386,7 +2386,7 @@ l1:
   if (i0) goto l9;
   i4 = *(int*)(i3-4);
   i4 = (int)((_Type)i4)->tbprocs[0];
-  i3 = ((int(*)(PosixFileDescr__Channel))i4)((PosixFileDescr__Channel)i3);
+  i3 = ((_TBP_PosixFileDescr__ChannelDesc_Length)i4)((PosixFileDescr__Channel)i3);
   Scanner__fileLen = i3;
   i1 = Scanner__fileLen;
   i4 = (int)Scanner__buf;
@@ -2419,7 +2419,7 @@ l7:
     char *_mem, *_var;
     int* _dim_ptr;
     if(i3 < 0) _invalid_length(i3, _P(41847));
-    _mem = GC_malloc_atomic(i3*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i3*1)+8);
     if (!_mem) _new_failed(_P(41837));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -2442,7 +2442,7 @@ l8:
   Scanner__allowUnderscore = 0;
   i4 = (int)((_Type)i4)->tbprocs[2];
   Scanner__moduleIdent = 0;
-  i3 = (int)((Files__Reader(*)(Files__File))i4)((Files__File)i3);
+  i3 = (int)((_TBP_Files__FileDesc_NewReader)i4)((Files__File)i3);
   Scanner__inReader = (void*)i3;
   Scanner__ReadBlock();
   Scanner__GetSym();
@@ -2571,49 +2571,51 @@ l1:
 }
 
 void Scanner_init(void) {
-  register int i0, i1, i2, i3, i4;
+  register int i0, i1, i2;
   _mid = _register_module(&Scanner_md.md, &Scanner__ParsePragma_Value_td.td);
-  i0 = (int)ParamOptions__CreateInteger((const unsigned char*)(int)_c46, 13, (int)(-2147483647-1), (int)(-2147483647-1), (int)2147483647);
-  i1 = (int)ParamPragmas__pragmas;
-  i2 = *(int*)(i1-4);
-  Scanner__InitKeywords();
-  i2 = (int)((_Type)i2)->tbprocs[4];
+  Scanner__buf = (void*)0;
+  Scanner__inFile = (void*)0;
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    _mem = GC_malloc_atomic(112*1+8);
+    _mem = GC_malloc_atomic(_not_zero(112*1)+8);
     if (!_mem) _new_failed(_P(43851));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 112;
-    i4 = (int)_var;
+    i0 = (int)_var;
   }
+  Scanner__str = (void*)i0;
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    _mem = GC_malloc_atomic(1020*4+8);
+    _mem = GC_malloc_atomic(_not_zero(1020*4)+8);
     if (!_mem) _new_failed(_P(43926));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 1020;
-    i3 = (int)_var;
+    i0 = (int)_var;
   }
-  Scanner__buf = (void*)0;
-  Scanner__eolArray = (void*)i3;
-  Scanner__finished = (unsigned char)1;
-  Scanner__inFile = (void*)0;
-  Scanner__sourceLines = (int)0;
-  Scanner__sourceTotal = (int)0;
-  Scanner__str = (void*)i4;
+  Scanner__eolArray = (void*)i0;
+  Scanner__InitKeywords();
+  Scanner__finished = 1;
+  Scanner__sourceTotal = 0;
+  Scanner__sourceLines = 0;
+  i0 = (int)ParamOptions__CreateInteger((const unsigned char*)(int)_c46, 13, (int)(-2147483647-1), (int)(-2147483647-1), (int)2147483647);
   Scanner__stringLength = (void*)i0;
-  ((void(*)(ParamOptions__OptionsSection, ParamOptions__Option))i2)((ParamOptions__OptionsSection)i1, (ParamOptions__Option)i0);
-  i0 = (int)ParamOptions__CreateInteger((const unsigned char*)(int)_c47, 12, (int)(-2147483647-1), (int)(-2147483647-1), (int)2147483647);
-  i1 = (int)ParamPragmas__pragmas;
-  i2 = *(int*)(i1-4);
+  i0 = (int)ParamPragmas__pragmas;
+  i1 = (int)Scanner__stringLength;
+  i2 = *(int*)(i0-4);
   i2 = (int)((_Type)i2)->tbprocs[4];
+  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i2)((ParamOptions__OptionsSection)i0, (ParamOptions__Option)i1);
+  i0 = (int)ParamOptions__CreateInteger((const unsigned char*)(int)_c47, 12, (int)(-2147483647-1), (int)(-2147483647-1), (int)2147483647);
   Scanner__identLength = (void*)i0;
-  ((void(*)(ParamOptions__OptionsSection, ParamOptions__Option))i2)((ParamOptions__OptionsSection)i1, (ParamOptions__Option)i0);
+  i0 = (int)ParamPragmas__pragmas;
+  i1 = (int)Scanner__identLength;
+  i2 = *(int*)(i0-4);
+  i2 = (int)((_Type)i2)->tbprocs[4];
+  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i2)((ParamOptions__OptionsSection)i0, (ParamOptions__Option)i1);
+  Scanner__allowUnderscore = 0;
+  Scanner__moduleIdent = 0;
   Termination__RegisterProc((Termination__Proc)(int)&Scanner__CatchSignal);
-  Scanner__allowUnderscore = (unsigned char)0;
-  Scanner__moduleIdent = (unsigned char)0;
 }

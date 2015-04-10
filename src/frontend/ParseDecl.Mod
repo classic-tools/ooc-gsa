@@ -1,7 +1,7 @@
-(* 	$Id: ParseDecl.Mod,v 1.73 1999/06/17 18:15:57 acken Exp $	 *)
+(* 	$Id: ParseDecl.Mod,v 1.74 2000/06/25 18:51:48 ooc-devel Exp $	 *)
 MODULE ParseDecl;
 (*  Parses Oberon-2 declarations and module, builds symbol table.
-    Copyright (C) 1995-1999  Michael van Acken
+    Copyright (C) 1995-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -47,6 +47,9 @@ CONST
   (* the type can't be an open array *)
   typeNotAbstract = 5;
   (* the type must not be a record declared as "abstract" *)
+  typeStaticInstance = 6;
+  (* the type must allow static instantiation (e.g., as variable type, field
+     type, or array base type) *)
   
   
 VAR
@@ -342,6 +345,10 @@ PROCEDURE Type (restr: SET; exp: SHORTINT): D.Struct;
       END;
       IF (typeNotAbstract IN restr) & (D.structAbstractType IN t. flags) THEN
         E.Err (pos, 450)      (* can't use abstract type here *)
+      END;
+      IF (typeStaticInstance IN restr) &
+         (D.structDisableStaticInstance IN t. flags) THEN
+        E.Err (pos, 456)      (* can't create static instance of this type *)
       END
     END CheckRestrictions;
   
@@ -367,7 +374,7 @@ PROCEDURE Type (restr: SET; exp: SHORTINT): D.Struct;
         StdTypes.StructAlloc (t. base)
       ELSE                               (* read the array's base type *)
         S.CheckSym (S.of);
-        t. base := Type ({typeNotOpenArray}, exp)
+        t. base := Type ({typeNotOpenArray, typeStaticInstance}, exp)
       END
     END ArrayType;
 
@@ -392,7 +399,7 @@ PROCEDURE Type (restr: SET; exp: SHORTINT): D.Struct;
       
       IF (S.sym = S.of) THEN             (* open array *)
         S.GetSym;
-        t. base := Type (restr*{typeIsParameter}+{typeNotAbstract}, exp)
+        t. base := Type (restr*{typeIsParameter}+{typeNotAbstract, typeStaticInstance}, exp)
       ELSE                               (* `normal' array of fixed length *)
         ArrayType (t)
       END;
@@ -404,7 +411,7 @@ PROCEDURE Type (restr: SET; exp: SHORTINT): D.Struct;
       t := Sym.NewStruct (D.strRecord, S.currSymPos);
       S.GetSym;
       SystemFlags.StructModifiers (t, TRUE);
-      IF (S.sym = S.lParen) THEN(* the record is an extension: read receiver *)
+      IF (S.sym = S.lParen) THEN(* the record is an extension: read base tp *)
         S.GetSym;
         Expr.TypeQualident (t. base, p0);
         IF (t. base. form = D.strRecord) THEN
@@ -423,7 +430,7 @@ PROCEDURE Type (restr: SET; exp: SHORTINT): D.Struct;
         IF (S.sym = S.ident) THEN
           IdentList (first, last, D.objField, exp);  (* get ident list *)
           S.CheckSym (S.colon);
-          last. type := Type ({typeNotOpenArray, typeNotAbstract}, exp); 
+          last. type := Type ({typeNotOpenArray, typeNotAbstract, typeStaticInstance}, exp); 
 
           (* set type for all fields in the ident list and insert them into
              the record's list of fields and type-bound procedures *)
@@ -1139,7 +1146,8 @@ PROCEDURE DeclSeq (exp: SHORTINT);
           IdentList (first, last, D.objVar, exp);  (* read ident list *)
           S.CheckSym (S.colon);
           (* and the variable's type:  *)
-          last. type := Type ({typeNotOpenArray, typeNotAbstract}, exp);
+          last. type := Type ({typeNotOpenArray, typeNotAbstract, typeStaticInstance}, exp);
+          
           (* set type for all variables in the identifier list and insert the 
              variable objects into the current scope *)
           obj := first;

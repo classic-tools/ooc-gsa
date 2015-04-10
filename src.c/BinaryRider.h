@@ -33,115 +33,115 @@ extern void BinaryRider__InitReader(BinaryRider__Reader r, Channel__Channel ch, 
 extern BinaryRider__Reader BinaryRider__ConnectReader(Channel__Channel ch);
 extern void BinaryRider__InitWriter(BinaryRider__Writer w, Channel__Channel ch, signed char byteOrder);
 extern BinaryRider__Writer BinaryRider__ConnectWriter(Channel__Channel ch);
-#define _TBP_BinaryRider__ReaderDesc_Pos int(*)(BinaryRider__Reader r)
+typedef int(* _TBP_BinaryRider__ReaderDesc_Pos)(BinaryRider__Reader r);
 #define _TBN_BinaryRider__ReaderDesc_Pos 0
 extern int BinaryRider__ReaderDesc_Pos(BinaryRider__Reader r);
-#define _TBP_BinaryRider__ReaderDesc_SetPos void(*)(BinaryRider__Reader r, int newPos)
+typedef void(* _TBP_BinaryRider__ReaderDesc_SetPos)(BinaryRider__Reader r, int newPos);
 #define _TBN_BinaryRider__ReaderDesc_SetPos 1
 extern void BinaryRider__ReaderDesc_SetPos(BinaryRider__Reader r, int newPos);
-#define _TBP_BinaryRider__ReaderDesc_ClearError void(*)(BinaryRider__Reader r)
+typedef void(* _TBP_BinaryRider__ReaderDesc_ClearError)(BinaryRider__Reader r);
 #define _TBN_BinaryRider__ReaderDesc_ClearError 2
 extern void BinaryRider__ReaderDesc_ClearError(BinaryRider__Reader r);
-#define _TBP_BinaryRider__ReaderDesc_Available int(*)(BinaryRider__Reader r)
+typedef int(* _TBP_BinaryRider__ReaderDesc_Available)(BinaryRider__Reader r);
 #define _TBN_BinaryRider__ReaderDesc_Available 3
 extern int BinaryRider__ReaderDesc_Available(BinaryRider__Reader r);
-#define _TBP_BinaryRider__ReaderDesc_ReadBytes void(*)(BinaryRider__Reader r, unsigned char* x, int x_0d, int start, int n)
+typedef void(* _TBP_BinaryRider__ReaderDesc_ReadBytes)(BinaryRider__Reader r, unsigned char* x, int x_0d, int start, int n);
 #define _TBN_BinaryRider__ReaderDesc_ReadBytes 4
 extern void BinaryRider__ReaderDesc_ReadBytes(BinaryRider__Reader r, unsigned char* x, int x_0d, int start, int n);
-#define _TBP_BinaryRider__ReaderDesc_ReadBytesOrdered void(*)(BinaryRider__Reader r, unsigned char* x, int x_0d)
+typedef void(* _TBP_BinaryRider__ReaderDesc_ReadBytesOrdered)(BinaryRider__Reader r, unsigned char* x, int x_0d);
 #define _TBN_BinaryRider__ReaderDesc_ReadBytesOrdered 5
 extern void BinaryRider__ReaderDesc_ReadBytesOrdered(BinaryRider__Reader r, unsigned char* x, int x_0d);
-#define _TBP_BinaryRider__ReaderDesc_ReadBool void(*)(BinaryRider__Reader r, unsigned char *bool_)
+typedef void(* _TBP_BinaryRider__ReaderDesc_ReadBool)(BinaryRider__Reader r, unsigned char *bool_);
 #define _TBN_BinaryRider__ReaderDesc_ReadBool 6
 extern void BinaryRider__ReaderDesc_ReadBool(BinaryRider__Reader r, unsigned char *bool_);
-#define _TBP_BinaryRider__ReaderDesc_ReadChar void(*)(BinaryRider__Reader r, unsigned char *ch)
+typedef void(* _TBP_BinaryRider__ReaderDesc_ReadChar)(BinaryRider__Reader r, unsigned char *ch);
 #define _TBN_BinaryRider__ReaderDesc_ReadChar 7
 extern void BinaryRider__ReaderDesc_ReadChar(BinaryRider__Reader r, unsigned char *ch);
-#define _TBP_BinaryRider__ReaderDesc_ReadLChar void(*)(BinaryRider__Reader r, unsigned short int *ch)
+typedef void(* _TBP_BinaryRider__ReaderDesc_ReadLChar)(BinaryRider__Reader r, unsigned short int *ch);
 #define _TBN_BinaryRider__ReaderDesc_ReadLChar 8
 extern void BinaryRider__ReaderDesc_ReadLChar(BinaryRider__Reader r, unsigned short int *ch);
-#define _TBP_BinaryRider__ReaderDesc_ReadString void(*)(BinaryRider__Reader r, unsigned char* s, int s_0d)
+typedef void(* _TBP_BinaryRider__ReaderDesc_ReadString)(BinaryRider__Reader r, unsigned char* s, int s_0d);
 #define _TBN_BinaryRider__ReaderDesc_ReadString 9
 extern void BinaryRider__ReaderDesc_ReadString(BinaryRider__Reader r, unsigned char* s, int s_0d);
-#define _TBP_BinaryRider__ReaderDesc_ReadLString void(*)(BinaryRider__Reader r, unsigned short int* s, int s_0d)
+typedef void(* _TBP_BinaryRider__ReaderDesc_ReadLString)(BinaryRider__Reader r, unsigned short int* s, int s_0d);
 #define _TBN_BinaryRider__ReaderDesc_ReadLString 10
 extern void BinaryRider__ReaderDesc_ReadLString(BinaryRider__Reader r, unsigned short int* s, int s_0d);
-#define _TBP_BinaryRider__ReaderDesc_ReadSInt void(*)(BinaryRider__Reader r, signed char *sint)
+typedef void(* _TBP_BinaryRider__ReaderDesc_ReadSInt)(BinaryRider__Reader r, signed char *sint);
 #define _TBN_BinaryRider__ReaderDesc_ReadSInt 11
 extern void BinaryRider__ReaderDesc_ReadSInt(BinaryRider__Reader r, signed char *sint);
-#define _TBP_BinaryRider__ReaderDesc_ReadInt void(*)(BinaryRider__Reader r, short int *int_)
+typedef void(* _TBP_BinaryRider__ReaderDesc_ReadInt)(BinaryRider__Reader r, short int *int_);
 #define _TBN_BinaryRider__ReaderDesc_ReadInt 12
 extern void BinaryRider__ReaderDesc_ReadInt(BinaryRider__Reader r, short int *int_);
-#define _TBP_BinaryRider__ReaderDesc_ReadLInt void(*)(BinaryRider__Reader r, int *lint)
+typedef void(* _TBP_BinaryRider__ReaderDesc_ReadLInt)(BinaryRider__Reader r, int *lint);
 #define _TBN_BinaryRider__ReaderDesc_ReadLInt 13
 extern void BinaryRider__ReaderDesc_ReadLInt(BinaryRider__Reader r, int *lint);
-#define _TBP_BinaryRider__ReaderDesc_ReadNum void(*)(BinaryRider__Reader r, int *num)
+typedef void(* _TBP_BinaryRider__ReaderDesc_ReadNum)(BinaryRider__Reader r, int *num);
 #define _TBN_BinaryRider__ReaderDesc_ReadNum 14
 extern void BinaryRider__ReaderDesc_ReadNum(BinaryRider__Reader r, int *num);
-#define _TBP_BinaryRider__ReaderDesc_ReadReal void(*)(BinaryRider__Reader r, float *real)
+typedef void(* _TBP_BinaryRider__ReaderDesc_ReadReal)(BinaryRider__Reader r, float *real);
 #define _TBN_BinaryRider__ReaderDesc_ReadReal 15
 extern void BinaryRider__ReaderDesc_ReadReal(BinaryRider__Reader r, float *real);
-#define _TBP_BinaryRider__ReaderDesc_ReadLReal void(*)(BinaryRider__Reader r, double *lreal)
+typedef void(* _TBP_BinaryRider__ReaderDesc_ReadLReal)(BinaryRider__Reader r, double *lreal);
 #define _TBN_BinaryRider__ReaderDesc_ReadLReal 16
 extern void BinaryRider__ReaderDesc_ReadLReal(BinaryRider__Reader r, double *lreal);
-#define _TBP_BinaryRider__ReaderDesc_ReadSet void(*)(BinaryRider__Reader r, unsigned int *s)
+typedef void(* _TBP_BinaryRider__ReaderDesc_ReadSet)(BinaryRider__Reader r, unsigned int *s);
 #define _TBN_BinaryRider__ReaderDesc_ReadSet 17
 extern void BinaryRider__ReaderDesc_ReadSet(BinaryRider__Reader r, unsigned int *s);
-#define _TBP_BinaryRider__ReaderDesc_SetByteOrder void(*)(BinaryRider__Reader r, signed char order)
+typedef void(* _TBP_BinaryRider__ReaderDesc_SetByteOrder)(BinaryRider__Reader r, signed char order);
 #define _TBN_BinaryRider__ReaderDesc_SetByteOrder 18
 extern void BinaryRider__ReaderDesc_SetByteOrder(BinaryRider__Reader r, signed char order);
-#define _TBP_BinaryRider__WriterDesc_Pos int(*)(BinaryRider__Writer w)
+typedef int(* _TBP_BinaryRider__WriterDesc_Pos)(BinaryRider__Writer w);
 #define _TBN_BinaryRider__WriterDesc_Pos 0
 extern int BinaryRider__WriterDesc_Pos(BinaryRider__Writer w);
-#define _TBP_BinaryRider__WriterDesc_SetPos void(*)(BinaryRider__Writer w, int newPos)
+typedef void(* _TBP_BinaryRider__WriterDesc_SetPos)(BinaryRider__Writer w, int newPos);
 #define _TBN_BinaryRider__WriterDesc_SetPos 1
 extern void BinaryRider__WriterDesc_SetPos(BinaryRider__Writer w, int newPos);
-#define _TBP_BinaryRider__WriterDesc_ClearError void(*)(BinaryRider__Writer w)
+typedef void(* _TBP_BinaryRider__WriterDesc_ClearError)(BinaryRider__Writer w);
 #define _TBN_BinaryRider__WriterDesc_ClearError 2
 extern void BinaryRider__WriterDesc_ClearError(BinaryRider__Writer w);
-#define _TBP_BinaryRider__WriterDesc_WriteBytes void(*)(BinaryRider__Writer w, unsigned char* x, int x_0d, int start, int n)
+typedef void(* _TBP_BinaryRider__WriterDesc_WriteBytes)(BinaryRider__Writer w, unsigned char* x, int x_0d, int start, int n);
 #define _TBN_BinaryRider__WriterDesc_WriteBytes 3
 extern void BinaryRider__WriterDesc_WriteBytes(BinaryRider__Writer w, unsigned char* x, int x_0d, int start, int n);
-#define _TBP_BinaryRider__WriterDesc_WriteBytesOrdered void(*)(BinaryRider__Writer w, unsigned char* x, int x_0d)
+typedef void(* _TBP_BinaryRider__WriterDesc_WriteBytesOrdered)(BinaryRider__Writer w, unsigned char* x, int x_0d);
 #define _TBN_BinaryRider__WriterDesc_WriteBytesOrdered 4
 extern void BinaryRider__WriterDesc_WriteBytesOrdered(BinaryRider__Writer w, unsigned char* x, int x_0d);
-#define _TBP_BinaryRider__WriterDesc_WriteBool void(*)(BinaryRider__Writer w, unsigned char bool_)
+typedef void(* _TBP_BinaryRider__WriterDesc_WriteBool)(BinaryRider__Writer w, unsigned char bool_);
 #define _TBN_BinaryRider__WriterDesc_WriteBool 5
 extern void BinaryRider__WriterDesc_WriteBool(BinaryRider__Writer w, unsigned char bool_);
-#define _TBP_BinaryRider__WriterDesc_WriteChar void(*)(BinaryRider__Writer w, unsigned char ch)
+typedef void(* _TBP_BinaryRider__WriterDesc_WriteChar)(BinaryRider__Writer w, unsigned char ch);
 #define _TBN_BinaryRider__WriterDesc_WriteChar 6
 extern void BinaryRider__WriterDesc_WriteChar(BinaryRider__Writer w, unsigned char ch);
-#define _TBP_BinaryRider__WriterDesc_WriteLChar void(*)(BinaryRider__Writer w, unsigned short int ch)
+typedef void(* _TBP_BinaryRider__WriterDesc_WriteLChar)(BinaryRider__Writer w, unsigned short int ch);
 #define _TBN_BinaryRider__WriterDesc_WriteLChar 7
 extern void BinaryRider__WriterDesc_WriteLChar(BinaryRider__Writer w, unsigned short int ch);
-#define _TBP_BinaryRider__WriterDesc_WriteString void(*)(BinaryRider__Writer w, const unsigned char* s, int s_0d)
+typedef void(* _TBP_BinaryRider__WriterDesc_WriteString)(BinaryRider__Writer w, const unsigned char* s, int s_0d);
 #define _TBN_BinaryRider__WriterDesc_WriteString 8
 extern void BinaryRider__WriterDesc_WriteString(BinaryRider__Writer w, const unsigned char* s, int s_0d);
-#define _TBP_BinaryRider__WriterDesc_WriteLString void(*)(BinaryRider__Writer w, const unsigned char* s, int s_0d)
+typedef void(* _TBP_BinaryRider__WriterDesc_WriteLString)(BinaryRider__Writer w, const unsigned char* s, int s_0d);
 #define _TBN_BinaryRider__WriterDesc_WriteLString 9
 extern void BinaryRider__WriterDesc_WriteLString(BinaryRider__Writer w, const unsigned char* s, int s_0d);
-#define _TBP_BinaryRider__WriterDesc_WriteSInt void(*)(BinaryRider__Writer w, signed char sint)
+typedef void(* _TBP_BinaryRider__WriterDesc_WriteSInt)(BinaryRider__Writer w, signed char sint);
 #define _TBN_BinaryRider__WriterDesc_WriteSInt 10
 extern void BinaryRider__WriterDesc_WriteSInt(BinaryRider__Writer w, signed char sint);
-#define _TBP_BinaryRider__WriterDesc_WriteInt void(*)(BinaryRider__Writer w, short int int_)
+typedef void(* _TBP_BinaryRider__WriterDesc_WriteInt)(BinaryRider__Writer w, short int int_);
 #define _TBN_BinaryRider__WriterDesc_WriteInt 11
 extern void BinaryRider__WriterDesc_WriteInt(BinaryRider__Writer w, short int int_);
-#define _TBP_BinaryRider__WriterDesc_WriteLInt void(*)(BinaryRider__Writer w, int lint)
+typedef void(* _TBP_BinaryRider__WriterDesc_WriteLInt)(BinaryRider__Writer w, int lint);
 #define _TBN_BinaryRider__WriterDesc_WriteLInt 12
 extern void BinaryRider__WriterDesc_WriteLInt(BinaryRider__Writer w, int lint);
-#define _TBP_BinaryRider__WriterDesc_WriteNum void(*)(BinaryRider__Writer w, int lint)
+typedef void(* _TBP_BinaryRider__WriterDesc_WriteNum)(BinaryRider__Writer w, int lint);
 #define _TBN_BinaryRider__WriterDesc_WriteNum 13
 extern void BinaryRider__WriterDesc_WriteNum(BinaryRider__Writer w, int lint);
-#define _TBP_BinaryRider__WriterDesc_WriteReal void(*)(BinaryRider__Writer w, float real)
+typedef void(* _TBP_BinaryRider__WriterDesc_WriteReal)(BinaryRider__Writer w, float real);
 #define _TBN_BinaryRider__WriterDesc_WriteReal 14
 extern void BinaryRider__WriterDesc_WriteReal(BinaryRider__Writer w, float real);
-#define _TBP_BinaryRider__WriterDesc_WriteLReal void(*)(BinaryRider__Writer w, double lreal)
+typedef void(* _TBP_BinaryRider__WriterDesc_WriteLReal)(BinaryRider__Writer w, double lreal);
 #define _TBN_BinaryRider__WriterDesc_WriteLReal 15
 extern void BinaryRider__WriterDesc_WriteLReal(BinaryRider__Writer w, double lreal);
-#define _TBP_BinaryRider__WriterDesc_WriteSet void(*)(BinaryRider__Writer w, unsigned int s)
+typedef void(* _TBP_BinaryRider__WriterDesc_WriteSet)(BinaryRider__Writer w, unsigned int s);
 #define _TBN_BinaryRider__WriterDesc_WriteSet 16
 extern void BinaryRider__WriterDesc_WriteSet(BinaryRider__Writer w, unsigned int s);
-#define _TBP_BinaryRider__WriterDesc_SetByteOrder void(*)(BinaryRider__Writer w, signed char order)
+typedef void(* _TBP_BinaryRider__WriterDesc_SetByteOrder)(BinaryRider__Writer w, signed char order);
 #define _TBN_BinaryRider__WriterDesc_SetByteOrder 17
 extern void BinaryRider__WriterDesc_SetByteOrder(BinaryRider__Writer w, signed char order);
 extern struct _TD BinaryRider__ReaderDesc_td;

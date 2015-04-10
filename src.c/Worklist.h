@@ -17,85 +17,85 @@ typedef struct Worklist__Worklist {
 } Worklist__Worklist;
 typedef struct Worklist__Worklist* Worklist__WorklistPtr;
 extern void Worklist__DisposeNode(Worklist__Node *node);
-#define _TBP_Worklist__Worklist_Init void(*)(Worklist__Worklist *wl, _Type wl__tag)
+typedef void(* _TBP_Worklist__Worklist_Init)(Worklist__Worklist *wl, _Type wl__tag);
 #define _TBN_Worklist__Worklist_Init 0
 extern void Worklist__Worklist_Init(Worklist__Worklist *wl, _Type wl__tag);
-#define _TBP_Worklist__NodeDesc_ReplaceData void(*)(Worklist__Node node, Data__Info data)
+typedef void(* _TBP_Worklist__NodeDesc_ReplaceData)(Worklist__Node node, Data__Info data);
 #define _TBN_Worklist__NodeDesc_ReplaceData 0
 extern void Worklist__NodeDesc_ReplaceData(Worklist__Node node, Data__Info data);
-#define _TBP_Worklist__Worklist_GetNode Worklist__Node(*)(Worklist__Worklist *wl, _Type wl__tag, Data__Info data)
+typedef Worklist__Node(* _TBP_Worklist__Worklist_GetNode)(Worklist__Worklist *wl, _Type wl__tag, Data__Info data);
 #define _TBN_Worklist__Worklist_GetNode 1
 extern Worklist__Node Worklist__Worklist_GetNode(Worklist__Worklist *wl, _Type wl__tag, Data__Info data);
-#define _TBP_Worklist__Worklist_Member unsigned char(*)(Worklist__Worklist *wl, _Type wl__tag, Data__Info data)
+typedef unsigned char(* _TBP_Worklist__Worklist_Member)(Worklist__Worklist *wl, _Type wl__tag, Data__Info data);
 #define _TBN_Worklist__Worklist_Member 2
 extern unsigned char Worklist__Worklist_Member(Worklist__Worklist *wl, _Type wl__tag, Data__Info data);
-#define _TBP_Worklist__Worklist_MemberNode unsigned char(*)(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node)
+typedef unsigned char(* _TBP_Worklist__Worklist_MemberNode)(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node);
 #define _TBN_Worklist__Worklist_MemberNode 3
 extern unsigned char Worklist__Worklist_MemberNode(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node);
-#define _TBP_Worklist__Worklist_RemoveNode void(*)(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node)
+typedef void(* _TBP_Worklist__Worklist_RemoveNode)(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node);
 #define _TBN_Worklist__Worklist_RemoveNode 4
 extern void Worklist__Worklist_RemoveNode(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node);
-#define _TBP_Worklist__Worklist_AddNodeHead void(*)(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node)
+typedef void(* _TBP_Worklist__Worklist_AddNodeHead)(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node);
 #define _TBN_Worklist__Worklist_AddNodeHead 5
 extern void Worklist__Worklist_AddNodeHead(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node);
-#define _TBP_Worklist__Worklist_AddHead void(*)(Worklist__Worklist *wl, _Type wl__tag, Data__Info data)
+typedef void(* _TBP_Worklist__Worklist_AddHead)(Worklist__Worklist *wl, _Type wl__tag, Data__Info data);
 #define _TBN_Worklist__Worklist_AddHead 6
 extern void Worklist__Worklist_AddHead(Worklist__Worklist *wl, _Type wl__tag, Data__Info data);
-#define _TBP_Worklist__Worklist_AddHeadUnique void(*)(Worklist__Worklist *wl, _Type wl__tag, Data__Info data)
+typedef void(* _TBP_Worklist__Worklist_AddHeadUnique)(Worklist__Worklist *wl, _Type wl__tag, Data__Info data);
 #define _TBN_Worklist__Worklist_AddHeadUnique 7
 extern void Worklist__Worklist_AddHeadUnique(Worklist__Worklist *wl, _Type wl__tag, Data__Info data);
-#define _TBP_Worklist__Worklist_AddNodeTail void(*)(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node)
+typedef void(* _TBP_Worklist__Worklist_AddNodeTail)(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node);
 #define _TBN_Worklist__Worklist_AddNodeTail 8
 extern void Worklist__Worklist_AddNodeTail(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node);
-#define _TBP_Worklist__Worklist_AddTail void(*)(Worklist__Worklist *wl, _Type wl__tag, Data__Info data)
+typedef void(* _TBP_Worklist__Worklist_AddTail)(Worklist__Worklist *wl, _Type wl__tag, Data__Info data);
 #define _TBN_Worklist__Worklist_AddTail 9
 extern void Worklist__Worklist_AddTail(Worklist__Worklist *wl, _Type wl__tag, Data__Info data);
-#define _TBP_Worklist__Worklist_AddTailUnique void(*)(Worklist__Worklist *wl, _Type wl__tag, Data__Info data)
+typedef void(* _TBP_Worklist__Worklist_AddTailUnique)(Worklist__Worklist *wl, _Type wl__tag, Data__Info data);
 #define _TBN_Worklist__Worklist_AddTailUnique 10
 extern void Worklist__Worklist_AddTailUnique(Worklist__Worklist *wl, _Type wl__tag, Data__Info data);
-#define _TBP_Worklist__Worklist_MoveNodeHead void(*)(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node)
+typedef void(* _TBP_Worklist__Worklist_MoveNodeHead)(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node);
 #define _TBN_Worklist__Worklist_MoveNodeHead 11
 extern void Worklist__Worklist_MoveNodeHead(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node);
-#define _TBP_Worklist__Worklist_MoveNodeTail void(*)(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node)
+typedef void(* _TBP_Worklist__Worklist_MoveNodeTail)(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node);
 #define _TBN_Worklist__Worklist_MoveNodeTail 12
 extern void Worklist__Worklist_MoveNodeTail(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node);
-#define _TBP_Worklist__Worklist_IsEmpty unsigned char(*)(Worklist__Worklist *wl, _Type wl__tag)
+typedef unsigned char(* _TBP_Worklist__Worklist_IsEmpty)(Worklist__Worklist *wl, _Type wl__tag);
 #define _TBN_Worklist__Worklist_IsEmpty 13
 extern unsigned char Worklist__Worklist_IsEmpty(Worklist__Worklist *wl, _Type wl__tag);
-#define _TBP_Worklist__Worklist_GetHeadNode Worklist__Node(*)(Worklist__Worklist *wl, _Type wl__tag)
+typedef Worklist__Node(* _TBP_Worklist__Worklist_GetHeadNode)(Worklist__Worklist *wl, _Type wl__tag);
 #define _TBN_Worklist__Worklist_GetHeadNode 14
 extern Worklist__Node Worklist__Worklist_GetHeadNode(Worklist__Worklist *wl, _Type wl__tag);
-#define _TBP_Worklist__Worklist_GetHead Data__Info(*)(Worklist__Worklist *wl, _Type wl__tag)
+typedef Data__Info(* _TBP_Worklist__Worklist_GetHead)(Worklist__Worklist *wl, _Type wl__tag);
 #define _TBN_Worklist__Worklist_GetHead 15
 extern Data__Info Worklist__Worklist_GetHead(Worklist__Worklist *wl, _Type wl__tag);
-#define _TBP_Worklist__Worklist_GetTailNode Worklist__Node(*)(Worklist__Worklist *wl, _Type wl__tag)
+typedef Worklist__Node(* _TBP_Worklist__Worklist_GetTailNode)(Worklist__Worklist *wl, _Type wl__tag);
 #define _TBN_Worklist__Worklist_GetTailNode 16
 extern Worklist__Node Worklist__Worklist_GetTailNode(Worklist__Worklist *wl, _Type wl__tag);
-#define _TBP_Worklist__Worklist_GetTail Data__Info(*)(Worklist__Worklist *wl, _Type wl__tag)
+typedef Data__Info(* _TBP_Worklist__Worklist_GetTail)(Worklist__Worklist *wl, _Type wl__tag);
 #define _TBN_Worklist__Worklist_GetTail 17
 extern Data__Info Worklist__Worklist_GetTail(Worklist__Worklist *wl, _Type wl__tag);
-#define _TBP_Worklist__Worklist_RemoveHead void(*)(Worklist__Worklist *wl, _Type wl__tag)
+typedef void(* _TBP_Worklist__Worklist_RemoveHead)(Worklist__Worklist *wl, _Type wl__tag);
 #define _TBN_Worklist__Worklist_RemoveHead 18
 extern void Worklist__Worklist_RemoveHead(Worklist__Worklist *wl, _Type wl__tag);
-#define _TBP_Worklist__Worklist_RemoveTail void(*)(Worklist__Worklist *wl, _Type wl__tag)
+typedef void(* _TBP_Worklist__Worklist_RemoveTail)(Worklist__Worklist *wl, _Type wl__tag);
 #define _TBN_Worklist__Worklist_RemoveTail 19
 extern void Worklist__Worklist_RemoveTail(Worklist__Worklist *wl, _Type wl__tag);
-#define _TBP_Worklist__Worklist_Clear void(*)(Worklist__Worklist *wl, _Type wl__tag)
+typedef void(* _TBP_Worklist__Worklist_Clear)(Worklist__Worklist *wl, _Type wl__tag);
 #define _TBN_Worklist__Worklist_Clear 20
 extern void Worklist__Worklist_Clear(Worklist__Worklist *wl, _Type wl__tag);
-#define _TBP_Worklist__Worklist_Length int(*)(Worklist__Worklist *wl, _Type wl__tag)
+typedef int(* _TBP_Worklist__Worklist_Length)(Worklist__Worklist *wl, _Type wl__tag);
 #define _TBN_Worklist__Worklist_Length 21
 extern int Worklist__Worklist_Length(Worklist__Worklist *wl, _Type wl__tag);
-#define _TBP_Worklist__Worklist_AddInstr void(*)(Worklist__Worklist *wl, _Type wl__tag, Data__Region region, Worklist__InitHook hook)
+typedef void(* _TBP_Worklist__Worklist_AddInstr)(Worklist__Worklist *wl, _Type wl__tag, Data__Region region, Worklist__InitHook hook);
 #define _TBN_Worklist__Worklist_AddInstr 22
 extern void Worklist__Worklist_AddInstr(Worklist__Worklist *wl, _Type wl__tag, Data__Region region, Worklist__InitHook hook);
-#define _TBP_Worklist__Worklist_AddInstrUnique void(*)(Worklist__Worklist *wl, _Type wl__tag, Data__Region region, Worklist__InitHook hook)
+typedef void(* _TBP_Worklist__Worklist_AddInstrUnique)(Worklist__Worklist *wl, _Type wl__tag, Data__Region region, Worklist__InitHook hook);
 #define _TBN_Worklist__Worklist_AddInstrUnique 23
 extern void Worklist__Worklist_AddInstrUnique(Worklist__Worklist *wl, _Type wl__tag, Data__Region region, Worklist__InitHook hook);
-#define _TBP_Worklist__Worklist_AddUsingInstr void(*)(Worklist__Worklist *wl, _Type wl__tag, Data__Result used, Worklist__UsingHook hook)
+typedef void(* _TBP_Worklist__Worklist_AddUsingInstr)(Worklist__Worklist *wl, _Type wl__tag, Data__Result used, Worklist__UsingHook hook);
 #define _TBN_Worklist__Worklist_AddUsingInstr 24
 extern void Worklist__Worklist_AddUsingInstr(Worklist__Worklist *wl, _Type wl__tag, Data__Result used, Worklist__UsingHook hook);
-#define _TBP_Worklist__Worklist_AddUsingInstrUnique void(*)(Worklist__Worklist *wl, _Type wl__tag, Data__Result used, Worklist__UsingHook hook)
+typedef void(* _TBP_Worklist__Worklist_AddUsingInstrUnique)(Worklist__Worklist *wl, _Type wl__tag, Data__Result used, Worklist__UsingHook hook);
 #define _TBN_Worklist__Worklist_AddUsingInstrUnique 25
 extern void Worklist__Worklist_AddUsingInstrUnique(Worklist__Worklist *wl, _Type wl__tag, Data__Result used, Worklist__UsingHook hook);
 extern struct _TD Worklist__Worklist_td;

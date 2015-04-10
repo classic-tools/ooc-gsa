@@ -444,57 +444,57 @@ void ParseDecl__Type_CheckRestrictions(Data__Struct t, unsigned int restr, int *
   register int i0, i1;
   i0 = (restr & ((unsigned int)1 << 0)) != 0;
   if (!(i0)) goto l0;
-  i0 = SymbolTable__Unnamed((Data__Struct)(int)t);
-  if (!(i0)) goto l0;
-  i0 = (int)t + 20;
-  i1 = *(signed char*)i0;
-  i0 = i1 == 30;
-  if (i0) goto l0;
-  i1 = i1 == 28;
+  i1 = SymbolTable__Unnamed((Data__Struct)(int)t);
+  if (!(i1)) goto l0;
+  i1 = (int)t + 20;
+  i0 = *(signed char*)i1;
+  i1 = i0 == 30;
   if (i1) goto l0;
-  i1 = *ParseDecl__Type_pos;
-  Error__Err((int)i1, (short int)203);
+  i0 = i0 == 28;
+  if (i0) goto l0;
+  i0 = *ParseDecl__Type_pos;
+  Error__Err((int)i0, (short int)203);
 l0:
   i0 = (restr & ((unsigned int)1 << 1)) != 0;
   if (!(i0)) goto l2;
-  i0 = (int)t + 20;
-  i1 = *(signed char*)i0;
-  i0 = i1 == 31;
-  if (i0) goto l2;
-  i1 = i1 != 27;
-  if (i1) goto l1;
-  i1 = (int)t + 24;
-  i1 = (int)*(void**)i1;
-  i1 += 20;
-  i1 = *(signed char*)i1;
-  i1 = i1 == 31;
+  i1 = (int)t + 20;
+  i0 = *(signed char*)i1;
+  i1 = i0 == 31;
   if (i1) goto l2;
+  i0 = i0 != 27;
+  if (i0) goto l1;
+  i0 = (int)t + 24;
+  i0 = (int)*(void**)i0;
+  i0 += 20;
+  i0 = *(signed char*)i0;
+  i0 = i0 == 31;
+  if (i0) goto l2;
 l1:
-  i1 = *ParseDecl__Type_pos;
-  Error__Err((int)i1, (short int)204);
+  i0 = *ParseDecl__Type_pos;
+  Error__Err((int)i0, (short int)204);
 l2:
   i0 = (restr & ((unsigned int)1 << 2)) != 0;
   if (!(i0)) goto l6;
-  i1 = (int)t + 20;
-  i1 = *(signed char*)i1;
-  i0 = i1 < 1;
-  if (i0) goto l3;
-  i0 = i1 <= 17;
-  if (i0) goto l4;
+  i0 = (int)t + 20;
+  i0 = *(signed char*)i0;
+  i1 = i0 < 1;
+  if (i1) goto l3;
+  i1 = i0 <= 17;
+  if (i1) goto l4;
 l3:
-  i0 = i1 != 27;
-  if (!(i0)) goto l4;
-  i1 = i1 != 28;
-  if (i1) goto l5;
+  i1 = i0 != 27;
+  if (!(i1)) goto l4;
+  i0 = i0 != 28;
+  if (i0) goto l5;
 l4:
-  i1 = SymbolTable__Unnamed((Data__Struct)(int)t);
-  if (!(i1)) goto l6;
-  i1 = *ParseDecl__Type_pos;
-  Error__Err((int)i1, (short int)206);
+  i0 = SymbolTable__Unnamed((Data__Struct)(int)t);
+  if (!(i0)) goto l6;
+  i0 = *ParseDecl__Type_pos;
+  Error__Err((int)i0, (short int)206);
   goto l6;
 l5:
-  i1 = *ParseDecl__Type_pos;
-  Error__Err((int)i1, (short int)205);
+  i0 = *ParseDecl__Type_pos;
+  Error__Err((int)i0, (short int)205);
 l6:
   i0 = (restr & ((unsigned int)1 << 3)) != 0;
   if (!(i0)) goto l7;
@@ -527,6 +527,15 @@ l8:
   i0 = *ParseDecl__Type_pos;
   Error__Err((int)i0, (short int)450);
 l9:
+  i0 = (restr & ((unsigned int)1 << 6)) != 0;
+  if (!(i0)) goto l10;
+  i0 = (int)t + 40;
+  i0 = *(unsigned int*)i0;
+  i0 = (i0 & ((unsigned int)1 << 11)) != 0;
+  if (!(i0)) goto l10;
+  i0 = *ParseDecl__Type_pos;
+  Error__Err((int)i0, (short int)456);
+l10:
   ;
 }
 
@@ -556,7 +565,7 @@ l1:
   if (i0) goto l2;
   i0 = *ParseDecl__Type_exp;
   Scanner__CheckSym((signed char)25);
-  i0 = (int)ParseDecl__Type((unsigned int)0x10U, (signed char)i0);
+  i0 = (int)ParseDecl__Type((unsigned int)0x50U, (signed char)i0);
   i1 = (int)t + 24;
   *(void**)i1 = (void*)i0;
   goto l3;
@@ -704,7 +713,7 @@ l10:
   ParseDecl__IdentList((Data__Object *)(int)&first, (Data__Object *)(int)&last, (signed char)5, (signed char)exp);
   i1 = (int)last + 24;
   Scanner__CheckSym((signed char)20);
-  i3 = (int)ParseDecl__Type((unsigned int)0x30U, (signed char)exp);
+  i3 = (int)ParseDecl__Type((unsigned int)0x70U, (signed char)exp);
   *(void**)i1 = (void*)i3;
   i3 = (int)first != 0;
   if (i3) goto l11;
@@ -762,7 +771,7 @@ l19:
   goto l21;
 l20:
   i5 = restr & 0x1U;
-  i5 |= 0x20U;
+  i5 |= 0x60U;
   Scanner__GetSym();
   i5 = (int)ParseDecl__Type((unsigned int)i5, (signed char)exp);
   i4 = i7 + 24;
@@ -838,7 +847,7 @@ void ParseDecl__FinishRegion(Data__GlobalRegion greg, Attributes__ExitInfo *exit
   i2 = (int)*(void**)i2;
   i2 = (int)Data__GetIntConst((int)0, (Data__Struct)i2);
   i1 = (int)((_Type)i1)->tbprocs[1];
-  ((void(*)(Data__Usable, Data__Usable))i1)((Data__Usable)i0, (Data__Usable)i2);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i1)((Data__Usable)i0, (Data__Usable)i2);
   i0 = (int)exitInfo + 24;
   i0 = *(unsigned char*)i0;
   if (!(i0)) goto l0;
@@ -1807,7 +1816,7 @@ l3:
   ParseDecl__IdentList((Data__Object *)(int)&first, (Data__Object *)(int)&last, (signed char)3, (signed char)exp);
   i6 = (int)last + 24;
   Scanner__CheckSym((signed char)20);
-  i0 = (int)ParseDecl__Type((unsigned int)0x30U, (signed char)exp);
+  i0 = (int)ParseDecl__Type((unsigned int)0x70U, (signed char)exp);
   *(void**)i6 = (void*)i0;
   i0 = (int)first != 0;
   if (i0) goto l4;
@@ -2221,9 +2230,9 @@ l7:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i4 < 0) _invalid_length(i4, _P(47684));
-    _mem = GC_malloc_atomic(i4*1+8);
-    if (!_mem) _new_failed(_P(47643));
+    if(i4 < 0) _invalid_length(i4, _P(48103));
+    _mem = GC_malloc_atomic(_not_zero(i4*1)+8);
+    if (!_mem) _new_failed(_P(48062));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i4;
@@ -2410,5 +2419,5 @@ l13:
 
 void ParseDecl_init(void) {
   _mid = _register_module(&ParseDecl_md.md, NULL);
-  ParseDecl__removeDeadCode = (unsigned char)1;
+  ParseDecl__removeDeadCode = 1;
 }

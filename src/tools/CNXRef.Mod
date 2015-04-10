@@ -1,7 +1,7 @@
-(*	$Id: CNXRef.Mod,v 1.12 1999/11/14 18:16:36 ooc-devel Exp $	*)
+(*	$Id: CNXRef.Mod,v 1.13 2000/04/22 15:02:56 ooc-devel Exp $	*)
 MODULE CNXRef;
 (*  Creates cross-reference tables in HTML format.
-    Copyright (C) 1998, 1999  Michael van Acken
+    Copyright (C) 1998-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -275,12 +275,18 @@ PROCEDURE WriteObject (obj: SymTab.Object; selectProc: BOOLEAN;
       END
     END WriteScope;
 
-  PROCEDURE WriteModule (u: SymTab.Usable);
+  PROCEDURE WriteModule (u: SymTab.Usable; tag: BOOLEAN);
+    VAR
+      filename: ARRAY 256 OF CHAR;
     BEGIN
       WHILE ~(u IS SymTab.Module) DO
         u := u. localTo
       END;
-      HTML.WriteText (u(SymTab.Module). name^)
+      COPY (u(SymTab.Module). name^, filename);
+      IF tag THEN
+        Output.FixModuleName (filename)
+      END;
+      HTML.WriteText (filename)
     END WriteModule;
   
   PROCEDURE WriteLocation (scope: SymTab.Object);
@@ -290,7 +296,7 @@ PROCEDURE WriteObject (obj: SymTab.Object; selectProc: BOOLEAN;
       WITH scope: SymTab.Module DO
         HTML.WriteText (scope. name^)
       | scope: SymTab.TBProc DO
-        WriteModule (scope. localTo);
+        WriteModule (scope. localTo, FALSE);
         HTML.WriteText (".");
         base := SymTab.GetBaseType (scope, TRUE);
         HTML.WriteText (base. obj. name^);
@@ -310,7 +316,7 @@ PROCEDURE WriteObject (obj: SymTab.Object; selectProc: BOOLEAN;
       HTML.WriteTag ("<LI>");
       HTML.WriteTag (msg);
       HTML.WriteTag ('<A HREF="');
-      WriteModule (use. scope);
+      WriteModule (use. scope, TRUE);
       IF defOnly THEN
         HTML.WriteTag ("_def")
       END;
@@ -408,7 +414,7 @@ PROCEDURE WriteObject (obj: SymTab.Object; selectProc: BOOLEAN;
         HTML.WriteLn;
         HTML.WriteSpaces (indent+2);
         HTML.WriteTag ('<LI>Base Definition: <A HREF="');
-        WriteModule (base);
+        WriteModule (base, TRUE);
         IF defOnly THEN
           HTML.WriteTag ("_def")
         END;

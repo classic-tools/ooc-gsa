@@ -9,8 +9,7 @@
 
 /* local definitions */
 static External__Lib External__libList;
-unsigned char External__libFileId[5] = {
-  239, 154, 82, 108, 0, };
+unsigned char External__libFileId[5];
 static unsigned char External__emptyString[2];
 
 /* function prototypes */

@@ -1,7 +1,7 @@
-(*	$Id: CNOutput.Mod,v 1.4 1999/11/06 15:36:02 ooc-devel Exp $	*)
+(*	$Id: CNOutput.Mod,v 1.5 2000/04/22 15:03:00 ooc-devel Exp $	*)
 MODULE CNOutput;
 (*  Handles output redirection for the client modules.
-    Copyright (C) 1998, 1999  Michael van Acken
+    Copyright (C) 1998-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -57,6 +57,20 @@ PROCEDURE FatalError* (msg: ARRAY OF CHAR);
     Parameter.FatalError (msg)
   END FatalError;
 
+PROCEDURE FixModuleName* (VAR modName: ARRAY OF CHAR);
+  VAR
+    i: LONGINT;
+  BEGIN
+    i := 0;
+    WHILE (modName[i] # 0X) DO         (* replace ":" with "_" *)
+      IF (modName[i] = ":") THEN
+        modName[i] := "_"
+      END;
+      INC (i)
+    END
+  END FixModuleName;
+
+
 PROCEDURE Open* (modName, suffix1, suffix2: ARRAY OF CHAR): Channel.Channel;
   VAR
     file: Files.File;
@@ -67,6 +81,7 @@ PROCEDURE Open* (modName, suffix1, suffix2: ARRAY OF CHAR): Channel.Channel;
       RETURN StdChannels.stdout
     ELSE
       COPY (modName, filename);
+      FixModuleName (filename);
       Strings.Append (suffix1, filename);
       Filenames.BuildFilename (filename, outputDir. value^, filename, suffix2);
       file := Files.New (filename, {Files.write}, res);

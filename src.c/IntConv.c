@@ -343,32 +343,35 @@ void IntConv_init(void) {
   _mid = _register_module(&IntConv_md.md, NULL);
   {
     char *_mem, *_var;
-    _mem = GC_malloc_atomic(4+8);
+    _mem = GC_malloc_atomic(_not_zero(4)+8);
     if (!_mem) _new_failed(_P(8225));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
     i0 = (int)_var;
   }
+  IntConv__S = (void*)i0;
+  i0 = (int)IntConv__S;
   {
     char *_mem, *_var;
-    _mem = GC_malloc_atomic(4+8);
+    _mem = GC_malloc_atomic(_not_zero(4)+8);
     if (!_mem) _new_failed(_P(8233));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
     i1 = (int)_var;
   }
+  IntConv__W = (void*)i1;
+  i1 = (int)IntConv__W;
   {
     char *_mem, *_var;
-    _mem = GC_malloc_atomic(4+8);
+    _mem = GC_malloc_atomic(_not_zero(4)+8);
     if (!_mem) _new_failed(_P(8241));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ConvTypes__ScanDesc_td.td;
     i2 = (int)_var;
   }
+  IntConv__SI = (void*)i2;
+  i2 = (int)IntConv__SI;
   *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i0 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&IntConv__SState;
   *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i1 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&IntConv__WState;
   *(void(**)(unsigned char, signed char *, ConvTypes__ScanState *))i2 = (void(*)(unsigned char, signed char *, ConvTypes__ScanState *))(int)&IntConv__ScanInt;
-  IntConv__S = (void*)i0;
-  IntConv__W = (void*)i1;
-  IntConv__SI = (void*)i2;
 }

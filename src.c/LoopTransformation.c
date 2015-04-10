@@ -100,7 +100,7 @@ l1:
   i0 = *(unsigned int*)i0;
   i0 = (i0 & ((unsigned int)1 << 7)) != 0;
   if (i0) goto l2;
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i1)((Worklist__Worklist *)(int)LoopTransformation__AnalyseLoop_worklist, &Worklist__Worklist_td.td, (Data__Info)i2);
+  ((_TBP_Worklist__Worklist_AddTail)i1)((Worklist__Worklist *)(int)LoopTransformation__AnalyseLoop_worklist, &Worklist__Worklist_td.td, (Data__Info)i2);
   goto l4;
 l2:
   i0 = i2 + 8;
@@ -164,19 +164,19 @@ void LoopTransformation__AnalyseLoop(Data__Region loop) {
   Worklist__Worklist worklist;
   i0 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[0];
   i9 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[13];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag))i0)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  ((_TBP_Worklist__Worklist_Init)i0)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   LoopTransformation__AnalyseLoop_FillWorklist((Data__Region)(int)loop, (Data__Region *)&loop, &worklist);
-  i0 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i9)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  i0 = ((_TBP_Worklist__Worklist_IsEmpty)i9)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   if (i0) goto l22;
   i1 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[15];
   i10 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[18];
   i0 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[9];
   i3 = (int)loop;
 l0:
-  i2 = (int)((Data__Info(*)(Worklist__Worklist *, _Type wl__tag))i1)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  i2 = (int)((_TBP_Worklist__Worklist_GetHead)i1)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   i4 = *(int*)(i2-4);
   i4 = _type_test(i4, &Data__GateDesc_td.td, 5);
-  ((void(*)(Worklist__Worklist *, _Type wl__tag))i10)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  ((_TBP_Worklist__Worklist_RemoveHead)i10)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   if (i4) goto l9;
   i8 = i2 + 44;
   i6 = *(short int*)i8;
@@ -305,7 +305,7 @@ l17:
   i4 = *(int*)i4;
   i4 = i4 == 2;
   if (i4) goto l18;
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i0)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td, (Data__Info)i6);
+  ((_TBP_Worklist__Worklist_AddTail)i0)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td, (Data__Info)i6);
 l18:
   i4 = i8 + 4;
   i8 = (int)*(void**)i4;
@@ -321,7 +321,7 @@ l20:
   i4 = i2 != 0;
   if (i4) goto l16;
 l21:
-  i2 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i9)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  i2 = ((_TBP_Worklist__Worklist_IsEmpty)i9)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   if (!(i2)) goto l0;
 l22:
   ;
@@ -363,7 +363,7 @@ l2:
   i3 = (int)*(void**)i3;
   i2 = (int)((_Type)i2)->tbprocs[1];
   i3 = (int)*(void**)i3;
-  ((void(*)(Data__Usable, Data__Usable))i2)((Data__Usable)i0, (Data__Usable)i3);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i2)((Data__Usable)i0, (Data__Usable)i3);
   goto l4;
 l3:
   LoopTransformation__Region_MoveInvariantCode((Data__Region)(int)loop, (Data__Region)i0);

@@ -25,7 +25,7 @@ l0:
   i1 = (int)*(void**)i1;
   i3 = (int)((_Type)i3)->tbprocs[1];
   i1 = (int)*(void**)i1;
-  ((void(*)(Data__Usable, Data__Usable))i3)((Data__Usable)i2, (Data__Usable)i1);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i3)((Data__Usable)i2, (Data__Usable)i1);
   Data__InstructionDesc_Delete((Data__Instruction)i2);
   goto l2;
 l1:

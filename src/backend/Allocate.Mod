@@ -1,7 +1,7 @@
-(* 	$Id: Allocate.Mod,v 2.34 1999/06/03 12:10:42 acken Exp $	 *)
+(* 	$Id: Allocate.Mod,v 2.36 2000/07/21 16:04:51 ooc-devel Exp $	 *)
 MODULE Allocate;
 (*  Adds location attributes to GSA code.
-    Copyright (C) 1996-1999  Michael van Acken
+    Copyright (C) 1996-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -641,17 +641,17 @@ PROCEDURE ResolveVarConflicts (greg: D.GlobalRegion);
     
     PROCEDURE ScalarLocalVar (loc: D.Location; VAR obj: D.Object): BOOLEAN;
     (* Returns TRUE iff `loc' refers to a local scalar variable of the 
-       current procedure or module body.  *)
+       current procedure, but is not declared in the module body.  *)
       BEGIN
         IF (loc # NIL) & (loc(D.SymLocation). var IS D.Object) THEN
           obj := loc(D.SymLocation). var(D.Object);
-          RETURN (obj. localTo = greg. bodyOf) & (obj. marker >= 0)
+          RETURN (obj. localTo = greg. bodyOf) & (obj. marker > 0)
         ELSE
           RETURN FALSE
         END
       END ScalarLocalVar;
     
-    PROCEDURE Conflict (res0, res1: D.Result);
+    PROCEDURE Conflict (res0, res1: D.Result): BOOLEAN;
       PROCEDURE Copy (res: D.Result);
         VAR
           instr: D.Instruction;
@@ -688,9 +688,13 @@ PROCEDURE ResolveVarConflicts (greg: D.GlobalRegion);
             Copy (res0)
           ELSE
             Copy (res1)
-          END
+          END;
+          RETURN TRUE
+        ELSIF (res0 # NIL) THEN
+          Copy (res0);
+          RETURN TRUE
         ELSE
-          Copy (res0)
+          RETURN FALSE
         END
       END Conflict;
     
@@ -703,8 +707,7 @@ PROCEDURE ResolveVarConflicts (greg: D.GlobalRegion);
         IF (ia. list[marker]. reads = u) & (u # D.constUndef) THEN
           ia. list[marker]. reads := NIL
         ELSIF (ia. list[marker]. reads # NIL) THEN
-          Conflict (ia. list[marker]. reads, NIL);
-          RETURN TRUE
+          RETURN Conflict (ia. list[marker]. reads, NIL)
         END;
         RETURN FALSE
       END WriteConflict;
@@ -715,8 +718,7 @@ PROCEDURE ResolveVarConflicts (greg: D.GlobalRegion);
         IF (ia. list[marker]. reads = NIL) THEN
           ia. list[marker]. reads := res
         ELSIF (ia. list[marker]. reads # res) THEN
-          Conflict (res, ia. list[marker]. reads);
-          RETURN TRUE
+          RETURN Conflict (res, ia. list[marker]. reads)
         END;
         RETURN FALSE
       END ReadConflict;

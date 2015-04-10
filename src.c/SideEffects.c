@@ -15,7 +15,7 @@ void SideEffects__AddProc(Data__GlobalRegion greg) {
   if (i0) goto l7;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(40+8);
+    _mem = GC_malloc(_not_zero(40)+8);
     if (!_mem) _new_failed(_P(5443));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &SideEffects__ProcInfoDesc_td.td;
@@ -152,7 +152,7 @@ void SideEffects__Append(SideEffects__InfoList *list, SideEffects__ProcInfo info
 l0:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(8+8);
+    _mem = GC_malloc(_not_zero(8)+8);
     if (!_mem) _new_failed(_P(7082));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &SideEffects__InfoListDesc_td.td;
@@ -218,7 +218,7 @@ SideEffects__CallInfo SideEffects__Adjust_ExamineInstructions_GetCallInfo(Data__
   register int i0, i1, i2, i3, i4;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(36+8);
+    _mem = GC_malloc(_not_zero(36)+8);
     if (!_mem) _new_failed(_P(8632));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &SideEffects__CallInfoDesc_td.td;
@@ -226,7 +226,7 @@ SideEffects__CallInfo SideEffects__Adjust_ExamineInstructions_GetCallInfo(Data__
   }
   i0 = *(int*)((int)call-4);
   i0 = (int)((_Type)i0)->tbprocs[0];
-  i1 = (int)((Data__GlobalRegion(*)(Data__Node))i0)((Data__Node)(int)call);
+  i1 = (int)((_TBP_Data__NodeDesc_Greg)i0)((Data__Node)(int)call);
   i0 = (int)call + 28;
   i0 = (int)*(void**)i0;
   i0 += 8;
@@ -635,7 +635,7 @@ l22:
   if (i2) goto l27;
   i6 = *(int*)(i18-4);
   i6 = (int)((_Type)i6)->tbprocs[0];
-  i6 = (int)((Data__GlobalRegion(*)(Data__Node))i6)((Data__Node)i18);
+  i6 = (int)((_TBP_Data__NodeDesc_Greg)i6)((Data__Node)i18);
   i9 = (int)*(void**)i3;
   i9 += 8;
   i9 = (int)*(void**)i9;
@@ -860,7 +860,7 @@ Data__Result SideEffects__Adjust_AdjustGSA_Address(Data__Region region, Data__Ad
   register int i0, i1, i2;
   i0 = *(int*)((int)region-4);
   i0 = (int)((_Type)i0)->tbprocs[0];
-  i1 = (int)((Data__GlobalRegion(*)(Data__Node))i0)((Data__Node)(int)region);
+  i1 = (int)((_TBP_Data__NodeDesc_Greg)i0)((Data__Node)(int)region);
   i0 = *(int*)((int)var-4);
   i0 = _type_test(i0, &Data__ObjectDesc_td.td, 4);
   if (!(i0)) goto l0;
@@ -918,7 +918,7 @@ l2:
   i2 = (int)*(void**)i3;
   i1 = *(int*)(i2-4);
   i1 = (int)((_Type)i1)->tbprocs[1];
-  ((void(*)(Data__Usable, Data__Usable))i1)((Data__Usable)i2, (Data__Usable)i6);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i1)((Data__Usable)i2, (Data__Usable)i6);
   Data__InstructionDesc_Operand((Data__Instruction)i6, (Data__Usable)(int)var);
   i5 = (int)*(void**)i4;
   i8 = *(int*)i8;
@@ -956,7 +956,7 @@ l5:
 l6:
   i1 = *(int*)(i2-4);
   i1 = (int)((_Type)i1)->tbprocs[1];
-  ((void(*)(Data__Usable, Data__Usable))i1)((Data__Usable)i2, (Data__Usable)(int)value);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i1)((Data__Usable)i2, (Data__Usable)(int)value);
 l7:
   ;
 }
@@ -989,7 +989,7 @@ l1:
   i1 += 56;
   i0 = (int)((_Type)i0)->tbprocs[0];
   i1 = (int)*(void**)i1;
-  i0 = (int)((Data__GlobalRegion(*)(Data__Node))i0)((Data__Node)(int)u);
+  i0 = (int)((_TBP_Data__NodeDesc_Greg)i0)((Data__Node)(int)u);
   i1 = i0 == i1;
   if (i1) goto l3;
 l2:
@@ -1046,7 +1046,7 @@ l2:
   i5 = (int)*(void**)i3;
   i4 = *(int*)(i5-4);
   i4 = (int)((_Type)i4)->tbprocs[1];
-  ((void(*)(Data__Usable, Data__Usable))i4)((Data__Usable)i5, (Data__Usable)i2);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i4)((Data__Usable)i5, (Data__Usable)i2);
   i5 = (int)Data__InstructionDesc_NthOperand((Data__Instruction)i2, (short int)2);
   i4 = (int)*(void**)i3;
   Data__OpndDesc_ReplaceOperand((Data__Opnd)i5, (Data__Usable)i4);
@@ -1277,7 +1277,7 @@ l13:
   if (i4) goto l14;
   i4 = *(int*)(i1-4);
   i4 = (int)((_Type)i4)->tbprocs[0];
-  i4 = (int)((Data__GlobalRegion(*)(Data__Node))i4)((Data__Node)i1);
+  i4 = (int)((_TBP_Data__NodeDesc_Greg)i4)((Data__Node)i1);
   i4 = (int)SideEffects__Adjust_AdjustGSA_AdjustResults_GetSymLoc((Data__Addressable)i2, (Data__GlobalRegion)i4);
   i6 = i2 + 24;
   i6 = (int)*(void**)i6;
@@ -1342,7 +1342,7 @@ l17:
   i2 = (int)*(void**)i3;
   i4 = *(int*)(i2-4);
   i4 = (int)((_Type)i4)->tbprocs[1];
-  ((void(*)(Data__Usable, Data__Usable))i4)((Data__Usable)i2, (Data__Usable)i6);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i4)((Data__Usable)i2, (Data__Usable)i6);
   i2 = (int)*(void**)i3;
   Data__ResultDesc_DeleteResult((Data__Result)i2);
   *(void**)i3 = (void*)i6;
@@ -1386,7 +1386,7 @@ l23:
   i2 = (int)*(void**)i2;
   i0 = (int)((_Type)i0)->tbprocs[1];
   i2 = (int)*(void**)i2;
-  ((void(*)(Data__Usable, Data__Usable))i0)((Data__Usable)i1, (Data__Usable)i2);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i0)((Data__Usable)i1, (Data__Usable)i2);
   i2 = (int)*(void**)i3;
   Data__ResultDesc_DeleteResult((Data__Result)i2);
 l24:
@@ -1765,7 +1765,7 @@ l1:
   if (i1) goto l6;
   i4 = *(int*)(i3-4);
   i4 = (int)((_Type)i4)->tbprocs[0];
-  i4 = (int)((Data__GlobalRegion(*)(Data__Node))i4)((Data__Node)i3);
+  i4 = (int)((_TBP_Data__NodeDesc_Greg)i4)((Data__Node)i3);
   i4 += 4;
   i4 = (int)*(void**)i4;
   i1 = i4 == 0;
@@ -1890,7 +1890,7 @@ l18:
   i2 = *(int*)(i4-4);
   i0 = (int)((_Type)i2)->tbprocs[1];
   i2 = (int)Data__constUndef;
-  ((void(*)(Data__Usable, Data__Usable))i0)((Data__Usable)i4, (Data__Usable)i2);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i0)((Data__Usable)i4, (Data__Usable)i2);
   Data__ResultDesc_DeleteResult((Data__Result)i4);
 l19:
   i1 = *(unsigned int*)i3;
@@ -1966,7 +1966,7 @@ l5:
   i3 = *(int*)(i7-4);
   i4 = (int)*(void**)i4;
   i3 = (int)((_Type)i3)->tbprocs[1];
-  ((void(*)(Data__Usable, Data__Usable))i3)((Data__Usable)i7, (Data__Usable)i4);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i3)((Data__Usable)i7, (Data__Usable)i4);
   Data__ResultDesc_DeleteResult((Data__Result)i7);
   goto l7;
 l6:

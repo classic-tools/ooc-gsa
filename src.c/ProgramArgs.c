@@ -74,10 +74,10 @@ int ProgramArgs__ReaderDesc_Available(ProgramArgs__Reader r) {
 l0:
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[0];
-  i1 = ((int(*)(Channel__Channel))i1)((Channel__Channel)i0);
+  i1 = ((_TBP_Channel__ChannelDesc_Length)i1)((Channel__Channel)i0);
   i0 = *(int*)((int)r-4);
   i0 = (int)((_Type)i0)->tbprocs[0];
-  i0 = ((int(*)(ProgramArgs__Reader))i0)((ProgramArgs__Reader)(int)r);
+  i0 = ((_TBP_ProgramArgs__ReaderDesc_Pos)i0)((ProgramArgs__Reader)(int)r);
   i1 -= i0;
   i0 = i1 >= 0;
   if (i0) goto l1;
@@ -214,7 +214,7 @@ l4:
   i6 = (int)*(void**)(int)r;
   i3 = *(int*)(i6-4);
   i3 = (int)((_Type)i3)->tbprocs[0];
-  i6 = ((int(*)(Channel__Channel))i3)((Channel__Channel)i6);
+  i6 = ((_TBP_Channel__ChannelDesc_Length)i3)((Channel__Channel)i6);
   *(int*)i5 = i6;
   goto l6;
 l5:
@@ -239,7 +239,7 @@ l0:
   i0 = start + i5;
   i3 = (int)x + i0;
   i0 = *(unsigned char*)i3;
-  ((void(*)(ProgramArgs__Reader, unsigned char *))i4)((ProgramArgs__Reader)(int)r, (unsigned char *)i3);
+  ((_TBP_ProgramArgs__ReaderDesc_ReadByte)i4)((ProgramArgs__Reader)(int)r, (unsigned char *)i3);
   i3 = (int)*(void**)i1;
   i3 = i3 == 0;
   if (!(i3)) goto l1;
@@ -320,7 +320,7 @@ ProgramArgs__Reader ProgramArgs__ChannelDesc_NewReader(ProgramArgs__Channel ch) 
 l0:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(24+8);
+    _mem = GC_malloc(_not_zero(24)+8);
     if (!_mem) _new_failed(_P(10175));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ProgramArgs__ReaderDesc_td.td;
@@ -330,7 +330,7 @@ l0:
   *(void**)i2 = (void*)(int)ch;
   i1 = (int)((_Type)i1)->tbprocs[5];
   i0 = i2 + 8;
-  ((void(*)(Channel__Reader))i1)((Channel__Reader)i2);
+  ((_TBP_Channel__ReaderDesc_ClearError)i1)((Channel__Reader)i2);
   i1 = i2 + 12;
   *(int*)i0 = 1;
   i0 = i2 + 16;
@@ -340,7 +340,7 @@ l0:
   i0 = *(int*)((int)ch-4);
   *(int*)i1 = 0;
   i1 = (int)((_Type)i0)->tbprocs[6];
-  ((void(*)(Channel__Channel))i1)((Channel__Channel)(int)ch);
+  ((_TBP_Channel__ChannelDesc_ClearError)i1)((Channel__Channel)(int)ch);
 l1:
   return (void*)i2;
 }
@@ -367,30 +367,33 @@ void ProgramArgs_init(void) {
   _mid = _register_module(&ProgramArgs_md.md, &ProgramArgs__ErrorContextDesc_td.td);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(8+8);
+    _mem = GC_malloc(_not_zero(4)+8);
+    if (!_mem) _new_failed(_P(10756));
+    _var = _mem+8;
+    ((_Type*)_var)[-1] = &ProgramArgs__ErrorContextDesc_td.td;
+    i0 = (int)_var;
+  }
+  ProgramArgs__errorContext = (void*)i0;
+  i0 = (int)ProgramArgs__errorContext;
+  Msg__InitContext((Msg__Context)i0, (const Msg__String)(int)_c0, 21);
+  {
+    char *_mem, *_var;
+    _mem = GC_malloc(_not_zero(8)+8);
     if (!_mem) _new_failed(_P(10839));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ProgramArgs__ChannelDesc_td.td;
     i0 = (int)_var;
   }
-  {
-    char *_mem, *_var;
-    _mem = GC_malloc(4+8);
-    if (!_mem) _new_failed(_P(10756));
-    _var = _mem+8;
-    ((_Type*)_var)[-1] = &ProgramArgs__ErrorContextDesc_td.td;
-    i1 = (int)_var;
-  }
-  i2 = *(int*)(i0-4);
-  i2 = (int)((_Type)i2)->tbprocs[6];
-  Msg__InitContext((Msg__Context)i1, (const Msg__String)(int)_c0, 21);
   ProgramArgs__args = (void*)i0;
-  ProgramArgs__errorContext = (void*)i1;
-  ((void(*)(Channel__Channel))i2)((Channel__Channel)i0);
-  i0 = (int)ProgramArgs__args + 4;
-  *(unsigned char*)i0 = 1;
-  i0 = (int)ProgramArgs__args + 5;
-  *(unsigned char*)i0 = 0;
-  i0 = (int)ProgramArgs__args + 6;
-  *(unsigned char*)i0 = 1;
+  i0 = (int)ProgramArgs__args;
+  i1 = *(int*)(i0-4);
+  i1 = (int)((_Type)i1)->tbprocs[6];
+  ((_TBP_Channel__ChannelDesc_ClearError)i1)((Channel__Channel)i0);
+  i0 = (int)ProgramArgs__args;
+  i2 = i0 + 4;
+  i1 = i0 + 5;
+  *(unsigned char*)i2 = 1;
+  i2 = i0 + 6;
+  *(unsigned char*)i1 = 0;
+  *(unsigned char*)i2 = 1;
 }

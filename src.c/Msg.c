@@ -16,7 +16,7 @@ void Msg__InitContext(Msg__Context context, const Msg__String id__ref, int id_0d
     char *_mem, *_var;
     int* _dim_ptr;
     if(i0 < 0) _invalid_length(i0, _P(5803));
-    _mem = GC_malloc_atomic(i0*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
     if (!_mem) _new_failed(_P(5766));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -70,7 +70,7 @@ void Msg__InitAttribute(Msg__Attribute attr, const Msg__String name__ref, int na
     char *_mem, *_var;
     int* _dim_ptr;
     if(i1 < 0) _invalid_length(i1, _P(7722));
-    _mem = GC_malloc_atomic(i1*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
     if (!_mem) _new_failed(_P(7684));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -91,7 +91,7 @@ Msg__Msg Msg__New(Msg__Context context, int code) {
   register int i0, i1, i2;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(20+8);
+    _mem = GC_malloc(_not_zero(20)+8);
     if (!_mem) _new_failed(_P(8449));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__MsgDesc_td.td;
@@ -184,7 +184,7 @@ void Msg__MsgDesc_GetLText(Msg__Msg msg, Msg__LString text, int text_0d) {
   i1 = (int)*(void**)i2;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[0];
-  ((void(*)(Msg__Context, Msg__Msg, Msg__LString, int templ_0d))i0)((Msg__Context)i1, (Msg__Msg)(int)msg, (Msg__LString)(int)text, text_0d);
+  ((_TBP_Msg__ContextDesc_GetTemplate)i0)((Msg__Context)i1, (Msg__Msg)(int)msg, (Msg__LString)(int)text, text_0d);
   i0 = (int)msg + 16;
   i1 = (int)*(void**)i0;
   i0 = i1 != 0;
@@ -213,7 +213,7 @@ l2:
 l3:
   i0 = LongStrings__Length((const unsigned short int*)(int)attrName, 131);
   LongStrings__Delete((unsigned short int*)(int)text, text_0d, (short int)i3, (short int)i0);
-  ((void(*)(Msg__Attribute, Msg__LString, int text_0d))i4)((Msg__Attribute)i1, (Msg__LString)(int)insert, 16384);
+  ((_TBP_Msg__AttributeDesc_ReplacementText)i4)((Msg__Attribute)i1, (Msg__LString)(int)insert, 16384);
   LongStrings__Insert((const unsigned short int*)(int)insert, 16384, (short int)i3, (unsigned short int*)(int)text, text_0d);
   i0 = LongStrings__Length((const unsigned short int*)(int)insert, 16384);
   i0 += i3;
@@ -262,7 +262,7 @@ void Msg__MsgDesc_GetText(Msg__Msg msg, Msg__String text, int text_0d) {
   unsigned short int buffer[65535];
   i0 = *(int*)((int)msg-4);
   i0 = (int)((_Type)i0)->tbprocs[2];
-  ((void(*)(Msg__Msg, Msg__LString, int text_0d))i0)((Msg__Msg)(int)msg, (Msg__LString)(int)buffer, 65535);
+  ((_TBP_Msg__MsgDesc_GetLText)i0)((Msg__Msg)(int)msg, (Msg__LString)(int)buffer, 65535);
   i1 = -1;
 l0:
   i1++;
@@ -295,7 +295,7 @@ Msg__MsgList Msg__NewMsgList(void) {
   register int i0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(12565));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__MsgListDesc_td.td;
@@ -364,7 +364,7 @@ Msg__IntAttribute Msg__NewIntAttrib(const Msg__String name__ref, int name_0d, in
   _push_value(int, name, name__ref, name_0d);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(13911));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__IntAttributeDesc_td.td;
@@ -385,7 +385,7 @@ void Msg__MsgDesc_SetIntAttrib(Msg__Msg msg, const Msg__String name__ref, int na
   i0 = (int)Msg__NewIntAttrib((const Msg__String)(int)name, name_0d, (int)value);
   i1 = *(int*)((int)msg-4);
   i1 = (int)((_Type)i1)->tbprocs[0];
-  ((void(*)(Msg__Msg, Msg__Attribute))i1)((Msg__Msg)(int)msg, (Msg__Attribute)i0);
+  ((_TBP_Msg__MsgDesc_SetAttribute)i1)((Msg__Msg)(int)msg, (Msg__Attribute)i0);
   _top_vs = _old_top_vs;
 }
 
@@ -405,7 +405,7 @@ Msg__StringAttribute Msg__NewStringAttrib(const Msg__String name__ref, int name_
   _push_value(int, name, name__ref, name_0d);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(14555));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__StringAttributeDesc_td.td;
@@ -426,7 +426,7 @@ void Msg__MsgDesc_SetStringAttrib(Msg__Msg msg, const Msg__String name__ref, int
   i0 = (int)Msg__NewStringAttrib((const Msg__String)(int)name, name_0d, (Msg__StringPtr)(int)value);
   i1 = *(int*)((int)msg-4);
   i1 = (int)((_Type)i1)->tbprocs[0];
-  ((void(*)(Msg__Msg, Msg__Attribute))i1)((Msg__Msg)(int)msg, (Msg__Attribute)i0);
+  ((_TBP_Msg__MsgDesc_SetAttribute)i1)((Msg__Msg)(int)msg, (Msg__Attribute)i0);
   _top_vs = _old_top_vs;
 }
 
@@ -444,7 +444,7 @@ Msg__LStringAttribute Msg__NewLStringAttrib(const Msg__String name__ref, int nam
   _push_value(int, name, name__ref, name_0d);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(15162));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__LStringAttributeDesc_td.td;
@@ -465,7 +465,7 @@ void Msg__MsgDesc_SetLStringAttrib(Msg__Msg msg, const Msg__String name__ref, in
   i0 = (int)Msg__NewLStringAttrib((const Msg__String)(int)name, name_0d, (Msg__LStringPtr)(int)value);
   i1 = *(int*)((int)msg-4);
   i1 = (int)((_Type)i1)->tbprocs[0];
-  ((void(*)(Msg__Msg, Msg__Attribute))i1)((Msg__Msg)(int)msg, (Msg__Attribute)i0);
+  ((_TBP_Msg__MsgDesc_SetAttribute)i1)((Msg__Msg)(int)msg, (Msg__Attribute)i0);
   _top_vs = _old_top_vs;
 }
 
@@ -483,7 +483,7 @@ Msg__MsgAttribute Msg__NewMsgAttrib(const Msg__String name__ref, int name_0d, Ms
   _push_value(int, name, name__ref, name_0d);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(15756));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Msg__MsgAttributeDesc_td.td;
@@ -504,7 +504,7 @@ void Msg__MsgDesc_SetMsgAttrib(Msg__Msg msg, const Msg__String name__ref, int na
   i0 = (int)Msg__NewMsgAttrib((const Msg__String)(int)name, name_0d, (Msg__Msg)(int)value);
   i1 = *(int*)((int)msg-4);
   i1 = (int)((_Type)i1)->tbprocs[0];
-  ((void(*)(Msg__Msg, Msg__Attribute))i1)((Msg__Msg)(int)msg, (Msg__Attribute)i0);
+  ((_TBP_Msg__MsgDesc_SetAttribute)i1)((Msg__Msg)(int)msg, (Msg__Attribute)i0);
   _top_vs = _old_top_vs;
 }
 
@@ -514,7 +514,7 @@ void Msg__MsgAttributeDesc_ReplacementText(Msg__MsgAttribute attr, Msg__LString 
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[2];
-  ((void(*)(Msg__Msg, Msg__LString, int text_0d))i1)((Msg__Msg)i0, (Msg__LString)(int)text, text_0d);
+  ((_TBP_Msg__MsgDesc_GetLText)i1)((Msg__Msg)i0, (Msg__LString)(int)text, text_0d);
 }
 
 Msg__StringPtr Msg__GetStringPtr(const Msg__String str__ref, int str_0d) {
@@ -528,7 +528,7 @@ Msg__StringPtr Msg__GetStringPtr(const Msg__String str__ref, int str_0d) {
     char *_mem, *_var;
     int* _dim_ptr;
     if(i0 < 0) _invalid_length(i0, _P(16465));
-    _mem = GC_malloc_atomic(i0*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
     if (!_mem) _new_failed(_P(16437));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -552,7 +552,7 @@ Msg__LStringPtr Msg__GetLStringPtr(const Msg__LString str__ref, int str_0d) {
     char *_mem, *_var;
     int* _dim_ptr;
     if(i0 < 0) _invalid_length(i0, _P(16718));
-    _mem = GC_malloc_atomic(i0*2+8);
+    _mem = GC_malloc_atomic(_not_zero(i0*2)+8);
     if (!_mem) _new_failed(_P(16686));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);

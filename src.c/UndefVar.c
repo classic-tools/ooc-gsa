@@ -27,7 +27,7 @@ void UndefVar__AddToTrue(GuardCond__Condition *c, _Type c__tag) {
     char *_mem, *_var;
     int* _dim_ptr;
     if(i3 < 0) _invalid_length(i3, _P(3040));
-    _mem = GC_malloc(i3*8+8);
+    _mem = GC_malloc(_not_zero(i3*8)+8);
     if (!_mem) _new_failed(_P(3016));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -345,7 +345,7 @@ unsigned char UndefVar__Reachable_Test(short int i, Data__Opnd opnd, Data__Objec
     char *_mem, *_var;
     int* _dim_ptr;
     if(i1 < 0) _invalid_length(i1, _P(8155));
-    _mem = GC_malloc(i1*4+8);
+    _mem = GC_malloc(_not_zero(i1*4)+8);
     if (!_mem) _new_failed(_P(8140));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -485,7 +485,7 @@ void UndefVar__InspectUses_PushUse(Data__Opnd use) {
     char *_mem, *_var;
     int* _dim_ptr;
     if(i5 < 0) _invalid_length(i5, _P(10542));
-    _mem = GC_malloc(i5*4+8);
+    _mem = GC_malloc(_not_zero(i5*4)+8);
     if (!_mem) _new_failed(_P(10517));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -802,7 +802,7 @@ l2:
   i5 = (int)*(void**)i5;
   i3 = *(int*)(i5-4);
   i3 = (int)((_Type)i3)->tbprocs[0];
-  i5 = (int)((Data__GlobalRegion(*)(Data__Node))i3)((Data__Node)i5);
+  i5 = (int)((_TBP_Data__NodeDesc_Greg)i3)((Data__Node)i5);
   i5 += 80;
   i3 = (int)*(void**)i0;
   i5 = (int)*(void**)i5;
@@ -1030,40 +1030,40 @@ l4:
 }
 
 void UndefVar_init(void) {
-  register int i0, i1, i2;
+  register int i0;
   _mid = _register_module(&UndefVar_md.md, NULL);
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    _mem = GC_malloc(128*4+8);
+    _mem = GC_malloc(_not_zero(128*4)+8);
     if (!_mem) _new_failed(_P(19910));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 128;
     i0 = (int)_var;
   }
+  UndefVar__infoList = (void*)i0;
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    _mem = GC_malloc(128*8+8);
+    _mem = GC_malloc(_not_zero(128*8)+8);
     if (!_mem) _new_failed(_P(19933));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 128;
-    i1 = (int)_var;
+    i0 = (int)_var;
   }
+  UndefVar__trueList = (void*)i0;
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    _mem = GC_malloc(32*4+8);
+    _mem = GC_malloc(_not_zero(32*4)+8);
     if (!_mem) _new_failed(_P(19956));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 32;
-    i2 = (int)_var;
+    i0 = (int)_var;
   }
-  UndefVar__infoList = (void*)i0;
-  UndefVar__trueList = (void*)i1;
-  UndefVar__useStack = (void*)i2;
-  UndefVar__useStackSize = (int)0;
+  UndefVar__useStack = (void*)i0;
+  UndefVar__useStackSize = 0;
 }

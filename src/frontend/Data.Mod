@@ -1,7 +1,7 @@
-(* 	$Id: Data.Mod,v 1.101 1999/11/06 12:06:36 ooc-devel Exp $	 *)
+(* 	$Id: Data.Mod,v 1.102 2000/06/25 18:50:40 ooc-devel Exp $	 *)
 MODULE Data;
 (*  Basic data definitions for the symbol table and GSA code.
-    Copyright (C) 1995-1999  Michael van Acken
+    Copyright (C) 1995-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -539,9 +539,17 @@ CONST
   structAbstractType* = 9;
   (* [back-end] if set, a record cannot be instanciated, and abstract 
      type-bound procedures can be defined for it *)
+  structVTableField* = 10;
+  (* [back-end] if set, then the first field of the record type refers
+     to the virtual method table; that is, the type has no type descriptor,
+     nor have instances of this type the usual type tag, but it is 
+     nevertheless possible to call type-bound procedures on it  *)
+  structDisableStaticInstance* = 11;
+  (* [back-end] set for a type if it cannot be used as type of a variable
+     declaration, record field type, or array base type  *)
   
   (* note: add flags that are written into the symbol file here *)
-  structExportMask* = {structExportsBEInfo..structAbstractType};
+  structExportMask* = {structExportsBEInfo..structDisableStaticInstance};
   (* only the value of `Struct.flags * structExportMask' will be be written to 
      the symbol file, the rest is either discarded or reconstructed while
      reading the file *)

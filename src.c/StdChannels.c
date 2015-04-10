@@ -53,13 +53,13 @@ Channel__Writer StdChannels__NullChannelDesc_NewWriter(StdChannels__NullChannel 
   i0 = *(int*)((int)ch-4);
   i1 = (int)((_Type)i0)->tbprocs[6];
   i0 = (int)ch + 8;
-  ((void(*)(Channel__Channel))i1)((Channel__Channel)(int)ch);
+  ((_TBP_Channel__ChannelDesc_ClearError)i1)((Channel__Channel)(int)ch);
   i3 = (int)*(void**)i0;
   i1 = i3 != 0;
   if (i1) goto l0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(16+8);
+    _mem = GC_malloc(_not_zero(16)+8);
     if (!_mem) _new_failed(_P(3305));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &StdChannels__WriterDesc_td.td;
@@ -69,7 +69,7 @@ Channel__Writer StdChannels__NullChannelDesc_NewWriter(StdChannels__NullChannel 
   *(void**)i3 = (void*)(int)ch;
   i1 = (int)((_Type)i2)->tbprocs[4];
   i2 = i3 + 12;
-  ((void(*)(Channel__Writer))i1)((Channel__Writer)i3);
+  ((_TBP_Channel__WriterDesc_ClearError)i1)((Channel__Writer)i3);
   i1 = i3 + 8;
   *(void**)i0 = (void*)i3;
   *(unsigned char*)i2 = 0;
@@ -82,14 +82,14 @@ void StdChannels__NullChannelDesc_Flush(StdChannels__NullChannel ch) {
   register int i0;
   i0 = *(int*)((int)ch-4);
   i0 = (int)((_Type)i0)->tbprocs[6];
-  ((void(*)(Channel__Channel))i0)((Channel__Channel)(int)ch);
+  ((_TBP_Channel__ChannelDesc_ClearError)i0)((Channel__Channel)(int)ch);
 }
 
 void StdChannels__NullChannelDesc_Close(StdChannels__NullChannel ch) {
   register int i0;
   i0 = *(int*)((int)ch-4);
   i0 = (int)((_Type)i0)->tbprocs[6];
-  ((void(*)(Channel__Channel))i0)((Channel__Channel)(int)ch);
+  ((_TBP_Channel__ChannelDesc_ClearError)i0)((Channel__Channel)(int)ch);
 }
 
 void StdChannels__Flush(void) {
@@ -97,74 +97,85 @@ void StdChannels__Flush(void) {
   i0 = (int)StdChannels__stdout;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[4];
-  ((void(*)(Channel__Channel))i1)((Channel__Channel)i0);
+  ((_TBP_Channel__ChannelDesc_Flush)i1)((Channel__Channel)i0);
   i0 = (int)StdChannels__stderr;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[4];
-  ((void(*)(Channel__Channel))i1)((Channel__Channel)i0);
+  ((_TBP_Channel__ChannelDesc_Flush)i1)((Channel__Channel)i0);
 }
 
 void StdChannels_init(void) {
-  register int i0, i1, i2, i3, i4, i5;
+  register int i0, i1, i2;
   _mid = _register_module(&StdChannels_md.md, &StdChannels__ErrorContextDesc_td.td);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(4+8);
+    _mem = GC_malloc(_not_zero(4)+8);
     if (!_mem) _new_failed(_P(3755));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &StdChannels__ErrorContextDesc_td.td;
     i0 = (int)_var;
   }
-  {
-    char *_mem, *_var;
-    _mem = GC_malloc(44+8);
-    if (!_mem) _new_failed(_P(3929));
-    _var = _mem+8;
-    ((_Type*)_var)[-1] = &PosixFileDescr__ChannelDesc_td.td;
-    i1 = (int)_var;
-  }
-  {
-    char *_mem, *_var;
-    _mem = GC_malloc(12+8);
-    if (!_mem) _new_failed(_P(4182));
-    _var = _mem+8;
-    ((_Type*)_var)[-1] = &StdChannels__NullChannelDesc_td.td;
-    i2 = (int)_var;
-  }
+  StdChannels__errorContext = (void*)i0;
+  i0 = (int)StdChannels__errorContext;
   Msg__InitContext((Msg__Context)i0, (const Msg__String)(int)_c0, 21);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(44+8);
+    _mem = GC_malloc(_not_zero(44)+8);
+    if (!_mem) _new_failed(_P(3929));
+    _var = _mem+8;
+    ((_Type*)_var)[-1] = &PosixFileDescr__ChannelDesc_td.td;
+    i0 = (int)_var;
+  }
+  StdChannels__fd = (void*)i0;
+  i0 = (int)StdChannels__fd;
+  PosixFileDescr__Init((PosixFileDescr__Channel)i0, (int)0, (signed char)0);
+  i0 = (int)StdChannels__fd;
+  StdChannels__stdin = (void*)i0;
+  {
+    char *_mem, *_var;
+    _mem = GC_malloc(_not_zero(44)+8);
     if (!_mem) _new_failed(_P(4001));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &PosixFileDescr__ChannelDesc_td.td;
-    i3 = (int)_var;
+    i0 = (int)_var;
   }
+  StdChannels__fd = (void*)i0;
+  i0 = (int)StdChannels__fd;
+  PosixFileDescr__Init((PosixFileDescr__Channel)i0, (int)1, (signed char)1);
+  i0 = (int)StdChannels__fd;
+  StdChannels__stdout = (void*)i0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(44+8);
+    _mem = GC_malloc(_not_zero(44)+8);
     if (!_mem) _new_failed(_P(4076));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &PosixFileDescr__ChannelDesc_td.td;
-    i4 = (int)_var;
+    i0 = (int)_var;
   }
-  PosixFileDescr__Init((PosixFileDescr__Channel)i1, (int)0, (signed char)0);
-  i5 = *(int*)(i2-4);
-  PosixFileDescr__Init((PosixFileDescr__Channel)i3, (int)1, (signed char)1);
-  i5 = (int)((_Type)i5)->tbprocs[6];
-  PosixFileDescr__Init((PosixFileDescr__Channel)i4, (int)2, (signed char)1);
-  StdChannels__errorContext = (void*)i0;
-  StdChannels__fd = (void*)i4;
-  StdChannels__null = (void*)i2;
-  StdChannels__stderr = (void*)i4;
-  StdChannels__stdin = (void*)i1;
-  StdChannels__stdout = (void*)i3;
-  ((void(*)(Channel__Channel))i5)((Channel__Channel)i2);
-  i0 = (int)StdChannels__null + 4;
+  StdChannels__fd = (void*)i0;
+  i0 = (int)StdChannels__fd;
+  PosixFileDescr__Init((PosixFileDescr__Channel)i0, (int)2, (signed char)1);
+  i0 = (int)StdChannels__fd;
+  StdChannels__stderr = (void*)i0;
+  {
+    char *_mem, *_var;
+    _mem = GC_malloc(_not_zero(12)+8);
+    if (!_mem) _new_failed(_P(4182));
+    _var = _mem+8;
+    ((_Type*)_var)[-1] = &StdChannels__NullChannelDesc_td.td;
+    i1 = (int)_var;
+  }
+  StdChannels__null = (void*)i1;
+  i1 = (int)StdChannels__null;
+  i2 = *(int*)(i1-4);
+  i2 = (int)((_Type)i2)->tbprocs[6];
+  ((_TBP_Channel__ChannelDesc_ClearError)i2)((Channel__Channel)i1);
+  i2 = (int)StdChannels__null;
+  i0 = i2 + 4;
+  i1 = i2 + 5;
   *(unsigned char*)i0 = 0;
-  i0 = (int)StdChannels__null + 5;
-  *(unsigned char*)i0 = 1;
-  i0 = (int)StdChannels__null + 6;
+  i0 = i2 + 6;
+  *(unsigned char*)i1 = 1;
   *(unsigned char*)i0 = 1;
   Termination__RegisterProc((Termination__Proc)(int)&StdChannels__Flush);
 }

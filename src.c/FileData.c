@@ -14,7 +14,7 @@ void FileData__MarkForRemoval(const unsigned char* name__ref, int name_0d, const
   _push_value(int, suffix, suffix__ref, suffix_0d);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(8+8);
+    _mem = GC_malloc(_not_zero(8)+8);
     if (!_mem) _new_failed(_P(1905));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &FileData__FileListDesc_td.td;
@@ -31,7 +31,7 @@ void FileData__MarkForRemoval(const unsigned char* name__ref, int name_0d, const
     char *_mem, *_var;
     int* _dim_ptr;
     if(i1 < 0) _invalid_length(i1, _P(1963));
-    _mem = GC_malloc_atomic(i1*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
     if (!_mem) _new_failed(_P(1948));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -58,7 +58,7 @@ void FileData__GetFile_InitFile(FileData__FileData file, unsigned char* name, in
     char *_mem, *_var;
     int* _dim_ptr;
     if(i1 < 0) _invalid_length(i1, _P(2334));
-    _mem = GC_malloc_atomic(i1*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
     if (!_mem) _new_failed(_P(2296));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -118,7 +118,7 @@ l3:
   if (!(i1)) goto l4;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(36+8);
+    _mem = GC_malloc(_not_zero(36)+8);
     if (!_mem) _new_failed(_P(2716));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &FileData__FileDataDesc_td.td;
@@ -173,7 +173,7 @@ l3:
   if (!(i0)) goto l4;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(8+8);
+    _mem = GC_malloc(_not_zero(8)+8);
     if (!_mem) _new_failed(_P(3190));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &FileData__DependenceDesc_td.td;
@@ -198,7 +198,7 @@ void FileData__SetFilename(FileData__FileData file, unsigned char* filename, int
     char *_mem, *_var;
     int* _dim_ptr;
     if(i1 < 0) _invalid_length(i1, _P(3465));
-    _mem = GC_malloc_atomic(i1*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
     if (!_mem) _new_failed(_P(3419));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -383,7 +383,7 @@ l3:
 
 void FileData_init(void) {
   _mid = _register_module(&FileData_md.md, &FileData__FileListDesc_td.td);
+  FileData__removalList = (void*)0;
   FileData__ClearFiles();
   Termination__RegisterProc((Termination__Proc)(int)&FileData__RemoveFiles);
-  FileData__removalList = (void*)0;
 }

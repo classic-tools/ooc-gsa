@@ -24,36 +24,36 @@ typedef struct StdChannels__NullChannelDesc {
   StdChannels__Writer writer;
 } StdChannels__NullChannelDesc;
 extern struct StdChannels__NullChannelDesc* StdChannels__null;
-#define _TBP_StdChannels__WriterDesc_Pos int(*)(StdChannels__Writer w)
+typedef int(* _TBP_StdChannels__WriterDesc_Pos)(StdChannels__Writer w);
 #define _TBN_StdChannels__WriterDesc_Pos 0
 extern int StdChannels__WriterDesc_Pos(StdChannels__Writer w);
-#define _TBP_StdChannels__WriterDesc_SetPos void(*)(StdChannels__Writer w, int newPos)
+typedef void(* _TBP_StdChannels__WriterDesc_SetPos)(StdChannels__Writer w, int newPos);
 #define _TBN_StdChannels__WriterDesc_SetPos 1
 extern void StdChannels__WriterDesc_SetPos(StdChannels__Writer w, int newPos);
-#define _TBP_StdChannels__WriterDesc_WriteByte void(*)(StdChannels__Writer w, unsigned char x)
+typedef void(* _TBP_StdChannels__WriterDesc_WriteByte)(StdChannels__Writer w, unsigned char x);
 #define _TBN_StdChannels__WriterDesc_WriteByte 2
 extern void StdChannels__WriterDesc_WriteByte(StdChannels__Writer w, unsigned char x);
-#define _TBP_StdChannels__WriterDesc_WriteBytes void(*)(StdChannels__Writer w, unsigned char* x, int x_0d, int start, int n)
+typedef void(* _TBP_StdChannels__WriterDesc_WriteBytes)(StdChannels__Writer w, unsigned char* x, int x_0d, int start, int n);
 #define _TBN_StdChannels__WriterDesc_WriteBytes 3
 extern void StdChannels__WriterDesc_WriteBytes(StdChannels__Writer w, unsigned char* x, int x_0d, int start, int n);
 typedef struct StdChannels__NullChannelDesc* StdChannels__NullChannel;
-#define _TBP_StdChannels__NullChannelDesc_Length int(*)(StdChannels__NullChannel ch)
+typedef int(* _TBP_StdChannels__NullChannelDesc_Length)(StdChannels__NullChannel ch);
 #define _TBN_StdChannels__NullChannelDesc_Length 0
 extern int StdChannels__NullChannelDesc_Length(StdChannels__NullChannel ch);
 #include "Time.h"
-#define _TBP_StdChannels__NullChannelDesc_GetModTime void(*)(StdChannels__NullChannel ch, Time__TimeStamp *mtime, _Type mtime__tag)
+typedef void(* _TBP_StdChannels__NullChannelDesc_GetModTime)(StdChannels__NullChannel ch, Time__TimeStamp *mtime, _Type mtime__tag);
 #define _TBN_StdChannels__NullChannelDesc_GetModTime 1
 extern void StdChannels__NullChannelDesc_GetModTime(StdChannels__NullChannel ch, Time__TimeStamp *mtime, _Type mtime__tag);
-#define _TBP_StdChannels__NullChannelDesc_NewReader Channel__Reader(*)(StdChannels__NullChannel ch)
+typedef Channel__Reader(* _TBP_StdChannels__NullChannelDesc_NewReader)(StdChannels__NullChannel ch);
 #define _TBN_StdChannels__NullChannelDesc_NewReader 2
 extern Channel__Reader StdChannels__NullChannelDesc_NewReader(StdChannels__NullChannel ch);
-#define _TBP_StdChannels__NullChannelDesc_NewWriter Channel__Writer(*)(StdChannels__NullChannel ch)
+typedef Channel__Writer(* _TBP_StdChannels__NullChannelDesc_NewWriter)(StdChannels__NullChannel ch);
 #define _TBN_StdChannels__NullChannelDesc_NewWriter 3
 extern Channel__Writer StdChannels__NullChannelDesc_NewWriter(StdChannels__NullChannel ch);
-#define _TBP_StdChannels__NullChannelDesc_Flush void(*)(StdChannels__NullChannel ch)
+typedef void(* _TBP_StdChannels__NullChannelDesc_Flush)(StdChannels__NullChannel ch);
 #define _TBN_StdChannels__NullChannelDesc_Flush 4
 extern void StdChannels__NullChannelDesc_Flush(StdChannels__NullChannel ch);
-#define _TBP_StdChannels__NullChannelDesc_Close void(*)(StdChannels__NullChannel ch)
+typedef void(* _TBP_StdChannels__NullChannelDesc_Close)(StdChannels__NullChannel ch);
 #define _TBN_StdChannels__NullChannelDesc_Close 5
 extern void StdChannels__NullChannelDesc_Close(StdChannels__NullChannel ch);
 extern struct _TD StdChannels__NullChannelDesc_td;

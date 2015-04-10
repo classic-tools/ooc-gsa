@@ -31,7 +31,7 @@ l2:
   i1 = (int)((_Type)i4)->tbprocs[0];
   i2 += 52;
   i4 = *(int*)i2;
-  i3 = (int)((Data__GlobalRegion(*)(Data__Node))i1)((Data__Node)i3);
+  i3 = (int)((_TBP_Data__NodeDesc_Greg)i1)((Data__Node)i3);
 l3:
   if (i0) goto l4;
   goto l6;
@@ -42,7 +42,7 @@ l4:
   if (i0) goto l5;
   i0 = *(int*)(i3-4);
   i0 = (int)((_Type)i0)->tbprocs[2];
-  i3 = (int)((Data__Object(*)(Data__Object))i0)((Data__Object)i3);
+  i3 = (int)((_TBP_Data__ObjectDesc_Module)i0)((Data__Object)i3);
   i3 += 52;
   i3 = (int)*(void**)i3;
   i3 += 20;

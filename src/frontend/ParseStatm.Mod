@@ -1,4 +1,4 @@
-(* 	$Id: ParseStatm.Mod,v 1.136 2000/02/04 19:39:50 ooc-devel Exp $	 *)
+(* 	$Id: ParseStatm.Mod,v 1.137 2000/07/20 18:25:05 ooc-devel Exp $	 *)
 MODULE ParseStatm;
 (*  Parses Oberon-2 statements and translates them to GSA.
     Copyright (C) 1995-2000  Michael van Acken
@@ -337,7 +337,8 @@ PROCEDURE AssignToVar (region: D.Region; dest: D.Object; VAR x: Attr.Item);
     IF (dest. mode = D.objVarPar) THEN
       CreateUpdate (Opc.updateVarParam)
       
-    ELSIF (dest. localTo # Sym.currScope) & (dest. name[0] # "$") THEN
+    ELSIF ((dest. localTo # Sym.currScope) OR (dest. level = Sym.globalLevel))
+          & (dest. name[0] # "$") THEN
       CreateUpdate (Opc.updateNonlocal)
       
     ELSE

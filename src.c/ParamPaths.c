@@ -80,25 +80,25 @@ l5:
 l6:
   i3 = *(int*)(i4-4);
   i3 = (int)((_Type)i3)->tbprocs[4];
-  i3 = ((int(*)(Parameter__Stream))i3)((Parameter__Stream)i4);
+  i3 = ((_TBP_Parameter__StreamDesc_CurrPos)i3)((Parameter__Stream)i4);
   i1 = (int)Parameter__in;
   i2 = i4 + 8;
   i0 = *(int*)(i1-4);
   *(int*)i2 = i3;
   i3 = (int)((_Type)i0)->tbprocs[1];
-  ((void(*)(Parameter__Stream))i3)((Parameter__Stream)i1);
+  ((_TBP_Parameter__StreamDesc_NextChar)i3)((Parameter__Stream)i1);
   *ParamPaths__ParsePatterns_sym = 6;
   goto l10;
 l7:
   i0 = *(int*)(i4-4);
   i0 = (int)((_Type)i0)->tbprocs[4];
-  i1 = ((int(*)(Parameter__Stream))i0)((Parameter__Stream)i4);
+  i1 = ((_TBP_Parameter__StreamDesc_CurrPos)i0)((Parameter__Stream)i4);
   i0 = (int)Parameter__in;
   i2 = i4 + 8;
   i3 = *(int*)(i0-4);
   *(int*)i2 = i1;
   i2 = (int)((_Type)i3)->tbprocs[1];
-  ((void(*)(Parameter__Stream))i2)((Parameter__Stream)i0);
+  ((_TBP_Parameter__StreamDesc_NextChar)i2)((Parameter__Stream)i0);
   *ParamPaths__ParsePatterns_sym = 5;
   goto l10;
 l8:
@@ -114,7 +114,7 @@ ParamPaths__Path ParamPaths__ParsePatterns_PathList_NewPath(unsigned char* str, 
   register int i0, i1, i2;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(8+8);
+    _mem = GC_malloc(_not_zero(8)+8);
     if (!_mem) _new_failed(_P(6233));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamPaths__PathDesc_td.td;
@@ -127,7 +127,7 @@ ParamPaths__Path ParamPaths__ParsePatterns_PathList_NewPath(unsigned char* str, 
     char *_mem, *_var;
     int* _dim_ptr;
     if(i2 < 0) _invalid_length(i2, _P(6290));
-    _mem = GC_malloc_atomic(i2*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i2*1)+8);
     if (!_mem) _new_failed(_P(6253));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -158,7 +158,7 @@ l0:
   i2 = (int)Parameter__in;
   i0 = *(int*)(i2-4);
   i0 = (int)((_Type)i0)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i0)((Parameter__Stream)i2, (int)-2, (const unsigned char*)(int)_c7, 34);
+  ((_TBP_Parameter__StreamDesc_Error)i0)((Parameter__Stream)i2, (int)-2, (const unsigned char*)(int)_c7, 34);
 l1:
   if (i4) goto l2;
   i2 = (int)ParamPaths__ParsePatterns_PathList_NewPath((unsigned char*)(int)ParamPaths__ParsePatterns_str, 256);
@@ -191,7 +191,7 @@ l7:
   i2 = (int)Parameter__in;
   i3 = *(int*)(i2-4);
   i3 = (int)((_Type)i3)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i3)((Parameter__Stream)i2, (int)-2, (const unsigned char*)(int)_c6, 19);
+  ((_TBP_Parameter__StreamDesc_Error)i3)((Parameter__Stream)i2, (int)-2, (const unsigned char*)(int)_c6, 19);
   i5 = 1;
 l8:
   if (i5) goto l9;
@@ -216,7 +216,7 @@ unsigned char ParamPaths__ParsePatterns_PatternList_CheckForRCS(unsigned char *P
   if (!(i0)) goto l1;
   i2 = *(int*)(i1-4);
   i2 = (int)((_Type)i2)->tbprocs[1];
-  ((void(*)(Parameter__Stream))i2)((Parameter__Stream)i1);
+  ((_TBP_Parameter__StreamDesc_NextChar)i2)((Parameter__Stream)i1);
   i1 = *ParamPaths__ParsePatterns_sourceSect;
   i2 = (int)Parameter__in;
   Parameter__StreamDesc_Match((Parameter__Stream)i2, (const unsigned char*)(int)_c8, 4);
@@ -224,7 +224,7 @@ unsigned char ParamPaths__ParsePatterns_PatternList_CheckForRCS(unsigned char *P
   i1 = (int)Parameter__in;
   i2 = *(int*)(i1-4);
   i2 = (int)((_Type)i2)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i2)((Parameter__Stream)i1, (int)-2, (const unsigned char*)(int)_c9, 31);
+  ((_TBP_Parameter__StreamDesc_Error)i2)((Parameter__Stream)i1, (int)-2, (const unsigned char*)(int)_c9, 31);
 l0:
   i2 = (int)*ParamPaths__ParsePatterns_s;
   i1 = (int)Parameter__in;
@@ -242,7 +242,7 @@ ParamPaths__Pattern ParamPaths__ParsePatterns_PatternList_NewPattern(const unsig
   _push_value(int, wildcard, wildcard__ref, wildcard_0d);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(16+8);
+    _mem = GC_malloc(_not_zero(16)+8);
     if (!_mem) _new_failed(_P(7976));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamPaths__PatternDesc_td.td;
@@ -256,7 +256,7 @@ ParamPaths__Pattern ParamPaths__ParsePatterns_PatternList_NewPattern(const unsig
     char *_mem, *_var;
     int* _dim_ptr;
     if(i2 < 0) _invalid_length(i2, _P(8081));
-    _mem = GC_malloc_atomic(i2*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i2*1)+8);
     if (!_mem) _new_failed(_P(8029));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -307,7 +307,7 @@ l3:
   i5 = (int)Parameter__in;
   i2 = *(int*)(i5-4);
   i2 = (int)((_Type)i2)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i2)((Parameter__Stream)i5, (int)-2, (const unsigned char*)(int)_c12, 25);
+  ((_TBP_Parameter__StreamDesc_Error)i2)((Parameter__Stream)i5, (int)-2, (const unsigned char*)(int)_c12, 25);
   i3 = i4;
   i5 = 0;
 l4:
@@ -323,19 +323,18 @@ l7:
   i1 = (int)Parameter__in;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i0)((Parameter__Stream)i1, (int)-2, (const unsigned char*)(int)_c12, 25);
+  ((_TBP_Parameter__StreamDesc_Error)i0)((Parameter__Stream)i1, (int)-2, (const unsigned char*)(int)_c12, 25);
   i5 = 0;
 l8:
   return (void*)i5;
 }
 
 void ParamPaths__ParsePatterns(ParamPaths__PathsSection s, unsigned char includeEnd, unsigned char sourceSect) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12;
+  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11;
   Parameter__Filename str;
   signed char sym;
   ParamPaths__ParsePatterns_Next((const unsigned char*)(int)_c13, 3, str, &sym, &includeEnd);
   i8 = sym;
-  i9 = includeEnd;
   i0 = i8 == 8;
   if (i0) goto l15;
   i0 = i8 == 7;
@@ -343,7 +342,7 @@ void ParamPaths__ParsePatterns(ParamPaths__PathsSection s, unsigned char include
   i11 = i8;
   i6 = sourceSect;
   i7 = (int)s;
-  i12 = i9;
+  i10 = includeEnd;
 l0:
   if (i6) goto l5;
   i2 = i11 == 3;
@@ -351,20 +350,20 @@ l0:
   i4 = (int)Parameter__in;
   i2 = *(int*)(i4-4);
   i2 = (int)((_Type)i2)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i2)((Parameter__Stream)i4, (int)-2, (const unsigned char*)(int)_c17, 13);
-  i10 = 0;
+  ((_TBP_Parameter__StreamDesc_Error)i2)((Parameter__Stream)i4, (int)-2, (const unsigned char*)(int)_c17, 13);
+  i9 = 0;
   i5 = 0;
   i4 = i11;
   i6 = 0;
   i3 = i7;
-  i2 = i12;
+  i2 = i10;
   goto l4;
 l1:
   sym = (signed char)3;
-  includeEnd = (unsigned char)i12;
+  includeEnd = (unsigned char)i10;
   sourceSect = (unsigned char)0;
   s = (void*)i7;
-  includeEnd = (unsigned char)i12;
+  includeEnd = (unsigned char)i10;
   s = (void*)i7;
   sourceSect = (unsigned char)0;
   sym = (signed char)3;
@@ -373,23 +372,23 @@ l1:
   if (i4) goto l2;
   sym = (signed char)4;
   sym = (signed char)4;
-  i10 = (int)ParamPaths__ParsePatterns_PathList((unsigned char)0, str, &sym, &includeEnd);
+  i9 = (int)ParamPaths__ParsePatterns_PathList((unsigned char)0, str, &sym, &includeEnd);
   i4 = sym;
   i2 = includeEnd;
   goto l3;
 l2:
-  i10 = (int)Parameter__in;
-  i4 = *(int*)(i10-4);
+  i9 = (int)Parameter__in;
+  i4 = *(int*)(i9-4);
   i4 = (int)((_Type)i4)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i4)((Parameter__Stream)i10, (int)-2, (const unsigned char*)(int)_c16, 14);
-  i10 = 0;
+  ((_TBP_Parameter__StreamDesc_Error)i4)((Parameter__Stream)i9, (int)-2, (const unsigned char*)(int)_c16, 14);
+  i9 = 0;
   i4 = sym;
   i2 = includeEnd;
 l3:
   i6 = sourceSect;
   i3 = (int)s;
 l4:
-  i12 = i2;
+  i10 = i2;
   i7 = i3;
   i11 = i4;
   goto l10;
@@ -399,20 +398,20 @@ l5:
   i2 = (int)Parameter__in;
   i3 = *(int*)(i2-4);
   i3 = (int)((_Type)i3)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i3)((Parameter__Stream)i2, (int)-2, (const unsigned char*)(int)_c15, 13);
-  i10 = 0;
+  ((_TBP_Parameter__StreamDesc_Error)i3)((Parameter__Stream)i2, (int)-2, (const unsigned char*)(int)_c15, 13);
+  i9 = 0;
   i5 = 0;
   i2 = i11;
   i6 = 1;
   i4 = i7;
-  i3 = i12;
+  i3 = i10;
   goto l9;
 l6:
   sym = (signed char)1;
-  includeEnd = (unsigned char)i12;
+  includeEnd = (unsigned char)i10;
   sourceSect = (unsigned char)1;
   s = (void*)i7;
-  includeEnd = (unsigned char)i12;
+  includeEnd = (unsigned char)i10;
   s = (void*)i7;
   sourceSect = (unsigned char)1;
   sym = (signed char)1;
@@ -421,29 +420,29 @@ l6:
   if (i2) goto l7;
   sym = (signed char)2;
   sym = (signed char)2;
-  i10 = (int)ParamPaths__ParsePatterns_PathList((unsigned char)1, str, &sym, &includeEnd);
+  i9 = (int)ParamPaths__ParsePatterns_PathList((unsigned char)1, str, &sym, &includeEnd);
   i2 = sym;
   i3 = includeEnd;
   goto l8;
 l7:
-  i10 = (int)Parameter__in;
-  i2 = *(int*)(i10-4);
+  i9 = (int)Parameter__in;
+  i2 = *(int*)(i9-4);
   i2 = (int)((_Type)i2)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i2)((Parameter__Stream)i10, (int)-2, (const unsigned char*)(int)_c14, 14);
-  i10 = 0;
+  ((_TBP_Parameter__StreamDesc_Error)i2)((Parameter__Stream)i9, (int)-2, (const unsigned char*)(int)_c14, 14);
+  i9 = 0;
   i2 = sym;
   i3 = includeEnd;
 l8:
   i6 = sourceSect;
   i4 = (int)s;
 l9:
-  i12 = i3;
+  i10 = i3;
   i7 = i4;
   i11 = i2;
 l10:
   i4 = i5 == 0;
   if (i4) goto l13;
-  i4 = i10 == 0;
+  i4 = i9 == 0;
   if (i4) goto l13;
   i3 = i5 == 0;
   if (i3) goto l12;
@@ -451,38 +450,38 @@ l10:
   i1 = (int)((_Type)i2)->tbprocs[3];
 l11:
   i3 = i5 + 12;
-  *(void**)i3 = (void*)i10;
+  *(void**)i3 = (void*)i9;
   i2 = (int)*(void**)i5;
   i3 = i2 == 0;
-  ((void(*)(ParamPaths__PathsSection, ParamPaths__Pattern))i1)((ParamPaths__PathsSection)i7, (ParamPaths__Pattern)i5);
+  ((_TBP_ParamPaths__PathsSectionDesc_AddPattern)i1)((ParamPaths__PathsSection)i7, (ParamPaths__Pattern)i5);
   if (i3) goto l12;
   i5 = i2;
   goto l11;
 l12:
-  i10 = 0;
+  i9 = 0;
   goto l14;
 l13:
-  i10 = 1;
+  i9 = 1;
 l14:
-  if (i10) goto l16;
+  if (i9) goto l16;
   i5 = i11 == 8;
   if (i5) goto l16;
   i5 = i11 != 7;
   if (i5) goto l0;
   goto l16;
 l15:
-  i12 = i9;
+  i10 = includeEnd;
   i11 = i8;
-  i10 = 0;
+  i9 = 0;
 l16:
-  if (i10) goto l17;
-  if (!(i12)) goto l17;
+  if (i9) goto l17;
+  if (!(i10)) goto l17;
   i11 = i11 == 7;
   if (i11) goto l17;
-  i12 = (int)Parameter__in;
-  i11 = *(int*)(i12-4);
+  i10 = (int)Parameter__in;
+  i11 = *(int*)(i10-4);
   i11 = (int)((_Type)i11)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i11)((Parameter__Stream)i12, (int)-2, (const unsigned char*)(int)_c18, 13);
+  ((_TBP_Parameter__StreamDesc_Error)i11)((Parameter__Stream)i10, (int)-2, (const unsigned char*)(int)_c18, 13);
 l17:
   ;
 }
@@ -796,31 +795,33 @@ l1:
 }
 
 void ParamPaths_init(void) {
-  register int i0, i1, i2, i3;
+  register int i0, i1, i2;
   _mid = _register_module(&ParamPaths_md.md, &ParamPaths__NewFilesDesc_td.td);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(20+8);
+    _mem = GC_malloc(_not_zero(20)+8);
     if (!_mem) _new_failed(_P(17674));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamPaths__PathsSectionDesc_td.td;
     i0 = (int)_var;
   }
-  i1 = i0 + 16;
+  ParamPaths__paths = (void*)i0;
+  i0 = (int)ParamPaths__paths;
+  i2 = i0 + 16;
+  i1 = i0 + 12;
+  *(unsigned char*)i2 = 0;
+  *(void**)i1 = (void*)0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(20+8);
+    _mem = GC_malloc(_not_zero(20)+8);
     if (!_mem) _new_failed(_P(17748));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamPaths__NewFilesDesc_td.td;
-    i2 = (int)_var;
+    i1 = (int)_var;
   }
-  i3 = i0 + 12;
-  *(unsigned char*)i1 = 0;
-  *(void**)i3 = (void*)0;
-  i3 = i2 + 12;
-  *(unsigned char*)i1 = 0;
-  *(void**)i3 = (void*)0;
-  ParamPaths__paths = (void*)i0;
-  ParamPaths__newFiles = (void*)i2;
+  ParamPaths__newFiles = (void*)i1;
+  i1 = (int)ParamPaths__newFiles;
+  *(unsigned char*)i2 = 0;
+  i2 = i1 + 12;
+  *(void**)i2 = (void*)0;
 }

@@ -27,7 +27,7 @@ ValueNumbering__InstrNode ValueNumbering__NewInstrNode(Data__Instruction instr) 
   register int i0, i1, i2;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(16+8);
+    _mem = GC_malloc(_not_zero(16)+8);
     if (!_mem) _new_failed(_P(3301));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ValueNumbering__InstrNodeDesc_td.td;
@@ -47,7 +47,7 @@ ValueNumbering__Partition ValueNumbering__NewPartition(ValueNumbering__Partition
   register int i0, i1, i2;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(32+8);
+    _mem = GC_malloc(_not_zero(32)+8);
     if (!_mem) _new_failed(_P(3563));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ValueNumbering__PartitionDesc_td.td;
@@ -144,7 +144,7 @@ unsigned char ValueNumbering__PartitionDesc_IsEmpty(ValueNumbering__Partition pa
   register int i0;
   i0 = *(int*)((int)partition-4);
   i0 = (int)((_Type)i0)->tbprocs[3];
-  i0 = ((int(*)(ValueNumbering__Partition))i0)((ValueNumbering__Partition)(int)partition);
+  i0 = ((_TBP_ValueNumbering__PartitionDesc_Size)i0)((ValueNumbering__Partition)(int)partition);
   i0 = i0 == 0;
   return (unsigned char)i0;
 }
@@ -162,7 +162,7 @@ l0:
 l1:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(8+8);
+    _mem = GC_malloc(_not_zero(8)+8);
     if (!_mem) _new_failed(_P(5669));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ValueNumbering__InstrListDesc_td.td;
@@ -387,7 +387,7 @@ l0:
   i0 = (int)merge == i0;
   if (i0) goto l1;
   *(void**)i2 = (void*)(int)merge;
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i5)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)i3);
+  ((_TBP_Worklist__Worklist_AddTailUnique)i5)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)i3);
 l1:
   i0 = i4 + 4;
   i4 = (int)*(void**)i0;
@@ -405,17 +405,17 @@ void ValueNumbering__MarkLoopDependentInstr(Data__Region reg) {
   i0 = i0 != 82;
   if (i0) goto l3;
   i3 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[0];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag))i3)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  ((_TBP_Worklist__Worklist_Init)i3)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   i4 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[13];
   ValueNumbering__MarkLoopDependentInstr_AddUsingInstrUniqueIn((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td, (Data__Result)(int)reg, (Data__Merge)(int)reg);
-  i3 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i4)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  i3 = ((_TBP_Worklist__Worklist_IsEmpty)i4)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   if (i3) goto l3;
   i3 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[15];
   i0 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[18];
 l0:
-  i2 = (int)((Data__Info(*)(Worklist__Worklist *, _Type wl__tag))i3)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  i2 = (int)((_TBP_Worklist__Worklist_GetHead)i3)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   i1 = i2 == 0;
-  ((void(*)(Worklist__Worklist *, _Type wl__tag))i0)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  ((_TBP_Worklist__Worklist_RemoveHead)i0)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   if (i1) goto l2;
 l1:
   ValueNumbering__MarkLoopDependentInstr_AddUsingInstrUniqueIn((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td, (Data__Result)i2, (Data__Merge)(int)reg);
@@ -424,7 +424,7 @@ l1:
   i1 = i2 != 0;
   if (i1) goto l1;
 l2:
-  i2 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i4)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  i2 = ((_TBP_Worklist__Worklist_IsEmpty)i4)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   if (!(i2)) goto l0;
 l3:
   i0 = (int)reg + 64;
@@ -479,7 +479,7 @@ l0:
   i2 = *(int*)(i1-4);
   i0 = (int)*(void**)i0;
   i2 = (int)((_Type)i2)->tbprocs[1];
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i2)((ValueNumbering__Partition)i1, (ValueNumbering__InstrNode)i0);
+  ((_TBP_ValueNumbering__PartitionDesc_IncludeInstrNode)i2)((ValueNumbering__Partition)i1, (ValueNumbering__InstrNode)i0);
 }
 
 void ValueNumbering__ClassifyInstructions(Data__Region reg) {
@@ -543,7 +543,7 @@ l0:
   if (i3) goto l1;
   i3 = *(int*)((int)newParts-4);
   i3 = (int)((_Type)i3)->tbprocs[0];
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__Partition))i3)((ValueNumbering__Partition)(int)newParts, (ValueNumbering__Partition)i1);
+  ((_TBP_ValueNumbering__PartitionDesc_Concatenate)i3)((ValueNumbering__Partition)(int)newParts, (ValueNumbering__Partition)i1);
 l1:
   i1 = (int)newParts;
 l2:
@@ -555,7 +555,7 @@ l2:
   i0 = (int)ValueNumbering__partitionList;
   i3 = *(int*)(i0-4);
   i3 = (int)((_Type)i3)->tbprocs[0];
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__Partition))i3)((ValueNumbering__Partition)i0, (ValueNumbering__Partition)i1);
+  ((_TBP_ValueNumbering__PartitionDesc_Concatenate)i3)((ValueNumbering__Partition)i0, (ValueNumbering__Partition)i1);
   i1 = 0;
 l3:
   i2 = (int)*(void**)i2;
@@ -570,22 +570,22 @@ void ValueNumbering__MoveDifferentSignature_MoveInstrIntoOwnPartition(ValueNumbe
   i4 = *(int*)((int)current-4);
   i5 = (int)((_Type)i4)->tbprocs[3];
   *created = (void*)0;
-  i0 = ((int(*)(ValueNumbering__Partition))i5)((ValueNumbering__Partition)(int)current);
+  i0 = ((_TBP_ValueNumbering__PartitionDesc_Size)i5)((ValueNumbering__Partition)(int)current);
   i0 = i0 <= 1;
   if (i0) goto l1;
   i6 = (int)((_Type)i4)->tbprocs[4];
   i0 = (int)((_Type)i4)->tbprocs[2];
 l0:
-  i1 = (int)((ValueNumbering__InstrNode(*)(ValueNumbering__Partition))i6)((ValueNumbering__Partition)(int)current);
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i0)((ValueNumbering__Partition)(int)current, (ValueNumbering__InstrNode)i1);
+  i1 = (int)((_TBP_ValueNumbering__PartitionDesc_GetAnyInstruction)i6)((ValueNumbering__Partition)(int)current);
+  ((_TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode)i0)((ValueNumbering__Partition)(int)current, (ValueNumbering__InstrNode)i1);
   i2 = (int)ValueNumbering__NewPartition((ValueNumbering__Partition)0);
   i3 = *(int*)(i2-4);
   i4 = (int)*created;
   *(void**)i2 = (void*)i4;
   i3 = (int)((_Type)i3)->tbprocs[1];
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i3)((ValueNumbering__Partition)i2, (ValueNumbering__InstrNode)i1);
+  ((_TBP_ValueNumbering__PartitionDesc_IncludeInstrNode)i3)((ValueNumbering__Partition)i2, (ValueNumbering__InstrNode)i1);
   *created = (void*)i2;
-  i1 = ((int(*)(ValueNumbering__Partition))i5)((ValueNumbering__Partition)(int)current);
+  i1 = ((_TBP_ValueNumbering__PartitionDesc_Size)i5)((ValueNumbering__Partition)(int)current);
   i1 = i1 > 1;
   if (i1) goto l0;
 l1:
@@ -597,7 +597,7 @@ void ValueNumbering__MoveDifferentSignature(ValueNumbering__Partition current, V
   i5 = *(int*)((int)current-4);
   i0 = (int)((_Type)i5)->tbprocs[3];
   *created = (void*)0;
-  i0 = ((int(*)(ValueNumbering__Partition))i0)((ValueNumbering__Partition)(int)current);
+  i0 = ((_TBP_ValueNumbering__PartitionDesc_Size)i0)((ValueNumbering__Partition)(int)current);
   i0 = i0 <= 1;
   if (i0) goto l6;
   i4 = (int)current + 16;
@@ -635,11 +635,11 @@ l2:
   i5 = (int)ValueNumbering__NewPartition((ValueNumbering__Partition)0);
   *created = (void*)i5;
 l3:
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i0)((ValueNumbering__Partition)(int)current, (ValueNumbering__InstrNode)i2);
+  ((_TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode)i0)((ValueNumbering__Partition)(int)current, (ValueNumbering__InstrNode)i2);
   i5 = (int)*created;
   i1 = *(int*)(i5-4);
   i1 = (int)((_Type)i1)->tbprocs[1];
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i1)((ValueNumbering__Partition)i5, (ValueNumbering__InstrNode)i2);
+  ((_TBP_ValueNumbering__PartitionDesc_IncludeInstrNode)i1)((ValueNumbering__Partition)i5, (ValueNumbering__InstrNode)i2);
 l4:
   i1 = i4 != 0;
   if (!(i1)) goto l6;
@@ -720,11 +720,11 @@ l6:
 l7:
   i9 = *(int*)((int)current-4);
   i9 = (int)((_Type)i9)->tbprocs[2];
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i9)((ValueNumbering__Partition)(int)current, (ValueNumbering__InstrNode)i7);
+  ((_TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode)i9)((ValueNumbering__Partition)(int)current, (ValueNumbering__InstrNode)i7);
   i9 = (int)*created;
   i1 = *(int*)(i9-4);
   i1 = (int)((_Type)i1)->tbprocs[1];
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i1)((ValueNumbering__Partition)i9, (ValueNumbering__InstrNode)i7);
+  ((_TBP_ValueNumbering__PartitionDesc_IncludeInstrNode)i1)((ValueNumbering__Partition)i9, (ValueNumbering__InstrNode)i7);
 l8:
   i1 = i3 != 0;
   if (!(i1)) goto l9;
@@ -743,7 +743,7 @@ void ValueNumbering__MoveDifferentLoopDependence(ValueNumbering__Partition curre
   i5 = *(int*)((int)current-4);
   i0 = (int)((_Type)i5)->tbprocs[3];
   *created = (void*)0;
-  i0 = ((int(*)(ValueNumbering__Partition))i0)((ValueNumbering__Partition)(int)current);
+  i0 = ((_TBP_ValueNumbering__PartitionDesc_Size)i0)((ValueNumbering__Partition)(int)current);
   i0 = i0 <= 1;
   if (i0) goto l3;
   i4 = (int)current + 16;
@@ -766,11 +766,11 @@ l0:
   i5 = (int)ValueNumbering__NewPartition((ValueNumbering__Partition)0);
   *created = (void*)i5;
 l1:
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i4)((ValueNumbering__Partition)(int)current, (ValueNumbering__InstrNode)i0);
+  ((_TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode)i4)((ValueNumbering__Partition)(int)current, (ValueNumbering__InstrNode)i0);
   i5 = (int)*created;
   i3 = *(int*)(i5-4);
   i3 = (int)((_Type)i3)->tbprocs[1];
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i3)((ValueNumbering__Partition)i5, (ValueNumbering__InstrNode)i0);
+  ((_TBP_ValueNumbering__PartitionDesc_IncludeInstrNode)i3)((ValueNumbering__Partition)i5, (ValueNumbering__InstrNode)i0);
 l2:
   i3 = i2 != 0;
   if (!(i3)) goto l3;
@@ -789,7 +789,7 @@ void ValueNumbering__MoveNotAvailable(ValueNumbering__Partition current, ValueNu
   i6 = *(int*)((int)current-4);
   i0 = (int)((_Type)i6)->tbprocs[3];
   *created = (void*)0;
-  i0 = ((int(*)(ValueNumbering__Partition))i0)((ValueNumbering__Partition)(int)current);
+  i0 = ((_TBP_ValueNumbering__PartitionDesc_Size)i0)((ValueNumbering__Partition)(int)current);
   i0 = i0 <= 1;
   if (i0) goto l7;
   i3 = (int)current + 16;
@@ -838,11 +838,11 @@ l4:
   i3 = (int)ValueNumbering__NewPartition((ValueNumbering__Partition)0);
   *created = (void*)i3;
 l5:
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i4)((ValueNumbering__Partition)(int)current, (ValueNumbering__InstrNode)i7);
+  ((_TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode)i4)((ValueNumbering__Partition)(int)current, (ValueNumbering__InstrNode)i7);
   i3 = (int)*created;
   i6 = *(int*)(i3-4);
   i6 = (int)((_Type)i6)->tbprocs[1];
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i6)((ValueNumbering__Partition)i3, (ValueNumbering__InstrNode)i7);
+  ((_TBP_ValueNumbering__PartitionDesc_IncludeInstrNode)i6)((ValueNumbering__Partition)i3, (ValueNumbering__InstrNode)i7);
 l6:
   i3 = i0 != 0;
   if (!(i3)) goto l7;
@@ -866,10 +866,10 @@ l0:
   i1 = *(int*)(i3-4);
   i4 = (int)*(void**)i3;
   i0 = (int)((_Type)i1)->tbprocs[5];
-  i0 = ((unsigned char(*)(ValueNumbering__Partition))i0)((ValueNumbering__Partition)i3);
+  i0 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i0)((ValueNumbering__Partition)i3);
   if (i0) goto l2;
   i0 = (int)((_Type)i1)->tbprocs[3];
-  i0 = ((int(*)(ValueNumbering__Partition))i0)((ValueNumbering__Partition)i3);
+  i0 = ((_TBP_ValueNumbering__PartitionDesc_Size)i0)((ValueNumbering__Partition)i3);
   i0 = i0 != 1;
   if (i0) goto l1;
   i0 = i3 + 29;
@@ -889,7 +889,7 @@ l3:
   *partitionList = (void*)i0;
 l4:
   i1 = (int)((_Type)i1)->tbprocs[3];
-  i1 = ((int(*)(ValueNumbering__Partition))i1)((ValueNumbering__Partition)i3);
+  i1 = ((_TBP_ValueNumbering__PartitionDesc_Size)i1)((ValueNumbering__Partition)i3);
   i1 = i1 != 1;
   if (i1) goto l5;
   i1 = (int)*sizeOnePartitions;
@@ -1022,7 +1022,7 @@ void ValueNumbering__SplitPartitions_SplitByPartition_SplitPartitionByAt(ValueNu
   register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10;
   i9 = *(int*)((int)split-4);
   i0 = (int)((_Type)i9)->tbprocs[3];
-  i0 = ((int(*)(ValueNumbering__Partition))i0)((ValueNumbering__Partition)(int)split);
+  i0 = ((_TBP_ValueNumbering__PartitionDesc_Size)i0)((ValueNumbering__Partition)(int)split);
   i0 = i0 <= 1;
   if (i0) goto l8;
   i1 = (int)ValueNumbering__NewPartition((ValueNumbering__Partition)(int)split);
@@ -1034,29 +1034,29 @@ void ValueNumbering__SplitPartitions_SplitByPartition_SplitPartitionByAt(ValueNu
   i8 = *(int*)(i1-4);
   i3 = *(int*)(i10-4);
   *(int*)i7 = at;
-  i7 = ((unsigned char(*)(ValueNumbering__Partition))i2)((ValueNumbering__Partition)(int)split);
+  i7 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i2)((ValueNumbering__Partition)(int)split);
   if (i7) goto l3;
   i6 = (int)((_Type)i9)->tbprocs[4];
   i4 = (int)((_Type)i9)->tbprocs[2];
   i5 = (int)((_Type)i8)->tbprocs[1];
   i7 = (int)((_Type)i3)->tbprocs[1];
 l0:
-  i0 = (int)((ValueNumbering__InstrNode(*)(ValueNumbering__Partition))i6)((ValueNumbering__Partition)(int)split);
+  i0 = (int)((_TBP_ValueNumbering__PartitionDesc_GetAnyInstruction)i6)((ValueNumbering__Partition)(int)split);
   i9 = i0 + 4;
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i4)((ValueNumbering__Partition)(int)split, (ValueNumbering__InstrNode)i0);
+  ((_TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode)i4)((ValueNumbering__Partition)(int)split, (ValueNumbering__InstrNode)i0);
   i9 = (int)*(void**)i9;
   i9 = ValueNumbering__HasOpndAtIn((Data__Instruction)i9, (int)at, (ValueNumbering__InstrList)(int)instrList);
   if (i9) goto l1;
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i7)((ValueNumbering__Partition)i10, (ValueNumbering__InstrNode)i0);
+  ((_TBP_ValueNumbering__PartitionDesc_IncludeInstrNode)i7)((ValueNumbering__Partition)i10, (ValueNumbering__InstrNode)i0);
   goto l2;
 l1:
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i5)((ValueNumbering__Partition)i1, (ValueNumbering__InstrNode)i0);
+  ((_TBP_ValueNumbering__PartitionDesc_IncludeInstrNode)i5)((ValueNumbering__Partition)i1, (ValueNumbering__InstrNode)i0);
 l2:
-  i0 = ((unsigned char(*)(ValueNumbering__Partition))i2)((ValueNumbering__Partition)(int)split);
+  i0 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i2)((ValueNumbering__Partition)(int)split);
   if (!(i0)) goto l0;
 l3:
   i7 = (int)((_Type)i3)->tbprocs[5];
-  i7 = ((unsigned char(*)(ValueNumbering__Partition))i7)((ValueNumbering__Partition)i10);
+  i7 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i7)((ValueNumbering__Partition)i10);
   if (i7) goto l4;
   i7 = (int)*ValueNumbering__SplitPartitions_SplitByPartition_created;
   *(void**)i10 = (void*)i7;
@@ -1070,7 +1070,7 @@ l4:
   i10 = 0;
 l5:
   i8 = (int)((_Type)i8)->tbprocs[5];
-  i8 = ((unsigned char(*)(ValueNumbering__Partition))i8)((ValueNumbering__Partition)i1);
+  i8 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i8)((ValueNumbering__Partition)i1);
   if (i8) goto l6;
   i8 = (int)*ValueNumbering__SplitPartitions_SplitByPartition_created;
   *(void**)i1 = (void*)i8;
@@ -1098,7 +1098,7 @@ void ValueNumbering__SplitPartitions_SplitByPartition(ValueNumbering__Partition 
   i0 = (int)*ValueNumbering__SplitPartitions_current;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[6];
-  i4 = (int)((ValueNumbering__InstrList(*)(ValueNumbering__Partition))i1)((ValueNumbering__Partition)i0);
+  i4 = (int)((_TBP_ValueNumbering__PartitionDesc_CreateInstrList)i1)((ValueNumbering__Partition)i0);
   i0 = ValueNumbering__GetMaxOpndPos((ValueNumbering__InstrList)i4);
   i5 = i0 + 1;
   i0 = i5 >= 0;
@@ -1176,7 +1176,7 @@ l2:
   if (i4) goto l6;
   i2 = *(int*)(i1-4);
   i2 = (int)((_Type)i2)->tbprocs[5];
-  i4 = ((unsigned char(*)(ValueNumbering__Partition))i2)((ValueNumbering__Partition)i1);
+  i4 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i2)((ValueNumbering__Partition)i1);
   if (i4) goto l6;
   current = (void*)i1;
   fixpoint = (unsigned char)i0;
@@ -1194,7 +1194,7 @@ l3:
   if (i2) goto l4;
   i2 = *(int*)((int)newParts-4);
   i2 = (int)((_Type)i2)->tbprocs[0];
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__Partition))i2)((ValueNumbering__Partition)(int)newParts, (ValueNumbering__Partition)i3);
+  ((_TBP_ValueNumbering__PartitionDesc_Concatenate)i2)((ValueNumbering__Partition)(int)newParts, (ValueNumbering__Partition)i3);
 l4:
   i2 = (int)newParts;
 l5:
@@ -1210,7 +1210,7 @@ l6:
   i4 = (int)ValueNumbering__partitionList;
   i2 = *(int*)(i4-4);
   i2 = (int)((_Type)i2)->tbprocs[0];
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__Partition))i2)((ValueNumbering__Partition)i4, (ValueNumbering__Partition)i3);
+  ((_TBP_ValueNumbering__PartitionDesc_Concatenate)i2)((ValueNumbering__Partition)i4, (ValueNumbering__Partition)i3);
   i3 = 0;
 l7:
   i1 = (int)*(void**)i1;
@@ -1224,53 +1224,53 @@ void ValueNumbering__CSE_Eliminate(ValueNumbering__Partition part, ValueNumberin
   register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12;
   i11 = *(int*)((int)part-4);
   i0 = (int)((_Type)i11)->tbprocs[3];
-  i0 = ((int(*)(ValueNumbering__Partition))i0)((ValueNumbering__Partition)(int)part);
+  i0 = ((_TBP_ValueNumbering__PartitionDesc_Size)i0)((ValueNumbering__Partition)(int)part);
   i0 = i0 <= 1;
   if (i0) goto l8;
   i1 = (int)*ValueNumbering__CSE_other;
   i5 = (int)((_Type)i11)->tbprocs[4];
-  i6 = (int)((ValueNumbering__InstrNode(*)(ValueNumbering__Partition))i5)((ValueNumbering__Partition)(int)part);
+  i6 = (int)((_TBP_ValueNumbering__PartitionDesc_GetAnyInstruction)i5)((ValueNumbering__Partition)(int)part);
   i4 = (int)((_Type)i11)->tbprocs[2];
   i12 = *(int*)(i1-4);
   i3 = (int)((_Type)i11)->tbprocs[5];
   i11 = i6 + 4;
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i4)((ValueNumbering__Partition)(int)part, (ValueNumbering__InstrNode)i6);
+  ((_TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode)i4)((ValueNumbering__Partition)(int)part, (ValueNumbering__InstrNode)i6);
   i2 = (int)*(void**)i11;
-  i11 = ((unsigned char(*)(ValueNumbering__Partition))i3)((ValueNumbering__Partition)(int)part);
+  i11 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i3)((ValueNumbering__Partition)(int)part);
   if (i11) goto l3;
   i10 = (int)((_Type)i12)->tbprocs[1];
   i11 = (int)((_Type)i12)->tbprocs[1];
   i0 = i2;
 l0:
-  i8 = (int)((ValueNumbering__InstrNode(*)(ValueNumbering__Partition))i5)((ValueNumbering__Partition)(int)part);
+  i8 = (int)((_TBP_ValueNumbering__PartitionDesc_GetAnyInstruction)i5)((ValueNumbering__Partition)(int)part);
   i9 = i8 + 4;
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i4)((ValueNumbering__Partition)(int)part, (ValueNumbering__InstrNode)i8);
+  ((_TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode)i4)((ValueNumbering__Partition)(int)part, (ValueNumbering__InstrNode)i8);
   i7 = (int)*(void**)i9;
   i7 += 32;
   i7 = (int)*(void**)i7;
   i7 = ValueNumbering__Available((Data__Instruction)i0, (Data__Region)i7);
   if (i7) goto l1;
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i11)((ValueNumbering__Partition)i1, (ValueNumbering__InstrNode)i6);
+  ((_TBP_ValueNumbering__PartitionDesc_IncludeInstrNode)i11)((ValueNumbering__Partition)i1, (ValueNumbering__InstrNode)i6);
   i0 = (int)*(void**)i9;
   i6 = i8;
   goto l2;
 l1:
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i10)((ValueNumbering__Partition)i1, (ValueNumbering__InstrNode)i8);
+  ((_TBP_ValueNumbering__PartitionDesc_IncludeInstrNode)i10)((ValueNumbering__Partition)i1, (ValueNumbering__InstrNode)i8);
 l2:
-  i9 = ((unsigned char(*)(ValueNumbering__Partition))i3)((ValueNumbering__Partition)(int)part);
+  i9 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i3)((ValueNumbering__Partition)(int)part);
   if (!(i9)) goto l0;
   goto l4;
 l3:
   i0 = i2;
 l4:
   i6 = (int)((_Type)i12)->tbprocs[5];
-  i11 = ((unsigned char(*)(ValueNumbering__Partition))i6)((ValueNumbering__Partition)i1);
+  i11 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i6)((ValueNumbering__Partition)i1);
   if (i11) goto l8;
   i10 = (int)((_Type)i12)->tbprocs[4];
   i9 = (int)((_Type)i12)->tbprocs[2];
 l5:
-  i5 = (int)((ValueNumbering__InstrNode(*)(ValueNumbering__Partition))i10)((ValueNumbering__Partition)i1);
-  ((void(*)(ValueNumbering__Partition, ValueNumbering__InstrNode))i9)((ValueNumbering__Partition)i1, (ValueNumbering__InstrNode)i5);
+  i5 = (int)((_TBP_ValueNumbering__PartitionDesc_GetAnyInstruction)i10)((ValueNumbering__Partition)i1);
+  ((_TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode)i9)((ValueNumbering__Partition)i1, (ValueNumbering__InstrNode)i5);
   i5 += 4;
   i12 = (int)*(void**)i5;
   i5 = i12 == 0;
@@ -1281,7 +1281,7 @@ l6:
   i5 = *(int*)(i7-4);
   i5 = (int)((_Type)i5)->tbprocs[1];
   i8 = i7 + 12;
-  ((void(*)(Data__Usable, Data__Usable))i5)((Data__Usable)i7, (Data__Usable)i11);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i5)((Data__Usable)i7, (Data__Usable)i11);
   i7 = (int)*(void**)i8;
   i8 = i11 + 12;
   i5 = i7 != 0;
@@ -1289,7 +1289,7 @@ l6:
   if (i5) goto l6;
 l7:
   Data__InstructionDesc_Delete((Data__Instruction)i12);
-  i5 = ((unsigned char(*)(ValueNumbering__Partition))i6)((ValueNumbering__Partition)i1);
+  i5 = ((_TBP_ValueNumbering__PartitionDesc_IsEmpty)i6)((ValueNumbering__Partition)i1);
   if (!(i5)) goto l5;
 l8:
   ;

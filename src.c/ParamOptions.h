@@ -51,76 +51,76 @@ extern ParamOptions__BooleanOption ParamOptions__CreateBoolean(const unsigned ch
 extern ParamOptions__IntegerOption ParamOptions__CreateInteger(const unsigned char* name__ref, int name_0d, int default_, int lower, int upper);
 extern ParamOptions__StringOption ParamOptions__CreateString(const unsigned char* name__ref, int name_0d, const unsigned char* default___ref, int default__0d);
 extern void ParamOptions__Init(signed char undef);
-#define _TBP_ParamOptions__OptionDesc_Write void(*)(ParamOptions__Option opt)
+typedef void(* _TBP_ParamOptions__OptionDesc_Write)(ParamOptions__Option opt);
 #define _TBN_ParamOptions__OptionDesc_Write 0
 extern void ParamOptions__OptionDesc_Write(ParamOptions__Option opt);
-#define _TBP_ParamOptions__OptionDesc_Accept unsigned char(*)(ParamOptions__Option opt, const unsigned char* str, int str_0d)
+typedef unsigned char(* _TBP_ParamOptions__OptionDesc_Accept)(ParamOptions__Option opt, const unsigned char* str, int str_0d);
 #define _TBN_ParamOptions__OptionDesc_Accept 1
 extern unsigned char ParamOptions__OptionDesc_Accept(ParamOptions__Option opt, const unsigned char* str, int str_0d);
-#define _TBP_ParamOptions__OptionDesc_Copy ParamOptions__Option(*)(ParamOptions__Option opt)
+typedef ParamOptions__Option(* _TBP_ParamOptions__OptionDesc_Copy)(ParamOptions__Option opt);
 #define _TBN_ParamOptions__OptionDesc_Copy 2
 extern ParamOptions__Option ParamOptions__OptionDesc_Copy(ParamOptions__Option opt);
-#define _TBP_ParamOptions__OptionDesc_CopyValue void(*)(ParamOptions__Option opt, ParamOptions__Option dest)
+typedef void(* _TBP_ParamOptions__OptionDesc_CopyValue)(ParamOptions__Option opt, ParamOptions__Option dest);
 #define _TBN_ParamOptions__OptionDesc_CopyValue 3
 extern void ParamOptions__OptionDesc_CopyValue(ParamOptions__Option opt, ParamOptions__Option dest);
-#define _TBP_ParamOptions__OptionsSectionDesc_Find ParamOptions__Option(*)(ParamOptions__OptionsSection section, const unsigned char* name, int name_0d)
+typedef ParamOptions__Option(* _TBP_ParamOptions__OptionsSectionDesc_Find)(ParamOptions__OptionsSection section, const unsigned char* name, int name_0d);
 #define _TBN_ParamOptions__OptionsSectionDesc_Find 3
 extern ParamOptions__Option ParamOptions__OptionsSectionDesc_Find(ParamOptions__OptionsSection section, const unsigned char* name, int name_0d);
-#define _TBP_ParamOptions__OptionsSectionDesc_Add void(*)(ParamOptions__OptionsSection section, ParamOptions__Option option)
+typedef void(* _TBP_ParamOptions__OptionsSectionDesc_Add)(ParamOptions__OptionsSection section, ParamOptions__Option option);
 #define _TBN_ParamOptions__OptionsSectionDesc_Add 4
 extern void ParamOptions__OptionsSectionDesc_Add(ParamOptions__OptionsSection section, ParamOptions__Option option);
-#define _TBP_ParamOptions__OptionsSectionDesc_Remove void(*)(ParamOptions__OptionsSection section, const unsigned char* name__ref, int name_0d)
+typedef void(* _TBP_ParamOptions__OptionsSectionDesc_Remove)(ParamOptions__OptionsSection section, const unsigned char* name__ref, int name_0d);
 #define _TBN_ParamOptions__OptionsSectionDesc_Remove 5
 extern void ParamOptions__OptionsSectionDesc_Remove(ParamOptions__OptionsSection section, const unsigned char* name__ref, int name_0d);
-#define _TBP_ParamOptions__BooleanOptionDesc_Set void(*)(ParamOptions__BooleanOption opt, unsigned char value)
+typedef void(* _TBP_ParamOptions__BooleanOptionDesc_Set)(ParamOptions__BooleanOption opt, unsigned char value);
 #define _TBN_ParamOptions__BooleanOptionDesc_Set 4
 extern void ParamOptions__BooleanOptionDesc_Set(ParamOptions__BooleanOption opt, unsigned char value);
-#define _TBP_ParamOptions__BooleanOptionDesc_Accept unsigned char(*)(ParamOptions__BooleanOption opt, const unsigned char* str__ref, int str_0d)
+typedef unsigned char(* _TBP_ParamOptions__BooleanOptionDesc_Accept)(ParamOptions__BooleanOption opt, const unsigned char* str__ref, int str_0d);
 #define _TBN_ParamOptions__BooleanOptionDesc_Accept 1
 extern unsigned char ParamOptions__BooleanOptionDesc_Accept(ParamOptions__BooleanOption opt, const unsigned char* str__ref, int str_0d);
-#define _TBP_ParamOptions__BooleanOptionDesc_Write void(*)(ParamOptions__BooleanOption opt)
+typedef void(* _TBP_ParamOptions__BooleanOptionDesc_Write)(ParamOptions__BooleanOption opt);
 #define _TBN_ParamOptions__BooleanOptionDesc_Write 0
 extern void ParamOptions__BooleanOptionDesc_Write(ParamOptions__BooleanOption opt);
-#define _TBP_ParamOptions__BooleanOptionDesc_Copy ParamOptions__Option(*)(ParamOptions__BooleanOption opt)
+typedef ParamOptions__Option(* _TBP_ParamOptions__BooleanOptionDesc_Copy)(ParamOptions__BooleanOption opt);
 #define _TBN_ParamOptions__BooleanOptionDesc_Copy 2
 extern ParamOptions__Option ParamOptions__BooleanOptionDesc_Copy(ParamOptions__BooleanOption opt);
-#define _TBP_ParamOptions__BooleanOptionDesc_CopyValue void(*)(ParamOptions__BooleanOption opt, ParamOptions__Option dest)
+typedef void(* _TBP_ParamOptions__BooleanOptionDesc_CopyValue)(ParamOptions__BooleanOption opt, ParamOptions__Option dest);
 #define _TBN_ParamOptions__BooleanOptionDesc_CopyValue 3
 extern void ParamOptions__BooleanOptionDesc_CopyValue(ParamOptions__BooleanOption opt, ParamOptions__Option dest);
-#define _TBP_ParamOptions__IntegerOptionDesc_Set void(*)(ParamOptions__IntegerOption opt, int value)
+typedef void(* _TBP_ParamOptions__IntegerOptionDesc_Set)(ParamOptions__IntegerOption opt, int value);
 #define _TBN_ParamOptions__IntegerOptionDesc_Set 4
 extern void ParamOptions__IntegerOptionDesc_Set(ParamOptions__IntegerOption opt, int value);
-#define _TBP_ParamOptions__IntegerOptionDesc_Accept unsigned char(*)(ParamOptions__IntegerOption opt, const unsigned char* str__ref, int str_0d)
+typedef unsigned char(* _TBP_ParamOptions__IntegerOptionDesc_Accept)(ParamOptions__IntegerOption opt, const unsigned char* str__ref, int str_0d);
 #define _TBN_ParamOptions__IntegerOptionDesc_Accept 1
 extern unsigned char ParamOptions__IntegerOptionDesc_Accept(ParamOptions__IntegerOption opt, const unsigned char* str__ref, int str_0d);
-#define _TBP_ParamOptions__IntegerOptionDesc_Write void(*)(ParamOptions__IntegerOption opt)
+typedef void(* _TBP_ParamOptions__IntegerOptionDesc_Write)(ParamOptions__IntegerOption opt);
 #define _TBN_ParamOptions__IntegerOptionDesc_Write 0
 extern void ParamOptions__IntegerOptionDesc_Write(ParamOptions__IntegerOption opt);
-#define _TBP_ParamOptions__IntegerOptionDesc_Copy ParamOptions__Option(*)(ParamOptions__IntegerOption opt)
+typedef ParamOptions__Option(* _TBP_ParamOptions__IntegerOptionDesc_Copy)(ParamOptions__IntegerOption opt);
 #define _TBN_ParamOptions__IntegerOptionDesc_Copy 2
 extern ParamOptions__Option ParamOptions__IntegerOptionDesc_Copy(ParamOptions__IntegerOption opt);
-#define _TBP_ParamOptions__IntegerOptionDesc_CopyValue void(*)(ParamOptions__IntegerOption opt, ParamOptions__Option dest)
+typedef void(* _TBP_ParamOptions__IntegerOptionDesc_CopyValue)(ParamOptions__IntegerOption opt, ParamOptions__Option dest);
 #define _TBN_ParamOptions__IntegerOptionDesc_CopyValue 3
 extern void ParamOptions__IntegerOptionDesc_CopyValue(ParamOptions__IntegerOption opt, ParamOptions__Option dest);
-#define _TBP_ParamOptions__StringOptionDesc_Set void(*)(ParamOptions__StringOption opt, const unsigned char* value__ref, int value_0d)
+typedef void(* _TBP_ParamOptions__StringOptionDesc_Set)(ParamOptions__StringOption opt, const unsigned char* value__ref, int value_0d);
 #define _TBN_ParamOptions__StringOptionDesc_Set 4
 extern void ParamOptions__StringOptionDesc_Set(ParamOptions__StringOption opt, const unsigned char* value__ref, int value_0d);
-#define _TBP_ParamOptions__StringOptionDesc_Accept unsigned char(*)(ParamOptions__StringOption opt, const unsigned char* str__ref, int str_0d)
+typedef unsigned char(* _TBP_ParamOptions__StringOptionDesc_Accept)(ParamOptions__StringOption opt, const unsigned char* str__ref, int str_0d);
 #define _TBN_ParamOptions__StringOptionDesc_Accept 1
 extern unsigned char ParamOptions__StringOptionDesc_Accept(ParamOptions__StringOption opt, const unsigned char* str__ref, int str_0d);
-#define _TBP_ParamOptions__StringOptionDesc_Write void(*)(ParamOptions__StringOption opt)
+typedef void(* _TBP_ParamOptions__StringOptionDesc_Write)(ParamOptions__StringOption opt);
 #define _TBN_ParamOptions__StringOptionDesc_Write 0
 extern void ParamOptions__StringOptionDesc_Write(ParamOptions__StringOption opt);
-#define _TBP_ParamOptions__StringOptionDesc_Copy ParamOptions__Option(*)(ParamOptions__StringOption opt)
+typedef ParamOptions__Option(* _TBP_ParamOptions__StringOptionDesc_Copy)(ParamOptions__StringOption opt);
 #define _TBN_ParamOptions__StringOptionDesc_Copy 2
 extern ParamOptions__Option ParamOptions__StringOptionDesc_Copy(ParamOptions__StringOption opt);
-#define _TBP_ParamOptions__StringOptionDesc_CopyValue void(*)(ParamOptions__StringOption opt, ParamOptions__Option dest)
+typedef void(* _TBP_ParamOptions__StringOptionDesc_CopyValue)(ParamOptions__StringOption opt, ParamOptions__Option dest);
 #define _TBN_ParamOptions__StringOptionDesc_CopyValue 3
 extern void ParamOptions__StringOptionDesc_CopyValue(ParamOptions__StringOption opt, ParamOptions__Option dest);
-#define _TBP_ParamOptions__OptionsSectionDesc_Parse void(*)(ParamOptions__OptionsSection s, unsigned char includeEnd)
+typedef void(* _TBP_ParamOptions__OptionsSectionDesc_Parse)(ParamOptions__OptionsSection s, unsigned char includeEnd);
 #define _TBN_ParamOptions__OptionsSectionDesc_Parse 0
 extern void ParamOptions__OptionsSectionDesc_Parse(ParamOptions__OptionsSection s, unsigned char includeEnd);
-#define _TBP_ParamOptions__OptionsSectionDesc_Write void(*)(ParamOptions__OptionsSection s)
+typedef void(* _TBP_ParamOptions__OptionsSectionDesc_Write)(ParamOptions__OptionsSection s);
 #define _TBN_ParamOptions__OptionsSectionDesc_Write 1
 extern void ParamOptions__OptionsSectionDesc_Write(ParamOptions__OptionsSection s);
 extern struct _TD ParamOptions__OptionDesc_td;

@@ -549,7 +549,7 @@ l26:
   i7 = i7 != 1;
   if (i7) goto l28;
   i10 = (int)((_Type)i10)->tbprocs[0];
-  i10 = (int)((Data__GlobalRegion(*)(Data__Node))i10)((Data__Node)i11);
+  i10 = (int)((_TBP_Data__NodeDesc_Greg)i10)((Data__Node)i11);
   i7 = i10 + 48;
   i8 = *(unsigned int*)i7;
   i8 = i8 | ((unsigned int)1 << 18);

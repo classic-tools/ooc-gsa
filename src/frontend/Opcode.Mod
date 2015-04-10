@@ -1,7 +1,7 @@
-(* 	$Id: Opcode.Mod,v 1.82 1999/11/06 11:18:01 ooc-devel Exp $	 *)
+(* 	$Id: Opcode.Mod,v 1.84 2000/07/20 18:24:20 ooc-devel Exp $	 *)
 MODULE Opcode;
 (*  This modules defines opcodes for GSA instructions.
-    Copyright (C) 1995-1999  Michael van Acken
+    Copyright (C) 1995-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -225,6 +225,10 @@ CONST
     The first tb proc has the index 0, if the index is known.  For index 
     values that can only be assigned after the whole module has been parsed,
     the field `offset' holds negative values.
+    
+    For back-ends that support virtual method tables in the first field
+    of a record instance: <static-type> has the flag `Data.structVTableField'
+    set, and <type-tag> is the address of the record on the heap.
   result: The procedure's address (LONGINT).  *)
   
   
@@ -443,8 +447,9 @@ CONST
   This instruction is created for every access to a nonlocal variable except 
   the very first one.  The first access uses the result of the enter 
   instruction corresponding to the variable.  A later optimization step tries
-  to eliminate as much of these instructions as possible, possibly turning 
-  them into MayAlias instructions.  *)
+  to eliminate as much of these instructions as possible.  Accesses to
+  variable's global to a module are always non-local, even if they are placed
+  in the module's body.  *)
   accessVarParam* = baseAccess+subclVarParam;
 (* "access-var-param <var-param> <var-address> <store>"
   pre: <var-param> is a variable parameter object (Data.Object, _not_ its 
@@ -454,8 +459,7 @@ CONST
   This instruction is created for every access to a variable parameter except 
   the very first one.  The first access uses the result of the enter 
   instruction corresponding to the parameter.  A later optimization step tries
-  to eliminate as much of these instructions as possible, possibly turning 
-  them into MayAlias instructions.  *)
+  to eliminate as much of these instructions as possible.  *)
   accessMem* = baseAccess+subclMem;
 (* "access-mem <address> <mem> <store> <var...>"
   Reads from memory.

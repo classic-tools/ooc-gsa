@@ -144,7 +144,7 @@ l1:
   i3 = (int)*(void**)i3;
   i1 = (int)((_Type)i1)->tbprocs[1];
   i3 = (int)*(void**)i3;
-  ((void(*)(Data__Usable, Data__Usable))i1)((Data__Usable)i2, (Data__Usable)i3);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i1)((Data__Usable)i2, (Data__Usable)i3);
   goto l3;
 l2:
   DeadCodeElimination__RemoveRuntimeChecks((Data__Region)i2);

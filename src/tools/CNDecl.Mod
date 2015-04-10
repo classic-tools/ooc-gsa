@@ -1,7 +1,7 @@
-(*	$Id: CNDecl.Mod,v 1.3 1998/09/25 20:10:08 acken Exp $	*)
+(*	$Id: CNDecl.Mod,v 1.4 2000/04/22 15:02:53 ooc-devel Exp $	*)
 MODULE CNDecl;
 (*  Facilities to access declarations in abstract syntax trees.
-    Copyright (C) 1998  Michael van Acken
+    Copyright (C) 1998, 2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -49,7 +49,7 @@ their base type.
 *)
 
 IMPORT
-  Strings, S := CNScanner, AST := CNAST;
+  Strings, S := CNScanner, Output := CNOutput, AST := CNAST;
   
 
 CONST  (* class ids for uses of identifiers; see procedure Classify *)
@@ -696,7 +696,8 @@ PROCEDURE DeclarationID* (ident: AST.Ident; sep: ARRAY OF CHAR;
     class := Classify (ident);
     CASE class OF
     | module:
-      COPY (ident. name. str^, id)
+      COPY (ident. name. str^, id);
+      Output.FixModuleName (id)
     | const, type, var, formalParam:
       DeclarationID (Scope (ident, class), sep, id);
       IF DoConcat (id) THEN
@@ -737,6 +738,7 @@ PROCEDURE DeclarationID* (ident: AST.Ident; sep: ARRAY OF CHAR;
             (ident. name. str^ # currModule. name. name. str^)) THEN
           (* reference to imported module *)
           COPY (ident. name. str^, id);
+          Output.FixModuleName (id);
           Strings.Append (".html#", id)
         ELSE
           COPY ("#", id)
@@ -758,6 +760,7 @@ PROCEDURE DeclarationID* (ident: AST.Ident; sep: ARRAY OF CHAR;
           ELSE
             moduleIdent := def. up(AST.Import). module;
             COPY (moduleIdent. name. str^, id);
+            Output.FixModuleName (id);
             Strings.Append (".html#", id);
             Strings.Append (ident. name. str^, id)
           END

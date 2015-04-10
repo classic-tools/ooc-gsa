@@ -3,8 +3,7 @@
 #include "Ascii.h"
 
 /* local definitions */
-unsigned char CharClass__systemEol[3] = {
-  10, 0, };
+unsigned char CharClass__systemEol[3];
 
 /* function prototypes */
 

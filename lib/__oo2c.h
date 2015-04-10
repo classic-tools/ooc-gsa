@@ -1,6 +1,6 @@
-/*	$Id: __oo2c.h,v 1.17 1999/10/03 11:51:00 ooc-devel Exp $	*/
+/*	$Id: __oo2c.h,v 1.19 2000/05/28 20:40:12 ooc-devel Exp $	*/
 /*  Run-time system for oo2c programs.
-    Copyright (C) 1997-1999  Michael van Acken
+    Copyright (C) 1997-2000  Michael van Acken
 
     This module is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public License
@@ -227,5 +227,6 @@ extern void _oo2c_init(void);
 extern LONGINT _program_argc;
 extern CHAR **_program_argv;
 extern INTEGER _program_exit_code;
+#define _not_zero(_x) ((_x)?(_x):1)
 
 #endif /* __oo2c__ */

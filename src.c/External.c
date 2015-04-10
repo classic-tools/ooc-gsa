@@ -31,7 +31,7 @@ void External__InitFile(External__File file, signed char mode, const unsigned ch
     char *_mem, *_var;
     int* _dim_ptr;
     if(i1 < 0) _invalid_length(i1, _P(2778));
-    _mem = GC_malloc_atomic(i1*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
     if (!_mem) _new_failed(_P(2740));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -49,7 +49,7 @@ void External__InitFile(External__File file, signed char mode, const unsigned ch
     char *_mem, *_var;
     int* _dim_ptr;
     if(i1 < 0) _invalid_length(i1, _P(2859));
-    _mem = GC_malloc_atomic(i1*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
     if (!_mem) _new_failed(_P(2817));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -82,7 +82,7 @@ void External__InitLib(External__Lib lib, signed char mode, const unsigned char*
     char *_mem, *_var;
     int* _dim_ptr;
     if(i1 < 0) _invalid_length(i1, _P(3128));
-    _mem = GC_malloc_atomic(i1*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
     if (!_mem) _new_failed(_P(3091));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -102,7 +102,7 @@ void External__InitLib(External__Lib lib, signed char mode, const unsigned char*
     char *_mem, *_var;
     int* _dim_ptr;
     if(i0 < 0) _invalid_length(i0, _P(3273));
-    _mem = GC_malloc_atomic(i0*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
     if (!_mem) _new_failed(_P(3230));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -148,7 +148,7 @@ External__File External__NewFile(signed char mode, const unsigned char* name__re
   _push_value(int, suffix, suffix__ref, suffix_0d);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(32+8);
+    _mem = GC_malloc(_not_zero(32)+8);
     if (!_mem) _new_failed(_P(3696));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &External__FileDesc_td.td;
@@ -163,7 +163,7 @@ External__Lib External__GetLib_NewLib(signed char mode, unsigned char* name, int
   register int i0, i1, i2;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(52+8);
+    _mem = GC_malloc(_not_zero(52)+8);
     if (!_mem) _new_failed(_P(4354));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &External__LibDesc_td.td;
@@ -268,7 +268,7 @@ void External__AddName(External__NameList *list, Parameter__String name) {
 l0:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(8+8);
+    _mem = GC_malloc(_not_zero(8)+8);
     if (!_mem) _new_failed(_P(5463));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &External__NameListDesc_td.td;
@@ -313,7 +313,7 @@ void External__AppendDep(External__Lib lib, Parameter__String name) {
   register int i0, i1, i2, i3, i4, i5, i6;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(8+8);
+    _mem = GC_malloc(_not_zero(8)+8);
     if (!_mem) _new_failed(_P(6184));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &External__DependenceDesc_td.td;
@@ -364,7 +364,7 @@ void External__AddModule(External__Lib lib, Data__Object module) {
   register int i0, i1, i2, i3;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(6662));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &External__ModuleIdDesc_td.td;
@@ -391,13 +391,13 @@ Parameter__String External__ReadString(BinaryRider__Reader r) {
   int len;
   i1 = *(int*)((int)r-4);
   i0 = (int)((_Type)i1)->tbprocs[14];
-  ((void(*)(BinaryRider__Reader, int *))i0)((BinaryRider__Reader)(int)r, (int *)(int)&len);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i0)((BinaryRider__Reader)(int)r, (int *)(int)&len);
   i0 = len + 1;
   {
     char *_mem, *_var;
     int* _dim_ptr;
     if(i0 < 0) _invalid_length(i0, _P(7196));
-    _mem = GC_malloc_atomic(i0*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
     if (!_mem) _new_failed(_P(7185));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -406,7 +406,7 @@ Parameter__String External__ReadString(BinaryRider__Reader r) {
   }
   i1 = (int)((_Type)i1)->tbprocs[4];
   i2 = *(int*)(i0-8);
-  ((void(*)(BinaryRider__Reader, unsigned char*, int x_0d, int, int))i1)((BinaryRider__Reader)(int)r, (unsigned char*)i0, i2, (int)0, (int)len);
+  ((_TBP_BinaryRider__ReaderDesc_ReadBytes)i1)((BinaryRider__Reader)(int)r, (unsigned char*)i0, i2, (int)0, (int)len);
   i1 = len + i0;
   *(unsigned char*)i1 = 0;
   return (void*)i0;
@@ -456,7 +456,7 @@ External__Ref External__ReadRefList(BinaryRider__Reader r) {
   int mode;
   i0 = *(int*)((int)r-4);
   i0 = (int)((_Type)i0)->tbprocs[14];
-  ((void(*)(BinaryRider__Reader, int *))i0)((BinaryRider__Reader)(int)r, (int *)(int)&mode);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i0)((BinaryRider__Reader)(int)r, (int *)(int)&mode);
   i0 = mode != 0;
   if (i0) goto l0;
   i8 = 0;
@@ -485,7 +485,7 @@ l2:
   if (!((i0>=1 && i0<=2))) goto l3;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(32+8);
+    _mem = GC_malloc(_not_zero(32)+8);
     if (!_mem) _new_failed(_P(8229));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &External__FileDesc_td.td;
@@ -515,7 +515,7 @@ l5:
   i1 = (int)((_Type)i1)->tbprocs[14];
   mode = (int)i0;
   mode = (int)i0;
-  ((void(*)(BinaryRider__Reader, int *))i1)((BinaryRider__Reader)i6, (int *)(int)&mode);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i1)((BinaryRider__Reader)i6, (int *)(int)&mode);
   i0 = mode == 0;
   if (i0) goto l6;
   i0 = mode;
@@ -531,8 +531,8 @@ void External__WriteString(BinaryRider__Writer w, unsigned char* str, int str_0d
   i0 = Strings__Length((const unsigned char*)(int)str, str_0d);
   i1 = (int)((_Type)i2)->tbprocs[13];
   i2 = (int)((_Type)i2)->tbprocs[3];
-  ((void(*)(BinaryRider__Writer, int))i1)((BinaryRider__Writer)(int)w, (int)i0);
-  ((void(*)(BinaryRider__Writer, unsigned char*, int x_0d, int, int))i2)((BinaryRider__Writer)(int)w, (unsigned char*)(int)str, str_0d, (int)0, (int)i0);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i1)((BinaryRider__Writer)(int)w, (int)i0);
+  ((_TBP_BinaryRider__WriterDesc_WriteBytes)i2)((BinaryRider__Writer)(int)w, (unsigned char*)(int)str, str_0d, (int)0, (int)i0);
 }
 
 void External__WriteOptionNames_WriteNameList(External__NameList list, BinaryRider__Writer *External__WriteOptionNames_w) {
@@ -595,7 +595,7 @@ l1:
   i0 = *(int*)(i1-4);
   i3 = _type_test(i0, &External__FileDesc_td.td, 1);
   i2 = (int)((_Type)i2)->tbprocs[13];
-  ((void(*)(BinaryRider__Writer, int))i2)((BinaryRider__Writer)i4, (int)i5);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i2)((BinaryRider__Writer)i4, (int)i5);
   if (i3) goto l4;
   i0 = _type_test(i0, &External__LibDesc_td.td, 1);
   if (i0) goto l2;
@@ -648,7 +648,7 @@ l7:
   if (i5) goto l8;
   i0 = *(int*)(i4-4);
   i0 = (int)((_Type)i0)->tbprocs[13];
-  ((void(*)(BinaryRider__Writer, int))i0)((BinaryRider__Writer)i4, (int)0);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i0)((BinaryRider__Writer)i4, (int)0);
 l8:
   ;
 }
@@ -709,7 +709,7 @@ l0:
   External__WriteString((BinaryRider__Writer)(int)w, (unsigned char*)i1, i2);
   i1 = i3 + 8;
   i1 = *(int*)i1;
-  ((void(*)(BinaryRider__Writer, int))i0)((BinaryRider__Writer)(int)w, (int)i1);
+  ((_TBP_BinaryRider__WriterDesc_WriteLInt)i0)((BinaryRider__Writer)(int)w, (int)i1);
   i3 = (int)*(void**)i3;
   i1 = i3 != 0;
   if (i1) goto l0;
@@ -735,7 +735,7 @@ void External__WriteLibFile(External__Lib lib, const unsigned char* path__ref, i
   i0 = (int)BinaryRider__ConnectWriter((Channel__Channel)i2);
   i3 = *(int*)(i0-4);
   i3 = (int)((_Type)i3)->tbprocs[3];
-  ((void(*)(BinaryRider__Writer, unsigned char*, int x_0d, int, int))i3)((BinaryRider__Writer)i0, (unsigned char*)(int)External__libFileId, 5, (int)0, (int)4);
+  ((_TBP_BinaryRider__WriterDesc_WriteBytes)i3)((BinaryRider__Writer)i0, (unsigned char*)(int)External__libFileId, 5, (int)0, (int)4);
   i3 = (int)*(void**)i1;
   i1 = *(int*)(i3-8);
   External__WriteString((BinaryRider__Writer)i0, (unsigned char*)i3, i1);
@@ -758,34 +758,34 @@ void External__WriteLibFile(External__Lib lib, const unsigned char* path__ref, i
   if (i0) goto l0;
   i0 = *(int*)(i3-4);
   i0 = (int)((_Type)i0)->tbprocs[3];
-  ((void(*)(Msg__Msg, Msg__String, int text_0d))i0)((Msg__Msg)i3, (Msg__String)(int)msg, 256);
+  ((_TBP_Msg__MsgDesc_GetText)i0)((Msg__Msg)i3, (Msg__String)(int)msg, 256);
   Error__FileError((const unsigned char*)(int)_c2, 24, (const unsigned char*)(int)fileName, 256, (const unsigned char*)(int)msg, 256);
 l0:
   i1 = *(int*)(i2-4);
   i0 = (int)((_Type)i1)->tbprocs[7];
-  ((void(*)(Files__File))i0)((Files__File)i2);
+  ((_TBP_Files__FileDesc_Register)i0)((Files__File)i2);
   i3 = (int)*(void**)i2;
   i0 = i3 == 0;
   if (i0) goto l1;
   i0 = *(int*)(i3-4);
   i0 = (int)((_Type)i0)->tbprocs[3];
-  ((void(*)(Msg__Msg, Msg__String, int text_0d))i0)((Msg__Msg)i3, (Msg__String)(int)msg, 256);
+  ((_TBP_Msg__MsgDesc_GetText)i0)((Msg__Msg)i3, (Msg__String)(int)msg, 256);
   Error__FileError((const unsigned char*)(int)_c3, 28, (const unsigned char*)(int)fileName, 256, (const unsigned char*)(int)msg, 256);
 l1:
   i0 = (int)((_Type)i1)->tbprocs[5];
-  ((void(*)(Files__File))i0)((Files__File)i2);
+  ((_TBP_Files__FileDesc_Close)i0)((Files__File)i2);
   i0 = (int)*(void**)i2;
   i3 = i0 == 0;
   if (i3) goto l3;
   i3 = *(int*)(i0-4);
   i3 = (int)((_Type)i3)->tbprocs[3];
-  ((void(*)(Msg__Msg, Msg__String, int text_0d))i3)((Msg__Msg)i0, (Msg__String)(int)msg, 256);
+  ((_TBP_Msg__MsgDesc_GetText)i3)((Msg__Msg)i0, (Msg__String)(int)msg, 256);
   Error__FileError((const unsigned char*)(int)_c4, 24, (const unsigned char*)(int)fileName, 256, (const unsigned char*)(int)msg, 256);
   goto l3;
 l2:
   i0 = *(int*)((int)res-4);
   i0 = (int)((_Type)i0)->tbprocs[3];
-  ((void(*)(Msg__Msg, Msg__String, int text_0d))i0)((Msg__Msg)(int)res, (Msg__String)(int)msg, 256);
+  ((_TBP_Msg__MsgDesc_GetText)i0)((Msg__Msg)(int)res, (Msg__String)(int)msg, 256);
   Error__FileError((const unsigned char*)(int)_c5, 36, (const unsigned char*)(int)fileName, 256, (const unsigned char*)(int)msg, 256);
 l3:
   _top_vs = _old_top_vs;
@@ -837,7 +837,7 @@ void External__ReadLibFile_ReadModList_AddModule(Parameter__String *External__Re
   register int i0, i1, i2, i3, i4, i5;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(13777));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &External__ModuleIdDesc_td.td;
@@ -871,7 +871,7 @@ void External__ReadLibFile_ReadModList(BinaryRider__Reader r, External__Lib lib)
 l0:
   magicId = (int)i3;
   magicId = (int)i3;
-  ((void(*)(BinaryRider__Reader, int *))i1)((BinaryRider__Reader)(int)r, (int *)(int)&magicId);
+  ((_TBP_BinaryRider__ReaderDesc_ReadLInt)i1)((BinaryRider__Reader)(int)r, (int *)(int)&magicId);
   name = (void*)i2;
   External__ReadLibFile_ReadModList_AddModule((Parameter__String *)&name, &magicId, (External__Lib *)&lib);
   i2 = (int)External__ReadString((BinaryRider__Reader)(int)r);
@@ -913,7 +913,7 @@ l1:
   i3 = *(int*)(i8-4);
   (void)memcpy((void*) (int)libId, (const void*) (int)_c6, 5);
   i6 = (int)((_Type)i3)->tbprocs[4];
-  ((void(*)(BinaryRider__Reader, unsigned char*, int x_0d, int, int))i6)((BinaryRider__Reader)i8, (unsigned char*)(int)libId, 16, (int)0, (int)4);
+  ((_TBP_BinaryRider__ReaderDesc_ReadBytes)i6)((BinaryRider__Reader)i8, (unsigned char*)(int)libId, 16, (int)0, (int)4);
   i6 = strcmp((const char*) (int)libId, (const char*) (int)External__libFileId) != 0;
   i4 = *(int*)(i1-4);
   if (i6) goto l3;
@@ -940,8 +940,8 @@ l2:
   i7 = (int)((_Type)i4)->tbprocs[0];
   External__ReadLibFile_ReadModList((BinaryRider__Reader)i8, (External__Lib)(int)lib);
   i5 = (int)((_Type)i3)->tbprocs[0];
-  i7 = ((int(*)(PosixFileDescr__Channel))i7)((PosixFileDescr__Channel)i1);
-  i5 = ((int(*)(BinaryRider__Reader))i5)((BinaryRider__Reader)i8);
+  i7 = ((_TBP_PosixFileDescr__ChannelDesc_Length)i7)((PosixFileDescr__Channel)i1);
+  i5 = ((_TBP_BinaryRider__ReaderDesc_Pos)i5)((BinaryRider__Reader)i8);
   i5 = i7 - i5;
   i7 = i5 == 0;
   if (i7) goto l4;
@@ -956,11 +956,11 @@ l4:
   if (i5) goto l5;
   i5 = *(int*)(i6-4);
   i5 = (int)((_Type)i5)->tbprocs[3];
-  ((void(*)(Msg__Msg, Msg__String, int text_0d))i5)((Msg__Msg)i6, (Msg__String)(int)msg, 256);
+  ((_TBP_Msg__MsgDesc_GetText)i5)((Msg__Msg)i6, (Msg__String)(int)msg, 256);
   Error__FileError((const unsigned char*)(int)_c7, 23, (const unsigned char*)(int)fileName, 256, (const unsigned char*)(int)msg, 256);
 l5:
   i6 = (int)((_Type)i4)->tbprocs[5];
-  ((void(*)(Files__File))i6)((Files__File)i1);
+  ((_TBP_Files__FileDesc_Close)i6)((Files__File)i1);
   goto l7;
 l6:
   Error__ErrIns((int)pos, (short int)514, (const unsigned char*)(int)fileName, 256);
@@ -1154,7 +1154,17 @@ l20:
 }
 
 void External_init(void) {
+  register int i0, i1;
   _mid = _register_module(&External_md.md, &External__ModuleIdDesc_td.td);
-  (void)memcpy((void*) (int)External__emptyString, (const void*) (int)_c0, 1);
   External__libList = (void*)0;
+  i1 = (int)External__libFileId + 1;
+  *(unsigned char*)(int)External__libFileId = 239;
+  i0 = (int)External__libFileId + 2;
+  *(unsigned char*)i1 = 154;
+  i1 = (int)External__libFileId + 3;
+  *(unsigned char*)i0 = 82;
+  i0 = (int)External__libFileId + 4;
+  *(unsigned char*)i1 = 108;
+  (void)memcpy((void*) (int)External__emptyString, (const void*) (int)_c0, 1);
+  *(unsigned char*)i0 = 0;
 }

@@ -165,12 +165,13 @@ void Channel_init(void) {
   _mid = _register_module(&Channel_md.md, &Channel__ErrorContextDesc_td.td);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(4+8);
+    _mem = GC_malloc(_not_zero(4)+8);
     if (!_mem) _new_failed(_P(24095));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Channel__ErrorContextDesc_td.td;
     i0 = (int)_var;
   }
-  Msg__InitContext((Msg__Context)i0, (const Msg__String)(int)_c14, 17);
   Channel__errorContext = (void*)i0;
+  i0 = (int)Channel__errorContext;
+  Msg__InitContext((Msg__Context)i0, (const Msg__String)(int)_c14, 17);
 }

@@ -91,7 +91,7 @@ void AlgebraicTransformation__Transform_InitialWorklist(Data__Region region, Wor
 l0:
   i2 = *(int*)(i1-4);
   i2 = _type_test(i2, &Data__RegionDesc_td.td, 5);
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i0)((Worklist__Worklist *)(int)AlgebraicTransformation__Transform_worklist, &Worklist__Worklist_td.td, (Data__Info)i1);
+  ((_TBP_Worklist__Worklist_AddTail)i0)((Worklist__Worklist *)(int)AlgebraicTransformation__Transform_worklist, &Worklist__Worklist_td.td, (Data__Info)i1);
   if (!(i2)) goto l1;
   AlgebraicTransformation__Transform_InitialWorklist((Data__Region)i1, &*AlgebraicTransformation__Transform_worklist);
 l1:
@@ -239,12 +239,12 @@ l0:
   if (!(i2==30)) goto l3;
   i0 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[24];
   i2 = i3 + 28;
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Result, Worklist__UsingHook))i0)((Worklist__Worklist *)(int)AlgebraicTransformation__Transform_worklist, &Worklist__Worklist_td.td, (Data__Result)(int)instr, (Worklist__UsingHook)0);
+  ((_TBP_Worklist__Worklist_AddUsingInstr)i0)((Worklist__Worklist *)(int)AlgebraicTransformation__Transform_worklist, &Worklist__Worklist_td.td, (Data__Result)(int)instr, (Worklist__UsingHook)0);
   i2 = (int)*(void**)i2;
   i3 = *(int*)((int)instr-4);
   i2 = (int)*(void**)i2;
   i3 = (int)((_Type)i3)->tbprocs[1];
-  ((void(*)(Data__Usable, Data__Usable))i3)((Data__Usable)(int)instr, (Data__Usable)i2);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i3)((Data__Usable)(int)instr, (Data__Usable)i2);
   goto l3;
 l1:
   AlgebraicTransformation__Transform_BooleanResult_NegateGuards((Data__Instruction)(int)instr);
@@ -1251,17 +1251,17 @@ void AlgebraicTransformation__Transform(Data__Region reg) {
   Worklist__Worklist worklist;
   i0 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[0];
   i9 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[13];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag))i0)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  ((_TBP_Worklist__Worklist_Init)i0)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   AlgebraicTransformation__Transform_InitialWorklist((Data__Region)(int)reg, &worklist);
-  i0 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i9)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  i0 = ((_TBP_Worklist__Worklist_IsEmpty)i9)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   if (i0) goto l13;
   i2 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[15];
   i1 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[18];
   i0 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[24];
   i10 = (int)Data__struct + 4;
 l0:
-  i3 = (int)((Data__Info(*)(Worklist__Worklist *, _Type wl__tag))i2)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
-  ((void(*)(Worklist__Worklist *, _Type wl__tag))i1)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  i3 = (int)((_TBP_Worklist__Worklist_GetHead)i2)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  ((_TBP_Worklist__Worklist_RemoveHead)i1)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   i4 = i3 + 44;
   i5 = *(short int*)i4;
   i7 = (short int)_ashr(i5, 4, (unsigned short int));
@@ -1338,12 +1338,12 @@ l10:
 l11:
   i4 = i8 != 0;
   if (!(i4)) goto l12;
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Result, Worklist__UsingHook))i0)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td, (Data__Result)i3, (Worklist__UsingHook)0);
+  ((_TBP_Worklist__Worklist_AddUsingInstr)i0)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td, (Data__Result)i3, (Worklist__UsingHook)0);
   i4 = *(int*)(i3-4);
   i4 = (int)((_Type)i4)->tbprocs[1];
-  ((void(*)(Data__Usable, Data__Usable))i4)((Data__Usable)i3, (Data__Usable)i8);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i4)((Data__Usable)i3, (Data__Usable)i8);
 l12:
-  i3 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i9)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
+  i3 = ((_TBP_Worklist__Worklist_IsEmpty)i9)((Worklist__Worklist *)(int)&worklist, &Worklist__Worklist_td.td);
   if (!(i3)) goto l0;
 l13:
   ;

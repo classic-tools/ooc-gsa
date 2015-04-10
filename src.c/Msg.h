@@ -69,52 +69,52 @@ extern Msg__LStringAttribute Msg__NewLStringAttrib(const Msg__String name__ref, 
 extern Msg__MsgAttribute Msg__NewMsgAttrib(const Msg__String name__ref, int name_0d, Msg__Msg value);
 extern Msg__StringPtr Msg__GetStringPtr(const Msg__String str__ref, int str_0d);
 extern Msg__LStringPtr Msg__GetLStringPtr(const Msg__LString str__ref, int str_0d);
-#define _TBP_Msg__ContextDesc_GetTemplate void(*)(Msg__Context context, Msg__Msg msg, Msg__LString templ, int templ_0d)
+typedef void(* _TBP_Msg__ContextDesc_GetTemplate)(Msg__Context context, Msg__Msg msg, Msg__LString templ, int templ_0d);
 #define _TBN_Msg__ContextDesc_GetTemplate 0
 extern void Msg__ContextDesc_GetTemplate(Msg__Context context, Msg__Msg msg, Msg__LString templ, int templ_0d);
-#define _TBP_Msg__AttributeDesc_ReplacementText void(*)(Msg__Attribute attr, Msg__LString text, int text_0d)
+typedef void(* _TBP_Msg__AttributeDesc_ReplacementText)(Msg__Attribute attr, Msg__LString text, int text_0d);
 #define _TBN_Msg__AttributeDesc_ReplacementText 0
 extern void Msg__AttributeDesc_ReplacementText(Msg__Attribute attr, Msg__LString text, int text_0d);
-#define _TBP_Msg__MsgDesc_SetAttribute void(*)(Msg__Msg msg, Msg__Attribute attr)
+typedef void(* _TBP_Msg__MsgDesc_SetAttribute)(Msg__Msg msg, Msg__Attribute attr);
 #define _TBN_Msg__MsgDesc_SetAttribute 0
 extern void Msg__MsgDesc_SetAttribute(Msg__Msg msg, Msg__Attribute attr);
-#define _TBP_Msg__MsgDesc_GetAttribute Msg__Attribute(*)(Msg__Msg msg, const Msg__String name, int name_0d)
+typedef Msg__Attribute(* _TBP_Msg__MsgDesc_GetAttribute)(Msg__Msg msg, const Msg__String name, int name_0d);
 #define _TBN_Msg__MsgDesc_GetAttribute 1
 extern Msg__Attribute Msg__MsgDesc_GetAttribute(Msg__Msg msg, const Msg__String name, int name_0d);
-#define _TBP_Msg__MsgDesc_GetLText void(*)(Msg__Msg msg, Msg__LString text, int text_0d)
+typedef void(* _TBP_Msg__MsgDesc_GetLText)(Msg__Msg msg, Msg__LString text, int text_0d);
 #define _TBN_Msg__MsgDesc_GetLText 2
 extern void Msg__MsgDesc_GetLText(Msg__Msg msg, Msg__LString text, int text_0d);
-#define _TBP_Msg__MsgDesc_GetText void(*)(Msg__Msg msg, Msg__String text, int text_0d)
+typedef void(* _TBP_Msg__MsgDesc_GetText)(Msg__Msg msg, Msg__String text, int text_0d);
 #define _TBN_Msg__MsgDesc_GetText 3
 extern void Msg__MsgDesc_GetText(Msg__Msg msg, Msg__String text, int text_0d);
-#define _TBP_Msg__MsgListDesc_Append void(*)(Msg__MsgList l, Msg__Msg msg)
+typedef void(* _TBP_Msg__MsgListDesc_Append)(Msg__MsgList l, Msg__Msg msg);
 #define _TBN_Msg__MsgListDesc_Append 0
 extern void Msg__MsgListDesc_Append(Msg__MsgList l, Msg__Msg msg);
-#define _TBP_Msg__MsgListDesc_AppendList void(*)(Msg__MsgList l, Msg__MsgList source)
+typedef void(* _TBP_Msg__MsgListDesc_AppendList)(Msg__MsgList l, Msg__MsgList source);
 #define _TBN_Msg__MsgListDesc_AppendList 1
 extern void Msg__MsgListDesc_AppendList(Msg__MsgList l, Msg__MsgList source);
-#define _TBP_Msg__MsgDesc_SetIntAttrib void(*)(Msg__Msg msg, const Msg__String name__ref, int name_0d, int value)
+typedef void(* _TBP_Msg__MsgDesc_SetIntAttrib)(Msg__Msg msg, const Msg__String name__ref, int name_0d, int value);
 #define _TBN_Msg__MsgDesc_SetIntAttrib 4
 extern void Msg__MsgDesc_SetIntAttrib(Msg__Msg msg, const Msg__String name__ref, int name_0d, int value);
-#define _TBP_Msg__IntAttributeDesc_ReplacementText void(*)(Msg__IntAttribute attr, Msg__LString text, int text_0d)
+typedef void(* _TBP_Msg__IntAttributeDesc_ReplacementText)(Msg__IntAttribute attr, Msg__LString text, int text_0d);
 #define _TBN_Msg__IntAttributeDesc_ReplacementText 0
 extern void Msg__IntAttributeDesc_ReplacementText(Msg__IntAttribute attr, Msg__LString text, int text_0d);
-#define _TBP_Msg__MsgDesc_SetStringAttrib void(*)(Msg__Msg msg, const Msg__String name__ref, int name_0d, Msg__StringPtr value)
+typedef void(* _TBP_Msg__MsgDesc_SetStringAttrib)(Msg__Msg msg, const Msg__String name__ref, int name_0d, Msg__StringPtr value);
 #define _TBN_Msg__MsgDesc_SetStringAttrib 5
 extern void Msg__MsgDesc_SetStringAttrib(Msg__Msg msg, const Msg__String name__ref, int name_0d, Msg__StringPtr value);
-#define _TBP_Msg__StringAttributeDesc_ReplacementText void(*)(Msg__StringAttribute attr, Msg__LString text, int text_0d)
+typedef void(* _TBP_Msg__StringAttributeDesc_ReplacementText)(Msg__StringAttribute attr, Msg__LString text, int text_0d);
 #define _TBN_Msg__StringAttributeDesc_ReplacementText 0
 extern void Msg__StringAttributeDesc_ReplacementText(Msg__StringAttribute attr, Msg__LString text, int text_0d);
-#define _TBP_Msg__MsgDesc_SetLStringAttrib void(*)(Msg__Msg msg, const Msg__String name__ref, int name_0d, Msg__LStringPtr value)
+typedef void(* _TBP_Msg__MsgDesc_SetLStringAttrib)(Msg__Msg msg, const Msg__String name__ref, int name_0d, Msg__LStringPtr value);
 #define _TBN_Msg__MsgDesc_SetLStringAttrib 6
 extern void Msg__MsgDesc_SetLStringAttrib(Msg__Msg msg, const Msg__String name__ref, int name_0d, Msg__LStringPtr value);
-#define _TBP_Msg__LStringAttributeDesc_ReplacementText void(*)(Msg__LStringAttribute attr, Msg__LString text, int text_0d)
+typedef void(* _TBP_Msg__LStringAttributeDesc_ReplacementText)(Msg__LStringAttribute attr, Msg__LString text, int text_0d);
 #define _TBN_Msg__LStringAttributeDesc_ReplacementText 0
 extern void Msg__LStringAttributeDesc_ReplacementText(Msg__LStringAttribute attr, Msg__LString text, int text_0d);
-#define _TBP_Msg__MsgDesc_SetMsgAttrib void(*)(Msg__Msg msg, const Msg__String name__ref, int name_0d, Msg__Msg value)
+typedef void(* _TBP_Msg__MsgDesc_SetMsgAttrib)(Msg__Msg msg, const Msg__String name__ref, int name_0d, Msg__Msg value);
 #define _TBN_Msg__MsgDesc_SetMsgAttrib 7
 extern void Msg__MsgDesc_SetMsgAttrib(Msg__Msg msg, const Msg__String name__ref, int name_0d, Msg__Msg value);
-#define _TBP_Msg__MsgAttributeDesc_ReplacementText void(*)(Msg__MsgAttribute attr, Msg__LString text, int text_0d)
+typedef void(* _TBP_Msg__MsgAttributeDesc_ReplacementText)(Msg__MsgAttribute attr, Msg__LString text, int text_0d);
 #define _TBN_Msg__MsgAttributeDesc_ReplacementText 0
 extern void Msg__MsgAttributeDesc_ReplacementText(Msg__MsgAttribute attr, Msg__LString text, int text_0d);
 extern struct _TD Msg__AttributeDesc_td;

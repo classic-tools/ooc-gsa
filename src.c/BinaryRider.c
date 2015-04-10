@@ -18,7 +18,7 @@ int BinaryRider__ReaderDesc_Pos(BinaryRider__Reader r) {
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[0];
-  i0 = ((int(*)(Channel__Reader))i1)((Channel__Reader)i0);
+  i0 = ((_TBP_Channel__ReaderDesc_Pos)i1)((Channel__Reader)i0);
   return (int)i0;
 }
 
@@ -31,7 +31,7 @@ void BinaryRider__ReaderDesc_SetPos(BinaryRider__Reader r, int newPos) {
   i2 = (int)*(void**)i1;
   i0 = *(int*)(i2-4);
   i0 = (int)((_Type)i0)->tbprocs[2];
-  ((void(*)(Channel__Reader, int))i0)((Channel__Reader)i2, (int)newPos);
+  ((_TBP_Channel__ReaderDesc_SetPos)i0)((Channel__Reader)i2, (int)newPos);
   i1 = (int)*(void**)i1;
   i1 += 4;
   i1 = (int)*(void**)i1;
@@ -46,7 +46,7 @@ void BinaryRider__ReaderDesc_ClearError(BinaryRider__Reader r) {
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
-  ((void(*)(Channel__Reader))i1)((Channel__Reader)i0);
+  ((_TBP_Channel__ReaderDesc_ClearError)i1)((Channel__Reader)i0);
   *(void**)(int)r = (void*)0;
 }
 
@@ -56,7 +56,7 @@ int BinaryRider__ReaderDesc_Available(BinaryRider__Reader r) {
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[1];
-  i0 = ((int(*)(Channel__Reader))i1)((Channel__Reader)i0);
+  i0 = ((_TBP_Channel__ReaderDesc_Available)i1)((Channel__Reader)i0);
   return (int)i0;
 }
 
@@ -69,7 +69,7 @@ void BinaryRider__ReaderDesc_ReadBytes(BinaryRider__Reader r, unsigned char* x, 
   i2 = (int)*(void**)i1;
   i0 = *(int*)(i2-4);
   i0 = (int)((_Type)i0)->tbprocs[4];
-  ((void(*)(Channel__Reader, unsigned char*, int x_0d, int, int))i0)((Channel__Reader)i2, (unsigned char*)(int)x, x_0d, (int)start, (int)n);
+  ((_TBP_Channel__ReaderDesc_ReadBytes)i0)((Channel__Reader)i2, (unsigned char*)(int)x, x_0d, (int)start, (int)n);
   i1 = (int)*(void**)i1;
   i1 += 4;
   i1 = (int)*(void**)i1;
@@ -98,7 +98,7 @@ l0:
   i5 = i0 + -1;
   i0 = *(unsigned char*)i6;
   i3 = (int)((_Type)i3)->tbprocs[3];
-  ((void(*)(Channel__Reader, unsigned char *))i3)((Channel__Reader)i2, (unsigned char *)i6);
+  ((_TBP_Channel__ReaderDesc_ReadByte)i3)((Channel__Reader)i2, (unsigned char *)i6);
   i2 = i5 < 0;
   if (i2) goto l2;
   i0 = i5;
@@ -108,7 +108,7 @@ l1:
   i1 = (int)*(void**)i1;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[4];
-  ((void(*)(Channel__Reader, unsigned char*, int x_0d, int, int))i0)((Channel__Reader)i1, (unsigned char*)(int)x, x_0d, (int)0, (int)x_0d);
+  ((_TBP_Channel__ReaderDesc_ReadBytes)i0)((Channel__Reader)i1, (unsigned char*)(int)x, x_0d, (int)0, (int)x_0d);
 l2:
   ;
 }
@@ -123,7 +123,7 @@ void BinaryRider__ReaderDesc_ReadBool(BinaryRider__Reader r, unsigned char *bool
   i2 = (int)*(void**)i1;
   i0 = *(int*)(i2-4);
   i0 = (int)((_Type)i0)->tbprocs[3];
-  ((void(*)(Channel__Reader, unsigned char *))i0)((Channel__Reader)i2, (unsigned char *)(int)&byte);
+  ((_TBP_Channel__ReaderDesc_ReadByte)i0)((Channel__Reader)i2, (unsigned char *)(int)&byte);
   i1 = (int)*(void**)i1;
   i1 += 4;
   i2 = (int)*(void**)i1;
@@ -155,7 +155,7 @@ void BinaryRider__ReaderDesc_ReadChar(BinaryRider__Reader r, unsigned char *ch) 
   i3 = *(int*)(i1-4);
   i0 = (int)((_Type)i3)->tbprocs[3];
   i3 = *ch;
-  ((void(*)(Channel__Reader, unsigned char *))i0)((Channel__Reader)i1, (unsigned char *)(int)ch);
+  ((_TBP_Channel__ReaderDesc_ReadByte)i0)((Channel__Reader)i1, (unsigned char *)(int)ch);
   i2 = (int)*(void**)i2;
   i2 += 4;
   i2 = (int)*(void**)i2;
@@ -172,7 +172,7 @@ void BinaryRider__ReaderDesc_ReadLChar(BinaryRider__Reader r, unsigned short int
   i1 = *(int*)((int)r-4);
   i0 = (int)((_Type)i1)->tbprocs[5];
   i1 = *ch;
-  ((void(*)(BinaryRider__Reader, unsigned char*, int x_0d))i0)((BinaryRider__Reader)(int)r, (unsigned char*)(int)ch, 2);
+  ((_TBP_BinaryRider__ReaderDesc_ReadBytesOrdered)i0)((BinaryRider__Reader)(int)r, (unsigned char*)(int)ch, 2);
   i1 = (int)r + 8;
   i1 = (int)*(void**)i1;
   i1 += 4;
@@ -196,7 +196,7 @@ l0:
   i3++;
   i4 = (int)s + i3;
   i2 = *(unsigned char*)i4;
-  ((void(*)(BinaryRider__Reader, unsigned char *))i1)((BinaryRider__Reader)(int)r, (unsigned char *)i4);
+  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i1)((BinaryRider__Reader)(int)r, (unsigned char *)i4);
   i2 = *(unsigned char*)i4;
   i2 = i2 == 0;
   if (i2) goto l1;
@@ -243,7 +243,7 @@ l0:
   i2 = (int)_ashl(i3, 1, (unsigned int));
   i4 = (int)s + i2;
   i2 = *(unsigned short int*)i4;
-  ((void(*)(BinaryRider__Reader, unsigned short int *))i1)((BinaryRider__Reader)(int)r, (unsigned short int *)i4);
+  ((_TBP_BinaryRider__ReaderDesc_ReadLChar)i1)((BinaryRider__Reader)(int)r, (unsigned short int *)i4);
   i2 = *(unsigned short int*)i4;
   i2 = i2 == 0;
   if (i2) goto l1;
@@ -286,7 +286,7 @@ void BinaryRider__ReaderDesc_ReadSInt(BinaryRider__Reader r, signed char *sint) 
   i3 = *(int*)(i1-4);
   i0 = (int)((_Type)i3)->tbprocs[3];
   i3 = *sint;
-  ((void(*)(Channel__Reader, unsigned char *))i0)((Channel__Reader)i1, (unsigned char *)(int)sint);
+  ((_TBP_Channel__ReaderDesc_ReadByte)i0)((Channel__Reader)i1, (unsigned char *)(int)sint);
   i2 = (int)*(void**)i2;
   i2 += 4;
   i2 = (int)*(void**)i2;
@@ -303,7 +303,7 @@ void BinaryRider__ReaderDesc_ReadInt(BinaryRider__Reader r, short int *int_) {
   i1 = *(int*)((int)r-4);
   i0 = (int)((_Type)i1)->tbprocs[5];
   i1 = *int_;
-  ((void(*)(BinaryRider__Reader, unsigned char*, int x_0d))i0)((BinaryRider__Reader)(int)r, (unsigned char*)(int)int_, 2);
+  ((_TBP_BinaryRider__ReaderDesc_ReadBytesOrdered)i0)((BinaryRider__Reader)(int)r, (unsigned char*)(int)int_, 2);
   i1 = (int)r + 8;
   i1 = (int)*(void**)i1;
   i1 += 4;
@@ -321,7 +321,7 @@ void BinaryRider__ReaderDesc_ReadLInt(BinaryRider__Reader r, int *lint) {
   i1 = *(int*)((int)r-4);
   i0 = (int)((_Type)i1)->tbprocs[5];
   i1 = *lint;
-  ((void(*)(BinaryRider__Reader, unsigned char*, int x_0d))i0)((BinaryRider__Reader)(int)r, (unsigned char*)(int)lint, 4);
+  ((_TBP_BinaryRider__ReaderDesc_ReadBytesOrdered)i0)((BinaryRider__Reader)(int)r, (unsigned char*)(int)lint, 4);
   i1 = (int)r + 8;
   i1 = (int)*(void**)i1;
   i1 += 4;
@@ -336,7 +336,7 @@ void BinaryRider__ReaderDesc_ReadNum(BinaryRider__Reader r, int *num) {
   unsigned char x;
   i0 = *(int*)((int)r-4);
   i3 = (int)((_Type)i0)->tbprocs[7];
-  ((void(*)(BinaryRider__Reader, unsigned char *))i3)((BinaryRider__Reader)(int)r, (unsigned char *)(int)&x);
+  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i3)((BinaryRider__Reader)(int)r, (unsigned char *)(int)&x);
   i0 = (int)x >= 128;
   if (i0) goto l0;
   i5 = 0;
@@ -354,7 +354,7 @@ l1:
   i5 += i0;
   x = (unsigned char)i1;
   x = (unsigned char)i1;
-  ((void(*)(BinaryRider__Reader, unsigned char *))i3)((BinaryRider__Reader)(int)r, (unsigned char *)(int)&x);
+  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i3)((BinaryRider__Reader)(int)r, (unsigned char *)(int)&x);
   i0 = i4 >= 28;
   if (i0) goto l2;
   i0 = (int)x < 128;
@@ -407,7 +407,7 @@ void BinaryRider__ReaderDesc_ReadReal(BinaryRider__Reader r, float *real) {
   i0 = *(int*)((int)r-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
   f0 = *real;
-  ((void(*)(BinaryRider__Reader, unsigned char*, int x_0d))i0)((BinaryRider__Reader)(int)r, (unsigned char*)(int)real, 4);
+  ((_TBP_BinaryRider__ReaderDesc_ReadBytesOrdered)i0)((BinaryRider__Reader)(int)r, (unsigned char*)(int)real, 4);
   i0 = (int)r + 8;
   i0 = (int)*(void**)i0;
   i0 += 4;
@@ -426,7 +426,7 @@ void BinaryRider__ReaderDesc_ReadLReal(BinaryRider__Reader r, double *lreal) {
   i0 = *(int*)((int)r-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
   d0 = *lreal;
-  ((void(*)(BinaryRider__Reader, unsigned char*, int x_0d))i0)((BinaryRider__Reader)(int)r, (unsigned char*)(int)lreal, 8);
+  ((_TBP_BinaryRider__ReaderDesc_ReadBytesOrdered)i0)((BinaryRider__Reader)(int)r, (unsigned char*)(int)lreal, 8);
   i0 = (int)r + 8;
   i0 = (int)*(void**)i0;
   i0 += 4;
@@ -444,7 +444,7 @@ void BinaryRider__ReaderDesc_ReadSet(BinaryRider__Reader r, unsigned int *s) {
   i1 = *(int*)((int)r-4);
   i0 = (int)((_Type)i1)->tbprocs[5];
   i1 = *s;
-  ((void(*)(BinaryRider__Reader, unsigned char*, int x_0d))i0)((BinaryRider__Reader)(int)r, (unsigned char*)(int)s, 4);
+  ((_TBP_BinaryRider__ReaderDesc_ReadBytesOrdered)i0)((BinaryRider__Reader)(int)r, (unsigned char*)(int)s, 4);
   i1 = (int)r + 8;
   i1 = (int)*(void**)i1;
   i1 += 4;
@@ -466,7 +466,7 @@ int BinaryRider__WriterDesc_Pos(BinaryRider__Writer w) {
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[0];
-  i0 = ((int(*)(Channel__Writer))i1)((Channel__Writer)i0);
+  i0 = ((_TBP_Channel__WriterDesc_Pos)i1)((Channel__Writer)i0);
   return (int)i0;
 }
 
@@ -479,7 +479,7 @@ void BinaryRider__WriterDesc_SetPos(BinaryRider__Writer w, int newPos) {
   i2 = (int)*(void**)i1;
   i0 = *(int*)(i2-4);
   i0 = (int)((_Type)i0)->tbprocs[1];
-  ((void(*)(Channel__Writer, int))i0)((Channel__Writer)i2, (int)newPos);
+  ((_TBP_Channel__WriterDesc_SetPos)i0)((Channel__Writer)i2, (int)newPos);
   i1 = (int)*(void**)i1;
   i1 += 4;
   i1 = (int)*(void**)i1;
@@ -494,7 +494,7 @@ void BinaryRider__WriterDesc_ClearError(BinaryRider__Writer w) {
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[4];
-  ((void(*)(Channel__Writer))i1)((Channel__Writer)i0);
+  ((_TBP_Channel__WriterDesc_ClearError)i1)((Channel__Writer)i0);
   *(void**)(int)w = (void*)0;
 }
 
@@ -507,7 +507,7 @@ void BinaryRider__WriterDesc_WriteBytes(BinaryRider__Writer w, unsigned char* x,
   i2 = (int)*(void**)i1;
   i0 = *(int*)(i2-4);
   i0 = (int)((_Type)i0)->tbprocs[3];
-  ((void(*)(Channel__Writer, unsigned char*, int x_0d, int, int))i0)((Channel__Writer)i2, (unsigned char*)(int)x, x_0d, (int)start, (int)n);
+  ((_TBP_Channel__WriterDesc_WriteBytes)i0)((Channel__Writer)i2, (unsigned char*)(int)x, x_0d, (int)start, (int)n);
   i1 = (int)*(void**)i1;
   i1 += 4;
   i1 = (int)*(void**)i1;
@@ -536,7 +536,7 @@ l0:
   i3 = i0 + -1;
   i5 = (int)((_Type)i5)->tbprocs[2];
   i0 = *(unsigned char*)i6;
-  ((void(*)(Channel__Writer, unsigned char))i5)((Channel__Writer)i2, (unsigned char)i0);
+  ((_TBP_Channel__WriterDesc_WriteByte)i5)((Channel__Writer)i2, (unsigned char)i0);
   i0 = i3 < 0;
   if (i0) goto l2;
   i0 = i3;
@@ -546,7 +546,7 @@ l1:
   i1 = (int)*(void**)i1;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[3];
-  ((void(*)(Channel__Writer, unsigned char*, int x_0d, int, int))i0)((Channel__Writer)i1, (unsigned char*)(int)x, x_0d, (int)0, (int)x_0d);
+  ((_TBP_Channel__WriterDesc_WriteBytes)i0)((Channel__Writer)i1, (unsigned char*)(int)x, x_0d, (int)0, (int)x_0d);
 l2:
   ;
 }
@@ -561,13 +561,13 @@ void BinaryRider__WriterDesc_WriteBool(BinaryRider__Writer w, unsigned char bool
   i1 = (int)*(void**)i2;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[2];
-  ((void(*)(Channel__Writer, unsigned char))i0)((Channel__Writer)i1, (unsigned char)0);
+  ((_TBP_Channel__WriterDesc_WriteByte)i0)((Channel__Writer)i1, (unsigned char)0);
   goto l1;
 l0:
   i1 = (int)*(void**)i2;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[2];
-  ((void(*)(Channel__Writer, unsigned char))i0)((Channel__Writer)i1, (unsigned char)1);
+  ((_TBP_Channel__WriterDesc_WriteByte)i0)((Channel__Writer)i1, (unsigned char)1);
 l1:
   i1 = (int)*(void**)i2;
   i1 += 4;
@@ -586,7 +586,7 @@ void BinaryRider__WriterDesc_WriteChar(BinaryRider__Writer w, unsigned char ch) 
   i2 = (int)*(void**)i1;
   i0 = *(int*)(i2-4);
   i0 = (int)((_Type)i0)->tbprocs[2];
-  ((void(*)(Channel__Writer, unsigned char))i0)((Channel__Writer)i2, (unsigned char)(int)ch);
+  ((_TBP_Channel__WriterDesc_WriteByte)i0)((Channel__Writer)i2, (unsigned char)(int)ch);
   i1 = (int)*(void**)i1;
   i1 += 4;
   i1 = (int)*(void**)i1;
@@ -602,7 +602,7 @@ void BinaryRider__WriterDesc_WriteLChar(BinaryRider__Writer w, unsigned short in
   if (i0) goto l0;
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[4];
-  ((void(*)(BinaryRider__Writer, unsigned char*, int x_0d))i0)((BinaryRider__Writer)(int)w, (unsigned char*)(int)&ch, 2);
+  ((_TBP_BinaryRider__WriterDesc_WriteBytesOrdered)i0)((BinaryRider__Writer)(int)w, (unsigned char*)(int)&ch, 2);
   i0 = (int)w + 8;
   i0 = (int)*(void**)i0;
   i0 += 4;
@@ -623,7 +623,7 @@ void BinaryRider__WriterDesc_WriteString(BinaryRider__Writer w, const unsigned c
   i3 = *(int*)(i1-4);
   i0++;
   i3 = (int)((_Type)i3)->tbprocs[3];
-  ((void(*)(Channel__Writer, unsigned char*, int x_0d, int, int))i3)((Channel__Writer)i1, (unsigned char*)(int)s, s_0d, (int)0, (int)i0);
+  ((_TBP_Channel__WriterDesc_WriteBytes)i3)((Channel__Writer)i1, (unsigned char*)(int)s, s_0d, (int)0, (int)i0);
   i2 = (int)*(void**)i2;
   i2 += 4;
   i2 = (int)*(void**)i2;
@@ -644,7 +644,7 @@ l0:
   i1++;
   i0 = (int)s + i1;
   i0 = *(unsigned char*)i0;
-  ((void(*)(BinaryRider__Writer, unsigned short int))i2)((BinaryRider__Writer)(int)w, (unsigned short int)i0);
+  ((_TBP_BinaryRider__WriterDesc_WriteLChar)i2)((BinaryRider__Writer)(int)w, (unsigned short int)i0);
   i0 = i0 != 0;
   if (i0) goto l0;
   i1 = (int)w + 8;
@@ -665,7 +665,7 @@ void BinaryRider__WriterDesc_WriteSInt(BinaryRider__Writer w, signed char sint) 
   i2 = (int)*(void**)i1;
   i0 = *(int*)(i2-4);
   i0 = (int)((_Type)i0)->tbprocs[2];
-  ((void(*)(Channel__Writer, unsigned char))i0)((Channel__Writer)i2, (unsigned char)sint);
+  ((_TBP_Channel__WriterDesc_WriteByte)i0)((Channel__Writer)i2, (unsigned char)sint);
   i1 = (int)*(void**)i1;
   i1 += 4;
   i1 = (int)*(void**)i1;
@@ -681,7 +681,7 @@ void BinaryRider__WriterDesc_WriteInt(BinaryRider__Writer w, short int int_) {
   if (i0) goto l0;
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[4];
-  ((void(*)(BinaryRider__Writer, unsigned char*, int x_0d))i0)((BinaryRider__Writer)(int)w, (unsigned char*)(int)&int_, 2);
+  ((_TBP_BinaryRider__WriterDesc_WriteBytesOrdered)i0)((BinaryRider__Writer)(int)w, (unsigned char*)(int)&int_, 2);
   i0 = (int)w + 8;
   i0 = (int)*(void**)i0;
   i0 += 4;
@@ -698,7 +698,7 @@ void BinaryRider__WriterDesc_WriteLInt(BinaryRider__Writer w, int lint) {
   if (i0) goto l0;
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[4];
-  ((void(*)(BinaryRider__Writer, unsigned char*, int x_0d))i0)((BinaryRider__Writer)(int)w, (unsigned char*)(int)&lint, 4);
+  ((_TBP_BinaryRider__WriterDesc_WriteBytesOrdered)i0)((BinaryRider__Writer)(int)w, (unsigned char*)(int)&lint, 4);
   i0 = (int)w + 8;
   i0 = (int)*(void**)i0;
   i0 += 4;
@@ -728,7 +728,7 @@ l1:
   i2 = i0 < -64;
   i1 &= 0x7FU;
   i1 += 128;
-  ((void(*)(BinaryRider__Writer, unsigned char))i3)((BinaryRider__Writer)(int)w, (unsigned char)i1);
+  ((_TBP_BinaryRider__WriterDesc_WriteChar)i3)((BinaryRider__Writer)(int)w, (unsigned char)i1);
   if (i2) goto l2;
   i2 = i0 <= 63;
   if (i2) goto l3;
@@ -737,7 +737,7 @@ l2:
   goto l1;
 l3:
   i2 = i0 & 0x7FU;
-  ((void(*)(BinaryRider__Writer, unsigned char))i3)((BinaryRider__Writer)(int)w, (unsigned char)i2);
+  ((_TBP_BinaryRider__WriterDesc_WriteChar)i3)((BinaryRider__Writer)(int)w, (unsigned char)i2);
   i2 = (int)w + 8;
   i2 = (int)*(void**)i2;
   i2 += 4;
@@ -754,7 +754,7 @@ void BinaryRider__WriterDesc_WriteReal(BinaryRider__Writer w, float real) {
   if (i0) goto l0;
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[4];
-  ((void(*)(BinaryRider__Writer, unsigned char*, int x_0d))i0)((BinaryRider__Writer)(int)w, (unsigned char*)(int)&real, 4);
+  ((_TBP_BinaryRider__WriterDesc_WriteBytesOrdered)i0)((BinaryRider__Writer)(int)w, (unsigned char*)(int)&real, 4);
   i0 = (int)w + 8;
   i0 = (int)*(void**)i0;
   i0 += 4;
@@ -771,7 +771,7 @@ void BinaryRider__WriterDesc_WriteLReal(BinaryRider__Writer w, double lreal) {
   if (i0) goto l0;
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[4];
-  ((void(*)(BinaryRider__Writer, unsigned char*, int x_0d))i0)((BinaryRider__Writer)(int)w, (unsigned char*)(int)&lreal, 8);
+  ((_TBP_BinaryRider__WriterDesc_WriteBytesOrdered)i0)((BinaryRider__Writer)(int)w, (unsigned char*)(int)&lreal, 8);
   i0 = (int)w + 8;
   i0 = (int)*(void**)i0;
   i0 += 4;
@@ -788,7 +788,7 @@ void BinaryRider__WriterDesc_WriteSet(BinaryRider__Writer w, unsigned int s) {
   if (i0) goto l0;
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[4];
-  ((void(*)(BinaryRider__Writer, unsigned char*, int x_0d))i0)((BinaryRider__Writer)(int)w, (unsigned char*)(int)&s, 4);
+  ((_TBP_BinaryRider__WriterDesc_WriteBytesOrdered)i0)((BinaryRider__Writer)(int)w, (unsigned char*)(int)&s, 4);
   i0 = (int)w + 8;
   i0 = (int)*(void**)i0;
   i0 += 4;
@@ -809,7 +809,7 @@ void BinaryRider__InitReader(BinaryRider__Reader r, Channel__Channel ch, signed 
   i0 = *(int*)((int)ch-4);
   i0 = (int)((_Type)i0)->tbprocs[2];
   *(void**)(int)r = (void*)0;
-  i1 = (int)((Channel__Reader(*)(Channel__Channel))i0)((Channel__Channel)(int)ch);
+  i1 = (int)((_TBP_Channel__ChannelDesc_NewReader)i0)((Channel__Channel)(int)ch);
   i0 = (int)r + 8;
   *(void**)i0 = (void*)i1;
   i0 = (int)r + 4;
@@ -822,7 +822,7 @@ BinaryRider__Reader BinaryRider__ConnectReader(Channel__Channel ch) {
   register int i0, i1;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(16+8);
+    _mem = GC_malloc(_not_zero(16)+8);
     if (!_mem) _new_failed(_P(12916));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &BinaryRider__ReaderDesc_td.td;
@@ -843,7 +843,7 @@ void BinaryRider__InitWriter(BinaryRider__Writer w, Channel__Channel ch, signed 
   i0 = *(int*)((int)ch-4);
   i0 = (int)((_Type)i0)->tbprocs[3];
   *(void**)(int)w = (void*)0;
-  i1 = (int)((Channel__Writer(*)(Channel__Channel))i0)((Channel__Channel)(int)ch);
+  i1 = (int)((_TBP_Channel__ChannelDesc_NewWriter)i0)((Channel__Channel)(int)ch);
   i0 = (int)w + 8;
   *(void**)i0 = (void*)i1;
   i0 = (int)w + 4;
@@ -856,7 +856,7 @@ BinaryRider__Writer BinaryRider__ConnectWriter(Channel__Channel ch) {
   register int i0, i1;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(16+8);
+    _mem = GC_malloc(_not_zero(16)+8);
     if (!_mem) _new_failed(_P(13734));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &BinaryRider__WriterDesc_td.td;
@@ -896,13 +896,14 @@ void BinaryRider_init(void) {
   _mid = _register_module(&BinaryRider_md.md, &BinaryRider__ErrorContextDesc_td.td);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(4+8);
+    _mem = GC_malloc(_not_zero(4)+8);
     if (!_mem) _new_failed(_P(14204));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &BinaryRider__ErrorContextDesc_td.td;
     i0 = (int)_var;
   }
-  BinaryRider__Init();
-  Msg__InitContext((Msg__Context)i0, (const Msg__String)(int)_c0, 21);
   BinaryRider__errorContext = (void*)i0;
+  i0 = (int)BinaryRider__errorContext;
+  Msg__InitContext((Msg__Context)i0, (const Msg__String)(int)_c0, 21);
+  BinaryRider__Init();
 }

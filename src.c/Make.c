@@ -23,7 +23,7 @@ l0:
 l1:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(32+8);
+    _mem = GC_malloc(_not_zero(32)+8);
     if (!_mem) _new_failed(_P(3943));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Make__ModuleDesc_td.td;
@@ -40,7 +40,7 @@ l1:
     char *_mem, *_var;
     int* _dim_ptr;
     if(i1 < 0) _invalid_length(i1, _P(4039));
-    _mem = GC_malloc_atomic(i1*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
     if (!_mem) _new_failed(_P(3992));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -60,7 +60,7 @@ l1:
     char *_mem, *_var;
     int* _dim_ptr;
     if(i1 < 0) _invalid_length(i1, _P(4140));
-    _mem = GC_malloc_atomic(i1*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
     if (!_mem) _new_failed(_P(4091));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -119,7 +119,7 @@ l0:
 l1:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(20+8);
+    _mem = GC_malloc(_not_zero(20)+8);
     if (!_mem) _new_failed(_P(5152));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Make__ImportDesc_td.td;
@@ -205,7 +205,7 @@ l0:
   i5 = (int)((_Type)i5)->tbprocs[13];
   magic = (int)i2;
   magic = (int)i2;
-  ((void(*)(BinaryRider__Reader, int *))i5)((BinaryRider__Reader)i9, (int *)(int)&magic);
+  ((_TBP_BinaryRider__ReaderDesc_ReadLInt)i5)((BinaryRider__Reader)i9, (int *)(int)&magic);
   i3 = *(int*)(i0-8);
   i5 = (int)*(void**)i6;
   i4 = (int)*Make__ScanSymbolFile_moduleList;
@@ -228,7 +228,7 @@ void Make__ScanSymbolFile(Make__Module *moduleList, Files__File f, Make__Module 
   i4 = *(int*)(i5-4);
   (void)memcpy((void*) (int)symId, (const void*) (int)_c5, 5);
   i0 = (int)((_Type)i4)->tbprocs[4];
-  ((void(*)(BinaryRider__Reader, unsigned char*, int x_0d, int, int))i0)((BinaryRider__Reader)i5, (unsigned char*)(int)symId, 5, (int)0, (int)4);
+  ((_TBP_BinaryRider__ReaderDesc_ReadBytes)i0)((BinaryRider__Reader)i5, (unsigned char*)(int)symId, 5, (int)0, (int)4);
   i0 = strcmp((const char*) (int)symId, (const char*) (int)SymbolFile__symbolFileId) != 0;
   if (i0) goto l3;
   i3 = (int)mod + 4;
@@ -240,7 +240,7 @@ void Make__ScanSymbolFile(Make__Module *moduleList, Files__File f, Make__Module 
   *(void**)i2 = (void*)i1;
   i1 = (int)((_Type)i4)->tbprocs[13];
   i4 = *(int*)i6;
-  ((void(*)(BinaryRider__Reader, int *))i1)((BinaryRider__Reader)i5, (int *)i6);
+  ((_TBP_BinaryRider__ReaderDesc_ReadLInt)i1)((BinaryRider__Reader)i5, (int *)i6);
   i1 = (int)*(void**)i2;
   i4 = i1 + 52;
   i4 = (int)*(void**)i4;
@@ -265,9 +265,9 @@ l0:
   Make__ScanSymbolFile_ReadImportList((BinaryRider__Reader *)&r, (Make__Module *)&*moduleList, (Make__Module *)&mod);
   i3 = *(int*)((int)r-4);
   i2 = (int)((_Type)i3)->tbprocs[14];
-  ((void(*)(BinaryRider__Reader, int *))i2)((BinaryRider__Reader)(int)r, (int *)(int)&fileFormat);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i2)((BinaryRider__Reader)(int)r, (int *)(int)&fileFormat);
   i3 = fileFormat != 1;
-  ((void(*)(BinaryRider__Reader, int *))i2)((BinaryRider__Reader)(int)r, (int *)(int)&fileVersion);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i2)((BinaryRider__Reader)(int)r, (int *)(int)&fileVersion);
   i4 = (int)mod + 12;
   if (i3) goto l1;
   i3 = fileVersion != 4;
@@ -388,7 +388,7 @@ unsigned char Make__ScanSources(Make__Module *moduleList, Make__Module mod) {
     char *_mem, *_var;
     int* _dim_ptr;
     if(i0 < 0) _invalid_length(i0, _P(10271));
-    _mem = GC_malloc_atomic(i0*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
     if (!_mem) _new_failed(_P(10217));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -434,7 +434,7 @@ l2:
     char *_mem, *_var;
     int* _dim_ptr;
     if(i3 < 0) _invalid_length(i3, _P(10688));
-    _mem = GC_malloc_atomic(i3*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i3*1)+8);
     if (!_mem) _new_failed(_P(10643));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -511,7 +511,7 @@ l0:
     char *_mem, *_var;
     int* _dim_ptr;
     if(i3 < 0) _invalid_length(i3, _P(12771));
-    _mem = GC_malloc_atomic(i3*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i3*1)+8);
     if (!_mem) _new_failed(_P(12726));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -564,7 +564,7 @@ l7:
   i1 = (int)res != 0;
   if (i1) goto l8;
   i5 = (int)((_Type)&Time__TimeStamp_td.td)->tbprocs[3];
-  i5 = ((signed char(*)(Time__TimeStamp *, _Type a__tag, const Time__TimeStamp *))i5)((Time__TimeStamp *)(int)&lastCompilation, &Time__TimeStamp_td.td, (const Time__TimeStamp *)(int)&sourceStamp);
+  i5 = ((_TBP_Time__TimeStamp_Cmp)i5)((Time__TimeStamp *)(int)&lastCompilation, &Time__TimeStamp_td.td, (const Time__TimeStamp *)(int)&sourceStamp);
   i5 = i5 > 0;
   if (i5) goto l9;
 l8:
@@ -599,7 +599,7 @@ l13:
   i1 = *(int*)(i5-4);
   Make__ScanSymbolFile((Make__Module *)(int)(int)moduleList, (Files__File)i5, (Make__Module)(int)mod);
   i1 = (int)((_Type)i1)->tbprocs[5];
-  ((void(*)(Files__File))i1)((Files__File)i5);
+  ((_TBP_Files__FileDesc_Close)i1)((Files__File)i5);
   i1 = 1;
 l14:
   i0 = *(unsigned int*)i3;

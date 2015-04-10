@@ -175,27 +175,32 @@ l0:
 l1:
   i0 = (int)SymbolTable__mem;
   i0 = (int)var == i0;
-  if (i0) goto l4;
+  if (i0) goto l5;
   i1 = (int)var + 28;
   i1 = *(signed char*)i1;
   i1 = i1 == 4;
-  if (i1) goto l3;
+  if (i1) goto l4;
   i0 = ParseExpr__DegenerateValueParam((Data__Object)(int)var);
-  if (i0) goto l3;
+  if (i0) goto l4;
   i1 = (int)var + 40;
   i3 = (int)*(void**)i1;
   i1 = (int)SymbolTable__currScope;
-  i1 = i3 == i1;
-  if (i1) goto l4;
+  i1 = i3 != i1;
+  if (i1) goto l2;
+  i1 = (int)var + 50;
+  i1 = *(short int*)i1;
+  i1 = i1 != 0;
+  if (i1) goto l5;
+l2:
   i3 = (int)SymbolTable__store;
   i3 += 12;
   i3 = (int)*(void**)i3;
   i3 = Attributes__TracesToEmptyStore((Data__Object)(int)var, (Data__Usable)i3);
   i1 = (int)var + 24;
-  if (!(i3)) goto l2;
+  if (!(i3)) goto l3;
   i3 = (int)*(void**)i1;
   i3 = (int)Attributes__FindAddEnterResult((Data__Region)(int)region, (Data__Addressable)(int)var, (short int)-3, (Data__Struct)i3);
-l2:
+l3:
   i3 = (int)*(void**)i1;
   i1 = Scanner__currSymPos;
   i3 = (int)Data__RegionDesc_CreateInstruction((Data__Region)(int)region, (short int)35, (Data__Struct)i3, (int)i1);
@@ -208,8 +213,8 @@ l2:
   i1 = (int)*(void**)i1;
   Data__InstructionDesc_Operand((Data__Instruction)i3, (Data__Usable)i1);
   *(void**)i2 = (void*)i3;
-  goto l4;
-l3:
+  goto l5;
+l4:
   i3 = (int)var + 24;
   i1 = (int)*(void**)i3;
   i3 = Scanner__currSymPos;
@@ -223,7 +228,7 @@ l3:
   i1 = (int)*(void**)i1;
   Data__InstructionDesc_Operand((Data__Instruction)i3, (Data__Usable)i1);
   *(void**)i2 = (void*)i3;
-l4:
+l5:
   i0 = (int)*(void**)i2;
   return (void*)i0;
 }
@@ -900,62 +905,61 @@ l2:
 }
 
 void ParseExpr__TypeConversion(Data__Region region, Attributes__Item *x, _Type x__tag, signed char targetType, unsigned char adaptType, int pos) {
-  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10;
+  register int i0, i1, i2, i3, i4, i5, i6, i7, i8, i9;
   register float f0;
   register double d0;
   short int err;
   i7 = targetType;
-  i8 = adaptType;
-  i9 = (int)x + 8;
-  i6 = (int)*(void**)i9;
+  i8 = (int)x + 8;
+  i6 = (int)*(void**)i8;
   i0 = i6 + 20;
   i0 = *(signed char*)i0;
   i0 = i7 == i0;
   if (i0) goto l29;
-  i3 = (int)x + 12;
-  i2 = Data__OperatorSubclass((Data__Struct)i6, (signed char)0);
-  i0 = Data__OperatorSubclass((Data__Struct)0, (signed char)i7);
-  i1 = (int)*(void**)i3;
+  i0 = (int)x + 12;
+  i9 = Data__OperatorSubclass((Data__Struct)i6, (signed char)0);
+  i2 = Data__OperatorSubclass((Data__Struct)0, (signed char)i7);
+  i1 = (int)*(void**)i0;
   i6 = i1 != 0;
   if (i6) goto l10;
-  i5 = (int)x + 16;
-  i10 = (int)*(void**)i5;
-  i3 = *(int*)(i10-4);
-  i3 = _type_test(i3, &Data__InstructionDesc_td.td, 4);
-  if (!(i3)) goto l0;
-  i4 = i10 + 44;
-  i3 = *(short int*)i4;
-  i4 = (short int)_ashr(i3, 4, (unsigned short int));
-  i4 = i4 == 7;
-  if (i4) goto l1;
+  i4 = (int)x + 16;
+  i5 = (int)*(void**)i4;
+  i1 = *(int*)(i5-4);
+  i1 = _type_test(i1, &Data__InstructionDesc_td.td, 4);
+  if (!(i1)) goto l0;
+  i3 = i5 + 44;
+  i1 = *(short int*)i3;
+  i3 = (short int)_ashr(i1, 4, (unsigned short int));
+  i3 = i3 == 7;
+  if (i3) goto l1;
 l0:
-  i6 = i10;
+  i6 = i5;
   goto l6;
 l1:
-  i4 = i10 + 28;
-  i4 = (int)*(void**)i4;
-  i4 = (int)*(void**)i4;
-  i4 += 24;
-  i4 = *(int*)i4;
-  i3 &= 0xFU;
-  i3 = IntArith__Includes((signed char)i3, (signed char)i4);
-  if (!(i3)) goto l2;
-  i3 = IntArith__Includes((signed char)i0, (signed char)i2);
-  if (i3) goto l4;
+  i3 = i5 + 28;
+  i3 = (int)*(void**)i3;
+  i3 = (int)*(void**)i3;
+  i3 += 24;
+  i3 = *(int*)i3;
+  i1 &= 0xFU;
+  i1 = IntArith__Includes((signed char)i1, (signed char)i3);
+  if (!(i1)) goto l2;
+  i1 = IntArith__Includes((signed char)i2, (signed char)i9);
+  if (i1) goto l4;
 l2:
-  i6 = IntArith__Includes((signed char)i4, (signed char)i2);
+  i6 = IntArith__Includes((signed char)i3, (signed char)i9);
   if (!(i6)) goto l3;
-  i6 = IntArith__Includes((signed char)i2, (signed char)i0);
+  i6 = IntArith__Includes((signed char)i9, (signed char)i2);
   if (i6) goto l4;
 l3:
-  i6 = IntArith__Includes((signed char)i2, (signed char)i4);
+  i6 = IntArith__Includes((signed char)i9, (signed char)i3);
   if (!(i6)) goto l5;
-  i6 = IntArith__Includes((signed char)i2, (signed char)i0);
+  i6 = IntArith__Includes((signed char)i9, (signed char)i2);
   if (!(i6)) goto l5;
-  i4 = IntArith__Includes((signed char)i4, (signed char)i0);
-  if (!(i4)) goto l5;
+  i3 = IntArith__Includes((signed char)i3, (signed char)i2);
+  if (!(i3)) goto l5;
 l4:
-  i6 = (int)*(void**)i5;
+  i6 = (int)*(void**)i4;
   i6 += 28;
   i6 = (int)*(void**)i6;
   i6 += 8;
@@ -963,179 +967,173 @@ l4:
   i6 = (int)*(void**)i6;
   goto l6;
 l5:
-  i6 = (int)*(void**)i5;
+  i6 = (int)*(void**)i4;
 l6:
-  i3 = i0 + 112;
-  i4 = (int)_ashl(i7, 2, (unsigned int));
-  i4 = (int)Data__struct + i4;
-  i4 = (int)*(void**)i4;
-  i4 = (int)Data__RegionDesc_CreateInstruction((Data__Region)(int)region, (short int)i3, (Data__Struct)i4, (int)pos);
-  i3 = IntArith__Includes((signed char)i0, (signed char)i2);
-  if (i3) goto l9;
-  i5 = i0 >= 8;
-  if (i5) goto l7;
-  i5 = (int)StdPragmas__intOverflowCheck;
-  i5 += 8;
-  i5 = *(unsigned char*)i5;
-  if (i5) goto l8;
+  i1 = i2 + 112;
+  i3 = (int)_ashl(i7, 2, (unsigned int));
+  i3 = (int)Data__struct + i3;
+  i3 = (int)*(void**)i3;
+  i3 = (int)Data__RegionDesc_CreateInstruction((Data__Region)(int)region, (short int)i1, (Data__Struct)i3, (int)pos);
+  i1 = IntArith__Includes((signed char)i2, (signed char)i9);
+  if (i1) goto l9;
+  i4 = i2 >= 8;
+  if (i4) goto l7;
+  i4 = (int)StdPragmas__intOverflowCheck;
+  i4 += 8;
+  i4 = *(unsigned char*)i4;
+  if (i4) goto l8;
 l7:
-  i5 = i0 >= 8;
-  if (!(i5)) goto l9;
-  i5 = (int)StdPragmas__realOverflowCheck;
-  i5 += 8;
-  i5 = *(unsigned char*)i5;
-  if (!(i5)) goto l9;
+  i4 = i2 >= 8;
+  if (!(i4)) goto l9;
+  i4 = (int)StdPragmas__realOverflowCheck;
+  i4 += 8;
+  i4 = *(unsigned char*)i4;
+  if (!(i4)) goto l9;
 l8:
-  i5 = i4 + 48;
-  i3 = *(unsigned int*)i5;
-  i3 |= 0x5U;
-  *(unsigned int*)i5 = i3;
+  i4 = i3 + 48;
+  i1 = *(unsigned int*)i4;
+  i1 |= 0x5U;
+  *(unsigned int*)i4 = i1;
   Attributes__ContainsRuntimeCheck((Data__Region)(int)region);
 l9:
-  i3 = (int)Data__struct + 16;
-  i3 = (int)*(void**)i3;
-  i3 = (int)Data__GetIntConst((int)i2, (Data__Struct)i3);
-  Data__InstructionDesc_Operand((Data__Instruction)i4, (Data__Usable)i3);
-  Data__InstructionDesc_Operand((Data__Instruction)i4, (Data__Usable)i6);
-  i3 = *(int*)(int)x;
-  Attributes__SetOpndPos((Data__Instruction)i4, (int)i3);
-  Attributes__CreateItem((Attributes__Item *)(int)x, x__tag, (Data__Usable)i4, (int)pos);
+  i1 = (int)Data__struct + 16;
+  i1 = (int)*(void**)i1;
+  i1 = (int)Data__GetIntConst((int)i9, (Data__Struct)i1);
+  Data__InstructionDesc_Operand((Data__Instruction)i3, (Data__Usable)i1);
+  Data__InstructionDesc_Operand((Data__Instruction)i3, (Data__Usable)i6);
+  i1 = *(int*)(int)x;
+  Attributes__SetOpndPos((Data__Instruction)i3, (int)i1);
+  Attributes__CreateItem((Attributes__Item *)(int)x, x__tag, (Data__Usable)i3, (int)pos);
   goto l29;
 l10:
-  i5 = i7 >= 12;
-  i4 = i0 < 8;
-  if (!(i5)) goto l11;
-  i10 = i7 <= 15;
-  if (i10) goto l26;
+  i4 = i7 >= 12;
+  i3 = i2 < 8;
+  if (!(i4)) goto l11;
+  i4 = i7 <= 15;
+  if (i4) goto l26;
 l11:
   i6 = i7 == 18;
   if (i6) goto l22;
   i6 = i7 == 19;
   if (i6) goto l22;
-  i5 = i2 < 8;
-  if (i5) goto l18;
-  i2 = i2 >= 8;
-  if (i2) goto l12;
-  i5 = i7;
-  i10 = i8;
+  i4 = i9 < 8;
+  if (i4) goto l18;
+  i9 = i9 >= 8;
+  if (i9) goto l12;
+  i4 = i7;
+  i5 = adaptType;
   goto l25;
 l12:
-  if (i4) goto l16;
-  i10 = i0 == 8;
-  if (i10) goto l13;
+  if (i3) goto l16;
+  i9 = i2 == 8;
+  if (i9) goto l13;
   i5 = i1 + 40;
-  i10 = (int)_ashl(i7, 2, (unsigned int));
-  i10 = (int)Data__struct + i10;
+  i9 = (int)_ashl(i7, 2, (unsigned int));
+  i9 = (int)Data__struct + i9;
   d0 = *(double*)i5;
-  i5 = (int)*(void**)i10;
+  i5 = (int)*(void**)i9;
   i5 = (int)Data__GetRealConst((double)d0, (Data__Struct)i5);
-  *(void**)i3 = (void*)i5;
+  *(void**)i0 = (void*)i5;
   goto l15;
 l13:
-  i2 = i1 + 40;
-  d0 = *(double*)i2;
-  i2 = StdTypes__ValidReal((double)d0);
-  if (i2) goto l14;
+  i4 = i1 + 40;
+  d0 = *(double*)i4;
+  i4 = StdTypes__ValidReal((double)d0);
+  if (i4) goto l14;
   i5 = (int)_ashl(i7, 2, (unsigned int));
   i5 = (int)Data__struct + i5;
-  i2 = (int)*(void**)i5;
-  i10 = *(int*)(int)x;
-  SymbolTable__ErrT1((int)i10, (short int)352, (Data__Struct)i2);
+  i4 = (int)*(void**)i5;
+  i9 = *(int*)(int)x;
+  SymbolTable__ErrT1((int)i9, (short int)352, (Data__Struct)i4);
   i5 = (int)*(void**)i5;
   i5 = (int)Data__GetRealConst((double)1.0000000000000000, (Data__Struct)i5);
-  *(void**)i3 = (void*)i5;
+  *(void**)i0 = (void*)i5;
   goto l15;
 l14:
-  i2 = (int)*(void**)i3;
-  i2 += 40;
-  d0 = *(double*)i2;
-  i2 = (int)_ashl(i7, 2, (unsigned int));
+  i4 = (int)*(void**)i0;
+  i4 += 40;
+  d0 = *(double*)i4;
+  i4 = (int)_ashl(i7, 2, (unsigned int));
   f0 = d0;
-  i2 = (int)Data__struct + i2;
+  i4 = (int)Data__struct + i4;
   d0 = f0;
-  i2 = (int)*(void**)i2;
-  i2 = (int)Data__GetRealConst((double)d0, (Data__Struct)i2);
-  *(void**)i3 = (void*)i2;
+  i4 = (int)*(void**)i4;
+  i4 = (int)Data__GetRealConst((double)d0, (Data__Struct)i4);
+  *(void**)i0 = (void*)i4;
 l15:
-  i10 = i8;
-  i5 = i7;
+  i5 = adaptType;
+  i4 = i7;
   goto l25;
 l16:
   i5 = i1 + 40;
   d0 = *(double*)i5;
   i5 = StdTypes__ValidInt((double)d0);
   if (i5) goto l17;
-  i10 = (int)_ashl(i7, 2, (unsigned int));
-  i10 = (int)Data__struct + i10;
-  i10 = (int)*(void**)i10;
-  i5 = *(int*)(int)x;
-  SymbolTable__ErrT1((int)i5, (short int)352, (Data__Struct)i10);
-  adaptType = (unsigned char)i8;
+  i4 = (int)_ashl(i7, 2, (unsigned int));
+  i4 = (int)Data__struct + i4;
+  i5 = (int)*(void**)i4;
+  i4 = *(int*)(int)x;
+  SymbolTable__ErrT1((int)i4, (short int)352, (Data__Struct)i5);
   targetType = (signed char)i7;
-  adaptType = (unsigned char)i8;
   targetType = (signed char)i7;
-  i10 = (int)ParseExpr__TypeConversion_GetIntConst((int)1, &adaptType, &targetType);
-  *(void**)i3 = (void*)i10;
-  i5 = targetType;
-  i10 = adaptType;
+  i4 = (int)ParseExpr__TypeConversion_GetIntConst((int)1, &adaptType, &targetType);
+  *(void**)i0 = (void*)i4;
+  i4 = targetType;
+  i5 = adaptType;
   goto l25;
 l17:
-  i5 = (int)*(void**)i3;
+  i5 = (int)*(void**)i0;
   i5 += 40;
   d0 = *(double*)i5;
   _entier(i5, d0);
-  adaptType = (unsigned char)i8;
   targetType = (signed char)i7;
-  adaptType = (unsigned char)i8;
   targetType = (signed char)i7;
   i5 = (int)ParseExpr__TypeConversion_GetIntConst((int)i5, &adaptType, &targetType);
-  *(void**)i3 = (void*)i5;
-  i5 = targetType;
-  i10 = adaptType;
+  *(void**)i0 = (void*)i5;
+  i4 = targetType;
+  i5 = adaptType;
   goto l25;
 l18:
-  i10 = i0 >= 8;
-  if (i10) goto l19;
-  i10 = i1 + 24;
-  i10 = *(int*)i10;
-  adaptType = (unsigned char)i8;
+  i5 = i2 >= 8;
+  if (i5) goto l19;
+  i5 = i1 + 24;
+  i5 = *(int*)i5;
   targetType = (signed char)i7;
-  adaptType = (unsigned char)i8;
   targetType = (signed char)i7;
-  i10 = (int)ParseExpr__TypeConversion_GetIntConst((int)i10, &adaptType, &targetType);
-  *(void**)i3 = (void*)i10;
-  i5 = targetType;
-  i10 = adaptType;
+  i5 = (int)ParseExpr__TypeConversion_GetIntConst((int)i5, &adaptType, &targetType);
+  *(void**)i0 = (void*)i5;
+  i4 = targetType;
+  i5 = adaptType;
   goto l25;
 l19:
   i5 = i1 + 24;
-  i10 = i0 == 8;
+  i4 = i2 == 8;
   i5 = *(int*)i5;
   d0 = i5;
-  if (i10) goto l20;
-  i10 = (int)_ashl(i7, 2, (unsigned int));
-  i10 = (int)Data__struct + i10;
-  i10 = (int)*(void**)i10;
-  i10 = (int)Data__GetRealConst((double)d0, (Data__Struct)i10);
-  *(void**)i3 = (void*)i10;
+  if (i4) goto l20;
+  i4 = (int)_ashl(i7, 2, (unsigned int));
+  i4 = (int)Data__struct + i4;
+  i4 = (int)*(void**)i4;
+  i4 = (int)Data__GetRealConst((double)d0, (Data__Struct)i4);
+  *(void**)i0 = (void*)i4;
   goto l21;
 l20:
   f0 = d0;
-  i10 = (int)_ashl(i7, 2, (unsigned int));
-  i10 = (int)Data__struct + i10;
+  i4 = (int)_ashl(i7, 2, (unsigned int));
+  i4 = (int)Data__struct + i4;
   d0 = f0;
-  i10 = (int)*(void**)i10;
-  i10 = (int)Data__GetRealConst((double)d0, (Data__Struct)i10);
-  *(void**)i3 = (void*)i10;
+  i4 = (int)*(void**)i4;
+  i4 = (int)Data__GetRealConst((double)d0, (Data__Struct)i4);
+  *(void**)i0 = (void*)i4;
 l21:
-  i5 = i7;
-  i10 = i8;
+  i4 = i7;
+  i5 = adaptType;
   goto l25;
 l22:
   i6 = (int)Data__ConvertString((Data__Const)i1, (signed char)i7);
   i1 = i6 == 0;
   if (i1) goto l23;
-  *(void**)i3 = (void*)i6;
+  *(void**)i0 = (void*)i6;
   goto l24;
 l23:
   i1 = (int)_ashl(i7, 2, (unsigned int));
@@ -1144,43 +1142,43 @@ l23:
   i1 = *(int*)(int)x;
   SymbolTable__ErrT1((int)i1, (short int)352, (Data__Struct)i6);
 l24:
-  i5 = i7;
-  i10 = i8;
+  i4 = i7;
+  i5 = adaptType;
 l25:
-  i8 = i10;
-  i7 = i5;
+  i7 = i4;
   goto l27;
 l26:
-  i10 = i1 + 32;
+  i4 = i1 + 32;
   i5 = (int)_ashl(i7, 2, (unsigned int));
   i5 = (int)Data__struct + i5;
-  i10 = *(unsigned int*)i10;
+  i4 = *(unsigned int*)i4;
   i5 = (int)*(void**)i5;
-  i5 = (int)Data__GetSetConst((unsigned int)i10, (Data__Struct)i5);
-  *(void**)i3 = (void*)i5;
+  i5 = (int)Data__GetSetConst((unsigned int)i4, (Data__Struct)i5);
+  *(void**)i0 = (void*)i5;
+  i5 = adaptType;
 l27:
-  if (!(i4)) goto l28;
-  if (i8) goto l28;
-  i8 = (int)*(void**)i3;
-  i8 += 24;
-  i8 = *(int*)i8;
-  i0 = IntArith__OutOfRange((int)i8, (signed char)i0, (short int *)(int)&err);
-  if (!(i0)) goto l28;
-  i8 = (int)_ashl(i7, 2, (unsigned int));
-  i8 = (int)Data__struct + i8;
-  i8 = (int)*(void**)i8;
+  if (!(i3)) goto l28;
+  if (i5) goto l28;
+  i5 = (int)*(void**)i0;
+  i5 += 24;
+  i5 = *(int*)i5;
+  i2 = IntArith__OutOfRange((int)i5, (signed char)i2, (short int *)(int)&err);
+  if (!(i2)) goto l28;
+  i5 = (int)_ashl(i7, 2, (unsigned int));
+  i5 = (int)Data__struct + i5;
+  i5 = (int)*(void**)i5;
   i7 = *(int*)(int)x;
-  SymbolTable__ErrT1((int)i7, (short int)352, (Data__Struct)i8);
+  SymbolTable__ErrT1((int)i7, (short int)352, (Data__Struct)i5);
 l28:
-  i4 = (int)x + 4;
-  *(void**)i4 = (void*)0;
-  i0 = (int)*(void**)i3;
-  i4 = (int)x + 16;
-  *(void**)i4 = (void*)i0;
-  i4 = (int)*(void**)i3;
-  i4 += 16;
-  i4 = (int)*(void**)i4;
-  *(void**)i9 = (void*)i4;
+  i3 = (int)x + 4;
+  *(void**)i3 = (void*)0;
+  i2 = (int)*(void**)i0;
+  i3 = (int)x + 16;
+  *(void**)i3 = (void*)i2;
+  i3 = (int)*(void**)i0;
+  i3 += 16;
+  i3 = (int)*(void**)i3;
+  *(void**)i8 = (void*)i3;
 l29:
   *(int*)(int)x = pos;
 }
@@ -1571,9 +1569,9 @@ l8:
   i0 += 28;
   i0 = *(signed char*)i0;
   i0 = i0 == 2;
-  if (i0) goto l50;
-  i0 = (int)x + 28;
+  if (i0) goto l52;
   i5 = (int)x + 32;
+  i0 = (int)x + 28;
   i6 = (int)x + 16;
   i4 = (int)x + 42;
   i3 = (int)x + 44;
@@ -1781,7 +1779,7 @@ l25:
   i13 = i20;
   i14 = i19;
   i18 = i17;
-  goto l46;
+  goto l48;
 l26:
   i21 = (int)*(void**)i25;
   i20 = i21 + 20;
@@ -1794,8 +1792,8 @@ l27:
   i18 = i21 + 24;
   i18 = (int)*(void**)i18;
 l28:
-  i21 = i18 + 40;
-  i21 = *(unsigned int*)i21;
+  i12 = i18 + 40;
+  i21 = *(unsigned int*)i12;
   i21 = (i21 & ((unsigned int)1 << 1)) != 0;
   Scanner__allowUnderscore = i21;
   Scanner__GetSym();
@@ -1807,21 +1805,21 @@ l28:
   Scanner__allowUnderscore = i20;
   i21 = *(signed char*)i21;
   i21 = i21 != 31;
-  if (i21) goto l44;
-  i12 = Scanner__sym;
-  i12 = i12 != 38;
-  if (i12) goto l43;
+  if (i21) goto l46;
+  i15 = Scanner__sym;
+  i15 = i15 != 38;
+  if (i15) goto l45;
   i21 = (int)Scanner__str;
   i20 = *(int*)(i21-8);
-  i12 = (int)SymbolTable__FindField((Data__Struct)i18, (const unsigned char*)i21, i20);
-  i21 = i12 == 0;
-  if (i21) goto l42;
-  i15 = i12 + 28;
-  i15 = *(signed char*)i15;
-  i15 = i15 == 5;
-  if (i15) goto l40;
-  i16 = i12 + 52;
-  i21 = (int)*(void**)i16;
+  i15 = (int)SymbolTable__FindField((Data__Struct)i18, (const unsigned char*)i21, i20);
+  i21 = i15 == 0;
+  if (i21) goto l44;
+  i16 = i15 + 28;
+  i16 = *(signed char*)i16;
+  i16 = i16 == 5;
+  if (i16) goto l42;
+  i17 = i15 + 52;
+  i21 = (int)*(void**)i17;
   i20 = i21 + 28;
   i20 = *(signed char*)i20;
   i20 = i20 == 4;
@@ -1852,180 +1850,197 @@ l31:
   (void)memcpy((void*) (int)&ParseExpr__receiverDesignator, (const void*) (int)x, 48);
   *(int*)(int)x = i21;
   Scanner__GetSym();
-  i21 = Scanner__sym;
-  i21 = i21 == 17;
-  if (i21) goto l32;
-  i21 = (int)Attributes__TypeTag((Data__Region)i22, (Attributes__Item *)(int)x, x__tag, (short int)-1);
-  *(void**)i5 = (void*)i21;
-  goto l33;
+  i12 = *(unsigned int*)i12;
+  i12 = (i12 & ((unsigned int)1 << 10)) != 0;
+  if (i12) goto l33;
+  i12 = Scanner__sym;
+  i12 = i12 == 17;
+  if (i12) goto l32;
+  i12 = (int)Attributes__TypeTag((Data__Region)i22, (Attributes__Item *)(int)x, x__tag, (short int)-1);
+  *(void**)i5 = (void*)i12;
+  goto l34;
 l32:
-  i21 = (int)Attributes__TypeTag((Data__Region)i22, (Attributes__Item *)(int)x, x__tag, (short int)1);
-  *(void**)i5 = (void*)i21;
+  i12 = (int)Attributes__TypeTag((Data__Region)i22, (Attributes__Item *)(int)x, x__tag, (short int)1);
+  *(void**)i5 = (void*)i12;
+  goto l34;
 l33:
-  i21 = (int)Data__constUndef;
-  *(void**)i0 = (void*)i21;
-  i21 = Scanner__sym;
-  i21 = i21 == 17;
-  if (i21) goto l34;
-  i20 = i12 + 64;
-  i19 = *(unsigned int*)i20;
-  i20 = (int)*(void**)i5;
-  i19 = (i19 & ((unsigned int)1 << 10)) != 0;
-  i21 = *(int*)(int)x;
-  i20 = (int)Attributes__TBProcAdr((Data__Region)i22, (Data__Usable)i20, (Data__Struct)i18, (Data__Object)i12, (int)i21, (unsigned char)i19);
-  *(void**)i0 = (void*)i20;
-  i15 = i12;
-  goto l39;
+  i12 = (int)*(void**)i6;
+  *(void**)i5 = (void*)i12;
 l34:
-  i21 = i18 + 24;
-  i17 = (int)*(void**)i21;
-  i17 = i17 == 0;
-  if (i17) goto l37;
-  i20 = i12 + 20;
-  i19 = (int)*(void**)i20;
-  i15 = (int)*(void**)i16;
-  i17 = *(int*)(i19-8);
-  i19 = (int)SymbolTable__BaseDefinition((Data__Object)i15, (const unsigned char*)i19, i17);
-  i19 = i19 == 0;
-  if (i19) goto l36;
-  i19 = (int)*(void**)i21;
-  i19 = ParseExpr__Designator_AbstractSuperCall((Data__Object)i12, (Data__Struct)i19);
-  if (i19) goto l35;
-  i15 = (int)*(void**)i20;
-  i16 = (int)*(void**)i16;
-  i19 = *(int*)(i15-8);
-  i15 = (int)SymbolTable__BaseDefinition((Data__Object)i16, (const unsigned char*)i15, i19);
-  i21 = (int)*(void**)i21;
-  i19 = (int)*(void**)i5;
-  i16 = Scanner__currSymPos;
-  i16 = (int)Attributes__TBProcAdr((Data__Region)i22, (Data__Usable)i19, (Data__Struct)i21, (Data__Object)i15, (int)i16, (unsigned char)1);
-  *(void**)i0 = (void*)i16;
-  goto l38;
-l35:
-  i19 = *(int*)(int)x;
-  Error__Err((int)i19, (short int)454);
-  i15 = i12;
-  goto l38;
-l36:
-  i21 = (int)*(void**)i20;
-  i16 = *(int*)(i21-8);
+  i12 = (int)Data__constUndef;
+  *(void**)i0 = (void*)i12;
+  i12 = Scanner__sym;
+  i12 = i12 == 17;
+  if (i12) goto l35;
+  i21 = i15 + 64;
+  i12 = *(unsigned int*)i21;
+  i21 = (int)*(void**)i5;
+  i12 = (i12 & ((unsigned int)1 << 10)) != 0;
   i20 = *(int*)(int)x;
-  Error__ErrIns((int)i20, (short int)230, (const unsigned char*)i21, i16);
-  i15 = i12;
-  goto l38;
+  i21 = (int)Attributes__TBProcAdr((Data__Region)i22, (Data__Usable)i21, (Data__Struct)i18, (Data__Object)i15, (int)i20, (unsigned char)i12);
+  *(void**)i0 = (void*)i21;
+  i16 = i15;
+  goto l41;
+l35:
+  i12 = i18 + 24;
+  i19 = (int)*(void**)i12;
+  i19 = i19 == 0;
+  if (i19) goto l39;
+  i21 = i15 + 20;
+  i20 = (int)*(void**)i21;
+  i16 = (int)*(void**)i17;
+  i19 = *(int*)(i20-8);
+  i20 = (int)SymbolTable__BaseDefinition((Data__Object)i16, (const unsigned char*)i20, i19);
+  i20 = i20 == 0;
+  if (i20) goto l38;
+  i20 = (int)*(void**)i12;
+  i20 = ParseExpr__Designator_AbstractSuperCall((Data__Object)i15, (Data__Struct)i20);
+  if (i20) goto l37;
+  i20 = (int)*(void**)i12;
+  i20 += 40;
+  i20 = *(unsigned int*)i20;
+  i20 = (i20 & ((unsigned int)1 << 3)) != 0;
+  if (i20) goto l36;
+  i16 = (int)*(void**)i21;
+  i17 = (int)*(void**)i17;
+  i20 = *(int*)(i16-8);
+  i16 = (int)SymbolTable__BaseDefinition((Data__Object)i17, (const unsigned char*)i16, i20);
+  i12 = (int)*(void**)i12;
+  i20 = (int)*(void**)i5;
+  i17 = Scanner__currSymPos;
+  i17 = (int)Attributes__TBProcAdr((Data__Region)i22, (Data__Usable)i20, (Data__Struct)i12, (Data__Object)i16, (int)i17, (unsigned char)1);
+  *(void**)i0 = (void*)i17;
+  goto l40;
+l36:
+  i20 = *(int*)(int)x;
+  Error__Err((int)i20, (short int)457);
+  i16 = i15;
+  goto l40;
 l37:
-  i17 = *(int*)(int)x;
-  SymbolTable__ErrT1((int)i17, (short int)229, (Data__Struct)i18);
-  i15 = i12;
+  i20 = *(int*)(int)x;
+  Error__Err((int)i20, (short int)454);
+  i16 = i15;
+  goto l40;
 l38:
-  Scanner__GetSym();
+  i12 = (int)*(void**)i21;
+  i17 = *(int*)(i12-8);
+  i21 = *(int*)(int)x;
+  Error__ErrIns((int)i21, (short int)230, (const unsigned char*)i12, i17);
+  i16 = i15;
+  goto l40;
 l39:
-  i21 = i15 + 52;
-  i21 = (int)*(void**)i21;
-  i20 = i21 + 28;
-  i21 = i15 + 24;
-  *(void**)i24 = (void*)i15;
-  i20 = *(signed char*)i20;
-  i21 = (int)*(void**)i21;
-  i20 = i20 != 3;
-  *(void**)i25 = (void*)i21;
-  if (i20) goto l45;
-  i21 = (int)Attributes__Adr((Data__Region)i22, (Attributes__Item *)(int)x, x__tag);
-  *(void**)i7 = (void*)i21;
-  goto l45;
+  i19 = *(int*)(int)x;
+  SymbolTable__ErrT1((int)i19, (short int)229, (Data__Struct)i18);
+  i16 = i15;
 l40:
+  Scanner__GetSym();
+l41:
+  i12 = i16 + 52;
+  i12 = (int)*(void**)i12;
+  i21 = i12 + 28;
+  i12 = i16 + 24;
+  *(void**)i24 = (void*)i16;
+  i21 = *(signed char*)i21;
+  i12 = (int)*(void**)i12;
+  i21 = i21 != 3;
+  *(void**)i25 = (void*)i12;
+  if (i21) goto l47;
+  i12 = (int)Attributes__Adr((Data__Region)i22, (Attributes__Item *)(int)x, x__tag);
+  *(void**)i7 = (void*)i12;
+  goto l47;
+l42:
   region = (void*)i14;
   region = (void*)i14;
   ParseExpr__Designator_Deref((unsigned char)0, &*x, (Data__Region *)&region, x__tag);
-  i15 = (int)ParseExpr__Designator_FieldAddress((Attributes__Item *)(int)x, x__tag, (Data__Object)i12, (Data__Region *)&region);
-  i16 = i12 + 24;
-  *(void**)i0 = (void*)i15;
-  i16 = (int)*(void**)i16;
-  *(void**)i25 = (void*)i16;
-  i15 = Scanner__currSymPos;
-  i16 = (int)Data__RegionDesc_CreateInstruction((Data__Region)(int)region, (short int)32, (Data__Struct)i16, (int)i15);
-  Attributes__Operand((Data__Instruction)i16, (Attributes__Item *)(int)x, x__tag);
-  i15 = (int)Attributes__Adr((Data__Region)(int)region, (Attributes__Item *)(int)x, x__tag);
-  Data__InstructionDesc_Operand((Data__Instruction)i16, (Data__Usable)i15);
-  Data__InstructionDesc_Operand((Data__Instruction)i16, (Data__Usable)i12);
-  ParseExpr__Designator_FixPosition((Data__Instruction)i16);
-  *(void**)i6 = (void*)i16;
+  i16 = (int)ParseExpr__Designator_FieldAddress((Attributes__Item *)(int)x, x__tag, (Data__Object)i15, (Data__Region *)&region);
+  i17 = i15 + 24;
+  *(void**)i0 = (void*)i16;
+  i17 = (int)*(void**)i17;
+  *(void**)i25 = (void*)i17;
   i16 = Scanner__currSymPos;
-  *(int*)(int)x = i16;
+  i17 = (int)Data__RegionDesc_CreateInstruction((Data__Region)(int)region, (short int)32, (Data__Struct)i17, (int)i16);
+  Attributes__Operand((Data__Instruction)i17, (Attributes__Item *)(int)x, x__tag);
+  i16 = (int)Attributes__Adr((Data__Region)(int)region, (Attributes__Item *)(int)x, x__tag);
+  Data__InstructionDesc_Operand((Data__Instruction)i17, (Data__Usable)i16);
+  Data__InstructionDesc_Operand((Data__Instruction)i17, (Data__Usable)i15);
+  ParseExpr__Designator_FixPosition((Data__Instruction)i17);
+  *(void**)i6 = (void*)i17;
+  i17 = Scanner__currSymPos;
+  *(int*)(int)x = i17;
   *(void**)i5 = (void*)0;
-  i16 = (int)SymbolTable__mod;
-  i16 = SymbolTable__ImportedObject((Data__Object)i16, (Data__Object)i12);
-  if (!(i16)) goto l41;
-  i12 += 64;
-  i12 = *(unsigned int*)i12;
-  i12 = (i12 & ((unsigned int)1 << 1)) != 0;
-  if (!(i12)) goto l41;
-  i12 = *(int*)i3;
-  i12 = i12 != -1;
-  if (i12) goto l41;
-  i12 = Scanner__currSymPos;
-  *(int*)i3 = i12;
-l41:
+  i17 = (int)SymbolTable__mod;
+  i17 = SymbolTable__ImportedObject((Data__Object)i17, (Data__Object)i15);
+  if (!(i17)) goto l43;
+  i15 += 64;
+  i15 = *(unsigned int*)i15;
+  i15 = (i15 & ((unsigned int)1 << 1)) != 0;
+  if (!(i15)) goto l43;
+  i15 = *(int*)i3;
+  i15 = i15 != -1;
+  if (i15) goto l43;
+  i15 = Scanner__currSymPos;
+  *(int*)i3 = i15;
+l43:
   Scanner__GetSym();
   i22 = (int)region;
-  goto l45;
-l42:
+  goto l47;
+l44:
   i21 = Scanner__currSymPos;
   Error__Err((int)i21, (short int)197);
   i21 = (int)*(void**)(int)Data__struct;
   *(void**)i25 = (void*)i21;
   Scanner__GetSym();
   i22 = i14;
-  goto l45;
-l43:
-  i12 = Scanner__currSymPos;
-  Error__Err((int)i12, (short int)100);
-  i12 = (int)*(void**)(int)Data__struct;
-  *(void**)i25 = (void*)i12;
+  goto l47;
+l45:
+  i15 = Scanner__currSymPos;
+  Error__Err((int)i15, (short int)100);
+  i15 = (int)*(void**)(int)Data__struct;
+  *(void**)i25 = (void*)i15;
   i22 = i14;
-  goto l45;
-l44:
+  goto l47;
+l46:
   i21 = *(int*)(int)x;
   SymbolTable__ErrT1((int)i21, (short int)227, (Data__Struct)i18);
   i21 = (int)*(void**)(int)Data__struct;
   *(void**)i25 = (void*)i21;
   i22 = i14;
-l45:
+l47:
   *(short int*)i4 = 0;
   i15 = 1;
   i12 = 0;
   i14 = i22;
-l46:
-  if (i12) goto l49;
-  if (!(i15)) goto l47;
+l48:
+  if (i12) goto l51;
+  if (!(i15)) goto l49;
   i16 = (int)*(void**)i24;
   i15 = i16 == 0;
-  if (i15) goto l47;
+  if (i15) goto l49;
   i16 += 28;
   i16 = *(signed char*)i16;
   i16 = i16 == 7;
-  if (i16) goto l47;
+  if (i16) goto l49;
   *(void**)i24 = (void*)0;
-l47:
+l49:
   i15 = (int)*(void**)i25;
   i15 += 20;
   i15 = *(signed char*)i15;
   i15 = i15 != 0;
-  if (i15) goto l48;
+  if (i15) goto l50;
   i15 = (int)*(void**)i1;
   i15 = (int)Data__GetIntConst((int)0, (Data__Struct)i15);
   *(void**)i0 = (void*)i15;
   *(int*)i3 = -1;
-l48:
-  *(void**)i2 = (void*)0;
-l49:
-  if (!(i12)) goto l9;
 l50:
+  *(void**)i2 = (void*)0;
+l51:
+  if (!(i12)) goto l9;
+l52:
   i1 = *(int*)i23;
   i0 = i1 < 0;
-  if (i0) goto l51;
+  if (i0) goto l53;
   *(int*)(int)x = i1;
-l51:
+l53:
   ;
 }
 
@@ -3455,9 +3470,9 @@ Data__Const ParseExpr__SimpleExpr_Concat(Data__Const x, Data__Const y) {
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i8 < 0) _invalid_length(i8, _P(70942));
-    _mem = GC_malloc_atomic(i8*1+8);
-    if (!_mem) _new_failed(_P(70918));
+    if(i8 < 0) _invalid_length(i8, _P(71556));
+    _mem = GC_malloc_atomic(_not_zero(i8*1)+8);
+    if (!_mem) _new_failed(_P(71532));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i8;

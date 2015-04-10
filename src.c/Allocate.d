@@ -75,7 +75,7 @@ struct Allocate__ResolveVarConflicts_0* Allocate__ResolveVarConflicts_NewInfo(in
 struct Allocate__ResolveVarConflicts_0* Allocate__ResolveVarConflicts_CopyInfo(struct Allocate__ResolveVarConflicts_0* ia, int *Allocate__ResolveVarConflicts_counter);
 unsigned char Allocate__ResolveVarConflicts_ScanRegions_ScalarLocalVar(Data__Location loc, Data__Object *obj, Data__GlobalRegion *Allocate__ResolveVarConflicts_greg);
 void Allocate__ResolveVarConflicts_ScanRegions_Conflict_Copy(Data__Result res);
-void Allocate__ResolveVarConflicts_ScanRegions_Conflict(Data__Result res0, Data__Result res1);
+unsigned char Allocate__ResolveVarConflicts_ScanRegions_Conflict(Data__Result res0, Data__Result res1);
 unsigned char Allocate__ResolveVarConflicts_ScanRegions_WriteConflict(struct Allocate__ResolveVarConflicts_0* ia, Data__Usable u, int marker);
 unsigned char Allocate__ResolveVarConflicts_ScanRegions_ReadConflict(struct Allocate__ResolveVarConflicts_0* ia, Data__Result res, int marker);
 unsigned char Allocate__ResolveVarConflicts_ScanRegions_HandleRegion(struct Allocate__ResolveVarConflicts_0* ia, Data__Region region, int *Allocate__ResolveVarConflicts_counter);

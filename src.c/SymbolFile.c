@@ -291,8 +291,8 @@ void SymbolFile__WriteString(BinaryRider__Writer w, unsigned char* str, int str_
   i0 = Strings__Length((const unsigned char*)(int)str, str_0d);
   i1 = (int)((_Type)i2)->tbprocs[13];
   i2 = (int)((_Type)i2)->tbprocs[3];
-  ((void(*)(BinaryRider__Writer, int))i1)((BinaryRider__Writer)(int)w, (int)i0);
-  ((void(*)(BinaryRider__Writer, unsigned char*, int x_0d, int, int))i2)((BinaryRider__Writer)(int)w, (unsigned char*)(int)str, str_0d, (int)0, (int)i0);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i1)((BinaryRider__Writer)(int)w, (int)i0);
+  ((_TBP_BinaryRider__WriterDesc_WriteBytes)i2)((BinaryRider__Writer)(int)w, (unsigned char*)(int)str, str_0d, (int)0, (int)i0);
 }
 
 void SymbolFile__WriteStringConst(BinaryRider__Writer w, Data__Const const_) {
@@ -311,14 +311,14 @@ void SymbolFile__WriteStringConst(BinaryRider__Writer w, Data__Const const_) {
   i2 = (int)((_Type)i0)->tbprocs[13];
   i3 = *(int*)i1;
   i4 = *(int*)i4;
-  ((void(*)(BinaryRider__Writer, int))i2)((BinaryRider__Writer)(int)w, (int)i3);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i2)((BinaryRider__Writer)(int)w, (int)i3);
   i2 = (int)const_ + 20;
   i2 = (int)*(void**)i2;
   i1 = *(int*)i1;
   i1 *= i4;
   i0 = (int)((_Type)i0)->tbprocs[3];
   i3 = *(int*)(i2-8);
-  ((void(*)(BinaryRider__Writer, unsigned char*, int x_0d, int, int))i0)((BinaryRider__Writer)(int)w, (unsigned char*)i2, i3, (int)0, (int)i1);
+  ((_TBP_BinaryRider__WriterDesc_WriteBytes)i0)((BinaryRider__Writer)(int)w, (unsigned char*)i2, i3, (int)0, (int)i1);
 }
 
 Parameter__String SymbolFile__ReadString(BinaryRider__Reader r) {
@@ -326,13 +326,13 @@ Parameter__String SymbolFile__ReadString(BinaryRider__Reader r) {
   int len;
   i1 = *(int*)((int)r-4);
   i0 = (int)((_Type)i1)->tbprocs[14];
-  ((void(*)(BinaryRider__Reader, int *))i0)((BinaryRider__Reader)(int)r, (int *)(int)&len);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i0)((BinaryRider__Reader)(int)r, (int *)(int)&len);
   i0 = len + 1;
   {
     char *_mem, *_var;
     int* _dim_ptr;
     if(i0 < 0) _invalid_length(i0, _P(8034));
-    _mem = GC_malloc_atomic(i0*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
     if (!_mem) _new_failed(_P(8023));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -341,7 +341,7 @@ Parameter__String SymbolFile__ReadString(BinaryRider__Reader r) {
   }
   i1 = (int)((_Type)i1)->tbprocs[4];
   i2 = *(int*)(i0-8);
-  ((void(*)(BinaryRider__Reader, unsigned char*, int x_0d, int, int))i1)((BinaryRider__Reader)(int)r, (unsigned char*)i0, i2, (int)0, (int)len);
+  ((_TBP_BinaryRider__ReaderDesc_ReadBytes)i1)((BinaryRider__Reader)(int)r, (unsigned char*)i0, i2, (int)0, (int)len);
   i1 = len + i0;
   *(unsigned char*)i1 = 0;
   return (void*)i0;
@@ -358,13 +358,13 @@ Data__Const SymbolFile__ReadStringConst(BinaryRider__Reader r, signed char form)
   i1 = i0 + 48;
   i0 = (int)((_Type)i3)->tbprocs[14];
   i1 = *(int*)i1;
-  ((void(*)(BinaryRider__Reader, int *))i0)((BinaryRider__Reader)(int)r, (int *)(int)&len);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i0)((BinaryRider__Reader)(int)r, (int *)(int)&len);
   i0 = len * i1;
   {
     char *_mem, *_var;
     int* _dim_ptr;
     if(i0 < 0) _invalid_length(i0, _P(8361));
-    _mem = GC_malloc_atomic(i0*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
     if (!_mem) _new_failed(_P(8350));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -373,7 +373,7 @@ Data__Const SymbolFile__ReadStringConst(BinaryRider__Reader r, signed char form)
   }
   i2 = *(int*)(i1-8);
   i3 = (int)((_Type)i3)->tbprocs[4];
-  ((void(*)(BinaryRider__Reader, unsigned char*, int x_0d, int, int))i3)((BinaryRider__Reader)(int)r, (unsigned char*)i1, i2, (int)0, (int)i0);
+  ((_TBP_BinaryRider__ReaderDesc_ReadBytes)i3)((BinaryRider__Reader)(int)r, (unsigned char*)i1, i2, (int)0, (int)i0);
   i0 = (int)_ashl(form, 2, (unsigned int));
   i0 = (int)Data__struct + i0;
   i0 = (int)*(void**)i0;
@@ -395,7 +395,7 @@ void SymbolFile__AppendToStructArray(Data__Struct t) {
     char *_mem, *_var;
     int* _dim_ptr;
     if(i6 < 0) _invalid_length(i6, _P(8668));
-    _mem = GC_malloc(i6*4+8);
+    _mem = GC_malloc(_not_zero(i6*4)+8);
     if (!_mem) _new_failed(_P(8640));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -431,7 +431,7 @@ void SymbolFile__WriteFlags(BinaryRider__Writer w, unsigned int flags) {
   register int i0;
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[13];
-  ((void(*)(BinaryRider__Writer, int))i0)((BinaryRider__Writer)(int)w, (int)flags);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i0)((BinaryRider__Writer)(int)w, (int)flags);
 }
 
 void SymbolFile__Write_MarkExportedObjects_MarkObject_MarkStruct(Data__Struct t, Data__Object *SymbolFile__Write_mod) {
@@ -540,7 +540,7 @@ l0:
   i1 = (int)*SymbolFile__Write_w;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[13];
-  ((void(*)(BinaryRider__Writer, int))i0)((BinaryRider__Writer)i1, (int)0);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i0)((BinaryRider__Writer)i1, (int)0);
 l1:
   ;
 }
@@ -574,7 +574,7 @@ l0:
   i1 += 28;
   i0 = (int)((_Type)i0)->tbprocs[13];
   i1 = *(int*)i1;
-  ((void(*)(BinaryRider__Writer, int))i0)((BinaryRider__Writer)i3, (int)i1);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i0)((BinaryRider__Writer)i3, (int)i1);
   i4 = (int)*(void**)i4;
   i4 += 20;
   i4 = (int)*(void**)i4;
@@ -586,10 +586,10 @@ l1:
   i3 = *(signed char*)i0;
   i2 = *(int*)(i1-4);
   i2 = (int)((_Type)i2)->tbprocs[13];
-  ((void(*)(BinaryRider__Writer, int))i2)((BinaryRider__Writer)i1, (int)i3);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i2)((BinaryRider__Writer)i1, (int)i3);
   i3 = (int)t + 40;
   i2 = *(unsigned int*)i3;
-  i2 &= 0x3FFU;
+  i2 &= 0xFFFU;
   SymbolFile__WriteFlags((BinaryRider__Writer)i1, (unsigned int)i2);
   i2 = (int)t + 44;
   i2 = *(unsigned int*)i2;
@@ -633,20 +633,20 @@ l6:
   i1 = (int)t + 32;
   i3 = (int)((_Type)i3)->tbprocs[13];
   i1 = *(int*)i1;
-  ((void(*)(BinaryRider__Writer, int))i3)((BinaryRider__Writer)i4, (int)i1);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i3)((BinaryRider__Writer)i4, (int)i1);
   goto l9;
 l7:
   i4 = (int)*SymbolFile__Write_w;
   i2 = *(int*)(i4-4);
   i2 = (int)((_Type)i2)->tbprocs[13];
-  ((void(*)(BinaryRider__Writer, int))i2)((BinaryRider__Writer)i4, (int)i1);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i2)((BinaryRider__Writer)i4, (int)i1);
   goto l9;
 l8:
   i2 = (int)*SymbolFile__Write_w;
   i1 = *(int*)(i2-4);
   i0 = - i0;
   i1 = (int)((_Type)i1)->tbprocs[13];
-  ((void(*)(BinaryRider__Writer, int))i1)((BinaryRider__Writer)i2, (int)i0);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i1)((BinaryRider__Writer)i2, (int)i0);
 l9:
   ;
 }
@@ -668,13 +668,13 @@ l0:
   i0 = (int)*SymbolFile__Write_w;
   i3 = *(int*)(i0-4);
   i3 = (int)((_Type)i3)->tbprocs[13];
-  ((void(*)(BinaryRider__Writer, int))i3)((BinaryRider__Writer)i0, (int)i2);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i3)((BinaryRider__Writer)i0, (int)i2);
   goto l2;
 l1:
   i3 = (int)*SymbolFile__Write_w;
   i0 = *(int*)(i3-4);
   i0 = (int)((_Type)i0)->tbprocs[13];
-  ((void(*)(BinaryRider__Writer, int))i0)((BinaryRider__Writer)i3, (int)-2);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i0)((BinaryRider__Writer)i3, (int)-2);
 l2:
   i0 = *(signed char*)i1;
   i0 = i0 == 9;
@@ -713,7 +713,7 @@ l3:
   i0 = (int)obj + 60;
   i2 = (int)((_Type)i2)->tbprocs[13];
   i0 = *(int*)i0;
-  ((void(*)(BinaryRider__Writer, int))i2)((BinaryRider__Writer)i1, (int)i0);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i2)((BinaryRider__Writer)i1, (int)i0);
   i2 = (int)obj + 52;
   i2 = (int)*(void**)i2;
   SymbolFile__Write_WriteObject((Data__Object)i2, (BinaryRider__Writer *)&*SymbolFile__Write_w);
@@ -732,7 +732,7 @@ l4:
   i0 += 24;
   i2 = (int)((_Type)i2)->tbprocs[13];
   i0 = *(int*)i0;
-  ((void(*)(BinaryRider__Writer, int))i2)((BinaryRider__Writer)i1, (int)i0);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i2)((BinaryRider__Writer)i1, (int)i0);
   goto l9;
 l5:
   if (!((i0>=8 && i0<=9))) goto l6;
@@ -743,7 +743,7 @@ l5:
   i0 += 40;
   i1 = (int)((_Type)i1)->tbprocs[15];
   d0 = *(double*)i0;
-  ((void(*)(BinaryRider__Writer, double))i1)((BinaryRider__Writer)i2, (double)d0);
+  ((_TBP_BinaryRider__WriterDesc_WriteLReal)i1)((BinaryRider__Writer)i2, (double)d0);
   goto l9;
 l6:
   if (!((i0>=12 && i0<=15))) goto l7;
@@ -754,7 +754,7 @@ l6:
   i1 += 32;
   i0 = (int)((_Type)i0)->tbprocs[16];
   i1 = *(unsigned int*)i1;
-  ((void(*)(BinaryRider__Writer, unsigned int))i0)((BinaryRider__Writer)i2, (unsigned int)i1);
+  ((_TBP_BinaryRider__WriterDesc_WriteSet)i0)((BinaryRider__Writer)i2, (unsigned int)i1);
   goto l9;
 l7:
   if (!((i0>=18 && i0<=19))) goto l8;
@@ -851,7 +851,7 @@ l0:
   i1 = (int)*(void**)i1;
   i1 += 24;
   i1 = *(int*)i1;
-  ((void(*)(BinaryRider__Writer, int))i0)((BinaryRider__Writer)i8, (int)i1);
+  ((_TBP_BinaryRider__WriterDesc_WriteLInt)i0)((BinaryRider__Writer)i8, (int)i1);
   i2 = (int)*(void**)i4;
   i1 = *(int*)(i2-8);
   i7 = (int)SymbolFile__Write_WriteUsedImports_GetModule((const unsigned char*)i2, i1);
@@ -890,7 +890,7 @@ void SymbolFile__Write_WriteOtherImports(Data__Object obj, BinaryRider__Writer *
   i1 += 24;
   i5 = (int)((_Type)i5)->tbprocs[12];
   i1 = *(int*)i1;
-  ((void(*)(BinaryRider__Writer, int))i5)((BinaryRider__Writer)i0, (int)i1);
+  ((_TBP_BinaryRider__WriterDesc_WriteLInt)i5)((BinaryRider__Writer)i0, (int)i1);
   i1 = *(unsigned int*)i3;
   i1 = i1 | ((unsigned int)1 << 27);
   *(unsigned int*)i3 = i1;
@@ -919,8 +919,8 @@ l1:
   i0 = *(int*)(i7-4);
   i8 = (int)((_Type)i0)->tbprocs[7];
   i0 = (int)((_Type)i0)->tbprocs[1];
-  ((void(*)(BinaryRider__Reader, int))i0)((BinaryRider__Reader)i7, (int)startPos);
-  ((void(*)(BinaryRider__Reader, unsigned char *))i8)((BinaryRider__Reader)i7, (unsigned char *)(int)&byte);
+  ((_TBP_BinaryRider__ReaderDesc_SetPos)i0)((BinaryRider__Reader)i7, (int)startPos);
+  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i8)((BinaryRider__Reader)i7, (unsigned char *)(int)&byte);
   i0 = (int)*(void**)i7;
   i0 = i0 != 0;
   if (i0) goto l5;
@@ -946,7 +946,7 @@ l4:
   *(unsigned char*)i5 = i2;
   byte = (unsigned char)i1;
   byte = (unsigned char)i1;
-  ((void(*)(BinaryRider__Reader, unsigned char *))i8)((BinaryRider__Reader)i7, (unsigned char *)(int)&byte);
+  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i8)((BinaryRider__Reader)i7, (unsigned char *)(int)&byte);
   i0 = (int)*(void**)i7;
   i0 = i0 != 0;
   if (i0) goto l5;
@@ -982,20 +982,20 @@ l1:
   i3 = *(int*)(i2-4);
   (void)memcpy((void*) (int)symId, (const void*) (int)_c3, 5);
   i1 = (int)((_Type)i3)->tbprocs[4];
-  ((void(*)(BinaryRider__Reader, unsigned char*, int x_0d, int, int))i1)((BinaryRider__Reader)i2, (unsigned char*)(int)symId, 5, (int)0, (int)4);
+  ((_TBP_BinaryRider__ReaderDesc_ReadBytes)i1)((BinaryRider__Reader)i2, (unsigned char*)(int)symId, 5, (int)0, (int)4);
   i4 = strcmp((const char*) (int)symId, (const char*) (int)SymbolFile__symbolFileId) == 0;
   if (i4) goto l2;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
-  ((void(*)(Files__File))i1)((Files__File)i0);
+  ((_TBP_Files__FileDesc_Close)i1)((Files__File)i0);
   goto l3;
 l2:
   i5 = (int)((_Type)i3)->tbprocs[13];
   i1 = *(int*)(i0-4);
   i3 = *magic;
-  ((void(*)(BinaryRider__Reader, int *))i5)((BinaryRider__Reader)i2, (int *)(int)magic);
+  ((_TBP_BinaryRider__ReaderDesc_ReadLInt)i5)((BinaryRider__Reader)i2, (int *)(int)magic);
   i5 = (int)((_Type)i1)->tbprocs[5];
-  ((void(*)(Files__File))i5)((Files__File)i0);
+  ((_TBP_Files__FileDesc_Close)i5)((Files__File)i0);
   i5 = (int)*(void**)i2;
   i5 = i5 == 0;
 l3:
@@ -1043,8 +1043,8 @@ void SymbolFile__Write(Data__Object mod, unsigned char *newSymbolFile, unsigned 
   i8 = *(int*)(i5-4);
   i4 = (int)((_Type)i8)->tbprocs[3];
   i8 = (int)((_Type)i8)->tbprocs[12];
-  ((void(*)(BinaryRider__Writer, unsigned char*, int x_0d, int, int))i4)((BinaryRider__Writer)i5, (unsigned char*)(int)SymbolFile__symbolFileId, 5, (int)0, (int)4);
-  ((void(*)(BinaryRider__Writer, int))i8)((BinaryRider__Writer)i5, (int)0);
+  ((_TBP_BinaryRider__WriterDesc_WriteBytes)i4)((BinaryRider__Writer)i5, (unsigned char*)(int)SymbolFile__symbolFileId, 5, (int)0, (int)4);
+  ((_TBP_BinaryRider__WriterDesc_WriteLInt)i8)((BinaryRider__Writer)i5, (int)0);
   i4 = (int)*(void**)i6;
   i6 = *(int*)(i4-8);
   SymbolFile__WriteString((BinaryRider__Writer)i5, (unsigned char*)i4, i6);
@@ -1066,8 +1066,8 @@ void SymbolFile__Write(Data__Object mod, unsigned char *newSymbolFile, unsigned 
   i6 = (int)((_Type)i5)->tbprocs[13];
   SymbolFile__WriteString((BinaryRider__Writer)(int)w, (unsigned char*)(int)SymbolFile__emptyString, 2);
   i4 = (int)mod + 64;
-  ((void(*)(BinaryRider__Writer, int))i6)((BinaryRider__Writer)(int)w, (int)1);
-  ((void(*)(BinaryRider__Writer, int))i6)((BinaryRider__Writer)(int)w, (int)4);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i6)((BinaryRider__Writer)(int)w, (int)1);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i6)((BinaryRider__Writer)(int)w, (int)4);
   i6 = *(unsigned int*)i4;
   i6 &= 0x7FFU;
   SymbolFile__WriteFlags((BinaryRider__Writer)(int)w, (unsigned int)i6);
@@ -1081,7 +1081,7 @@ void SymbolFile__Write(Data__Object mod, unsigned char *newSymbolFile, unsigned 
   SystemFlags__WriteObjectInfo((BinaryRider__Writer)(int)w, (Data__Object)(int)mod);
 l0:
   i5 = (int)((_Type)i5)->tbprocs[0];
-  i5 = ((int(*)(BinaryRider__Writer))i5)((BinaryRider__Writer)(int)w);
+  i5 = ((_TBP_BinaryRider__WriterDesc_Pos)i5)((BinaryRider__Writer)(int)w);
   i4 = (int)mod + 52;
   i8 = *(int*)(i7-4);
   i6 = (int)((_Type)i8)->tbprocs[7];
@@ -1092,11 +1092,11 @@ l0:
   i3 = *(int*)((int)w-4);
   i1 = (int)((_Type)i3)->tbprocs[13];
   i2 = (int)((_Type)i3)->tbprocs[1];
-  ((void(*)(BinaryRider__Writer, int))i1)((BinaryRider__Writer)(int)w, (int)0);
+  ((_TBP_BinaryRider__WriterDesc_WriteNum)i1)((BinaryRider__Writer)(int)w, (int)0);
   SymbolFile__Write_Fingerprint((Files__File)i7, (int)i5, (unsigned char*)(int)&magicId, 4);
   i5 = (int)((_Type)i3)->tbprocs[12];
-  ((void(*)(BinaryRider__Writer, int))i2)((BinaryRider__Writer)(int)w, (int)4);
-  ((void(*)(BinaryRider__Writer, int))i5)((BinaryRider__Writer)(int)w, (int)magicId);
+  ((_TBP_BinaryRider__WriterDesc_SetPos)i2)((BinaryRider__Writer)(int)w, (int)4);
+  ((_TBP_BinaryRider__WriterDesc_WriteLInt)i5)((BinaryRider__Writer)(int)w, (int)magicId);
   i5 = (int)*(void**)i4;
   i4 = i5 + 24;
   *(int*)i4 = magicId;
@@ -1113,25 +1113,25 @@ l2:
   if (i4) goto l3;
   i4 = *(int*)(i5-4);
   i4 = (int)((_Type)i4)->tbprocs[3];
-  ((void(*)(Msg__Msg, Msg__String, int text_0d))i4)((Msg__Msg)i5, (Msg__String)(int)msg, 256);
+  ((_TBP_Msg__MsgDesc_GetText)i4)((Msg__Msg)i5, (Msg__String)(int)msg, 256);
   Error__FileError((const unsigned char*)(int)_c4, 24, (const unsigned char*)(int)fileName, 256, (const unsigned char*)(int)msg, 256);
 l3:
-  ((void(*)(Files__File))i6)((Files__File)i7);
+  ((_TBP_Files__FileDesc_Register)i6)((Files__File)i7);
   i5 = (int)*(void**)i7;
   i4 = i5 == 0;
   if (i4) goto l4;
   i4 = *(int*)(i5-4);
   i4 = (int)((_Type)i4)->tbprocs[3];
-  ((void(*)(Msg__Msg, Msg__String, int text_0d))i4)((Msg__Msg)i5, (Msg__String)(int)msg, 256);
+  ((_TBP_Msg__MsgDesc_GetText)i4)((Msg__Msg)i5, (Msg__String)(int)msg, 256);
   Error__FileError((const unsigned char*)(int)_c5, 28, (const unsigned char*)(int)fileName, 256, (const unsigned char*)(int)msg, 256);
 l4:
-  ((void(*)(Files__File))i8)((Files__File)i7);
+  ((_TBP_Files__FileDesc_Close)i8)((Files__File)i7);
   i4 = (int)*(void**)i7;
   i5 = i4 == 0;
   if (i5) goto l5;
   i5 = *(int*)(i4-4);
   i5 = (int)((_Type)i5)->tbprocs[3];
-  ((void(*)(Msg__Msg, Msg__String, int text_0d))i5)((Msg__Msg)i4, (Msg__String)(int)msg, 256);
+  ((_TBP_Msg__MsgDesc_GetText)i5)((Msg__Msg)i4, (Msg__String)(int)msg, 256);
   Error__FileError((const unsigned char*)(int)_c6, 24, (const unsigned char*)(int)fileName, 256, (const unsigned char*)(int)msg, 256);
 l5:
   i5 = SymbolFile__structLen;
@@ -1159,7 +1159,7 @@ l6:
 l7:
   i0 = *(int*)((int)res-4);
   i0 = (int)((_Type)i0)->tbprocs[3];
-  ((void(*)(Msg__Msg, Msg__String, int text_0d))i0)((Msg__Msg)(int)res, (Msg__String)(int)msg, 256);
+  ((_TBP_Msg__MsgDesc_GetText)i0)((Msg__Msg)(int)res, (Msg__String)(int)msg, 256);
   Error__FileError((const unsigned char*)(int)_c7, 36, (const unsigned char*)(int)fileName, 256, (const unsigned char*)(int)msg, 256);
 l8:
   ;
@@ -1170,7 +1170,7 @@ void SymbolFile__ReadFlags(BinaryRider__Reader r, unsigned int *flags) {
   int i;
   i0 = *(int*)((int)r-4);
   i0 = (int)((_Type)i0)->tbprocs[14];
-  ((void(*)(BinaryRider__Reader, int *))i0)((BinaryRider__Reader)(int)r, (int *)(int)&i);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i0)((BinaryRider__Reader)(int)r, (int *)(int)&i);
   *flags = i;
 }
 
@@ -1184,7 +1184,7 @@ void SymbolFile__Read_Abort(Parameter__Filename SymbolFile__Read_fileName, Binar
   i1 = *(int*)(i0-4);
   Strings__Append((const unsigned char*)(int)_c9, 30, (unsigned char*)(int)msg, 256);
   i1 = (int)((_Type)i1)->tbprocs[0];
-  i0 = ((int(*)(BinaryRider__Reader))i1)((BinaryRider__Reader)i0);
+  i0 = ((_TBP_BinaryRider__ReaderDesc_Pos)i1)((BinaryRider__Reader)i0);
   IntStr__IntToStr((int)i0, (unsigned char*)(int)num, 32);
   Strings__Append((const unsigned char*)(int)num, 32, (unsigned char*)(int)msg, 256);
   Parameter__FatalError((const unsigned char*)(int)msg, 256);
@@ -1196,7 +1196,7 @@ void SymbolFile__Read_ReadObject_ReadStruct_ReadObjList(Data__Object *obj, unsig
   i2 = (int)*SymbolFile__Read_r;
   i0 = *(int*)(i2-4);
   i0 = (int)((_Type)i0)->tbprocs[14];
-  ((void(*)(BinaryRider__Reader, int *))i0)((BinaryRider__Reader)i2, (int *)(int)&mode);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i0)((BinaryRider__Reader)i2, (int *)(int)&mode);
   i0 = mode == 0;
   if (i0) goto l1;
   i2 = (int)SymbolFile__Read_ReadObject((int)mode, (BinaryRider__Reader *)&*SymbolFile__Read_r, SymbolFile__Read_fileName, (Data__Object *)&*SymbolFile__Read_mod, (struct SymbolFile__Read_ModuleListDesc* *)&*SymbolFile__Read_modList);
@@ -1230,7 +1230,7 @@ Data__Struct SymbolFile__Read_ReadObject_ReadStruct(BinaryRider__Reader *SymbolF
   i5 = (int)*SymbolFile__Read_r;
   i0 = *(int*)(i5-4);
   i0 = (int)((_Type)i0)->tbprocs[14];
-  ((void(*)(BinaryRider__Reader, int *))i0)((BinaryRider__Reader)i5, (int *)(int)&form);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i0)((BinaryRider__Reader)i5, (int *)(int)&form);
   i0 = form <= 0;
   if (i0) goto l15;
   i4 = form <= 21;
@@ -1298,7 +1298,7 @@ l5:
   i4 = *(int*)(i2-4);
   i1 = *(int*)i3;
   i4 = (int)((_Type)i4)->tbprocs[14];
-  ((void(*)(BinaryRider__Reader, int *))i4)((BinaryRider__Reader)i2, (int *)i3);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i4)((BinaryRider__Reader)i2, (int *)i3);
   i4 = 0;
   goto l13;
 l6:
@@ -1371,7 +1371,7 @@ l0:
   i0 = (int)((_Type)i0)->tbprocs[14];
   mode = (int)(-2147483647-1);
   mode = (int)(-2147483647-1);
-  ((void(*)(BinaryRider__Reader, int *))i0)((BinaryRider__Reader)i1, (int *)(int)&mode);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i0)((BinaryRider__Reader)i1, (int *)(int)&mode);
   i5 = mode;
 l1:
   i0 = i5 == 9;
@@ -1421,7 +1421,7 @@ l4:
   i3 = *(int*)(i1-4);
   i6 = *(int*)i2;
   i3 = (int)((_Type)i3)->tbprocs[14];
-  ((void(*)(BinaryRider__Reader, int *))i3)((BinaryRider__Reader)i1, (int *)i2);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i3)((BinaryRider__Reader)i1, (int *)i2);
   i2 = i7 + 52;
   i1 = (int)SymbolFile__Read_ReadObject((int)(-2147483647-1), (BinaryRider__Reader *)&*SymbolFile__Read_r, SymbolFile__Read_fileName, (Data__Object *)&*SymbolFile__Read_mod, (struct SymbolFile__Read_ModuleListDesc* *)&*SymbolFile__Read_modList);
   *(void**)i2 = (void*)i1;
@@ -1440,7 +1440,7 @@ l7:
   i2 = (int)*SymbolFile__Read_r;
   i6 = *(int*)(i2-4);
   i6 = (int)((_Type)i6)->tbprocs[14];
-  ((void(*)(BinaryRider__Reader, int *))i6)((BinaryRider__Reader)i2, (int *)(int)&valInt);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i6)((BinaryRider__Reader)i2, (int *)(int)&valInt);
   i6 = (int)*(void**)i4;
   i6 += 20;
   i2 = *(signed char*)i6;
@@ -1457,7 +1457,7 @@ l8:
   i6 = (int)*SymbolFile__Read_r;
   i2 = *(int*)(i6-4);
   i2 = (int)((_Type)i2)->tbprocs[16];
-  ((void(*)(BinaryRider__Reader, double *))i2)((BinaryRider__Reader)i6, (double *)(int)&valReal);
+  ((_TBP_BinaryRider__ReaderDesc_ReadLReal)i2)((BinaryRider__Reader)i6, (double *)(int)&valReal);
   i2 = (int)*(void**)i4;
   i2 += 20;
   i6 = *(signed char*)i2;
@@ -1474,7 +1474,7 @@ l9:
   i6 = (int)*SymbolFile__Read_r;
   i2 = *(int*)(i6-4);
   i2 = (int)((_Type)i2)->tbprocs[17];
-  ((void(*)(BinaryRider__Reader, unsigned int *))i2)((BinaryRider__Reader)i6, (unsigned int *)(int)&valSet);
+  ((_TBP_BinaryRider__ReaderDesc_ReadSet)i2)((BinaryRider__Reader)i6, (unsigned int *)(int)&valSet);
   i2 = (int)*(void**)i4;
   i2 += 20;
   i6 = *(signed char*)i2;
@@ -1549,7 +1549,7 @@ void SymbolFile__Read_ReadImportList(Data__Object *list, struct SymbolFile__Read
   i1 = *SymbolFile__Read_pos;
   i2 = *(int*)(i6-8);
   i4 = (int)((_Type)i4)->tbprocs[13];
-  ((void(*)(BinaryRider__Reader, int *))i4)((BinaryRider__Reader)i5, (int *)(int)&magic);
+  ((_TBP_BinaryRider__ReaderDesc_ReadLInt)i4)((BinaryRider__Reader)i5, (int *)(int)&magic);
   i4 = (int)SymbolFile__Read((const unsigned char*)i6, i2, (int)i1);
   *list = (void*)i4;
   i3 = (int)*list;
@@ -1565,7 +1565,7 @@ void SymbolFile__Read_ReadImportList(Data__Object *list, struct SymbolFile__Read
 l0:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(8+8);
+    _mem = GC_malloc(_not_zero(8)+8);
     if (!_mem) _new_failed(_P(28124));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &SymbolFile__Read_ModuleListDesc_td.td;
@@ -1597,7 +1597,7 @@ l3:
   i1 = (int)((_Type)i1)->tbprocs[13];
   magic = (int)i0;
   magic = (int)i0;
-  ((void(*)(BinaryRider__Reader, int *))i1)((BinaryRider__Reader)i5, (int *)(int)&magic);
+  ((_TBP_BinaryRider__ReaderDesc_ReadLInt)i1)((BinaryRider__Reader)i5, (int *)(int)&magic);
   i0 = magic;
 l4:
   if (!(i2)) goto l3;
@@ -1680,7 +1680,7 @@ l2:
   i4 = *(int*)(i2-4);
   (void)memcpy((void*) (int)symId, (const void*) (int)_c3, 5);
   i13 = (int)((_Type)i4)->tbprocs[4];
-  ((void(*)(BinaryRider__Reader, unsigned char*, int x_0d, int, int))i13)((BinaryRider__Reader)i2, (unsigned char*)(int)symId, 16, (int)0, (int)4);
+  ((_TBP_BinaryRider__ReaderDesc_ReadBytes)i13)((BinaryRider__Reader)i2, (unsigned char*)(int)symId, 16, (int)0, (int)4);
   i13 = strcmp((const char*) (int)symId, (const char*) (int)SymbolFile__symbolFileId) != 0;
   i3 = *(int*)(i1-4);
   if (i13) goto l18;
@@ -1690,7 +1690,7 @@ l2:
   i5 += 24;
   i4 = (int)((_Type)i4)->tbprocs[13];
   i6 = *(int*)i5;
-  ((void(*)(BinaryRider__Reader, int *))i4)((BinaryRider__Reader)i2, (int *)i5);
+  ((_TBP_BinaryRider__ReaderDesc_ReadLInt)i4)((BinaryRider__Reader)i2, (int *)i5);
   i4 = i12 + 20;
   i5 = (int)SymbolFile__ReadString((BinaryRider__Reader)i2);
   *(void**)i4 = (void*)i5;
@@ -1721,9 +1721,9 @@ l3:
   i14 = (int)r;
   i4 = *(int*)(i14-4);
   i10 = (int)((_Type)i4)->tbprocs[14];
-  ((void(*)(BinaryRider__Reader, int *))i10)((BinaryRider__Reader)i14, (int *)(int)&fileFormat);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i10)((BinaryRider__Reader)i14, (int *)(int)&fileFormat);
   i4 = fileFormat != 1;
-  ((void(*)(BinaryRider__Reader, int *))i10)((BinaryRider__Reader)i14, (int *)(int)&fileVersion);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i10)((BinaryRider__Reader)i14, (int *)(int)&fileVersion);
   if (i4) goto l14;
   i6 = fileVersion != 4;
   if (i6) goto l12;
@@ -1750,7 +1750,7 @@ l5:
   i8 = *(short int*)i8;
   i9 = *(short int*)i9;
   SymbolTable__OpenScope((Data__Object)i12, (short int)i9, (short int)i8);
-  ((void(*)(BinaryRider__Reader, int *))i10)((BinaryRider__Reader)i14, (int *)(int)&objMode);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i10)((BinaryRider__Reader)i14, (int *)(int)&objMode);
   i8 = (int)*(void**)i14;
   i8 = i8 != 0;
   if (i8) goto l10;
@@ -1816,7 +1816,7 @@ l9:
   i5 = (int)((_Type)i5)->tbprocs[14];
   objMode = (int)i6;
   objMode = (int)i6;
-  ((void(*)(BinaryRider__Reader, int *))i5)((BinaryRider__Reader)i7, (int *)(int)&objMode);
+  ((_TBP_BinaryRider__ReaderDesc_ReadNum)i5)((BinaryRider__Reader)i7, (int *)(int)&objMode);
   i6 = (int)*(void**)i7;
   i6 = i6 != 0;
   if (i6) goto l11;
@@ -1830,9 +1830,9 @@ l10:
 l11:
   i8 = (int)((_Type)i3)->tbprocs[0];
   i9 = *(int*)(i7-4);
-  i8 = ((int(*)(PosixFileDescr__Channel))i8)((PosixFileDescr__Channel)i1);
+  i8 = ((_TBP_PosixFileDescr__ChannelDesc_Length)i8)((PosixFileDescr__Channel)i1);
   i9 = (int)((_Type)i9)->tbprocs[0];
-  i9 = ((int(*)(BinaryRider__Reader))i9)((BinaryRider__Reader)i7);
+  i9 = ((_TBP_BinaryRider__ReaderDesc_Pos)i9)((BinaryRider__Reader)i7);
   i8 -= i9;
   i9 = i8 == 0;
   if (i9) goto l13;
@@ -1888,11 +1888,11 @@ l19:
   if (i9) goto l20;
   i9 = *(int*)(i10-4);
   i9 = (int)((_Type)i9)->tbprocs[3];
-  ((void(*)(Msg__Msg, Msg__String, int text_0d))i9)((Msg__Msg)i10, (Msg__String)(int)msg, 256);
+  ((_TBP_Msg__MsgDesc_GetText)i9)((Msg__Msg)i10, (Msg__String)(int)msg, 256);
   Error__FileError((const unsigned char*)(int)_c11, 23, (const unsigned char*)(int)fileName, 256, (const unsigned char*)(int)msg, 256);
 l20:
   i10 = (int)((_Type)i3)->tbprocs[5];
-  ((void(*)(Files__File))i10)((Files__File)i1);
+  ((_TBP_Files__FileDesc_Close)i10)((Files__File)i1);
   goto l22;
 l21:
   Error__ErrIns((int)i0, (short int)303, (const unsigned char*)(int)moduleName, moduleName_0d);
@@ -1906,7 +1906,7 @@ l22:
 l23:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(76+8);
+    _mem = GC_malloc(_not_zero(76)+8);
     if (!_mem) _new_failed(_P(33456));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ObjectDesc_td.td;
@@ -1914,7 +1914,7 @@ l23:
   }
   {
     char *_mem, *_var;
-    _mem = GC_malloc(56+8);
+    _mem = GC_malloc(_not_zero(56)+8);
     if (!_mem) _new_failed(_P(33516));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ConstDesc_td.td;
@@ -1942,26 +1942,36 @@ void SymbolFile_init(void) {
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    _mem = GC_malloc_atomic(2*1+8);
+    _mem = GC_malloc(_not_zero(124*4)+8);
+    if (!_mem) _new_failed(_P(33698));
+    _var = _mem+8;
+    _dim_ptr = (void*)(_var-4);
+    *(--_dim_ptr) = 124;
+    i0 = (int)_var;
+  }
+  SymbolFile__structArray = (void*)i0;
+  i0 = (int)SymbolFile__symbolFileId + 1;
+  *(unsigned char*)(int)SymbolFile__symbolFileId = 239;
+  i1 = (int)SymbolFile__symbolFileId + 2;
+  *(unsigned char*)i0 = 154;
+  i0 = (int)SymbolFile__symbolFileId + 3;
+  *(unsigned char*)i1 = 82;
+  i1 = (int)SymbolFile__symbolFileId + 4;
+  *(unsigned char*)i0 = 115;
+  (void)memcpy((void*) (int)SymbolFile__emptyString, (const void*) (int)_c1, 1);
+  *(unsigned char*)i1 = 0;
+  {
+    char *_mem, *_var;
+    int* _dim_ptr;
+    _mem = GC_malloc_atomic(_not_zero(2*1)+8);
     if (!_mem) _new_failed(_P(33939));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 2;
     i0 = (int)_var;
   }
+  SymbolFile__emptyStringPtr = (void*)i0;
+  i0 = (int)SymbolFile__emptyStringPtr;
   i1 = *(int*)(i0-8);
   _string_copy(i0, (int)_c1, i1);
-  (void)memcpy((void*) (int)SymbolFile__emptyString, (const void*) (int)_c1, 1);
-  {
-    char *_mem, *_var;
-    int* _dim_ptr;
-    _mem = GC_malloc(124*4+8);
-    if (!_mem) _new_failed(_P(33698));
-    _var = _mem+8;
-    _dim_ptr = (void*)(_var-4);
-    *(--_dim_ptr) = 124;
-    i1 = (int)_var;
-  }
-  SymbolFile__structArray = (void*)i1;
-  SymbolFile__emptyStringPtr = (void*)i0;
 }

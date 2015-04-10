@@ -1,7 +1,7 @@
-(* 	$Id: GenDecl.Mod,v 1.47 1999/06/15 18:10:03 acken Exp $	 *)
+(* 	$Id: GenDecl.Mod,v 1.49 2000/06/26 14:43:09 ooc-devel Exp $	 *)
 MODULE GenDecl;
 (*  Handles name mangling, generates C declarations and type casts.
-    Copyright (C) 1996-1999  Michael van Acken
+    Copyright (C) 1996-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -1048,12 +1048,16 @@ PROCEDURE Declaration* (w: TextRider.Writer; obj: D.Object;
              header file containing the procedure's formal parameter list
              and its index in the method table *)
           NewLine (w, off);
-          w. WriteString ("#define _TBP_");
-          DeclarationName (obj, {noSpace});
-          w. WriteString (" ");
+          w. WriteString ("typedef ");
           LeftTypeExpr (obj. type, dmode);
-          w. WriteString ("(*)");
+          IF (obj. type. form = D.strProc) & ~(typeExpression IN dmode) THEN
+            WriteCallConv (obj. type)
+          END;
+          w. WriteString ("(* _TBP_");
+          DeclarationName (obj, {noSpace});
+          w. WriteString (")");
           RightTypeExpr (obj. type);
+          w. WriteString (";");
           NewLine (w, off);
           w. WriteString ("#define _TBN_");
           DeclarationName (obj, {noSpace});
@@ -1081,18 +1085,23 @@ PROCEDURE Declaration* (w: TextRider.Writer; obj: D.Object;
            StdTypes.PassPerReference (obj, TRUE) THEN
           w. WriteString ("const ")
         END;
+        
+        IF (obj. mode = D.objTBProc) & (typeExpression IN dmode) THEN
+          w. WriteString ("_TBP_");
+          DeclarationName (obj, {noSpace})
+        ELSE
+          (* write type expression, put the name inside it *)
+          LeftTypeExpr (obj. type, dmode);
+          IF (obj. type. form = D.strProc) & ~(typeExpression IN dmode) THEN
+            WriteCallConv (obj. type)
+          END;
+          DeclarationName (obj, dmode);
+          RightTypeExpr (obj. type);
 
-        (* write type expression, put the name inside it *)
-        LeftTypeExpr (obj. type, dmode);
-        IF (obj. type. form = D.strProc) & ~(typeExpression IN dmode) THEN
-          WriteCallConv (obj. type)
-        END;
-        DeclarationName (obj, dmode);
-        RightTypeExpr (obj. type);
-
-        IF (dmode*{formalParam, sideEffectParam, function, typeExpression,
-                   noSemicolon} = {}) OR (prototype IN dmode) THEN
-          w. WriteChar (";")
+          IF (dmode*{formalParam, sideEffectParam, function, typeExpression,
+                     noSemicolon} = {}) OR (prototype IN dmode) THEN
+            w. WriteChar (";")
+          END
         END
       END;
       
@@ -1480,15 +1489,22 @@ PROCEDURE TBProcArray (w: TextRider.Writer; t: D.Struct): INTEGER;
     VAR
       obj: D.Object;
     BEGIN
-      obj := record. decl;
-      WHILE (obj # NIL) &
-            ((obj. mode = D.objField) OR (obj. offset # index)) DO
-        obj := obj. rightObj
-      END;
-      IF (obj = NIL) THEN
-        WriteTBProc (record. base, index)
+      IF (D.structNoDescriptor IN record. flags) THEN
+        (* if the record has no type descriptor, then we don't know anything
+           about its type-bound procedures; they might not even exist as
+           linkage symbols *)
+        w. WriteString ("NULL")
       ELSE
-        w. WriteString (obj. beInfo(SystemFlags.Info). name^)
+        obj := record. decl;
+        WHILE (obj # NIL) &
+              ((obj. mode = D.objField) OR (obj. offset # index)) DO
+          obj := obj. rightObj
+        END;
+        IF (obj = NIL) THEN
+          WriteTBProc (record. base, index)
+        ELSE
+          w. WriteString (obj. beInfo(SystemFlags.Info). name^)
+        END
       END
     END WriteTBProc;
   
@@ -1553,15 +1569,18 @@ PROCEDURE TypeDescriptor* (w: TextRider.Writer; mod: D.Object;
         IF (t # NIL) THEN
           WriteType (t. base, FALSE);
           NewLine (w, 2);
-          w. WriteChar ("&");
-          TypeDescrName (w, t, TRUE);
-          w. WriteString (".td");
+          IF (D.structNoDescriptor IN t. flags) THEN 
+            w. WriteString ("NULL")
+          ELSE
+            w. WriteChar ("&");
+            TypeDescrName (w, t, TRUE);
+            w. WriteString (".td")
+          END;
           IF ~last THEN
             w. WriteString (", ")
           END
         END
       END WriteType;
-    
     
     BEGIN
       NewLine (w, 0);

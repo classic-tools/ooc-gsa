@@ -101,7 +101,7 @@ l1:
   i9 = (int)((_Type)i9)->tbprocs[3];
   ch = (unsigned char)i4;
   ch = (unsigned char)i4;
-  ((void(*)(Channel__Reader, unsigned char *))i9)((Channel__Reader)i5, (unsigned char *)(int)&ch);
+  ((_TBP_Channel__ReaderDesc_ReadByte)i9)((Channel__Reader)i5, (unsigned char *)(int)&ch);
   i4 = *(short int*)i3;
   i4 = i4 >= 0;
   if (i4) goto l3;
@@ -174,7 +174,7 @@ l0:
   i7 = (int)*(void**)i9;
   i8 = *(int*)(i7-4);
   i8 = (int)((_Type)i8)->tbprocs[3];
-  ((void(*)(Channel__Reader, unsigned char *))i8)((Channel__Reader)i7, (unsigned char *)(int)&ch);
+  ((_TBP_Channel__ReaderDesc_ReadByte)i8)((Channel__Reader)i7, (unsigned char *)(int)&ch);
   i9 = (int)*(void**)i9;
   i9 += 4;
   i7 = (int)*(void**)i9;
@@ -242,7 +242,7 @@ int TextRider__ReaderDesc_Pos(TextRider__Reader r) {
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[0];
-  i0 = ((int(*)(Channel__Reader))i1)((Channel__Reader)i0);
+  i0 = ((_TBP_Channel__ReaderDesc_Pos)i1)((Channel__Reader)i0);
   i1 = (int)r + 32;
   i1 = *(short int*)i1;
   i0 -= i1;
@@ -255,7 +255,7 @@ void TextRider__ReaderDesc_ClearError(TextRider__Reader r) {
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
-  ((void(*)(Channel__Reader))i1)((Channel__Reader)i0);
+  ((_TBP_Channel__ReaderDesc_ClearError)i1)((Channel__Reader)i0);
   i0 = (int)r + 20;
   *(void**)(int)r = (void*)0;
   *(unsigned char*)i0 = 0;
@@ -267,7 +267,7 @@ int TextRider__ReaderDesc_Available(TextRider__Reader r) {
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[1];
-  i0 = ((int(*)(Channel__Reader))i1)((Channel__Reader)i0);
+  i0 = ((_TBP_Channel__ReaderDesc_Available)i1)((Channel__Reader)i0);
   i1 = (int)r + 32;
   i4 = *(short int*)i1;
   i1 = i4 == 0;
@@ -310,7 +310,7 @@ void TextRider__ReaderDesc_SetPos(TextRider__Reader r, int newPos) {
   i2 = (int)*(void**)i1;
   i0 = *(int*)(i2-4);
   i0 = (int)((_Type)i0)->tbprocs[2];
-  ((void(*)(Channel__Reader, int))i0)((Channel__Reader)i2, (int)newPos);
+  ((_TBP_Channel__ReaderDesc_SetPos)i0)((Channel__Reader)i2, (int)newPos);
   i2 = (int)r + 32;
   *(short int*)i2 = 0;
   i2 = (int)r + 20;
@@ -408,7 +408,7 @@ l1:
 l2:
   i7 = *(int*)((int)r-4);
   i7 = (int)((_Type)i7)->tbprocs[7];
-  i7 = ((unsigned char(*)(TextRider__Reader))i7)((TextRider__Reader)(int)r);
+  i7 = ((_TBP_TextRider__ReaderDesc_Eol)i7)((TextRider__Reader)(int)r);
   goto l10;
 l3:
   i5 = i0 - 1;
@@ -478,7 +478,7 @@ l0:
 l1:
   i4 = *(int*)((int)r-4);
   i0 = (int)((_Type)i4)->tbprocs[7];
-  i4 = ((unsigned char(*)(TextRider__Reader))i0)((TextRider__Reader)(int)r);
+  i4 = ((_TBP_TextRider__ReaderDesc_Eol)i0)((TextRider__Reader)(int)r);
   if (i4) goto l3;
   i2 = TextRider__Lookahead((TextRider__Reader)(int)r, (short int)1);
   if (!(i2)) goto l3;
@@ -490,7 +490,7 @@ l1:
   if (i4) goto l3;
 l2:
   i1 = TextRider__Consume((TextRider__Reader)(int)r);
-  i1 = ((unsigned char(*)(TextRider__Reader))i0)((TextRider__Reader)(int)r);
+  i1 = ((_TBP_TextRider__ReaderDesc_Eol)i0)((TextRider__Reader)(int)r);
   if (i1) goto l3;
   i3 = TextRider__Lookahead((TextRider__Reader)(int)r, (short int)1);
   if (!(i3)) goto l3;
@@ -507,7 +507,7 @@ void TextRider__SkipEol(TextRider__Reader r) {
   register int i0, i1, i2, i3;
   i0 = *(int*)((int)r-4);
   i0 = (int)((_Type)i0)->tbprocs[7];
-  i0 = ((unsigned char(*)(TextRider__Reader))i0)((TextRider__Reader)(int)r);
+  i0 = ((_TBP_TextRider__ReaderDesc_Eol)i0)((TextRider__Reader)(int)r);
   if (!(i0)) goto l1;
   i2 = (int)r + 18;
   i2 = *(short int*)i2;
@@ -528,11 +528,11 @@ void TextRider__ReaderDesc_ReadLn(TextRider__Reader r) {
   register int i0, i1;
   i0 = *(int*)((int)r-4);
   i0 = (int)((_Type)i0)->tbprocs[7];
-  i1 = ((unsigned char(*)(TextRider__Reader))i0)((TextRider__Reader)(int)r);
+  i1 = ((_TBP_TextRider__ReaderDesc_Eol)i0)((TextRider__Reader)(int)r);
   if (i1) goto l1;
 l0:
   i1 = TextRider__Consume((TextRider__Reader)(int)r);
-  i1 = ((unsigned char(*)(TextRider__Reader))i0)((TextRider__Reader)(int)r);
+  i1 = ((_TBP_TextRider__ReaderDesc_Eol)i0)((TextRider__Reader)(int)r);
   if (!(i1)) goto l0;
 l1:
   TextRider__SkipEol((TextRider__Reader)(int)r);
@@ -623,7 +623,7 @@ void TextRider__ReaderDesc_ReadLine(TextRider__Reader r, unsigned char* s, int s
 l0:
   i0 = *(int*)((int)r-4);
   i5 = (int)((_Type)i0)->tbprocs[7];
-  i0 = ((unsigned char(*)(TextRider__Reader))i5)((TextRider__Reader)(int)r);
+  i0 = ((_TBP_TextRider__ReaderDesc_Eol)i5)((TextRider__Reader)(int)r);
   if (i0) goto l2;
   i4 = TextRider__Lookahead((TextRider__Reader)(int)r, (short int)1);
   if (!(i4)) goto l2;
@@ -636,7 +636,7 @@ l1:
   i6 = i2 + 1;
   i1 = (int)s + i2;
   *(unsigned char*)i1 = i0;
-  i0 = ((unsigned char(*)(TextRider__Reader))i5)((TextRider__Reader)(int)r);
+  i0 = ((_TBP_TextRider__ReaderDesc_Eol)i5)((TextRider__Reader)(int)r);
   if (i0) goto l3;
   i0 = TextRider__Lookahead((TextRider__Reader)(int)r, (short int)1);
   if (!(i0)) goto l3;
@@ -647,7 +647,7 @@ l1:
 l2:
   i6 = 0;
 l3:
-  i0 = ((unsigned char(*)(TextRider__Reader))i5)((TextRider__Reader)(int)r);
+  i0 = ((_TBP_TextRider__ReaderDesc_Eol)i5)((TextRider__Reader)(int)r);
   if (i0) goto l4;
   i0 = s_0d - 1;
   i0 = i6 != i0;
@@ -725,7 +725,7 @@ void TextRider__ReaderDesc_ReadBool(TextRider__Reader r, unsigned char *bool_) {
   unsigned char ident[8];
   i0 = *(int*)((int)r-4);
   i0 = (int)((_Type)i0)->tbprocs[11];
-  ((void(*)(TextRider__Reader, unsigned char*, int s_0d))i0)((TextRider__Reader)(int)r, (unsigned char*)(int)ident, 8);
+  ((_TBP_TextRider__ReaderDesc_ReadIdentifier)i0)((TextRider__Reader)(int)r, (unsigned char*)(int)ident, 8);
   i0 = (int)*(void**)(int)r;
   i0 = i0 != 0;
   if (i0) goto l2;
@@ -1009,7 +1009,7 @@ void TextRider__ReaderDesc_ReadInt(TextRider__Reader r, short int *int_) {
   int lint;
   i0 = *(int*)((int)r-4);
   i0 = (int)((_Type)i0)->tbprocs[13];
-  ((void(*)(TextRider__Reader, int *))i0)((TextRider__Reader)(int)r, (int *)(int)&lint);
+  ((_TBP_TextRider__ReaderDesc_ReadLInt)i0)((TextRider__Reader)(int)r, (int *)(int)&lint);
   i0 = lint > 32767;
   if (i0) goto l0;
   i0 = lint < -32768;
@@ -1028,7 +1028,7 @@ void TextRider__ReaderDesc_ReadSInt(TextRider__Reader r, signed char *sint) {
   int lint;
   i0 = *(int*)((int)r-4);
   i0 = (int)((_Type)i0)->tbprocs[13];
-  ((void(*)(TextRider__Reader, int *))i0)((TextRider__Reader)(int)r, (int *)(int)&lint);
+  ((_TBP_TextRider__ReaderDesc_ReadLInt)i0)((TextRider__Reader)(int)r, (int *)(int)&lint);
   i0 = lint > 127;
   if (i0) goto l0;
   i0 = lint < -128;
@@ -1149,7 +1149,7 @@ void TextRider__ReaderDesc_ReadReal(TextRider__Reader r, float *real) {
   double n;
   i0 = *(int*)((int)r-4);
   i0 = (int)((_Type)i0)->tbprocs[17];
-  ((void(*)(TextRider__Reader, double *))i0)((TextRider__Reader)(int)r, (double *)(int)&n);
+  ((_TBP_TextRider__ReaderDesc_ReadLReal)i0)((TextRider__Reader)(int)r, (double *)(int)&n);
   i0 = TextRider__ReaderDesc_ReadReal_ValidReal((double)n);
   if (i0) goto l0;
   i0 = (int)TextRider__GetError((int)1);
@@ -1169,7 +1169,7 @@ unsigned int TextRider__ReaderDesc_ReadSet_ReadRange(TextRider__Reader *TextRide
   i0 = (int)*TextRider__ReaderDesc_ReadSet_r;
   i1 = *(int*)(i0-4);
   i2 = (int)((_Type)i1)->tbprocs[16];
-  ((void(*)(TextRider__Reader, signed char *))i2)((TextRider__Reader)i0, (signed char *)(int)&low);
+  ((_TBP_TextRider__ReaderDesc_ReadSInt)i2)((TextRider__Reader)i0, (signed char *)(int)&low);
   i1 = (int)*(void**)i0;
   i1 = i1 == 0;
   if (i1) goto l0;
@@ -1203,7 +1203,7 @@ l2:
   TextRider__SkipBlanks((TextRider__Reader)i0);
   high = (signed char)low;
   high = (signed char)low;
-  ((void(*)(TextRider__Reader, signed char *))i2)((TextRider__Reader)i0, (signed char *)(int)&high);
+  ((_TBP_TextRider__ReaderDesc_ReadSInt)i2)((TextRider__Reader)i0, (signed char *)(int)&high);
   i2 = (int)*(void**)i0;
   i2 = i2 != 0;
   if (i2) goto l3;
@@ -1358,7 +1358,7 @@ l0:
   i1 = (int)*(void**)i3;
   i2 = *(int*)(i1-4);
   i2 = (int)((_Type)i2)->tbprocs[7];
-  i1 = ((unsigned char(*)(TextRider__Reader))i2)((TextRider__Reader)i1);
+  i1 = ((_TBP_TextRider__ReaderDesc_Eol)i2)((TextRider__Reader)i1);
   if (i1) goto l1;
   i1 = (int)*(void**)i3;
   i1 = TextRider__Consume((TextRider__Reader)i1);
@@ -1383,7 +1383,7 @@ l3:
   i1 = (int)*(void**)i3;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[7];
-  i1 = ((unsigned char(*)(TextRider__Reader))i0)((TextRider__Reader)i1);
+  i1 = ((_TBP_TextRider__ReaderDesc_Eol)i0)((TextRider__Reader)i1);
   if (i1) goto l5;
   i0 = (int)*(void**)i3;
   i0 = TextRider__Lookahead((TextRider__Reader)i0, (short int)1);
@@ -1401,7 +1401,7 @@ l4:
   i0 = (int)*(void**)i3;
   i2 = *(int*)(i0-4);
   i2 = (int)((_Type)i2)->tbprocs[7];
-  i0 = ((unsigned char(*)(TextRider__Reader))i2)((TextRider__Reader)i0);
+  i0 = ((_TBP_TextRider__ReaderDesc_Eol)i2)((TextRider__Reader)i0);
   if (i0) goto l5;
   i0 = (int)*(void**)i3;
   i0 = TextRider__Lookahead((TextRider__Reader)i0, (short int)1);
@@ -1425,7 +1425,7 @@ int TextRider__ScannerDesc_Pos(TextRider__Scanner s) {
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[0];
-  i0 = ((int(*)(TextRider__Reader))i1)((TextRider__Reader)i0);
+  i0 = ((_TBP_TextRider__ReaderDesc_Pos)i1)((TextRider__Reader)i0);
   return (int)i0;
 }
 
@@ -1435,7 +1435,7 @@ void TextRider__ScannerDesc_ClearError(TextRider__Scanner s) {
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[1];
-  ((void(*)(TextRider__Reader))i1)((TextRider__Reader)i0);
+  ((_TBP_TextRider__ReaderDesc_ClearError)i1)((TextRider__Reader)i0);
   i0 = (int)s + 16;
   *(void**)(int)s = (void*)0;
   *(short int*)i0 = -1;
@@ -1447,7 +1447,7 @@ int TextRider__ScannerDesc_Available(TextRider__Scanner s) {
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[2];
-  i0 = ((int(*)(TextRider__Reader))i1)((TextRider__Reader)i0);
+  i0 = ((_TBP_TextRider__ReaderDesc_Available)i1)((TextRider__Reader)i0);
   return (int)i0;
 }
 
@@ -1460,7 +1460,7 @@ void TextRider__ScannerDesc_SetPos(TextRider__Scanner s, int pos) {
   i2 = (int)*(void**)i1;
   i0 = *(int*)(i2-4);
   i0 = (int)((_Type)i0)->tbprocs[3];
-  ((void(*)(TextRider__Reader, int))i0)((TextRider__Reader)i2, (int)pos);
+  ((_TBP_TextRider__ReaderDesc_SetPos)i0)((TextRider__Reader)i2, (int)pos);
   i1 = (int)*(void**)i1;
   i1 = (int)*(void**)i1;
   *(void**)(int)s = (void*)i1;
@@ -1687,13 +1687,13 @@ void TextRider__ScannerDesc_Scan(TextRider__Scanner s) {
   if (!(i1)) goto l16;
   i6 = *(int*)(i5-4);
   i6 = (int)((_Type)i6)->tbprocs[0];
-  i6 = ((int(*)(TextRider__Scanner))i6)((TextRider__Scanner)i5);
+  i6 = ((_TBP_TextRider__ScannerDesc_Pos)i6)((TextRider__Scanner)i5);
   i3 = i5 + 20;
   *(int*)i3 = i6;
   i6 = (int)*(void**)i2;
   i3 = *(int*)(i6-4);
   i3 = (int)((_Type)i3)->tbprocs[7];
-  i6 = ((unsigned char(*)(TextRider__Reader))i3)((TextRider__Reader)i6);
+  i6 = ((_TBP_TextRider__ReaderDesc_Eol)i3)((TextRider__Reader)i6);
   if (i6) goto l15;
   i6 = (int)*(void**)i2;
   i3 = i6 + 21;
@@ -1703,7 +1703,7 @@ void TextRider__ScannerDesc_Scan(TextRider__Scanner s) {
   i0 = *(int*)(i6-4);
   i3 = *(unsigned char*)i4;
   i0 = (int)((_Type)i0)->tbprocs[6];
-  ((void(*)(TextRider__Reader, unsigned char *))i0)((TextRider__Reader)i6, (unsigned char *)i4);
+  ((_TBP_TextRider__ReaderDesc_ReadChar)i0)((TextRider__Reader)i6, (unsigned char *)i4);
   i4 = *(unsigned char*)i4;
   i4 = i4 == 9;
   if (i4) goto l0;
@@ -1726,7 +1726,7 @@ l2:
   i0 = i5 + 40;
   i4 = (int)((_Type)i3)->tbprocs[6];
   i3 = *(unsigned char*)i0;
-  ((void(*)(TextRider__Reader, unsigned char *))i4)((TextRider__Reader)i6, (unsigned char *)i0);
+  ((_TBP_TextRider__ReaderDesc_ReadChar)i4)((TextRider__Reader)i6, (unsigned char *)i0);
   s = (void*)i5;
   TextRider__ScannerDesc_Scan_SetType((signed char)0, (TextRider__Scanner *)&s);
   goto l4;
@@ -1734,7 +1734,7 @@ l3:
   i4 = *(int*)(i6-4);
   i0 = i5 + 41;
   i4 = (int)((_Type)i4)->tbprocs[9];
-  ((void(*)(TextRider__Reader, unsigned char*, int s_0d))i4)((TextRider__Reader)i6, (unsigned char*)i0, 256);
+  ((_TBP_TextRider__ReaderDesc_ReadString)i4)((TextRider__Reader)i6, (unsigned char*)i0, 256);
   s = (void*)i5;
   TextRider__ScannerDesc_Scan_SetType((signed char)1, (TextRider__Scanner *)&s);
 l4:
@@ -1745,7 +1745,7 @@ l5:
   i4 = i5 + 41;
   i3 = *(int*)(i6-4);
   i3 = (int)((_Type)i3)->tbprocs[11];
-  ((void(*)(TextRider__Reader, unsigned char*, int s_0d))i3)((TextRider__Reader)i6, (unsigned char*)i4, 256);
+  ((_TBP_TextRider__ReaderDesc_ReadIdentifier)i3)((TextRider__Reader)i6, (unsigned char*)i4, 256);
   i3 = (int)*(void**)i2;
   i3 = (int)*(void**)i3;
   i3 = i3 != 0;
@@ -1780,7 +1780,7 @@ l9:
   i4 = i5 + 40;
   i0 = (int)((_Type)i3)->tbprocs[6];
   i3 = *(unsigned char*)i4;
-  ((void(*)(TextRider__Reader, unsigned char *))i0)((TextRider__Reader)i6, (unsigned char *)i4);
+  ((_TBP_TextRider__ReaderDesc_ReadChar)i0)((TextRider__Reader)i6, (unsigned char *)i4);
   s = (void*)i5;
   TextRider__ScannerDesc_Scan_SetType((signed char)0, (TextRider__Scanner *)&s);
   i0 = i5;
@@ -1808,7 +1808,7 @@ l12:
   i0 = i5 + 40;
   i4 = (int)((_Type)i3)->tbprocs[6];
   i3 = *(unsigned char*)i0;
-  ((void(*)(TextRider__Reader, unsigned char *))i4)((TextRider__Reader)i6, (unsigned char *)i0);
+  ((_TBP_TextRider__ReaderDesc_ReadChar)i4)((TextRider__Reader)i6, (unsigned char *)i0);
   s = (void*)i5;
   TextRider__ScannerDesc_Scan_SetType((signed char)0, (TextRider__Scanner *)&s);
   goto l14;
@@ -1817,7 +1817,7 @@ l13:
   i3 = i5 + 300;
   i4 = (int)((_Type)i0)->tbprocs[19];
   i0 = *(unsigned int*)i3;
-  ((void(*)(TextRider__Reader, unsigned int *))i4)((TextRider__Reader)i6, (unsigned int *)i3);
+  ((_TBP_TextRider__ReaderDesc_ReadSet)i4)((TextRider__Reader)i6, (unsigned int *)i3);
   s = (void*)i5;
   TextRider__ScannerDesc_Scan_SetType((signed char)5, (TextRider__Scanner *)&s);
 l14:
@@ -1894,7 +1894,7 @@ void TextRider__ScannerDesc_SetEol(TextRider__Scanner s, const unsigned char* ma
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
-  ((void(*)(TextRider__Reader, const unsigned char*, int marker_0d, short int))i1)((TextRider__Reader)i0, (const unsigned char*)(int)marker, marker_0d, (short int)markerLen);
+  ((_TBP_TextRider__ReaderDesc_SetEol)i1)((TextRider__Reader)i0, (const unsigned char*)(int)marker, marker_0d, (short int)markerLen);
   _top_vs = _old_top_vs;
 }
 
@@ -1904,7 +1904,7 @@ int TextRider__WriterDesc_Pos(TextRider__Writer w) {
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[0];
-  i0 = ((int(*)(Channel__Writer))i1)((Channel__Writer)i0);
+  i0 = ((_TBP_Channel__WriterDesc_Pos)i1)((Channel__Writer)i0);
   return (int)i0;
 }
 
@@ -1917,7 +1917,7 @@ void TextRider__WriterDesc_SetPos(TextRider__Writer w, int newPos) {
   i2 = (int)*(void**)i1;
   i0 = *(int*)(i2-4);
   i0 = (int)((_Type)i0)->tbprocs[1];
-  ((void(*)(Channel__Writer, int))i0)((Channel__Writer)i2, (int)newPos);
+  ((_TBP_Channel__WriterDesc_SetPos)i0)((Channel__Writer)i2, (int)newPos);
   i1 = (int)*(void**)i1;
   i1 += 4;
   i1 = (int)*(void**)i1;
@@ -1932,7 +1932,7 @@ void TextRider__WriterDesc_ClearError(TextRider__Writer w) {
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[4];
-  ((void(*)(Channel__Writer))i1)((Channel__Writer)i0);
+  ((_TBP_Channel__WriterDesc_ClearError)i1)((Channel__Writer)i0);
   *(void**)(int)w = (void*)0;
 }
 
@@ -1990,7 +1990,7 @@ void TextRider__WriterDesc_WriteString(TextRider__Writer w, const unsigned char*
   i0 = *(int*)(i1-4);
   i3 = Strings__Length((const unsigned char*)(int)s, s_0d);
   i0 = (int)((_Type)i0)->tbprocs[3];
-  ((void(*)(Channel__Writer, unsigned char*, int x_0d, int, int))i0)((Channel__Writer)i1, (unsigned char*)(int)s, s_0d, (int)0, (int)i3);
+  ((_TBP_Channel__WriterDesc_WriteBytes)i0)((Channel__Writer)i1, (unsigned char*)(int)s, s_0d, (int)0, (int)i3);
   i2 = (int)*(void**)i2;
   i2 += 4;
   i2 = (int)*(void**)i2;
@@ -2006,7 +2006,7 @@ void TextRider__WriterDesc_WriteString(TextRider__Writer w, const unsigned char*
   i2 = (int)*(void**)i1;
   i3 = *(int*)(i2-4);
   i3 = (int)((_Type)i3)->tbprocs[4];
-  ((void(*)(Channel__Channel))i3)((Channel__Channel)i2);
+  ((_TBP_Channel__ChannelDesc_Flush)i3)((Channel__Channel)i2);
   i1 = (int)*(void**)i1;
   i1 = (int)*(void**)i1;
   *(void**)(int)w = (void*)i1;
@@ -2019,12 +2019,12 @@ void TextRider__WriterDesc_WriteBool(TextRider__Writer w, unsigned char bool_) {
   if (bool_) goto l0;
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c3, 6);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c3, 6);
   goto l1;
 l0:
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[5];
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c2, 5);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c2, 5);
 l1:
   ;
 }
@@ -2038,7 +2038,7 @@ void TextRider__WriterDesc_WriteChar(TextRider__Writer w, unsigned char ch) {
   i1 = (int)*(void**)i1;
   i2 = *(int*)(i1-4);
   i2 = (int)((_Type)i2)->tbprocs[2];
-  ((void(*)(Channel__Writer, unsigned char))i2)((Channel__Writer)i1, (unsigned char)(int)ch);
+  ((_TBP_Channel__WriterDesc_WriteByte)i2)((Channel__Writer)i1, (unsigned char)(int)ch);
   i1 = (int)w + 4;
   i1 = *(unsigned int*)i1;
   i1 = (i1 & ((unsigned int)1 << 0)) != 0;
@@ -2050,7 +2050,7 @@ void TextRider__WriterDesc_WriteChar(TextRider__Writer w, unsigned char ch) {
   i0 = (int)*(void**)i1;
   i2 = *(int*)(i0-4);
   i2 = (int)((_Type)i2)->tbprocs[4];
-  ((void(*)(Channel__Channel))i2)((Channel__Channel)i0);
+  ((_TBP_Channel__ChannelDesc_Flush)i2)((Channel__Channel)i0);
   i1 = (int)*(void**)i1;
   i1 = (int)*(void**)i1;
   *(void**)(int)w = (void*)i1;
@@ -2068,7 +2068,7 @@ void TextRider__WritePad(TextRider__Writer w, int n) {
 l0:
   i1--;
   i2 = i1 > 0;
-  ((void(*)(TextRider__Writer, unsigned char))i0)((TextRider__Writer)(int)w, (unsigned char)32);
+  ((_TBP_TextRider__WriterDesc_WriteChar)i0)((TextRider__Writer)(int)w, (unsigned char)32);
   if (i2) goto l0;
 l1:
   ;
@@ -2083,21 +2083,21 @@ void TextRider__WriterDesc_WriteLInt(TextRider__Writer w, int lint, int n) {
   i0 = *(int*)((int)w-4);
   TextRider__WritePad((TextRider__Writer)(int)w, (int)i1);
   i0 = (int)((_Type)i0)->tbprocs[5];
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)val, 16);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)val, 16);
 }
 
 void TextRider__WriterDesc_WriteSInt(TextRider__Writer w, signed char sint, int n) {
   register int i0;
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[8];
-  ((void(*)(TextRider__Writer, int, int))i0)((TextRider__Writer)(int)w, (int)sint, (int)n);
+  ((_TBP_TextRider__WriterDesc_WriteLInt)i0)((TextRider__Writer)(int)w, (int)sint, (int)n);
 }
 
 void TextRider__WriterDesc_WriteInt(TextRider__Writer w, short int int_, int n) {
   register int i0;
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[8];
-  ((void(*)(TextRider__Writer, int, int))i0)((TextRider__Writer)(int)w, (int)int_, (int)n);
+  ((_TBP_TextRider__WriterDesc_WriteLInt)i0)((TextRider__Writer)(int)w, (int)int_, (int)n);
 }
 
 void TextRider__WriterDesc_WriteHex_WriteHexDigits(TextRider__Writer w, int *n, int digits) {
@@ -2114,12 +2114,12 @@ l1:
   if (i0) goto l2;
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[7];
-  ((void(*)(TextRider__Writer, unsigned char))i0)((TextRider__Writer)(int)w, (unsigned char)48);
+  ((_TBP_TextRider__WriterDesc_WriteChar)i0)((TextRider__Writer)(int)w, (unsigned char)48);
   goto l3;
 l2:
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[7];
-  ((void(*)(TextRider__Writer, unsigned char))i0)((TextRider__Writer)(int)w, (unsigned char)70);
+  ((_TBP_TextRider__WriterDesc_WriteChar)i0)((TextRider__Writer)(int)w, (unsigned char)70);
 l3:
   i2--;
   i0 = i2 > 8;
@@ -2139,13 +2139,13 @@ l5:
   i1 = i3 + 55;
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[7];
-  ((void(*)(TextRider__Writer, unsigned char))i0)((TextRider__Writer)(int)w, (unsigned char)i1);
+  ((_TBP_TextRider__WriterDesc_WriteChar)i0)((TextRider__Writer)(int)w, (unsigned char)i1);
   goto l7;
 l6:
   i3 += 48;
   i0 = *(int*)((int)w-4);
   i0 = (int)((_Type)i0)->tbprocs[7];
-  ((void(*)(TextRider__Writer, unsigned char))i0)((TextRider__Writer)(int)w, (unsigned char)i3);
+  ((_TBP_TextRider__WriterDesc_WriteChar)i0)((TextRider__Writer)(int)w, (unsigned char)i3);
 l7:
   i0 = i2 > 0;
   if (i0) goto l5;
@@ -2174,7 +2174,7 @@ void TextRider__WriterDesc_WriteLReal(TextRider__Writer w, double lreal, int n, 
   i0 = *(int*)((int)w-4);
   TextRider__WritePad((TextRider__Writer)(int)w, (int)i1);
   i0 = (int)((_Type)i0)->tbprocs[5];
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)val, 128);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)val, 128);
 }
 
 void TextRider__WriterDesc_WriteReal(TextRider__Writer w, float real, int n, int k) {
@@ -2186,7 +2186,7 @@ void TextRider__WriterDesc_WriteReal(TextRider__Writer w, float real, int n, int
   i0 = *(int*)((int)w-4);
   TextRider__WritePad((TextRider__Writer)(int)w, (int)i1);
   i0 = (int)((_Type)i0)->tbprocs[5];
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)val, 128);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)val, 128);
 }
 
 void TextRider__WriterDesc_WriteLRealFix(TextRider__Writer w, double *lreal, int n, int k) {
@@ -2200,7 +2200,7 @@ void TextRider__WriterDesc_WriteLRealFix(TextRider__Writer w, double *lreal, int
   i0 = *(int*)((int)w-4);
   TextRider__WritePad((TextRider__Writer)(int)w, (int)i1);
   i0 = (int)((_Type)i0)->tbprocs[5];
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)val, 128);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)val, 128);
 }
 
 void TextRider__WriterDesc_WriteRealFix(TextRider__Writer w, float real, int n, int k) {
@@ -2212,7 +2212,7 @@ void TextRider__WriterDesc_WriteRealFix(TextRider__Writer w, float real, int n, 
   i0 = *(int*)((int)w-4);
   TextRider__WritePad((TextRider__Writer)(int)w, (int)i1);
   i0 = (int)((_Type)i0)->tbprocs[5];
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)val, 128);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)val, 128);
 }
 
 void TextRider__WriterDesc_WriteLRealEng(TextRider__Writer w, double *lreal, int n, int k) {
@@ -2226,7 +2226,7 @@ void TextRider__WriterDesc_WriteLRealEng(TextRider__Writer w, double *lreal, int
   i0 = *(int*)((int)w-4);
   TextRider__WritePad((TextRider__Writer)(int)w, (int)i1);
   i0 = (int)((_Type)i0)->tbprocs[5];
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)val, 128);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)val, 128);
 }
 
 void TextRider__WriterDesc_WriteRealEng(TextRider__Writer w, float real, int n, int k) {
@@ -2238,7 +2238,7 @@ void TextRider__WriterDesc_WriteRealEng(TextRider__Writer w, float real, int n, 
   i0 = *(int*)((int)w-4);
   TextRider__WritePad((TextRider__Writer)(int)w, (int)i1);
   i0 = (int)((_Type)i0)->tbprocs[5];
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)val, 128);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)val, 128);
 }
 
 void TextRider__WriterDesc_WriteSet(TextRider__Writer w, unsigned int s) {
@@ -2248,7 +2248,7 @@ void TextRider__WriterDesc_WriteSet(TextRider__Writer w, unsigned int s) {
   i7 = (int)((_Type)i0)->tbprocs[10];
   i5 = (int)((_Type)i0)->tbprocs[5];
   i6 = (int)((_Type)i0)->tbprocs[5];
-  ((void(*)(TextRider__Writer, unsigned char))i4)((TextRider__Writer)(int)w, (unsigned char)123);
+  ((_TBP_TextRider__WriterDesc_WriteChar)i4)((TextRider__Writer)(int)w, (unsigned char)123);
   i3 = 0;
   i2 = 0;
 l0:
@@ -2259,7 +2259,7 @@ l0:
 l1:
   i0 = i3 < 31;
   if (!(i2)) goto l2;
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i5)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c4, 3);
+  ((_TBP_TextRider__WriterDesc_WriteString)i5)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c4, 3);
 l2:
   if (!(i0)) goto l4;
   i1 = i3 + 1;
@@ -2278,17 +2278,17 @@ l4:
   i8 = i3;
 l5:
   i0 = i3 < i8;
-  ((void(*)(TextRider__Writer, short int, int))i7)((TextRider__Writer)(int)w, (short int)i3, (int)0);
+  ((_TBP_TextRider__WriterDesc_WriteInt)i7)((TextRider__Writer)(int)w, (short int)i3, (int)0);
   if (!(i0)) goto l6;
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i6)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c5, 3);
-  ((void(*)(TextRider__Writer, short int, int))i7)((TextRider__Writer)(int)w, (short int)i8, (int)0);
+  ((_TBP_TextRider__WriterDesc_WriteString)i6)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c5, 3);
+  ((_TBP_TextRider__WriterDesc_WriteInt)i7)((TextRider__Writer)(int)w, (short int)i8, (int)0);
 l6:
   i2 = 1;
 l7:
   i3 = i8 + 1;
   i1 = i3 <= 31;
   if (i1) goto l0;
-  ((void(*)(TextRider__Writer, unsigned char))i4)((TextRider__Writer)(int)w, (unsigned char)125);
+  ((_TBP_TextRider__WriterDesc_WriteChar)i4)((TextRider__Writer)(int)w, (unsigned char)125);
 }
 
 void TextRider__WriterDesc_WriteLn(TextRider__Writer w) {
@@ -2307,7 +2307,7 @@ l0:
   i3 = i2 + 1;
   i0 = *(unsigned char*)i0;
   i2 = i3 > i4;
-  ((void(*)(TextRider__Writer, unsigned char))i1)((TextRider__Writer)(int)w, (unsigned char)i0);
+  ((_TBP_TextRider__WriterDesc_WriteChar)i1)((TextRider__Writer)(int)w, (unsigned char)i0);
   if (i2) goto l1;
   i2 = i3;
   goto l0;
@@ -2322,7 +2322,7 @@ void TextRider__InitReader(TextRider__Reader r, Channel__Channel ch) {
   *(void**)(int)r = (void*)0;
   i1 = (int)((_Type)i1)->tbprocs[2];
   *(unsigned int*)i0 = 0x0U;
-  i1 = (int)((Channel__Reader(*)(Channel__Channel))i1)((Channel__Channel)(int)ch);
+  i1 = (int)((_TBP_Channel__ChannelDesc_NewReader)i1)((Channel__Channel)(int)ch);
   i0 = (int)r + 8;
   *(void**)i0 = (void*)i1;
   i0 = (int)r + 12;
@@ -2339,7 +2339,7 @@ TextRider__Reader TextRider__ConnectReader(Channel__Channel ch) {
   register int i0, i1;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(36+8);
+    _mem = GC_malloc(_not_zero(36)+8);
     if (!_mem) _new_failed(_P(46213));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &TextRider__ReaderDesc_td.td;
@@ -2362,7 +2362,7 @@ void TextRider__InitWriter(TextRider__Writer w, Channel__Channel ch) {
   *(void**)(int)w = (void*)0;
   i1 = (int)((_Type)i1)->tbprocs[3];
   *(unsigned int*)i0 = 0x0U;
-  i1 = (int)((Channel__Writer(*)(Channel__Channel))i1)((Channel__Channel)(int)ch);
+  i1 = (int)((_TBP_Channel__ChannelDesc_NewWriter)i1)((Channel__Channel)(int)ch);
   i0 = (int)w + 8;
   *(void**)i0 = (void*)i1;
   i0 = (int)w + 12;
@@ -2394,7 +2394,7 @@ TextRider__Writer TextRider__ConnectWriter(Channel__Channel ch) {
   register int i0, i1;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(20+8);
+    _mem = GC_malloc(_not_zero(20)+8);
     if (!_mem) _new_failed(_P(46892));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &TextRider__WriterDesc_td.td;
@@ -2430,7 +2430,7 @@ TextRider__Scanner TextRider__ConnectScanner(Channel__Channel ch) {
   register int i0, i1;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(312+8);
+    _mem = GC_malloc(_not_zero(312)+8);
     if (!_mem) _new_failed(_P(47444));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &TextRider__ScannerDesc_td.td;
@@ -2451,12 +2451,13 @@ void TextRider_init(void) {
   _mid = _register_module(&TextRider_md.md, &TextRider__ErrorContextDesc_td.td);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(4+8);
+    _mem = GC_malloc(_not_zero(4)+8);
     if (!_mem) _new_failed(_P(47582));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &TextRider__ErrorContextDesc_td.td;
     i0 = (int)_var;
   }
-  Msg__InitContext((Msg__Context)i0, (const Msg__String)(int)_c6, 19);
   TextRider__errorContext = (void*)i0;
+  i0 = (int)TextRider__errorContext;
+  Msg__InitContext((Msg__Context)i0, (const Msg__String)(int)_c6, 19);
 }

@@ -49,62 +49,62 @@ typedef struct Channel__ErrorContextDesc {
   Msg__StringPtr id;
 } Channel__ErrorContextDesc;
 typedef struct Channel__ErrorContextDesc* Channel__ErrorContext;
-#define _TBP_Channel__ErrorContextDesc_GetTemplate void(*)(Channel__ErrorContext context, Msg__Msg msg, Msg__LString templ, int templ_0d)
+typedef void(* _TBP_Channel__ErrorContextDesc_GetTemplate)(Channel__ErrorContext context, Msg__Msg msg, Msg__LString templ, int templ_0d);
 #define _TBN_Channel__ErrorContextDesc_GetTemplate 0
 extern void Channel__ErrorContextDesc_GetTemplate(Channel__ErrorContext context, Msg__Msg msg, Msg__LString templ, int templ_0d);
-#define _TBP_Channel__ReaderDesc_Pos int(*)(Channel__Reader r)
+typedef int(* _TBP_Channel__ReaderDesc_Pos)(Channel__Reader r);
 #define _TBN_Channel__ReaderDesc_Pos 0
 extern int Channel__ReaderDesc_Pos(Channel__Reader r);
-#define _TBP_Channel__ReaderDesc_Available int(*)(Channel__Reader r)
+typedef int(* _TBP_Channel__ReaderDesc_Available)(Channel__Reader r);
 #define _TBN_Channel__ReaderDesc_Available 1
 extern int Channel__ReaderDesc_Available(Channel__Reader r);
-#define _TBP_Channel__ReaderDesc_SetPos void(*)(Channel__Reader r, int newPos)
+typedef void(* _TBP_Channel__ReaderDesc_SetPos)(Channel__Reader r, int newPos);
 #define _TBN_Channel__ReaderDesc_SetPos 2
 extern void Channel__ReaderDesc_SetPos(Channel__Reader r, int newPos);
-#define _TBP_Channel__ReaderDesc_ReadByte void(*)(Channel__Reader r, unsigned char *x)
+typedef void(* _TBP_Channel__ReaderDesc_ReadByte)(Channel__Reader r, unsigned char *x);
 #define _TBN_Channel__ReaderDesc_ReadByte 3
 extern void Channel__ReaderDesc_ReadByte(Channel__Reader r, unsigned char *x);
-#define _TBP_Channel__ReaderDesc_ReadBytes void(*)(Channel__Reader r, unsigned char* x, int x_0d, int start, int n)
+typedef void(* _TBP_Channel__ReaderDesc_ReadBytes)(Channel__Reader r, unsigned char* x, int x_0d, int start, int n);
 #define _TBN_Channel__ReaderDesc_ReadBytes 4
 extern void Channel__ReaderDesc_ReadBytes(Channel__Reader r, unsigned char* x, int x_0d, int start, int n);
-#define _TBP_Channel__ReaderDesc_ClearError void(*)(Channel__Reader r)
+typedef void(* _TBP_Channel__ReaderDesc_ClearError)(Channel__Reader r);
 #define _TBN_Channel__ReaderDesc_ClearError 5
 extern void Channel__ReaderDesc_ClearError(Channel__Reader r);
-#define _TBP_Channel__WriterDesc_Pos int(*)(Channel__Writer w)
+typedef int(* _TBP_Channel__WriterDesc_Pos)(Channel__Writer w);
 #define _TBN_Channel__WriterDesc_Pos 0
 extern int Channel__WriterDesc_Pos(Channel__Writer w);
-#define _TBP_Channel__WriterDesc_SetPos void(*)(Channel__Writer w, int newPos)
+typedef void(* _TBP_Channel__WriterDesc_SetPos)(Channel__Writer w, int newPos);
 #define _TBN_Channel__WriterDesc_SetPos 1
 extern void Channel__WriterDesc_SetPos(Channel__Writer w, int newPos);
-#define _TBP_Channel__WriterDesc_WriteByte void(*)(Channel__Writer w, unsigned char x)
+typedef void(* _TBP_Channel__WriterDesc_WriteByte)(Channel__Writer w, unsigned char x);
 #define _TBN_Channel__WriterDesc_WriteByte 2
 extern void Channel__WriterDesc_WriteByte(Channel__Writer w, unsigned char x);
-#define _TBP_Channel__WriterDesc_WriteBytes void(*)(Channel__Writer w, unsigned char* x, int x_0d, int start, int n)
+typedef void(* _TBP_Channel__WriterDesc_WriteBytes)(Channel__Writer w, unsigned char* x, int x_0d, int start, int n);
 #define _TBN_Channel__WriterDesc_WriteBytes 3
 extern void Channel__WriterDesc_WriteBytes(Channel__Writer w, unsigned char* x, int x_0d, int start, int n);
-#define _TBP_Channel__WriterDesc_ClearError void(*)(Channel__Writer w)
+typedef void(* _TBP_Channel__WriterDesc_ClearError)(Channel__Writer w);
 #define _TBN_Channel__WriterDesc_ClearError 4
 extern void Channel__WriterDesc_ClearError(Channel__Writer w);
-#define _TBP_Channel__ChannelDesc_Length int(*)(Channel__Channel ch)
+typedef int(* _TBP_Channel__ChannelDesc_Length)(Channel__Channel ch);
 #define _TBN_Channel__ChannelDesc_Length 0
 extern int Channel__ChannelDesc_Length(Channel__Channel ch);
 #include "Time.h"
-#define _TBP_Channel__ChannelDesc_GetModTime void(*)(Channel__Channel ch, Time__TimeStamp *mtime, _Type mtime__tag)
+typedef void(* _TBP_Channel__ChannelDesc_GetModTime)(Channel__Channel ch, Time__TimeStamp *mtime, _Type mtime__tag);
 #define _TBN_Channel__ChannelDesc_GetModTime 1
 extern void Channel__ChannelDesc_GetModTime(Channel__Channel ch, Time__TimeStamp *mtime, _Type mtime__tag);
-#define _TBP_Channel__ChannelDesc_NewReader Channel__Reader(*)(Channel__Channel ch)
+typedef Channel__Reader(* _TBP_Channel__ChannelDesc_NewReader)(Channel__Channel ch);
 #define _TBN_Channel__ChannelDesc_NewReader 2
 extern Channel__Reader Channel__ChannelDesc_NewReader(Channel__Channel ch);
-#define _TBP_Channel__ChannelDesc_NewWriter Channel__Writer(*)(Channel__Channel ch)
+typedef Channel__Writer(* _TBP_Channel__ChannelDesc_NewWriter)(Channel__Channel ch);
 #define _TBN_Channel__ChannelDesc_NewWriter 3
 extern Channel__Writer Channel__ChannelDesc_NewWriter(Channel__Channel ch);
-#define _TBP_Channel__ChannelDesc_Flush void(*)(Channel__Channel ch)
+typedef void(* _TBP_Channel__ChannelDesc_Flush)(Channel__Channel ch);
 #define _TBN_Channel__ChannelDesc_Flush 4
 extern void Channel__ChannelDesc_Flush(Channel__Channel ch);
-#define _TBP_Channel__ChannelDesc_Close void(*)(Channel__Channel ch)
+typedef void(* _TBP_Channel__ChannelDesc_Close)(Channel__Channel ch);
 #define _TBN_Channel__ChannelDesc_Close 5
 extern void Channel__ChannelDesc_Close(Channel__Channel ch);
-#define _TBP_Channel__ChannelDesc_ClearError void(*)(Channel__Channel ch)
+typedef void(* _TBP_Channel__ChannelDesc_ClearError)(Channel__Channel ch);
 #define _TBN_Channel__ChannelDesc_ClearError 6
 extern void Channel__ChannelDesc_ClearError(Channel__Channel ch);
 extern struct _TD Channel__ChannelDesc_td;

@@ -89,9 +89,9 @@ void Data__InitObject(Data__Object obj, const unsigned char* name__ref, int name
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i1 < 0) _invalid_length(i1, _P(34559));
-    _mem = GC_malloc_atomic(i1*1+8);
-    if (!_mem) _new_failed(_P(34522));
+    if(i1 < 0) _invalid_length(i1, _P(35048));
+    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
+    if (!_mem) _new_failed(_P(35011));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i1;
@@ -199,8 +199,8 @@ Data__SymLocation Data__CreateSymLocation(Data__Addressable var, short int attri
   register int i0, i1;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(8+8);
-    if (!_mem) _new_failed(_P(36155));
+    _mem = GC_malloc(_not_zero(8)+8);
+    if (!_mem) _new_failed(_P(36644));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__SymLocationDesc_td.td;
     i0 = (int)_var;
@@ -277,8 +277,8 @@ void Data__InstructionDesc_Operand_Append(Data__Opnd *opnd, Data__Instruction *D
 l0:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(24+8);
-    if (!_mem) _new_failed(_P(37635));
+    _mem = GC_malloc(_not_zero(24)+8);
+    if (!_mem) _new_failed(_P(38124));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__OpndDesc_td.td;
     i1 = (int)_var;
@@ -320,8 +320,8 @@ void Data__InstructionDesc_UniqueOperand_Append(Data__Opnd *opnd, Data__Instruct
 l0:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(24+8);
-    if (!_mem) _new_failed(_P(38339));
+    _mem = GC_malloc(_not_zero(24)+8);
+    if (!_mem) _new_failed(_P(38828));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__OpndDesc_td.td;
     i1 = (int)_var;
@@ -424,8 +424,8 @@ Data__Result Data__InstructionDesc_AppendResult_Append(Data__Result *res, Data__
 l0:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(28+8);
-    if (!_mem) _new_failed(_P(40134));
+    _mem = GC_malloc(_not_zero(28)+8);
+    if (!_mem) _new_failed(_P(40623));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ResultDesc_td.td;
     i2 = (int)_var;
@@ -536,7 +536,7 @@ l1:
   if (!(i1)) goto l2;
   i1 = *(int*)(i5-4);
   i1 = (int)((_Type)i1)->tbprocs[_TB10];
-  ((void(*)(Data__Region))i1)((Data__Region)i5);
+  ((_TBP_Data__RegionDesc_ReverseInstr)i1)((Data__Region)i5);
 l2:
   i1 = i5 + 36;
   i2 = (int)*(void**)i1;
@@ -704,7 +704,7 @@ l0:
   i0 = (int)*(void**)i3;
   i2 = *(int*)(i0-4);
   i2 = (int)((_Type)i2)->tbprocs[_TB11];
-  i0 = (int)((Data__GlobalRegion(*)(Data__Node))i2)((Data__Node)i0);
+  i0 = (int)((_TBP_Data__NodeDesc_Greg)i2)((Data__Node)i0);
   i1 = *(short int*)i1;
   i1 = i1 == 1;
   if (i1) goto l1;
@@ -723,7 +723,7 @@ l3:
   i0 = (int)*(void**)i1;
   i2 = *(int*)(i0-4);
   i2 = (int)((_Type)i2)->tbprocs[_TB4];
-  ((void(*)(Data__Opnd))i2)((Data__Opnd)i0);
+  ((_TBP_Data__OpndDesc_DeleteOperand)i2)((Data__Opnd)i0);
   i0 = (int)*(void**)i1;
   i0 = i0 != 0;
   if (i0) goto l3;
@@ -746,7 +746,7 @@ l6:
   i1 = *(int*)(i0-4);
   i4 = (int)((_Type)i1)->tbprocs[_TB12];
   i1 = i2 == 0;
-  ((void(*)(Data__Instruction))i4)((Data__Instruction)i0);
+  ((_TBP_Data__InstructionDesc_Delete)i4)((Data__Instruction)i0);
   if (i1) goto l7;
   i0 = i2;
   goto l6;
@@ -773,7 +773,7 @@ l0:
   i0 = (int)instr + 32;
   i1 = (int)((_Type)i1)->tbprocs[_TB9];
   *(void**)i0 = (void*)0;
-  ((void(*)(Data__Region, Data__Instruction))i1)((Data__Region)(int)to, (Data__Instruction)(int)instr);
+  ((_TBP_Data__RegionDesc_Insert)i1)((Data__Region)(int)to, (Data__Instruction)(int)instr);
 }
 
 void Data__RegionDesc_MoveInstructions(Data__Region to, Data__Region from) {
@@ -786,7 +786,7 @@ void Data__RegionDesc_MoveInstructions(Data__Region to, Data__Region from) {
   i2 = (int)((_Type)i2)->tbprocs[_TB13];
 l0:
   i0 = (int)*(void**)i1;
-  ((void(*)(Data__Region, Data__Instruction))i2)((Data__Region)(int)to, (Data__Instruction)i0);
+  ((_TBP_Data__RegionDesc_MoveInstruction)i2)((Data__Region)(int)to, (Data__Instruction)i0);
   i0 = (int)*(void**)i1;
   i0 = i0 != 0;
   if (i0) goto l0;
@@ -975,8 +975,8 @@ Data__Instruction Data__RegionDesc_CreateInstruction(Data__Region region, short 
   register int i0, i1, i2;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(56+8);
-    if (!_mem) _new_failed(_P(47754));
+    _mem = GC_malloc(_not_zero(56)+8);
+    if (!_mem) _new_failed(_P(48243));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__InstructionDesc_td.td;
     i0 = (int)_var;
@@ -986,7 +986,7 @@ Data__Instruction Data__RegionDesc_CreateInstruction(Data__Region region, short 
   i2 = *(int*)((int)region-4);
   *(short int*)i1 = opcode;
   i1 = (int)((_Type)i2)->tbprocs[_TB9];
-  ((void(*)(Data__Region, Data__Instruction))i1)((Data__Region)(int)region, (Data__Instruction)i0);
+  ((_TBP_Data__RegionDesc_Insert)i1)((Data__Region)(int)region, (Data__Instruction)i0);
   return (void*)i0;
 }
 
@@ -994,8 +994,8 @@ Data__Gate Data__MergeDesc_CreateGate(Data__Merge merge, short int opcode, Data_
   register int i0, i1, i2, i3;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(64+8);
-    if (!_mem) _new_failed(_P(48030));
+    _mem = GC_malloc(_not_zero(64)+8);
+    if (!_mem) _new_failed(_P(48519));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__GateDesc_td.td;
     i0 = (int)_var;
@@ -1010,9 +1010,9 @@ Data__Gate Data__MergeDesc_CreateGate(Data__Merge merge, short int opcode, Data_
   i1 = (int)((_Type)i3)->tbprocs[_TB2];
   *(void**)i2 = (void*)0;
   i2 = *(int*)((int)merge-4);
-  ((void(*)(Data__Instruction, Data__Usable))i1)((Data__Instruction)i0, (Data__Usable)(int)merge);
+  ((_TBP_Data__InstructionDesc_Operand)i1)((Data__Instruction)i0, (Data__Usable)(int)merge);
   i1 = (int)((_Type)i2)->tbprocs[_TB9];
-  ((void(*)(Data__Region, Data__Instruction))i1)((Data__Region)(int)merge, (Data__Instruction)i0);
+  ((_TBP_Data__RegionDesc_Insert)i1)((Data__Region)(int)merge, (Data__Instruction)i0);
   return (void*)i0;
 }
 
@@ -1023,15 +1023,15 @@ void Data__InitGuard(Data__Guard guard, Data__Usable cond, short int opcode, int
   Data__InitRegion((Data__Region)(int)guard, (int)pos);
   i1 = (int)((_Type)i1)->tbprocs[_TB2];
   *(short int*)i0 = opcode;
-  ((void(*)(Data__Instruction, Data__Usable))i1)((Data__Instruction)(int)guard, (Data__Usable)(int)cond);
+  ((_TBP_Data__InstructionDesc_Operand)i1)((Data__Instruction)(int)guard, (Data__Usable)(int)cond);
 }
 
 Data__Guard Data__CreateGuard(Data__Usable cond, short int opcode, int pos) {
   register int i0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(80+8);
-    if (!_mem) _new_failed(_P(48558));
+    _mem = GC_malloc(_not_zero(80)+8);
+    if (!_mem) _new_failed(_P(49047));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__GuardDesc_td.td;
     i0 = (int)_var;
@@ -1044,8 +1044,8 @@ Data__Merge Data__CreateMerge(short int opcode) {
   register int i0, i1;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(80+8);
-    if (!_mem) _new_failed(_P(48735));
+    _mem = GC_malloc(_not_zero(80)+8);
+    if (!_mem) _new_failed(_P(49224));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__MergeDesc_td.td;
     i0 = (int)_var;
@@ -1066,7 +1066,7 @@ short int Data__StructDesc_OpenDimensions(Data__Struct type) {
   i1 = (int)*(void**)i1;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[_TB20];
-  i1 = ((short int(*)(Data__Struct))i0)((Data__Struct)i1);
+  i1 = ((_TBP_Data__StructDesc_OpenDimensions)i0)((Data__Struct)i1);
   i1++;
   goto l1;
 l0:
@@ -1088,7 +1088,7 @@ l0:
   i1 = (int)*(void**)i1;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[_TB21];
-  i1 = ((short int(*)(Data__Struct))i0)((Data__Struct)i1);
+  i1 = ((_TBP_Data__StructDesc_Dimensions)i0)((Data__Struct)i1);
   i1++;
   goto l2;
 l1:
@@ -1234,7 +1234,7 @@ void Data__InstructionDesc_SetOpndSymLoc(Data__Instruction instr, Data__Addressa
   register int i0, i1, i2;
   i0 = *(int*)((int)instr-4);
   i0 = (int)((_Type)i0)->tbprocs[_TB25];
-  i0 = (int)((Data__Opnd(*)(Data__Instruction))i0)((Data__Instruction)(int)instr);
+  i0 = (int)((_TBP_Data__InstructionDesc_LastOperand)i0)((Data__Instruction)(int)instr);
   i2 = i0 + 16;
   i1 = (int)Data__CreateSymLocation((Data__Addressable)(int)obj, (short int)-3);
   *(void**)i2 = (void*)i1;
@@ -1450,7 +1450,7 @@ Data__Instruction Data__RegionDesc_EnterInstr(Data__Region region) {
   register int i0;
   i0 = *(int*)((int)region-4);
   i0 = (int)((_Type)i0)->tbprocs[_TB11];
-  i0 = (int)((Data__GlobalRegion(*)(Data__Node))i0)((Data__Node)(int)region);
+  i0 = (int)((_TBP_Data__NodeDesc_Greg)i0)((Data__Node)(int)region);
   i0 += 84;
   i0 = (int)*(void**)i0;
   return (void*)i0;
@@ -1460,7 +1460,7 @@ Data__Instruction Data__RegionDesc_ExitInstr(Data__Region region) {
   register int i0;
   i0 = *(int*)((int)region-4);
   i0 = (int)((_Type)i0)->tbprocs[_TB11];
-  i0 = (int)((Data__GlobalRegion(*)(Data__Node))i0)((Data__Node)(int)region);
+  i0 = (int)((_TBP_Data__NodeDesc_Greg)i0)((Data__Node)(int)region);
   i0 += 88;
   i0 = (int)*(void**)i0;
   return (void*)i0;
@@ -1587,7 +1587,7 @@ l1:
   goto l3;
 l2:
   i0 = (int)((_Type)i0)->tbprocs[_TB40];
-  ((void(*)(Data__Region, int))i0)((Data__Region)i1, (int)m);
+  ((_TBP_Data__RegionDesc_ClearInfo)i0)((Data__Region)i1, (int)m);
 l3:
   i2 = i1 + 36;
   i1 = (int)*(void**)i2;
@@ -1622,7 +1622,7 @@ l1:
   goto l3;
 l2:
   i2 = (int)((_Type)i2)->tbprocs[_TB41];
-  ((void(*)(Data__Region, int))i2)((Data__Region)i1, (int)m);
+  ((_TBP_Data__RegionDesc_ClearInstrInfo)i2)((Data__Region)i1, (int)m);
 l3:
   i0 = i1 + 36;
   i1 = (int)*(void**)i0;
@@ -1646,7 +1646,7 @@ l0:
   i2 = *(int*)(i1-4);
   i2 = (int)((_Type)i2)->tbprocs[_TB42];
   i0 = i1 + 68;
-  ((void(*)(Data__Region, int))i2)((Data__Region)i1, (int)m);
+  ((_TBP_Data__RegionDesc_ClearRegionInfo)i2)((Data__Region)i1, (int)m);
   i1 = (int)*(void**)i0;
   i2 = i1 != 0;
   if (i2) goto l0;
@@ -1658,8 +1658,8 @@ Data__Const Data__NewConst(Data__Struct type, int hash) {
   register int i0, i1, i2, i3;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(56+8);
-    if (!_mem) _new_failed(_P(59003));
+    _mem = GC_malloc(_not_zero(56)+8);
+    if (!_mem) _new_failed(_P(59492));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ConstDesc_td.td;
     i0 = (int)_var;
@@ -1952,9 +1952,9 @@ l11:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i9 < 0) _invalid_length(i9, _P(62148));
-    _mem = GC_malloc_atomic(i9*1+8);
-    if (!_mem) _new_failed(_P(62125));
+    if(i9 < 0) _invalid_length(i9, _P(62637));
+    _mem = GC_malloc_atomic(_not_zero(i9*1)+8);
+    if (!_mem) _new_failed(_P(62614));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i9;
@@ -2029,8 +2029,8 @@ l3:
   if (!(i1)) goto l4;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(56+8);
-    if (!_mem) _new_failed(_P(62609));
+    _mem = GC_malloc(_not_zero(56)+8);
+    if (!_mem) _new_failed(_P(63098));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ConstDesc_td.td;
     i3 = (int)_var;
@@ -2183,9 +2183,9 @@ l7:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i1 < 0) _invalid_length(i1, _P(64270));
-    _mem = GC_malloc_atomic(i1*1+8);
-    if (!_mem) _new_failed(_P(64262));
+    if(i1 < 0) _invalid_length(i1, _P(64759));
+    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
+    if (!_mem) _new_failed(_P(64751));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i1;
@@ -2950,10 +2950,10 @@ Data__Instruction Data__RegionDesc_CreateAdrInstr(Data__Region region, Data__Usa
   i0 = (int)Data__struct + 24;
   i1 = (int)((_Type)i1)->tbprocs[_TB18];
   i0 = (int)*(void**)i0;
-  i0 = (int)((Data__Instruction(*)(Data__Region, short int, Data__Struct, int))i1)((Data__Region)(int)region, (short int)8, (Data__Struct)i0, (int)pos);
+  i0 = (int)((_TBP_Data__RegionDesc_CreateInstruction)i1)((Data__Region)(int)region, (short int)8, (Data__Struct)i0, (int)pos);
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[_TB2];
-  ((void(*)(Data__Instruction, Data__Usable))i1)((Data__Instruction)i0, (Data__Usable)(int)arg);
+  ((_TBP_Data__InstructionDesc_Operand)i1)((Data__Instruction)i0, (Data__Usable)(int)arg);
   return (void*)i0;
 }
 
@@ -2961,11 +2961,11 @@ Data__Instruction Data__RegionDesc_CreateDyadicOp(Data__Region region, short int
   register int i0, i1;
   i0 = *(int*)((int)region-4);
   i0 = (int)((_Type)i0)->tbprocs[_TB18];
-  i0 = (int)((Data__Instruction(*)(Data__Region, short int, Data__Struct, int))i0)((Data__Region)(int)region, (short int)opcode, (Data__Struct)(int)type, (int)pos);
+  i0 = (int)((_TBP_Data__RegionDesc_CreateInstruction)i0)((Data__Region)(int)region, (short int)opcode, (Data__Struct)(int)type, (int)pos);
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[_TB2];
-  ((void(*)(Data__Instruction, Data__Usable))i1)((Data__Instruction)i0, (Data__Usable)(int)opnd1);
-  ((void(*)(Data__Instruction, Data__Usable))i1)((Data__Instruction)i0, (Data__Usable)(int)opnd2);
+  ((_TBP_Data__InstructionDesc_Operand)i1)((Data__Instruction)i0, (Data__Usable)(int)opnd1);
+  ((_TBP_Data__InstructionDesc_Operand)i1)((Data__Instruction)i0, (Data__Usable)(int)opnd2);
   return (void*)i0;
 }
 
@@ -2973,10 +2973,10 @@ Data__Instruction Data__RegionDesc_CreateTypeCast(Data__Region region, Data__Usa
   register int i0, i1;
   i0 = *(int*)((int)region-4);
   i0 = (int)((_Type)i0)->tbprocs[_TB18];
-  i0 = (int)((Data__Instruction(*)(Data__Region, short int, Data__Struct, int))i0)((Data__Region)(int)region, (short int)21, (Data__Struct)(int)toType, (int)-1);
+  i0 = (int)((_TBP_Data__RegionDesc_CreateInstruction)i0)((Data__Region)(int)region, (short int)21, (Data__Struct)(int)toType, (int)-1);
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[_TB2];
-  ((void(*)(Data__Instruction, Data__Usable))i1)((Data__Instruction)i0, (Data__Usable)(int)value);
+  ((_TBP_Data__InstructionDesc_Operand)i1)((Data__Instruction)i0, (Data__Usable)(int)value);
   return (void*)i0;
 }
 
@@ -3070,11 +3070,11 @@ l1:
   i1 = (int)*(void**)i0;
   i3 = *(int*)(i1-4);
   i3 = (int)((_Type)i3)->tbprocs[_TB30];
-  i1 = (int)((Data__Opnd(*)(Data__Instruction, short int))i3)((Data__Instruction)i1, (short int)3);
+  i1 = (int)((_TBP_Data__InstructionDesc_NthOperand)i3)((Data__Instruction)i1, (short int)3);
   i3 = (int)*(void**)i0;
   i2 = *(int*)(i3-4);
   i2 = (int)((_Type)i2)->tbprocs[_TB56];
-  i3 = (int)((Data__Object(*)(Data__Instruction))i2)((Data__Instruction)i3);
+  i3 = (int)((_TBP_Data__InstructionDesc_GetReceiver)i2)((Data__Instruction)i3);
   i2 = i3 == 0;
   if (i2) goto l3;
   paramOpnd = (void*)i1;
@@ -3128,45 +3128,51 @@ l10:
 void Data_init(void) {
   register int i0, i1, i2;
   _mid = _register_module(&Data_md.md, &Data__GlobalRegionDesc_td.td);
-  i1 = 0;
+  Data__i = 0;
+  i0 = Data__i;
+  i0 = i0 > 21;
+  if (i0) goto l1;
 l0:
-  i2 = (int)_ashl(i1, 2, (unsigned int));
-  i2 = (int)Data__constList + i2;
-  i0 = i1 + 1;
-  *(void**)i2 = (void*)0;
-  i1 = i0 > 127;
-  if (i1) goto l1;
-  i1 = i0;
-  goto l0;
+  i2 = Data__i;
+  i0 = (int)_ashl(i2, 2, (unsigned int));
+  i0 = (int)Data__struct + i0;
+  i1 = i2 + 1;
+  *(void**)i0 = (void*)0;
+  Data__i = i1;
+  i2 = i1 <= 21;
+  if (i2) goto l0;
 l1:
-  i1 = 0;
+  Data__i = 0;
+  i0 = Data__i;
+  i0 = i0 > 127;
+  if (i0) goto l3;
 l2:
-  i2 = (int)_ashl(i1, 2, (unsigned int));
-  i2 = (int)Data__struct + i2;
-  i0 = i1 + 1;
-  *(void**)i2 = (void*)0;
-  i1 = i0 > 21;
-  if (i1) goto l3;
-  i1 = i0;
-  goto l2;
+  i0 = Data__i;
+  i1 = (int)_ashl(i0, 2, (unsigned int));
+  i1 = (int)Data__constList + i1;
+  i2 = i0 + 1;
+  *(void**)i1 = (void*)0;
+  Data__i = i2;
+  i0 = i2 <= 127;
+  if (i0) goto l2;
 l3:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(56+8);
-    if (!_mem) _new_failed(_P(79515));
+    _mem = GC_malloc(_not_zero(56)+8);
+    if (!_mem) _new_failed(_P(80004));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ConstDesc_td.td;
     i0 = (int)_var;
   }
+  Data__constNil = (void*)i0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(56+8);
-    if (!_mem) _new_failed(_P(79533));
+    _mem = GC_malloc(_not_zero(56)+8);
+    if (!_mem) _new_failed(_P(80022));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ConstDesc_td.td;
-    i1 = (int)_var;
+    i0 = (int)_var;
   }
-  Data__constNil = (void*)i0;
-  Data__constUndef = (void*)i1;
+  Data__constUndef = (void*)i0;
   Data__constRange = (void*)0;
 }

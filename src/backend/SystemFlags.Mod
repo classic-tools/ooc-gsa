@@ -1,7 +1,7 @@
-(* 	$Id: SystemFlags.Mod,v 1.33 1999/06/21 10:48:23 acken Exp $	 *)
+(* 	$Id: SystemFlags.Mod,v 1.35 2000/06/26 14:42:12 ooc-devel Exp $	 *)
 MODULE SystemFlags;
 (*  Implements parsing and storing/loading of system flags.
-    Copyright (C) 1996-1999  Michael van Acken
+    Copyright (C) 1996-2000  Michael van Acken
 
     This file is part of OOC.
 
@@ -45,7 +45,7 @@ CONST
   objStructValueParam = 28;
   
 VAR
-  mods: ARRAY 17 OF Modifier;
+  mods: ARRAY 18 OF Modifier;
   emptyString: ARRAY 2 OF CHAR;
   
 
@@ -608,7 +608,9 @@ PROCEDURE StructModifiers* (str: D.Struct; parse: BOOLEAN);
    check for `S.sym=S.lBrak' before doing any parsing.  
    See frontend/doc/Modifiers for details, including the places where this 
    procedure is called.  *)
-  
+  VAR
+    vtbl: D.Object;
+    
   PROCEDURE HasRestParam (str: D.Struct): BOOLEAN;
     VAR
       param: D.Object;
@@ -667,8 +669,19 @@ PROCEDURE StructModifiers* (str: D.Struct; parse: BOOLEAN);
         UNTIL (S.sym # S.comma);
         S.CheckSym (S.rBrak)
       END;
-      S.allowUnderscore := (D.objAllowsUnderscore IN Sym.mod. flags)
+      S.allowUnderscore := (D.objAllowsUnderscore IN Sym.mod. flags);
       
+      IF (str. form = D.strRecord) & (D.structVTableField IN str. flags) THEN
+        (* insert a hidden pointer field `_vtbl' at the very beginning 
+           of the record's field list *)
+        vtbl := Sym.NewObject("_vtbl", D.objField, D.undefPos);
+        vtbl. type := D.struct[D.strPtr];
+        Sym.InsertField (str, vtbl);
+        
+        (* make the record type extensible *)
+        EXCL (str. flags, D.structNotExtensible);
+        INCL (str. flags, D.structDisableStaticInstance)
+      END
     ELSE  (* fill in additional information and do some semantic checks *)
       IF (str. form = D.strPointer) THEN
         IF (D.structNoDescriptor IN str. base. flags) THEN
@@ -715,7 +728,18 @@ PROCEDURE StructModifiers* (str: D.Struct; parse: BOOLEAN);
       
       IF (str. form = D.strRecord) THEN
         CreateInfo (str);
-        INCL (str. flags, D.structExportsBEInfo)
+        INCL (str. flags, D.structExportsBEInfo);
+        
+        IF (str. base # NIL) &
+           (D.structVTableField IN str. base. flags)THEN
+          IF (D.structVTableField IN str. flags) THEN
+            E.Err (str. pos, 520)  (* VTABLE only applies to base records *)
+          ELSE
+            EXCL (str. flags, D.structNotExtensible);
+            INCL (str. flags, D.structVTableField);
+            INCL (str. flags, D.structDisableStaticInstance)
+          END
+        END
       END;
       
       IF (str. form = D.strOpenArray) & (D.structNoLengthInfo IN str. flags) & 
@@ -998,6 +1022,12 @@ BEGIN
   mods[16]. objFlag := StdTypes.objNoLocalCopy;
   mods[16]. structId := {};
   mods[16]. structFlag := -1;
+  
+  mods[17]. name := "VTABLE"; 
+  mods[17]. objId := {};
+  mods[17]. objFlag := -1;
+  mods[17]. structId := {D.strRecord-strOffset};
+  mods[17]. structFlag := D.structVTableField;
   
   Sym.paramsMatchExt := ParamsMatchExt;
   noLibFileRead := FALSE;

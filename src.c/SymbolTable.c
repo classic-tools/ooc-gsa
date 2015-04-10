@@ -9,7 +9,7 @@ Data__Struct SymbolTable__NewStruct(signed char form, int pos) {
   register int i0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(60+8);
+    _mem = GC_malloc(_not_zero(60)+8);
     if (!_mem) _new_failed(_P(4081));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__StructDesc_td.td;
@@ -26,7 +26,7 @@ Data__Object SymbolTable__NewObject(const unsigned char* name__ref, int name_0d,
   _push_value(int, name, name__ref, name_0d);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(76+8);
+    _mem = GC_malloc(_not_zero(76)+8);
     if (!_mem) _new_failed(_P(4280));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ObjectDesc_td.td;
@@ -52,7 +52,7 @@ Data__Object SymbolTable__NewModule(const unsigned char* modName__ref, int modNa
   _push_value(int, modName, modName__ref, modName_0d);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(56+8);
+    _mem = GC_malloc(_not_zero(56)+8);
     if (!_mem) _new_failed(_P(4779));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ConstDesc_td.td;
@@ -1055,7 +1055,7 @@ l11:
   if (i8) goto l13;
   i4 = *(int*)(i5-4);
   i4 = (int)((_Type)i4)->tbprocs[2];
-  i4 = (int)((Data__Object(*)(Data__Object))i4)((Data__Object)i5);
+  i4 = (int)((_TBP_Data__ObjectDesc_Module)i4)((Data__Object)i5);
   i6 = (int)SymbolTable__mod;
   i6 = i4 != i6;
   if (i6) goto l13;
@@ -1073,7 +1073,7 @@ l12:
   if (i4) goto l13;
   i4 = *(int*)(i5-4);
   i4 = (int)((_Type)i4)->tbprocs[2];
-  i4 = (int)((Data__Object(*)(Data__Object))i4)((Data__Object)i5);
+  i4 = (int)((_TBP_Data__ObjectDesc_Module)i4)((Data__Object)i5);
   i8 = (int)SymbolTable__mod;
   i4 = i4 == i8;
   if (i4) goto l12;
@@ -1914,7 +1914,7 @@ void SymbolTable__InsertParams(Data__Object proc) {
   if (i0) goto l0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(76+8);
+    _mem = GC_malloc(_not_zero(76)+8);
     if (!_mem) _new_failed(_P(33921));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ObjectDesc_td.td;
@@ -1937,7 +1937,7 @@ l0:
 l1:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(76+8);
+    _mem = GC_malloc(_not_zero(76)+8);
     if (!_mem) _new_failed(_P(34153));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__ObjectDesc_td.td;
@@ -2374,7 +2374,7 @@ void SymbolTable__AddStructRef(SymbolTable__StructList *list, Data__Struct type)
 l0:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(8+8);
+    _mem = GC_malloc(_not_zero(8)+8);
     if (!_mem) _new_failed(_P(45434));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &SymbolTable__StructListDesc_td.td;

@@ -18,7 +18,7 @@ void ParamOptions__InitOption(ParamOptions__Option opt, const unsigned char* nam
     char *_mem, *_var;
     int* _dim_ptr;
     if(i1 < 0) _invalid_length(i1, _P(3883));
-    _mem = GC_malloc_atomic(i1*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
     if (!_mem) _new_failed(_P(3846));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -120,7 +120,7 @@ ParamOptions__BooleanOption ParamOptions__CreateBoolean(const unsigned char* nam
   _push_value(int, name, name__ref, name_0d);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(6252));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamOptions__BooleanOptionDesc_td.td;
@@ -129,7 +129,7 @@ ParamOptions__BooleanOption ParamOptions__CreateBoolean(const unsigned char* nam
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[_TB1];
   ParamOptions__InitOption((ParamOptions__Option)i0, (const unsigned char*)(int)name, name_0d);
-  ((void(*)(ParamOptions__BooleanOption, unsigned char))i1)((ParamOptions__BooleanOption)i0, (unsigned char)default_);
+  ((_TBP_ParamOptions__BooleanOptionDesc_Set)i1)((ParamOptions__BooleanOption)i0, (unsigned char)default_);
   _top_vs = _old_top_vs;
   return (void*)i0;
 }
@@ -156,7 +156,7 @@ l1:
 l2:
   i1 = *(int*)((int)opt-4);
   i1 = (int)((_Type)i1)->tbprocs[_TB1];
-  ((void(*)(ParamOptions__BooleanOption, unsigned char))i1)((ParamOptions__BooleanOption)(int)opt, (unsigned char)i0);
+  ((_TBP_ParamOptions__BooleanOptionDesc_Set)i1)((ParamOptions__BooleanOption)(int)opt, (unsigned char)i0);
 l3:
   i0 = ParamOptions__done;
   _top_vs = _old_top_vs;
@@ -180,7 +180,7 @@ ParamOptions__Option ParamOptions__BooleanOptionDesc_Copy(ParamOptions__BooleanO
   register int i0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(6881));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamOptions__BooleanOptionDesc_td.td;
@@ -234,7 +234,7 @@ ParamOptions__IntegerOption ParamOptions__CreateInteger(const unsigned char* nam
   _push_value(int, name, name__ref, name_0d);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(20+8);
+    _mem = GC_malloc(_not_zero(20)+8);
     if (!_mem) _new_failed(_P(7870));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamOptions__IntegerOptionDesc_td.td;
@@ -247,7 +247,7 @@ ParamOptions__IntegerOption ParamOptions__CreateInteger(const unsigned char* nam
   *(int*)i3 = lower;
   i1 = (int)((_Type)i1)->tbprocs[_TB2];
   *(int*)i2 = upper;
-  ((void(*)(ParamOptions__IntegerOption, int))i1)((ParamOptions__IntegerOption)i0, (int)default_);
+  ((_TBP_ParamOptions__IntegerOptionDesc_Set)i1)((ParamOptions__IntegerOption)i0, (int)default_);
   _top_vs = _old_top_vs;
   return (void*)i0;
 }
@@ -269,7 +269,7 @@ unsigned char ParamOptions__IntegerOptionDesc_Accept(ParamOptions__IntegerOption
 l0:
   i0 = *(int*)((int)opt-4);
   i0 = (int)((_Type)i0)->tbprocs[_TB2];
-  ((void(*)(ParamOptions__IntegerOption, int))i0)((ParamOptions__IntegerOption)(int)opt, (int)int_);
+  ((_TBP_ParamOptions__IntegerOptionDesc_Set)i0)((ParamOptions__IntegerOption)(int)opt, (int)int_);
 l1:
   i0 = ParamOptions__done;
   _top_vs = _old_top_vs;
@@ -287,7 +287,7 @@ ParamOptions__Option ParamOptions__IntegerOptionDesc_Copy(ParamOptions__IntegerO
   register int i0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(20+8);
+    _mem = GC_malloc(_not_zero(20)+8);
     if (!_mem) _new_failed(_P(8536));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamOptions__IntegerOptionDesc_td.td;
@@ -317,7 +317,7 @@ void ParamOptions__StringOptionDesc_Set(ParamOptions__StringOption opt, const un
     char *_mem, *_var;
     int* _dim_ptr;
     if(i1 < 0) _invalid_length(i1, _P(8836));
-    _mem = GC_malloc_atomic(i1*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
     if (!_mem) _new_failed(_P(8797));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -341,7 +341,7 @@ ParamOptions__StringOption ParamOptions__CreateString(const unsigned char* name_
   _push_value(int, default_, default___ref, default__0d);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(9028));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamOptions__StringOptionDesc_td.td;
@@ -350,7 +350,7 @@ ParamOptions__StringOption ParamOptions__CreateString(const unsigned char* name_
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[_TB3];
   ParamOptions__InitOption((ParamOptions__Option)i0, (const unsigned char*)(int)name, name_0d);
-  ((void(*)(ParamOptions__StringOption, const unsigned char*, int value_0d))i1)((ParamOptions__StringOption)i0, (const unsigned char*)(int)default_, default__0d);
+  ((_TBP_ParamOptions__StringOptionDesc_Set)i1)((ParamOptions__StringOption)i0, (const unsigned char*)(int)default_, default__0d);
   _top_vs = _old_top_vs;
   return (void*)i0;
 }
@@ -362,7 +362,7 @@ unsigned char ParamOptions__StringOptionDesc_Accept(ParamOptions__StringOption o
   _push_value(int, str, str__ref, str_0d);
   i0 = *(int*)((int)opt-4);
   i0 = (int)((_Type)i0)->tbprocs[_TB3];
-  ((void(*)(ParamOptions__StringOption, const unsigned char*, int value_0d))i0)((ParamOptions__StringOption)(int)opt, (const unsigned char*)(int)str, str_0d);
+  ((_TBP_ParamOptions__StringOptionDesc_Set)i0)((ParamOptions__StringOption)(int)opt, (const unsigned char*)(int)str, str_0d);
   i0 = ParamOptions__done;
   _top_vs = _old_top_vs;
   return (unsigned char)i0;
@@ -397,7 +397,7 @@ ParamOptions__Option ParamOptions__StringOptionDesc_Copy(ParamOptions__StringOpt
   register int i0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(9750));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamOptions__StringOptionDesc_td.td;
@@ -422,7 +422,7 @@ void ParamOptions__OptionsSectionDesc_Parse_GetSym(int *ParamOptions__OptionsSec
   i1 = (int)Parameter__in;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[4];
-  i0 = ((int(*)(Parameter__Stream))i0)((Parameter__Stream)i1);
+  i0 = ((_TBP_Parameter__StreamDesc_CurrPos)i0)((Parameter__Stream)i1);
   i2 = (int)Parameter__in;
   *ParamOptions__OptionsSectionDesc_Parse_currSymPos = i0;
   i0 = i2 + 6;
@@ -474,14 +474,14 @@ l5:
   i1 = *(int*)(i2-4);
   *ParamOptions__OptionsSectionDesc_Parse_sym = 2;
   i1 = (int)((_Type)i1)->tbprocs[1];
-  ((void(*)(Parameter__Stream))i1)((Parameter__Stream)i2);
+  ((_TBP_Parameter__StreamDesc_NextChar)i1)((Parameter__Stream)i2);
   goto l9;
 l6:
   if (!(i3==44)) goto l7;
   i1 = *(int*)(i2-4);
   *ParamOptions__OptionsSectionDesc_Parse_sym = 3;
   i1 = (int)((_Type)i1)->tbprocs[1];
-  ((void(*)(Parameter__Stream))i1)((Parameter__Stream)i2);
+  ((_TBP_Parameter__StreamDesc_NextChar)i1)((Parameter__Stream)i2);
   goto l9;
 l7:
   if (!(i3==58)) goto l9;
@@ -522,7 +522,7 @@ l3:
   i1 = *(int*)(i0-4);
   i2 = (int)((_Type)i1)->tbprocs[3];
   i1 = *ParamOptions__OptionsSectionDesc_Parse_currSymPos;
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i2)((Parameter__Stream)i0, (int)i1, (const unsigned char*)(int)str, 32);
+  ((_TBP_Parameter__StreamDesc_Error)i2)((Parameter__Stream)i0, (int)i1, (const unsigned char*)(int)str, 32);
 l4:
   if (i4) goto l5;
   i0 = expected == 7;
@@ -543,7 +543,7 @@ ParamOptions__Option ParamOptions__OptionsSectionDesc_Parse_Create(const unsigne
   i0 = *(int*)(i1-4);
   i2 = (int)((_Type)i0)->tbprocs[3];
   i0 = *ParamOptions__OptionsSectionDesc_Parse_currSymPos;
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i2)((Parameter__Stream)i1, (int)i0, (const unsigned char*)(int)_c11, 14);
+  ((_TBP_Parameter__StreamDesc_Error)i2)((Parameter__Stream)i1, (int)i0, (const unsigned char*)(int)_c11, 14);
   i1 = 0;
   goto l3;
 l0:
@@ -564,7 +564,7 @@ l3:
   i0 = (int)*ParamOptions__OptionsSectionDesc_Parse_s;
   i2 = *(int*)(i0-4);
   i2 = (int)((_Type)i2)->tbprocs[4];
-  ((void(*)(ParamOptions__OptionsSection, ParamOptions__Option))i2)((ParamOptions__OptionsSection)i0, (ParamOptions__Option)i1);
+  ((_TBP_ParamOptions__OptionsSectionDesc_Add)i2)((ParamOptions__OptionsSection)i0, (ParamOptions__Option)i1);
 l4:
   _top_vs = _old_top_vs;
   return (void*)i1;
@@ -585,20 +585,20 @@ void ParamOptions__OptionsSectionDesc_Parse_Accept(ParamOptions__Option opt, con
   if (i3) goto l1;
 l0:
   i0 = (int)((_Type)i0)->tbprocs[1];
-  i0 = ((unsigned char(*)(ParamOptions__Option, const unsigned char*, int str_0d))i0)((ParamOptions__Option)(int)opt, (const unsigned char*)(int)str, str_0d);
+  i0 = ((_TBP_ParamOptions__OptionDesc_Accept)i0)((ParamOptions__Option)(int)opt, (const unsigned char*)(int)str, str_0d);
   if (i0) goto l2;
   i1 = (int)Parameter__in;
   i2 = *(int*)(i1-4);
   i0 = (int)((_Type)i2)->tbprocs[3];
   i2 = *ParamOptions__OptionsSectionDesc_Parse_currSymPos;
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i0)((Parameter__Stream)i1, (int)i2, (const unsigned char*)(int)ParamOptions__error, 128);
+  ((_TBP_Parameter__StreamDesc_Error)i0)((Parameter__Stream)i1, (int)i2, (const unsigned char*)(int)ParamOptions__error, 128);
   goto l2;
 l1:
   i1 = (int)Parameter__in;
   i2 = *(int*)(i1-4);
   i3 = (int)((_Type)i2)->tbprocs[3];
   i2 = *ParamOptions__OptionsSectionDesc_Parse_currSymPos;
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i3)((Parameter__Stream)i1, (int)i2, (const unsigned char*)(int)_c13, 16);
+  ((_TBP_Parameter__StreamDesc_Error)i3)((Parameter__Stream)i1, (int)i2, (const unsigned char*)(int)_c13, 16);
 l2:
   _top_vs = _old_top_vs;
 }
@@ -612,14 +612,14 @@ void ParamOptions__OptionsSectionDesc_Parse_Assign(unsigned char def, signed cha
   i3 = *(int*)(i1-4);
   i0 = *ParamOptions__OptionsSectionDesc_Parse_currSymPos;
   i3 = (int)((_Type)i3)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i3)((Parameter__Stream)i1, (int)i0, (const unsigned char*)(int)_c14, 23);
+  ((_TBP_Parameter__StreamDesc_Error)i3)((Parameter__Stream)i1, (int)i0, (const unsigned char*)(int)_c14, 23);
   ParamOptions__OptionsSectionDesc_Parse_GetSym(&*ParamOptions__OptionsSectionDesc_Parse_currSymPos, &*ParamOptions__OptionsSectionDesc_Parse_sym, ParamOptions__OptionsSectionDesc_Parse_str, &*ParamOptions__OptionsSectionDesc_Parse_includeEnd);
   goto l7;
 l0:
   i2 = (int)*ParamOptions__OptionsSectionDesc_Parse_s;
   i1 = *(int*)(i2-4);
   i1 = (int)((_Type)i1)->tbprocs[3];
-  i1 = (int)((ParamOptions__Option(*)(ParamOptions__OptionsSection, const unsigned char*, int name_0d))i1)((ParamOptions__OptionsSection)i2, (const unsigned char*)(int)ParamOptions__OptionsSectionDesc_Parse_str, 2048);
+  i1 = (int)((_TBP_ParamOptions__OptionsSectionDesc_Find)i1)((ParamOptions__OptionsSection)i2, (const unsigned char*)(int)ParamOptions__OptionsSectionDesc_Parse_str, 2048);
   *ParamOptions__OptionsSectionDesc_Parse_opt = (void*)i1;
   i1 = (int)*ParamOptions__OptionsSectionDesc_Parse_opt;
   i0 = *ParamOptions__OptionsSectionDesc_Parse_currSymPos;
@@ -640,13 +640,13 @@ l1:
   i1 = (int)Parameter__in;
   i2 = *(int*)(i1-4);
   i2 = (int)((_Type)i2)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i2)((Parameter__Stream)i1, (int)i0, (const unsigned char*)(int)_c16, 25);
+  ((_TBP_Parameter__StreamDesc_Error)i2)((Parameter__Stream)i1, (int)i0, (const unsigned char*)(int)_c16, 25);
   goto l3;
 l2:
   i3 = (int)Parameter__in;
   i2 = *(int*)(i3-4);
   i2 = (int)((_Type)i2)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i2)((Parameter__Stream)i3, (int)i0, (const unsigned char*)(int)_c15, 21);
+  ((_TBP_Parameter__StreamDesc_Error)i2)((Parameter__Stream)i3, (int)i0, (const unsigned char*)(int)_c15, 21);
 l3:
   *ParamOptions__OptionsSectionDesc_Parse_sym = (signed char)5;
   ParamOptions__OptionsSectionDesc_Parse_GetSym(&*ParamOptions__OptionsSectionDesc_Parse_currSymPos, &*ParamOptions__OptionsSectionDesc_Parse_sym, ParamOptions__OptionsSectionDesc_Parse_str, &*ParamOptions__OptionsSectionDesc_Parse_includeEnd);
@@ -765,7 +765,7 @@ l7:
   i9 = (int)Parameter__in;
   i7 = *(int*)(i9-4);
   i7 = (int)((_Type)i7)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i7)((Parameter__Stream)i9, (int)i2, (const unsigned char*)(int)_c17, 11);
+  ((_TBP_Parameter__StreamDesc_Error)i7)((Parameter__Stream)i9, (int)i2, (const unsigned char*)(int)_c17, 11);
   i9 = i4;
   i7 = i3;
   i8 = i2;
@@ -803,7 +803,7 @@ l0:
   i0 = *(int*)(i1-4);
   Out__String((const unsigned char*)(int)_c19, 5);
   i0 = (int)((_Type)i0)->tbprocs[0];
-  ((void(*)(ParamOptions__Option))i0)((ParamOptions__Option)i1);
+  ((_TBP_ParamOptions__OptionDesc_Write)i0)((ParamOptions__Option)i1);
   Out__Ln();
   i1 = (int)*(void**)i1;
   i0 = i1 != 0;
@@ -825,13 +825,14 @@ void ParamOptions_init(void) {
   _mid = _register_module(&ParamOptions_md.md, &ParamOptions__StringOptionDesc_td.td);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(20+8);
+    _mem = GC_malloc(_not_zero(20)+8);
     if (!_mem) _new_failed(_P(14704));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamOptions__OptionsSectionDesc_td.td;
     i0 = (int)_var;
   }
+  ParamOptions__options = (void*)i0;
+  i0 = (int)ParamOptions__options;
   i1 = i0 + 16;
   *(void**)i1 = (void*)0;
-  ParamOptions__options = (void*)i0;
 }

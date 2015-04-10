@@ -24,22 +24,22 @@ typedef struct ValueNumbering__PartitionDesc {
   char _30pad, _31pad;
 } ValueNumbering__PartitionDesc;
 typedef struct ValueNumbering__PartitionDesc* ValueNumbering__Partition;
-#define _TBP_ValueNumbering__PartitionDesc_Concatenate void(*)(ValueNumbering__Partition list, ValueNumbering__Partition tail)
+typedef void(* _TBP_ValueNumbering__PartitionDesc_Concatenate)(ValueNumbering__Partition list, ValueNumbering__Partition tail);
 #define _TBN_ValueNumbering__PartitionDesc_Concatenate 0
 extern void ValueNumbering__PartitionDesc_Concatenate(ValueNumbering__Partition list, ValueNumbering__Partition tail);
-#define _TBP_ValueNumbering__PartitionDesc_IncludeInstrNode void(*)(ValueNumbering__Partition partition, ValueNumbering__InstrNode instrNode)
+typedef void(* _TBP_ValueNumbering__PartitionDesc_IncludeInstrNode)(ValueNumbering__Partition partition, ValueNumbering__InstrNode instrNode);
 #define _TBN_ValueNumbering__PartitionDesc_IncludeInstrNode 1
 extern void ValueNumbering__PartitionDesc_IncludeInstrNode(ValueNumbering__Partition partition, ValueNumbering__InstrNode instrNode);
-#define _TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode void(*)(ValueNumbering__Partition partition, ValueNumbering__InstrNode instrNode)
+typedef void(* _TBP_ValueNumbering__PartitionDesc_ExcludeInstrNode)(ValueNumbering__Partition partition, ValueNumbering__InstrNode instrNode);
 #define _TBN_ValueNumbering__PartitionDesc_ExcludeInstrNode 2
 extern void ValueNumbering__PartitionDesc_ExcludeInstrNode(ValueNumbering__Partition partition, ValueNumbering__InstrNode instrNode);
-#define _TBP_ValueNumbering__PartitionDesc_Size int(*)(ValueNumbering__Partition partition)
+typedef int(* _TBP_ValueNumbering__PartitionDesc_Size)(ValueNumbering__Partition partition);
 #define _TBN_ValueNumbering__PartitionDesc_Size 3
 extern int ValueNumbering__PartitionDesc_Size(ValueNumbering__Partition partition);
-#define _TBP_ValueNumbering__PartitionDesc_GetAnyInstruction ValueNumbering__InstrNode(*)(ValueNumbering__Partition partition)
+typedef ValueNumbering__InstrNode(* _TBP_ValueNumbering__PartitionDesc_GetAnyInstruction)(ValueNumbering__Partition partition);
 #define _TBN_ValueNumbering__PartitionDesc_GetAnyInstruction 4
 extern ValueNumbering__InstrNode ValueNumbering__PartitionDesc_GetAnyInstruction(ValueNumbering__Partition partition);
-#define _TBP_ValueNumbering__PartitionDesc_IsEmpty unsigned char(*)(ValueNumbering__Partition partition)
+typedef unsigned char(* _TBP_ValueNumbering__PartitionDesc_IsEmpty)(ValueNumbering__Partition partition);
 #define _TBN_ValueNumbering__PartitionDesc_IsEmpty 5
 extern unsigned char ValueNumbering__PartitionDesc_IsEmpty(ValueNumbering__Partition partition);
 typedef struct ValueNumbering__InstrListDesc {
@@ -47,7 +47,7 @@ typedef struct ValueNumbering__InstrListDesc {
   Data__Instruction instr;
 } ValueNumbering__InstrListDesc;
 typedef struct ValueNumbering__InstrListDesc* ValueNumbering__InstrList;
-#define _TBP_ValueNumbering__PartitionDesc_CreateInstrList ValueNumbering__InstrList(*)(ValueNumbering__Partition partition)
+typedef ValueNumbering__InstrList(* _TBP_ValueNumbering__PartitionDesc_CreateInstrList)(ValueNumbering__Partition partition);
 #define _TBN_ValueNumbering__PartitionDesc_CreateInstrList 6
 extern ValueNumbering__InstrList ValueNumbering__PartitionDesc_CreateInstrList(ValueNumbering__Partition partition);
 extern struct _TD ValueNumbering__InstrListDesc_td;

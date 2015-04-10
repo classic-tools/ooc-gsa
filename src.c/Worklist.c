@@ -19,7 +19,7 @@ Worklist__Node Worklist__NewNode(Data__Info data) {
   if (i0) goto l0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(1663));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Worklist__NodeDesc_td.td;
@@ -88,7 +88,7 @@ l2:
 unsigned char Worklist__Worklist_Member(Worklist__Worklist *wl, _Type wl__tag, Data__Info data) {
   register int i0;
   i0 = (int)((_Type)wl__tag)->tbprocs[1];
-  i0 = (int)((Worklist__Node(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i0)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)(int)data);
+  i0 = (int)((_TBP_Worklist__Worklist_GetNode)i0)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)(int)data);
   i0 = i0 != 0;
   return (unsigned char)i0;
 }
@@ -118,7 +118,7 @@ l2:
 void Worklist__Worklist_RemoveNode(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node) {
   register int i0, i1, i2, i3;
   i0 = (int)((_Type)wl__tag)->tbprocs[3];
-  i0 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag, Worklist__Node))i0)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)(int)node);
+  i0 = ((_TBP_Worklist__Worklist_MemberNode)i0)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)(int)node);
   if (i0) goto l0;
   Out__String((const unsigned char*)(int)_c0, 29);
   Out__Ln();
@@ -172,23 +172,23 @@ void Worklist__Worklist_AddHead(Worklist__Worklist *wl, _Type wl__tag, Data__Inf
   register int i0, i1;
   i0 = (int)Worklist__NewNode((Data__Info)(int)data);
   i1 = (int)((_Type)wl__tag)->tbprocs[5];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Worklist__Node))i1)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)i0);
+  ((_TBP_Worklist__Worklist_AddNodeHead)i1)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)i0);
 }
 
 void Worklist__Worklist_AddHeadUnique(Worklist__Worklist *wl, _Type wl__tag, Data__Info data) {
   register int i0, i1;
   i0 = (int)((_Type)wl__tag)->tbprocs[1];
-  i0 = (int)((Worklist__Node(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i0)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)(int)data);
+  i0 = (int)((_TBP_Worklist__Worklist_GetNode)i0)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)(int)data);
   i1 = i0 != 0;
   if (i1) goto l0;
   i0 = (int)((_Type)wl__tag)->tbprocs[6];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i0)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)(int)data);
+  ((_TBP_Worklist__Worklist_AddHead)i0)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)(int)data);
   goto l1;
 l0:
   i1 = (int)((_Type)wl__tag)->tbprocs[4];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Worklist__Node))i1)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)i0);
+  ((_TBP_Worklist__Worklist_RemoveNode)i1)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)i0);
   i1 = (int)((_Type)wl__tag)->tbprocs[5];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Worklist__Node))i1)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)i0);
+  ((_TBP_Worklist__Worklist_AddNodeHead)i1)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)i0);
 l1:
   ;
 }
@@ -215,23 +215,23 @@ void Worklist__Worklist_AddTail(Worklist__Worklist *wl, _Type wl__tag, Data__Inf
   register int i0, i1;
   i0 = (int)Worklist__NewNode((Data__Info)(int)data);
   i1 = (int)((_Type)wl__tag)->tbprocs[8];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Worklist__Node))i1)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)i0);
+  ((_TBP_Worklist__Worklist_AddNodeTail)i1)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)i0);
 }
 
 void Worklist__Worklist_AddTailUnique(Worklist__Worklist *wl, _Type wl__tag, Data__Info data) {
   register int i0, i1;
   i0 = (int)((_Type)wl__tag)->tbprocs[1];
-  i0 = (int)((Worklist__Node(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i0)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)(int)data);
+  i0 = (int)((_TBP_Worklist__Worklist_GetNode)i0)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)(int)data);
   i1 = i0 != 0;
   if (i1) goto l0;
   i0 = (int)((_Type)wl__tag)->tbprocs[9];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i0)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)(int)data);
+  ((_TBP_Worklist__Worklist_AddTail)i0)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)(int)data);
   goto l1;
 l0:
   i1 = (int)((_Type)wl__tag)->tbprocs[4];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Worklist__Node))i1)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)i0);
+  ((_TBP_Worklist__Worklist_RemoveNode)i1)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)i0);
   i1 = (int)((_Type)wl__tag)->tbprocs[8];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Worklist__Node))i1)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)i0);
+  ((_TBP_Worklist__Worklist_AddNodeTail)i1)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)i0);
 l1:
   ;
 }
@@ -240,16 +240,16 @@ void Worklist__Worklist_MoveNodeHead(Worklist__Worklist *wl, _Type wl__tag, Work
   register int i0, i1;
   i0 = (int)((_Type)wl__tag)->tbprocs[4];
   i1 = (int)((_Type)wl__tag)->tbprocs[5];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Worklist__Node))i0)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)(int)node);
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Worklist__Node))i1)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)(int)node);
+  ((_TBP_Worklist__Worklist_RemoveNode)i0)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)(int)node);
+  ((_TBP_Worklist__Worklist_AddNodeHead)i1)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)(int)node);
 }
 
 void Worklist__Worklist_MoveNodeTail(Worklist__Worklist *wl, _Type wl__tag, Worklist__Node node) {
   register int i0, i1;
   i0 = (int)((_Type)wl__tag)->tbprocs[4];
   i1 = (int)((_Type)wl__tag)->tbprocs[8];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Worklist__Node))i0)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)(int)node);
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Worklist__Node))i1)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)(int)node);
+  ((_TBP_Worklist__Worklist_RemoveNode)i0)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)(int)node);
+  ((_TBP_Worklist__Worklist_AddNodeTail)i1)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)(int)node);
 }
 
 unsigned char Worklist__Worklist_IsEmpty(Worklist__Worklist *wl, _Type wl__tag) {
@@ -262,7 +262,7 @@ unsigned char Worklist__Worklist_IsEmpty(Worklist__Worklist *wl, _Type wl__tag) 
 Worklist__Node Worklist__Worklist_GetHeadNode(Worklist__Worklist *wl, _Type wl__tag) {
   register int i0;
   i0 = (int)((_Type)wl__tag)->tbprocs[13];
-  i0 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i0)((Worklist__Worklist *)(int)wl, wl__tag);
+  i0 = ((_TBP_Worklist__Worklist_IsEmpty)i0)((Worklist__Worklist *)(int)wl, wl__tag);
   if (i0) goto l0;
   i0 = (int)*(void**)(int)wl;
   goto l1;
@@ -275,7 +275,7 @@ l1:
 Data__Info Worklist__Worklist_GetHead(Worklist__Worklist *wl, _Type wl__tag) {
   register int i0;
   i0 = (int)((_Type)wl__tag)->tbprocs[13];
-  i0 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i0)((Worklist__Worklist *)(int)wl, wl__tag);
+  i0 = ((_TBP_Worklist__Worklist_IsEmpty)i0)((Worklist__Worklist *)(int)wl, wl__tag);
   if (i0) goto l0;
   i0 = (int)*(void**)(int)wl;
   i0 += 8;
@@ -290,7 +290,7 @@ l1:
 Worklist__Node Worklist__Worklist_GetTailNode(Worklist__Worklist *wl, _Type wl__tag) {
   register int i0;
   i0 = (int)((_Type)wl__tag)->tbprocs[13];
-  i0 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i0)((Worklist__Worklist *)(int)wl, wl__tag);
+  i0 = ((_TBP_Worklist__Worklist_IsEmpty)i0)((Worklist__Worklist *)(int)wl, wl__tag);
   if (i0) goto l0;
   i0 = (int)wl + 4;
   i0 = (int)*(void**)i0;
@@ -304,7 +304,7 @@ l1:
 Data__Info Worklist__Worklist_GetTail(Worklist__Worklist *wl, _Type wl__tag) {
   register int i0;
   i0 = (int)((_Type)wl__tag)->tbprocs[13];
-  i0 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i0)((Worklist__Worklist *)(int)wl, wl__tag);
+  i0 = ((_TBP_Worklist__Worklist_IsEmpty)i0)((Worklist__Worklist *)(int)wl, wl__tag);
   if (i0) goto l0;
   i0 = (int)wl + 4;
   i0 = (int)*(void**)i0;
@@ -321,11 +321,11 @@ void Worklist__Worklist_RemoveHead(Worklist__Worklist *wl, _Type wl__tag) {
   register int i0, i1;
   Worklist__Node node;
   i0 = (int)((_Type)wl__tag)->tbprocs[13];
-  i0 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i0)((Worklist__Worklist *)(int)wl, wl__tag);
+  i0 = ((_TBP_Worklist__Worklist_IsEmpty)i0)((Worklist__Worklist *)(int)wl, wl__tag);
   if (i0) goto l0;
   i1 = (int)*(void**)(int)wl;
   i0 = (int)((_Type)wl__tag)->tbprocs[4];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Worklist__Node))i0)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)i1);
+  ((_TBP_Worklist__Worklist_RemoveNode)i0)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)i1);
   node = (void*)i1;
   Worklist__DisposeNode((Worklist__Node *)(int)&node);
 l0:
@@ -336,12 +336,12 @@ void Worklist__Worklist_RemoveTail(Worklist__Worklist *wl, _Type wl__tag) {
   register int i0, i1;
   Worklist__Node node;
   i0 = (int)((_Type)wl__tag)->tbprocs[13];
-  i0 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i0)((Worklist__Worklist *)(int)wl, wl__tag);
+  i0 = ((_TBP_Worklist__Worklist_IsEmpty)i0)((Worklist__Worklist *)(int)wl, wl__tag);
   if (i0) goto l0;
   i1 = (int)wl + 4;
   i1 = (int)*(void**)i1;
   i0 = (int)((_Type)wl__tag)->tbprocs[4];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Worklist__Node))i0)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)i1);
+  ((_TBP_Worklist__Worklist_RemoveNode)i0)((Worklist__Worklist *)(int)wl, wl__tag, (Worklist__Node)i1);
   node = (void*)i1;
   Worklist__DisposeNode((Worklist__Node *)(int)&node);
 l0:
@@ -351,12 +351,12 @@ l0:
 void Worklist__Worklist_Clear(Worklist__Worklist *wl, _Type wl__tag) {
   register int i0, i1, i2;
   i1 = (int)((_Type)wl__tag)->tbprocs[13];
-  i0 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i1)((Worklist__Worklist *)(int)wl, wl__tag);
+  i0 = ((_TBP_Worklist__Worklist_IsEmpty)i1)((Worklist__Worklist *)(int)wl, wl__tag);
   if (i0) goto l1;
   i2 = (int)((_Type)wl__tag)->tbprocs[18];
 l0:
-  ((void(*)(Worklist__Worklist *, _Type wl__tag))i2)((Worklist__Worklist *)(int)wl, wl__tag);
-  i0 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i1)((Worklist__Worklist *)(int)wl, wl__tag);
+  ((_TBP_Worklist__Worklist_RemoveHead)i2)((Worklist__Worklist *)(int)wl, wl__tag);
+  i0 = ((_TBP_Worklist__Worklist_IsEmpty)i1)((Worklist__Worklist *)(int)wl, wl__tag);
   if (!(i0)) goto l0;
 l1:
   ;
@@ -393,7 +393,7 @@ l0:
   i1 = ((Worklist__InitHook)(int)hook)((Data__Instruction)i2);
   if (!(i1)) goto l2;
 l1:
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i3)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)i2);
+  ((_TBP_Worklist__Worklist_AddTail)i3)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)i2);
 l2:
   i1 = i2 + 36;
   i2 = (int)*(void**)i1;
@@ -416,7 +416,7 @@ l0:
   i1 = ((Worklist__InitHook)(int)hook)((Data__Instruction)i2);
   if (!(i1)) goto l2;
 l1:
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i3)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)i2);
+  ((_TBP_Worklist__Worklist_AddTailUnique)i3)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)i2);
 l2:
   i1 = i2 + 36;
   i2 = (int)*(void**)i1;
@@ -440,7 +440,7 @@ l0:
   i1 = ((Worklist__UsingHook)(int)hook)((Data__Result)(int)used, (Data__Instruction)i2);
   if (!(i1)) goto l2;
 l1:
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i0)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)i2);
+  ((_TBP_Worklist__Worklist_AddTail)i0)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)i2);
 l2:
   i1 = i3 + 4;
   i3 = (int)*(void**)i1;
@@ -464,7 +464,7 @@ l0:
   i1 = ((Worklist__UsingHook)(int)hook)((Data__Result)(int)used, (Data__Instruction)i2);
   if (!(i1)) goto l2;
 l1:
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i0)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)i2);
+  ((_TBP_Worklist__Worklist_AddTailUnique)i0)((Worklist__Worklist *)(int)wl, wl__tag, (Data__Info)i2);
 l2:
   i1 = i3 + 4;
   i3 = (int)*(void**)i1;

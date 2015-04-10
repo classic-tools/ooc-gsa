@@ -421,7 +421,7 @@ unsigned char Check__Opnds(Data__Region r) {
   unsigned char ok;
   i0 = *(int*)((int)r-4);
   i0 = (int)((_Type)i0)->tbprocs[0];
-  i8 = (int)((Data__GlobalRegion(*)(Data__Node))i0)((Data__Node)(int)r);
+  i8 = (int)((_TBP_Data__NodeDesc_Greg)i0)((Data__Node)(int)r);
   i0 = (int)r + 56;
   i7 = (int)*(void**)i0;
   i0 = i7 != 0;
@@ -456,7 +456,7 @@ l4:
   if (!(i4)) goto l5;
   i4 = *(int*)(i2-4);
   i4 = (int)((_Type)i4)->tbprocs[0];
-  i2 = (int)((Data__GlobalRegion(*)(Data__Node))i4)((Data__Node)i2);
+  i2 = (int)((_TBP_Data__NodeDesc_Greg)i4)((Data__Node)i2);
   i2 = i2 != i8;
   if (i2) goto l6;
 l5:

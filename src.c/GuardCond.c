@@ -381,7 +381,7 @@ GuardCond__RegionInfo GuardCond__InitRegions_CreateRegionInfo(Data__Region regio
   register int i0, i1, i2, i3, i4, i5, i6;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(24+8);
+    _mem = GC_malloc(_not_zero(24)+8);
     if (!_mem) _new_failed(_P(10146));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &GuardCond__RegionInfoDesc_td.td;
@@ -974,7 +974,7 @@ void GuardCond__Init(Data__GlobalRegion greg) {
   Data__Usable opndValue;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(21288));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &GuardCond__RegionSummaryDesc_td.td;
@@ -988,7 +988,7 @@ void GuardCond__Init(Data__GlobalRegion greg) {
     int* _dim_ptr;
     if(i7 < 0) _invalid_length(i7, _P(21348));
     if(i7 < 0) _invalid_length(i7, _P(21355));
-    _mem = GC_malloc_atomic(i7*i7*1+16);
+    _mem = GC_malloc_atomic(_not_zero(i7*i7*1)+16);
     if (!_mem) _new_failed(_P(21340));
     _var = _mem+16;
     _dim_ptr = (void*)(_var-4);
@@ -1001,7 +1001,7 @@ void GuardCond__Init(Data__GlobalRegion greg) {
     char *_mem, *_var;
     int* _dim_ptr;
     if(i7 < 0) _invalid_length(i7, _P(21328));
-    _mem = GC_malloc(i7*4+8);
+    _mem = GC_malloc(_not_zero(i7*4)+8);
     if (!_mem) _new_failed(_P(21307));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);

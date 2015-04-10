@@ -12,8 +12,8 @@ Allocate__Location Allocate__NewLoc(const unsigned char* str__ref, int str_0d) {
   _push_value(int, str, str__ref, str_0d);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(20+8);
-    if (!_mem) _new_failed(_P(11361));
+    _mem = GC_malloc(_not_zero(20)+8);
+    if (!_mem) _new_failed(_P(11365));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Allocate__LocationDesc_td.td;
     i1 = (int)_var;
@@ -37,9 +37,9 @@ l0:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i2 < 0) _invalid_length(i2, _P(11529));
-    _mem = GC_malloc_atomic(i2*1+8);
-    if (!_mem) _new_failed(_P(11494));
+    if(i2 < 0) _invalid_length(i2, _P(11533));
+    _mem = GC_malloc_atomic(_not_zero(i2*1)+8);
+    if (!_mem) _new_failed(_P(11498));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i2;
@@ -206,8 +206,8 @@ Allocate__Location Allocate__ConcatLoc(const unsigned char* str1__ref, int str1_
   _push_value(int, str3, str3__ref, str3_0d);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(20+8);
-    if (!_mem) _new_failed(_P(13431));
+    _mem = GC_malloc(_not_zero(20)+8);
+    if (!_mem) _new_failed(_P(13435));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Allocate__LocationDesc_td.td;
     i0 = (int)_var;
@@ -221,9 +221,9 @@ Allocate__Location Allocate__ConcatLoc(const unsigned char* str1__ref, int str1_
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i1 < 0) _invalid_length(i1, _P(13544));
-    _mem = GC_malloc_atomic(i1*1+8);
-    if (!_mem) _new_failed(_P(13444));
+    if(i1 < 0) _invalid_length(i1, _P(13548));
+    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
+    if (!_mem) _new_failed(_P(13448));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i1;
@@ -667,8 +667,8 @@ struct Allocate__ResolveVarConflicts_0* Allocate__ResolveVarConflicts_NewInfo(in
   register int i0, i1, i2, i3, i4, i5, i6, i7;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(4+8);
-    if (!_mem) _new_failed(_P(23463));
+    _mem = GC_malloc(_not_zero(4)+8);
+    if (!_mem) _new_failed(_P(23467));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Allocate__ResolveVarConflicts_0_td.td;
     i5 = (int)_var;
@@ -678,9 +678,9 @@ struct Allocate__ResolveVarConflicts_0* Allocate__ResolveVarConflicts_NewInfo(in
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i0 < 0) _invalid_length(i0, _P(23494));
-    _mem = GC_malloc(i0*8+8);
-    if (!_mem) _new_failed(_P(23479));
+    if(i0 < 0) _invalid_length(i0, _P(23498));
+    _mem = GC_malloc(_not_zero(i0*8)+8);
+    if (!_mem) _new_failed(_P(23483));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i0;
@@ -759,7 +759,7 @@ l1:
   if (i2) goto l2;
   i0 += 8;
   i0 = *(int*)i0;
-  i0 = i0 >= 0;
+  i0 = i0 > 0;
   if (i0) goto l3;
 l2:
   i2 = 0;
@@ -791,76 +791,80 @@ void Allocate__ResolveVarConflicts_ScanRegions_Conflict_Copy(Data__Result res) {
   Data__InstructionDesc_MoveBehind((Data__Instruction)i2, (Data__Instruction)i0);
   i0 = *(int*)((int)res-4);
   i0 = (int)((_Type)i0)->tbprocs[1];
-  ((void(*)(Data__Usable, Data__Usable))i0)((Data__Usable)(int)res, (Data__Usable)i2);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i0)((Data__Usable)(int)res, (Data__Usable)i2);
   Data__InstructionDesc_Operand((Data__Instruction)i2, (Data__Usable)(int)res);
   i1 = i2 + 4;
   i0 = (int)Allocate__copyMarker;
   *(void**)i1 = (void*)i0;
 }
 
-void Allocate__ResolveVarConflicts_ScanRegions_Conflict(Data__Result res0, Data__Result res1) {
+unsigned char Allocate__ResolveVarConflicts_ScanRegions_Conflict(Data__Result res0, Data__Result res1) {
   register int i0, i1, i2, i3;
   i0 = (int)res1 == 0;
   if (i0) goto l0;
-  i0 = (int)*(void**)(int)res1;
-  i1 = i0 + 4;
+  i1 = (int)*(void**)(int)res1;
+  i0 = i1 + 4;
+  i0 = (int)*(void**)i0;
+  i0 = i0 != 0;
+  if (i0) goto l0;
+  i1 += 12;
   i1 = (int)*(void**)i1;
-  i1 = i1 != 0;
-  if (i1) goto l0;
-  i0 += 12;
-  i0 = (int)*(void**)i0;
-  i0 += 4;
-  i0 = (int)*(void**)i0;
-  i1 = (int)Allocate__copyMarker;
-  i0 = i0 == i1;
-  if (i0) goto l1;
+  i1 += 4;
+  i1 = (int)*(void**)i1;
+  i0 = (int)Allocate__copyMarker;
+  i1 = i1 == i0;
+  if (i1) goto l1;
 l0:
-  i1 = (int)res1;
+  i2 = (int)res1;
   goto l2;
 l1:
-  i1 = 0;
+  i2 = 0;
 l2:
   i0 = (int)res0 != 0;
   if (!(i0)) goto l3;
-  i0 = (int)*(void**)(int)res0;
-  i2 = i0 + 4;
-  i2 = (int)*(void**)i2;
-  i2 = i2 != 0;
-  if (i2) goto l3;
-  i0 += 12;
+  i1 = (int)*(void**)(int)res0;
+  i0 = i1 + 4;
   i0 = (int)*(void**)i0;
-  i0 += 4;
-  i0 = (int)*(void**)i0;
-  i2 = (int)Allocate__copyMarker;
-  i0 = i0 == i2;
-  if (i0) goto l4;
+  i0 = i0 != 0;
+  if (i0) goto l3;
+  i1 += 12;
+  i1 = (int)*(void**)i1;
+  i1 += 4;
+  i1 = (int)*(void**)i1;
+  i0 = (int)Allocate__copyMarker;
+  i1 = i1 == i0;
+  if (i1) goto l4;
 l3:
-  i2 = (int)res0;
+  i0 = (int)res0;
   goto l5;
 l4:
-  i2 = i1;
+  i0 = i2;
 l5:
-  i0 = i1 != 0;
-  if (i0) goto l6;
-  Allocate__ResolveVarConflicts_ScanRegions_Conflict_Copy((Data__Result)i2);
-  goto l8;
+  i1 = i2 != 0;
+  if (i1) goto l6;
+  i1 = i0 != 0;
+  if (!(i1)) goto l9;
+  Allocate__ResolveVarConflicts_ScanRegions_Conflict_Copy((Data__Result)i0);
+  goto l9;
 l6:
-  i0 = i2 + 16;
-  i0 = (int)*(void**)i0;
-  i3 = i1 + 16;
+  i1 = i0 + 16;
+  i1 = (int)*(void**)i1;
+  i3 = i2 + 16;
   i3 = (int)*(void**)i3;
-  i0 += 8;
+  i1 += 8;
   i3 += 8;
-  i0 = *(int*)i0;
+  i1 = *(int*)i1;
   i3 = *(int*)i3;
-  i0 = i0 < i3;
-  if (i0) goto l7;
-  Allocate__ResolveVarConflicts_ScanRegions_Conflict_Copy((Data__Result)i1);
+  i1 = i1 < i3;
+  if (i1) goto l7;
+  Allocate__ResolveVarConflicts_ScanRegions_Conflict_Copy((Data__Result)i2);
   goto l8;
 l7:
-  Allocate__ResolveVarConflicts_ScanRegions_Conflict_Copy((Data__Result)i2);
+  Allocate__ResolveVarConflicts_ScanRegions_Conflict_Copy((Data__Result)i0);
 l8:
-  ;
+  i1 = 1;
+l9:
+  return (unsigned char)i1;
 }
 
 unsigned char Allocate__ResolveVarConflicts_ScanRegions_WriteConflict(struct Allocate__ResolveVarConflicts_0* ia, Data__Usable u, int marker) {
@@ -868,47 +872,57 @@ unsigned char Allocate__ResolveVarConflicts_ScanRegions_WriteConflict(struct All
   i2 = (int)*(void**)(int)ia;
   i0 = (int)_ashl(marker, 3, (unsigned int));
   i1 = i2 + i0;
-  i3 = i1 + 4;
-  i0 = (int)*(void**)i3;
-  i0 = i0 != 0;
-  if (i0) goto l0;
-  *(void**)i3 = (void*)(int)u;
+  i0 = i1 + 4;
+  i3 = (int)*(void**)i0;
+  i3 = i3 != 0;
+  if (i3) goto l0;
+  *(void**)i0 = (void*)(int)u;
 l0:
   i0 = (int)*(void**)i1;
   i3 = (int)u != i0;
   if (i3) goto l1;
   i3 = (int)Data__constUndef;
   i3 = (int)u != i3;
-  if (i3) goto l2;
+  if (i3) goto l3;
 l1:
   i1 = i0 != 0;
-  if (!(i1)) goto l3;
-  Allocate__ResolveVarConflicts_ScanRegions_Conflict((Data__Result)i0, (Data__Result)0);
-  goto l3;
+  if (i1) goto l2;
+  goto l4;
 l2:
+  i2 = Allocate__ResolveVarConflicts_ScanRegions_Conflict((Data__Result)i0, (Data__Result)0);
+  goto l4;
+l3:
   *(void**)i1 = (void*)0;
   i1 = 0;
-l3:
-  return (unsigned char)i1;
+l4:
+  if (i1) goto l5;
+  i2 = 0;
+l5:
+  return (unsigned char)i2;
 }
 
 unsigned char Allocate__ResolveVarConflicts_ScanRegions_ReadConflict(struct Allocate__ResolveVarConflicts_0* ia, Data__Result res, int marker) {
   register int i0, i1, i2, i3;
   i2 = (int)*(void**)(int)ia;
   i0 = (int)_ashl(marker, 3, (unsigned int));
-  i1 = i2 + i0;
-  i0 = (int)*(void**)i1;
-  i3 = i0 == 0;
-  if (i3) goto l0;
+  i3 = i2 + i0;
+  i0 = (int)*(void**)i3;
+  i1 = i0 == 0;
+  if (i1) goto l1;
   i1 = (int)res != i0;
-  if (!(i1)) goto l1;
-  Allocate__ResolveVarConflicts_ScanRegions_Conflict((Data__Result)(int)res, (Data__Result)i0);
-  goto l1;
+  if (i1) goto l0;
+  goto l2;
 l0:
-  *(void**)i1 = (void*)(int)res;
-  i1 = 0;
+  i2 = Allocate__ResolveVarConflicts_ScanRegions_Conflict((Data__Result)(int)res, (Data__Result)i0);
+  goto l2;
 l1:
-  return (unsigned char)i1;
+  *(void**)i3 = (void*)(int)res;
+  i1 = 0;
+l2:
+  if (i1) goto l3;
+  i2 = 0;
+l3:
+  return (unsigned char)i2;
 }
 
 unsigned char Allocate__ResolveVarConflicts_ScanRegions_HandleRegion(struct Allocate__ResolveVarConflicts_0* ia, Data__Region region, int *Allocate__ResolveVarConflicts_counter) {
@@ -1896,8 +1910,8 @@ void Allocate__BuildInterferenceGraphs_AddToGlobal(Data__Region r, Allocate__Reg
   register int i0, i1, i2, i3, i4, i5, i6;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(8+8);
-    if (!_mem) _new_failed(_P(41500));
+    _mem = GC_malloc(_not_zero(8)+8);
+    if (!_mem) _new_failed(_P(41606));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Allocate__LiveRangeListDesc_td.td;
     i5 = (int)_var;
@@ -2010,10 +2024,10 @@ l1:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i2 < 0) _invalid_length(i2, _P(43911));
-    if(i3 < 0) _invalid_length(i3, _P(43917));
-    _mem = GC_malloc_atomic(i2*i3*4+16);
-    if (!_mem) _new_failed(_P(43887));
+    if(i2 < 0) _invalid_length(i2, _P(44017));
+    if(i3 < 0) _invalid_length(i3, _P(44023));
+    _mem = GC_malloc_atomic(_not_zero(i2*i3*4)+16);
+    if (!_mem) _new_failed(_P(43993));
     _var = _mem+16;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i2;
@@ -2026,9 +2040,9 @@ l1:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i3 < 0) _invalid_length(i3, _P(43956));
-    _mem = GC_malloc_atomic(i3*4+8);
-    if (!_mem) _new_failed(_P(43932));
+    if(i3 < 0) _invalid_length(i3, _P(44062));
+    _mem = GC_malloc_atomic(_not_zero(i3*4)+8);
+    if (!_mem) _new_failed(_P(44038));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i3;
@@ -2039,9 +2053,9 @@ l1:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i2 < 0) _invalid_length(i2, _P(43995));
-    _mem = GC_malloc_atomic(i2*4+8);
-    if (!_mem) _new_failed(_P(43971));
+    if(i2 < 0) _invalid_length(i2, _P(44101));
+    _mem = GC_malloc_atomic(_not_zero(i2*4)+8);
+    if (!_mem) _new_failed(_P(44077));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i2;
@@ -2052,9 +2066,9 @@ l1:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i2 < 0) _invalid_length(i2, _P(44034));
-    _mem = GC_malloc_atomic(i2*4+8);
-    if (!_mem) _new_failed(_P(44010));
+    if(i2 < 0) _invalid_length(i2, _P(44140));
+    _mem = GC_malloc_atomic(_not_zero(i2*4)+8);
+    if (!_mem) _new_failed(_P(44116));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i2;
@@ -2065,9 +2079,9 @@ l1:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i2 < 0) _invalid_length(i2, _P(44074));
-    _mem = GC_malloc_atomic(i2*4+8);
-    if (!_mem) _new_failed(_P(44049));
+    if(i2 < 0) _invalid_length(i2, _P(44180));
+    _mem = GC_malloc_atomic(_not_zero(i2*4)+8);
+    if (!_mem) _new_failed(_P(44155));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i2;
@@ -2325,8 +2339,8 @@ l0:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    _mem = GC_malloc_atomic(1016*4+8);
-    if (!_mem) _new_failed(_P(49136));
+    _mem = GC_malloc_atomic(_not_zero(1016*4)+8);
+    if (!_mem) _new_failed(_P(49242));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 1016;
@@ -2351,9 +2365,9 @@ l1:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i5 < 0) _invalid_length(i5, _P(49311));
-    _mem = GC_malloc_atomic(i5*4+8);
-    if (!_mem) _new_failed(_P(49261));
+    if(i5 < 0) _invalid_length(i5, _P(49417));
+    _mem = GC_malloc_atomic(_not_zero(i5*4)+8);
+    if (!_mem) _new_failed(_P(49367));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i5;
@@ -2928,9 +2942,9 @@ l2:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i5 < 0) _invalid_length(i5, _P(60746));
-    _mem = GC_malloc(i5*4+8);
-    if (!_mem) _new_failed(_P(60736));
+    if(i5 < 0) _invalid_length(i5, _P(60852));
+    _mem = GC_malloc(_not_zero(i5*4)+8);
+    if (!_mem) _new_failed(_P(60842));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i5;
@@ -3669,9 +3683,9 @@ void Allocate__ColorGraph_CreateLocation(void) {
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i1 < 0) _invalid_length(i1, _P(74991));
-    _mem = GC_malloc(i1*4+8);
-    if (!_mem) _new_failed(_P(74965));
+    if(i1 < 0) _invalid_length(i1, _P(75097));
+    _mem = GC_malloc(_not_zero(i1*4)+8);
+    if (!_mem) _new_failed(_P(75071));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i1;
@@ -3698,8 +3712,8 @@ l2:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    _mem = GC_malloc(64*4+8);
-    if (!_mem) _new_failed(_P(74889));
+    _mem = GC_malloc(_not_zero(64*4)+8);
+    if (!_mem) _new_failed(_P(74995));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 64;
@@ -4252,9 +4266,9 @@ l41:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i0 < 0) _invalid_length(i0, _P(81019));
-    _mem = GC_malloc(i0*4+8);
-    if (!_mem) _new_failed(_P(80999));
+    if(i0 < 0) _invalid_length(i0, _P(81125));
+    _mem = GC_malloc(_not_zero(i0*4)+8);
+    if (!_mem) _new_failed(_P(81105));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i0;
@@ -4337,10 +4351,10 @@ void Allocate__UpdateSummary(Allocate__RangeInfo *ri, _Type ri__tag, Allocate__R
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    if(i13 < 0) _invalid_length(i13, _P(82286));
-    if(i2 < 0) _invalid_length(i2, _P(82292));
-    _mem = GC_malloc_atomic(i13*i2*4+16);
-    if (!_mem) _new_failed(_P(82273));
+    if(i13 < 0) _invalid_length(i13, _P(82392));
+    if(i2 < 0) _invalid_length(i2, _P(82398));
+    _mem = GC_malloc_atomic(_not_zero(i13*i2*4)+16);
+    if (!_mem) _new_failed(_P(82379));
     _var = _mem+16;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = i13;
@@ -4564,8 +4578,8 @@ l0:
 l1:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(128+8);
-    if (!_mem) _new_failed(_P(90747));
+    _mem = GC_malloc(_not_zero(128)+8);
+    if (!_mem) _new_failed(_P(90853));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Allocate__RegionSummaryDesc_td.td;
     i5 = (int)_var;
@@ -4713,8 +4727,8 @@ l0:
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    _mem = GC_malloc_atomic(8*1+8);
-    if (!_mem) _new_failed(_P(93415));
+    _mem = GC_malloc_atomic(_not_zero(8*1)+8);
+    if (!_mem) _new_failed(_P(93521));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
     *(--_dim_ptr) = 8;
@@ -4823,7 +4837,7 @@ l3:
   i3 = (int)*(void**)i3;
   i5 = (int)((_Type)i5)->tbprocs[1];
   i3 = (int)*(void**)i3;
-  ((void(*)(Data__Usable, Data__Usable))i5)((Data__Usable)i7, (Data__Usable)i3);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i5)((Data__Usable)i7, (Data__Usable)i3);
   Data__InstructionDesc_Delete((Data__Instruction)i7);
   i2 = -1;
 l4:
@@ -4834,7 +4848,7 @@ l5:
   i6 = i7 + 28;
   i6 = (int)*(void**)i6;
   i6 = (int)*(void**)i6;
-  ((void(*)(Data__Usable, Data__Usable))i3)((Data__Usable)i7, (Data__Usable)i6);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i3)((Data__Usable)i7, (Data__Usable)i6);
 l6:
   i3 = i1 == 8;
   if (i3) goto l7;
@@ -5060,8 +5074,8 @@ l4:
   i0 = (int)((_Type)i2)->tbprocs[5];
   StdTypes__BasicTypes((signed char)i1, (unsigned char*)(int)str, 64);
   i1 = (int)((_Type)i2)->tbprocs[7];
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)str, 64);
-  ((void(*)(TextRider__Writer, unsigned char))i1)((TextRider__Writer)(int)w, (unsigned char)32);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)str, 64);
+  ((_TBP_TextRider__WriterDesc_WriteChar)i1)((TextRider__Writer)(int)w, (unsigned char)32);
 l5:
   ;
 }
@@ -5084,21 +5098,21 @@ void Allocate__EmitVariables_WriteRegisters_WriteDeclarations(const unsigned cha
   i1 = *(int*)(i2-4);
   i7 = (int)((_Type)i1)->tbprocs[19];
   i3 = off == -1;
-  ((void(*)(TextRider__Writer))i7)((TextRider__Writer)i2);
+  ((_TBP_TextRider__WriterDesc_WriteLn)i7)((TextRider__Writer)i2);
   if (i3) goto l1;
   i3 = off <= 0;
   if (i3) goto l2;
   i3 = (int)((_Type)i1)->tbprocs[5];
   i7 = off;
 l0:
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i3)((TextRider__Writer)i2, (const unsigned char*)(int)_c14, 3);
+  ((_TBP_TextRider__WriterDesc_WriteString)i3)((TextRider__Writer)i2, (const unsigned char*)(int)_c14, 3);
   i7--;
   i0 = i7 > 0;
   if (i0) goto l0;
   goto l2;
 l1:
   i7 = (int)((_Type)i1)->tbprocs[5];
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i7)((TextRider__Writer)i2, (const unsigned char*)(int)_c15, 12);
+  ((_TBP_TextRider__WriterDesc_WriteString)i7)((TextRider__Writer)i2, (const unsigned char*)(int)_c15, 12);
 l2:
   i7 = reg + 12;
   Allocate__WriteRegType((TextRider__Writer)i2, (signed char)i7);
@@ -5115,18 +5129,18 @@ l2:
 l3:
   i5 = i4 != 0;
   if (!(i5)) goto l4;
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i7)((TextRider__Writer)i2, (const unsigned char*)(int)_c16, 3);
+  ((_TBP_TextRider__WriterDesc_WriteString)i7)((TextRider__Writer)i2, (const unsigned char*)(int)_c16, 3);
 l4:
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i7)((TextRider__Writer)i2, (const unsigned char*)(int)prefix, prefix_0d);
+  ((_TBP_TextRider__WriterDesc_WriteString)i7)((TextRider__Writer)i2, (const unsigned char*)(int)prefix, prefix_0d);
   i0 = i4 + 1;
   i5 = i0 > i6;
-  ((void(*)(TextRider__Writer, int, int))i3)((TextRider__Writer)i2, (int)i4, (int)0);
+  ((_TBP_TextRider__WriterDesc_WriteLInt)i3)((TextRider__Writer)i2, (int)i4, (int)0);
   if (i5) goto l5;
   i4 = i0;
   goto l3;
 l5:
   i7 = (int)((_Type)i1)->tbprocs[7];
-  ((void(*)(TextRider__Writer, unsigned char))i7)((TextRider__Writer)i2, (unsigned char)59);
+  ((_TBP_TextRider__WriterDesc_WriteChar)i7)((TextRider__Writer)i2, (unsigned char)59);
 l6:
   _top_vs = _old_top_vs;
 }
@@ -5161,18 +5175,18 @@ void Allocate__EmitVariables_WriteAssignments_WriteList(const unsigned char* pre
   i2 = (int)((_Type)i6)->tbprocs[7];
   i6 = 0;
 l0:
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i4)((TextRider__Writer)i1, (const unsigned char*)(int)_c17, 3);
-  ((void(*)(TextRider__Writer))i5)((TextRider__Writer)i1);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i4)((TextRider__Writer)i1, (const unsigned char*)(int)Allocate__EmitVariables_WriteAssignments_aprefix0, Allocate__EmitVariables_WriteAssignments_aprefix0_0d);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i4)((TextRider__Writer)i1, (const unsigned char*)(int)prefix, prefix_0d);
-  ((void(*)(TextRider__Writer, int, int))i3)((TextRider__Writer)i1, (int)i6, (int)0);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i4)((TextRider__Writer)i1, (const unsigned char*)(int)_c18, 4);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i4)((TextRider__Writer)i1, (const unsigned char*)(int)Allocate__EmitVariables_WriteAssignments_aprefix1, Allocate__EmitVariables_WriteAssignments_aprefix1_0d);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i4)((TextRider__Writer)i1, (const unsigned char*)(int)prefix, prefix_0d);
+  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i1, (const unsigned char*)(int)_c17, 3);
+  ((_TBP_TextRider__WriterDesc_WriteLn)i5)((TextRider__Writer)i1);
+  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i1, (const unsigned char*)(int)Allocate__EmitVariables_WriteAssignments_aprefix0, Allocate__EmitVariables_WriteAssignments_aprefix0_0d);
+  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i1, (const unsigned char*)(int)prefix, prefix_0d);
+  ((_TBP_TextRider__WriterDesc_WriteLInt)i3)((TextRider__Writer)i1, (int)i6, (int)0);
+  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i1, (const unsigned char*)(int)_c18, 4);
+  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i1, (const unsigned char*)(int)Allocate__EmitVariables_WriteAssignments_aprefix1, Allocate__EmitVariables_WriteAssignments_aprefix1_0d);
+  ((_TBP_TextRider__WriterDesc_WriteString)i4)((TextRider__Writer)i1, (const unsigned char*)(int)prefix, prefix_0d);
   i0 = i6 + 1;
-  ((void(*)(TextRider__Writer, int, int))i3)((TextRider__Writer)i1, (int)i6, (int)0);
+  ((_TBP_TextRider__WriterDesc_WriteLInt)i3)((TextRider__Writer)i1, (int)i6, (int)0);
   i6 = i0 > i7;
-  ((void(*)(TextRider__Writer, unsigned char))i2)((TextRider__Writer)i1, (unsigned char)59);
+  ((_TBP_TextRider__WriterDesc_WriteChar)i2)((TextRider__Writer)i1, (unsigned char)59);
   if (i6) goto l1;
   i6 = i0;
   goto l0;
@@ -5203,45 +5217,45 @@ void Allocate__EmitVariables(TextRider__Writer w, Data__GlobalRegion greg, unsig
   i0 = *(int*)((int)w-4);
   i1 = (int)((_Type)i0)->tbprocs[19];
   i0 = (int)((_Type)i0)->tbprocs[5];
-  ((void(*)(TextRider__Writer))i1)((TextRider__Writer)(int)w);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c19, 40);
-  ((void(*)(TextRider__Writer))i1)((TextRider__Writer)(int)w);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c20, 11);
+  ((_TBP_TextRider__WriterDesc_WriteLn)i1)((TextRider__Writer)(int)w);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c19, 40);
+  ((_TBP_TextRider__WriterDesc_WriteLn)i1)((TextRider__Writer)(int)w);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c20, 11);
   Allocate__EmitVariables_WriteRegisters((signed char)2, (Data__GlobalRegion *)&greg, (TextRider__Writer *)&w);
   i0 = *(int*)((int)w-4);
   i1 = (int)((_Type)i0)->tbprocs[19];
   i0 = (int)((_Type)i0)->tbprocs[5];
   if (!(vsStack)) goto l0;
-  ((void(*)(TextRider__Writer))i1)((TextRider__Writer)(int)w);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c21, 18);
+  ((_TBP_TextRider__WriterDesc_WriteLn)i1)((TextRider__Writer)(int)w);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c21, 18);
 l0:
-  ((void(*)(TextRider__Writer))i1)((TextRider__Writer)(int)w);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c22, 16);
-  ((void(*)(TextRider__Writer))i1)((TextRider__Writer)(int)w);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c23, 19);
-  ((void(*)(TextRider__Writer))i1)((TextRider__Writer)(int)w);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c24, 20);
+  ((_TBP_TextRider__WriterDesc_WriteLn)i1)((TextRider__Writer)(int)w);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c22, 16);
+  ((_TBP_TextRider__WriterDesc_WriteLn)i1)((TextRider__Writer)(int)w);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c23, 19);
+  ((_TBP_TextRider__WriterDesc_WriteLn)i1)((TextRider__Writer)(int)w);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c24, 20);
   Allocate__EmitVariables_WriteAssignments((const unsigned char*)(int)_c25, 12, (const unsigned char*)(int)_c0, 1, (Data__GlobalRegion *)&greg, (TextRider__Writer *)&w);
   i1 = *(int*)((int)w-4);
   i0 = (int)((_Type)i1)->tbprocs[5];
   i1 = (int)((_Type)i1)->tbprocs[19];
   if (!(vsStack)) goto l1;
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c17, 3);
-  ((void(*)(TextRider__Writer))i1)((TextRider__Writer)(int)w);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c26, 29);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c17, 3);
+  ((_TBP_TextRider__WriterDesc_WriteLn)i1)((TextRider__Writer)(int)w);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c26, 29);
 l1:
-  ((void(*)(TextRider__Writer))i1)((TextRider__Writer)(int)w);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c27, 22);
-  ((void(*)(TextRider__Writer))i1)((TextRider__Writer)(int)w);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c28, 23);
+  ((_TBP_TextRider__WriterDesc_WriteLn)i1)((TextRider__Writer)(int)w);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c27, 22);
+  ((_TBP_TextRider__WriterDesc_WriteLn)i1)((TextRider__Writer)(int)w);
+  ((_TBP_TextRider__WriterDesc_WriteString)i0)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c28, 23);
   Allocate__EmitVariables_WriteAssignments((const unsigned char*)(int)_c0, 1, (const unsigned char*)(int)_c25, 12, (Data__GlobalRegion *)&greg, (TextRider__Writer *)&w);
   if (!(vsStack)) goto l2;
   i0 = *(int*)((int)w-4);
   i1 = (int)((_Type)i0)->tbprocs[5];
   i0 = (int)((_Type)i0)->tbprocs[19];
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i1)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c17, 3);
-  ((void(*)(TextRider__Writer))i0)((TextRider__Writer)(int)w);
-  ((void(*)(TextRider__Writer, const unsigned char*, int s_0d))i1)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c29, 29);
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c17, 3);
+  ((_TBP_TextRider__WriterDesc_WriteLn)i0)((TextRider__Writer)(int)w);
+  ((_TBP_TextRider__WriterDesc_WriteString)i1)((TextRider__Writer)(int)w, (const unsigned char*)(int)_c29, 29);
 l2:
   ;
 }
@@ -5313,14 +5327,23 @@ l6:
 void Allocate_init(void) {
   register int i0;
   _mid = _register_module(&Allocate_md.md, &Allocate__ResolveVarConflicts_0_td.td);
-  Allocate__ClearVariables();
   {
     char *_mem, *_var;
-    _mem = GC_malloc_atomic(0+8);
-    if (!_mem) _new_failed(_P(105708));
+    _mem = GC_malloc(_not_zero(28)+8);
+    if (!_mem) _new_failed(_P(105793));
+    _var = _mem+8;
+    ((_Type*)_var)[-1] = &Data__ResultDesc_td.td;
+    i0 = (int)_var;
+  }
+  Allocate__undefResult = (void*)i0;
+  {
+    char *_mem, *_var;
+    _mem = GC_malloc_atomic(_not_zero(0)+8);
+    if (!_mem) _new_failed(_P(105814));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Data__InfoDesc_td.td;
     i0 = (int)_var;
   }
   Allocate__copyMarker = (void*)i0;
+  Allocate__ClearVariables();
 }

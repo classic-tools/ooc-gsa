@@ -94,22 +94,22 @@ extern Files__File Files__Tmp(const unsigned char* file__ref, int file_0d, unsig
 extern void Files__SetModTime(const unsigned char* file__ref, int file_0d, const Time__TimeStamp *mtime__ref, Msg__Msg *res);
 extern void Files__GetModTime(const unsigned char* file__ref, int file_0d, Time__TimeStamp *mtime, _Type mtime__tag, Msg__Msg *res);
 extern unsigned char Files__Exists(const unsigned char* file__ref, int file_0d);
-#define _TBP_Files__ErrorContextDesc_GetTemplate void(*)(Files__ErrorContext context, Msg__Msg msg, Msg__LString templ, int templ_0d)
+typedef void(* _TBP_Files__ErrorContextDesc_GetTemplate)(Files__ErrorContext context, Msg__Msg msg, Msg__LString templ, int templ_0d);
 #define _TBN_Files__ErrorContextDesc_GetTemplate 0
 extern void Files__ErrorContextDesc_GetTemplate(Files__ErrorContext context, Msg__Msg msg, Msg__LString templ, int templ_0d);
-#define _TBP_Files__FileDesc_Register void(*)(Files__File f)
+typedef void(* _TBP_Files__FileDesc_Register)(Files__File f);
 #define _TBN_Files__FileDesc_Register 7
 extern void Files__FileDesc_Register(Files__File f);
-#define _TBP_Files__FileDesc_NewReader Files__Reader(*)(Files__File f)
+typedef Files__Reader(* _TBP_Files__FileDesc_NewReader)(Files__File f);
 #define _TBN_Files__FileDesc_NewReader 2
 extern Files__Reader Files__FileDesc_NewReader(Files__File f);
-#define _TBP_Files__FileDesc_NewWriter Files__Writer(*)(Files__File f)
+typedef Files__Writer(* _TBP_Files__FileDesc_NewWriter)(Files__File f);
 #define _TBN_Files__FileDesc_NewWriter 3
 extern Files__Writer Files__FileDesc_NewWriter(Files__File f);
-#define _TBP_Files__FileDesc_Close void(*)(Files__File f)
+typedef void(* _TBP_Files__FileDesc_Close)(Files__File f);
 #define _TBN_Files__FileDesc_Close 5
 extern void Files__FileDesc_Close(Files__File f);
-#define _TBP_Files__WriterDesc_Truncate void(*)(Files__Writer w, int newLength)
+typedef void(* _TBP_Files__WriterDesc_Truncate)(Files__Writer w, int newLength);
 #define _TBN_Files__WriterDesc_Truncate 5
 extern void Files__WriterDesc_Truncate(Files__Writer w, int newLength);
 extern struct _TD Files__FileDesc_td;

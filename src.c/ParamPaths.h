@@ -45,16 +45,16 @@ extern void ParamPaths__GeneratePath(const unsigned char* fileName__ref, int fil
 extern unsigned char ParamPaths__FindPathExt(const unsigned char* fileName__ref, int fileName_0d, const unsigned char* ext__ref, int ext_0d, unsigned char keepGivenPath, unsigned char* filePath, int filePath_0d);
 extern void ParamPaths__GeneratePathExt(const unsigned char* fileName__ref, int fileName_0d, const unsigned char* ext__ref, int ext_0d, unsigned char* filePath, int filePath_0d);
 extern void ParamPaths__Init(unsigned char sectionPaths, unsigned char sectionNewFiles, unsigned char fallBackToPaths);
-#define _TBP_ParamPaths__PathsSectionDesc_AddPattern void(*)(ParamPaths__PathsSection s, ParamPaths__Pattern p)
+typedef void(* _TBP_ParamPaths__PathsSectionDesc_AddPattern)(ParamPaths__PathsSection s, ParamPaths__Pattern p);
 #define _TBN_ParamPaths__PathsSectionDesc_AddPattern 3
 extern void ParamPaths__PathsSectionDesc_AddPattern(ParamPaths__PathsSection s, ParamPaths__Pattern p);
-#define _TBP_ParamPaths__PathsSectionDesc_Parse void(*)(ParamPaths__PathsSection s, unsigned char includeEnd)
+typedef void(* _TBP_ParamPaths__PathsSectionDesc_Parse)(ParamPaths__PathsSection s, unsigned char includeEnd);
 #define _TBN_ParamPaths__PathsSectionDesc_Parse 0
 extern void ParamPaths__PathsSectionDesc_Parse(ParamPaths__PathsSection s, unsigned char includeEnd);
-#define _TBP_ParamPaths__NewFilesDesc_Parse void(*)(ParamPaths__NewFilesSection s, unsigned char includeEnd)
+typedef void(* _TBP_ParamPaths__NewFilesDesc_Parse)(ParamPaths__NewFilesSection s, unsigned char includeEnd);
 #define _TBN_ParamPaths__NewFilesDesc_Parse 0
 extern void ParamPaths__NewFilesDesc_Parse(ParamPaths__NewFilesSection s, unsigned char includeEnd);
-#define _TBP_ParamPaths__PathsSectionDesc_Write void(*)(ParamPaths__PathsSection s)
+typedef void(* _TBP_ParamPaths__PathsSectionDesc_Write)(ParamPaths__PathsSection s);
 #define _TBN_ParamPaths__PathsSectionDesc_Write 1
 extern void ParamPaths__PathsSectionDesc_Write(ParamPaths__PathsSection s);
 extern struct _TD ParamPaths__PathDesc_td;

@@ -1,6 +1,80 @@
 Note: Directory parts of files mentioned here refer to the
       OOC source tree, not the shrunk oo2c distribution.
 
+2000-07-21  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/lib/Files.c (add_msg_attribute):
+	Create copy of file name for error message.  The
+	pointer argument is not valid forever.
+
+2000-07-20  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* frontend/ParseStatm.Mod, frontend/ParseExpr.Mod, backend/ansi-c/Allocate.Mod, frontend/Opcode.Mod (access-nonlocal, update-nonlocal):
+	Accesses to variable's global to a
+	module are always non-local, even if they are placed in the module's
+	body.
+
+2000-06-26  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenDecl.Mod:
+	If a base type has no type descriptor, don't try to emit the name of a
+	redefined type-bound procedure.
+
+	* backend/ansi-c/SystemFlags.Mod (StructModifiers):
+	Enable record extension, if the record inherited
+	the VTABLE flag.
+
+2000-06-25  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/SystemFlags.Mod:
+	Added new flag VTABLE for record types.  Setting this flag will add a
+	field `_vtbl' to the record field, make the record extensible again,
+	and disallows instances of this record that are not created through
+	NEW.
+
+	* backend/ansi-c/GenStatm.Mod (TBProcAddress):
+	Handle method calls through _vtbl field.
+
+	* backend/ansi-c/GenDecl.Mod (Declaration):
+	In the header file, define signature of type-bound
+	procedures with "typedef" instead of "#DEFINE".  Include calling
+	convention into signature.  When writing a method call, use the
+	typedef from the header file for the type cast on the procedure
+	address.
+
+	(TypeDescriptor): If a record is derived from a base type that has no
+	type descriptor itself, write a type tag of NULL for this type in the
+	descriptor's list of base types.
+
+	* frontend/ParseExpr.Mod (Designator):
+	Handle method calls through _vtbl field.
+
+	* frontend/ParseDecl.Mod: Added checks for structDisableStaticInstance.
+
+	* frontend/Data.Mod:
+	Two new type flags: structVTableField and structDisableStaticInstance
+
+	* frontend/Opcode.Mod:
+	Extended opcode `tb-proc-adr' to deal with method calls that use the
+	_vtbl field instead of the type descriptor.  This way, both types of
+	method calls can be handled transparently to the frontend.
+
+2000-05-28  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenStatm.Mod (AllocateBlock):
+	Never allocate heap objects whose size is zero,
+	disregarding the type tag.
+
+2000-04-22  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* tools/CNHTML.Mod, tools/CNOutput.Mod, tools/CNXRef.Mod, tools/CNDecl.Mod:
+	For output files of oocn, all ":" in module names are replaced with
+	"_".  Hyperlinks in generated HTML documents are likewise modified.
+	This solves a quoting problem with the bash shell, which seems to
+	consider ":" as some kind of meta character, and browsers (like
+	Netscape 6) don't consider the first part of a file name as a protocol
+	identifier.
+
 2000-03-01  Michael van Acken  <acken@informatik.uni-kl.de>
 
 	* backend/ansi-c/lib/liboo2c.Mod: Bumped version to 14:0:2

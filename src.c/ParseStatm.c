@@ -595,285 +595,281 @@ l2:
   i8 = i1 + 28;
   i3 = *(signed char*)i8;
   i3 = i3 == 4;
-  if (i3) goto l38;
+  if (i3) goto l39;
   i4 = i1 + 40;
   i7 = (int)SymbolTable__currScope;
   i6 = (int)*(void**)i4;
-  i6 = i6 == i7;
+  i6 = i6 != i7;
   if (i6) goto l3;
+  i6 = i1 + 50;
+  i6 = *(short int*)i6;
+  i6 = i6 != 0;
+  if (i6) goto l4;
+l3:
   i6 = i1 + 20;
   i6 = (int)*(void**)i6;
   i6 = *(unsigned char*)i6;
   i6 = i6 != 36;
-  if (i6) goto l37;
-l3:
-  i5 = *(int*)(i9-4);
-  i3 = _type_test(i5, &Data__ConstDesc_td.td, 3);
-  if (i3) goto l9;
-  i10 = _type_test(i5, &Data__GateDesc_td.td, 5);
-  if (!(i10)) goto l4;
-  i3 = ParseExpr__IsCondResult((Data__Gate)i9);
-  if (i3) goto l9;
+  if (i6) goto l38;
 l4:
-  i3 = _type_test(i5, &Data__InstructionDesc_td.td, 4);
-  if (!(i3)) goto l5;
-  i3 = i9 + 44;
-  i3 = *(short int*)i3;
-  i3 = i3 == 481;
-  if (i3) goto l9;
+  i10 = *(int*)(i9-4);
+  i5 = _type_test(i10, &Data__ConstDesc_td.td, 3);
+  if (i5) goto l10;
+  i6 = _type_test(i10, &Data__GateDesc_td.td, 5);
+  if (!(i6)) goto l5;
+  i5 = ParseExpr__IsCondResult((Data__Gate)i9);
+  if (i5) goto l10;
 l5:
-  if (!(i10)) goto l6;
-  i10 = ParseExpr__IsCondResult((Data__Gate)i9);
-  if (i10) goto l9;
-l6:
-  i5 = _type_test(i5, &Data__ResultDesc_td.td, 3);
-  if (!(i5)) goto l7;
-  i10 = i9 + 20;
-  i5 = (int)*(void**)i10;
-  i10 = i5 == 0;
-  if (i10) goto l7;
-  i5 += 4;
+  i5 = _type_test(i10, &Data__InstructionDesc_td.td, 4);
+  if (!(i5)) goto l6;
+  i5 = i9 + 44;
   i5 = *(short int*)i5;
-  i5 = i5 != -3;
-  if (i5) goto l9;
+  i5 = i5 == 481;
+  if (i5) goto l10;
+l6:
+  if (!(i6)) goto l7;
+  i6 = ParseExpr__IsCondResult((Data__Gate)i9);
+  if (i6) goto l10;
 l7:
-  i10 = (int)x + 4;
-  i5 = (int)*(void**)i10;
-  i10 = i5 == 0;
-  if (i10) goto l8;
-  i5 += 28;
-  i5 = *(signed char*)i5;
-  i5 = (0x18U & ((unsigned int)1 << i5)) != 0;
-  if (i5) goto l9;
+  i10 = _type_test(i10, &Data__ResultDesc_td.td, 3);
+  if (!(i10)) goto l8;
+  i6 = i9 + 20;
+  i10 = (int)*(void**)i6;
+  i6 = i10 == 0;
+  if (i6) goto l8;
+  i10 += 4;
+  i10 = *(short int*)i10;
+  i10 = i10 != -3;
+  if (i10) goto l10;
 l8:
-  i5 = i9;
-  goto l10;
+  i6 = (int)x + 4;
+  i10 = (int)*(void**)i6;
+  i6 = i10 == 0;
+  if (i6) goto l9;
+  i10 += 28;
+  i10 = *(signed char*)i10;
+  i10 = (0x18U & ((unsigned int)1 << i10)) != 0;
+  if (i10) goto l10;
 l9:
-  i5 = (int)x + 8;
-  i3 = (int)*(void**)i5;
-  i5 = *(int*)(int)x;
-  i5 = (int)Data__RegionDesc_CreateInstruction((Data__Region)i2, (short int)18, (Data__Struct)i3, (int)i5);
-  Attributes__Operand((Data__Instruction)i5, (Attributes__Item *)(int)x, x__tag);
+  i10 = i9;
+  goto l11;
 l10:
-  i3 = i2 + 44;
-  i10 = *(short int*)i3;
-  i10 = i10 != 82;
-  if (i10) goto l12;
-  i10 = *(int*)(i5-4);
-  i10 = _type_test(i10, &Data__GateDesc_td.td, 5);
-  if (!(i10)) goto l11;
-  i10 = i5 + 32;
-  i10 = (int)*(void**)i10;
-  i10 = i2 == i10;
-  if (i10) goto l12;
+  i10 = (int)x + 8;
+  i5 = (int)*(void**)i10;
+  i10 = *(int*)(int)x;
+  i10 = (int)Data__RegionDesc_CreateInstruction((Data__Region)i2, (short int)18, (Data__Struct)i5, (int)i10);
+  Attributes__Operand((Data__Instruction)i10, (Attributes__Item *)(int)x, x__tag);
 l11:
-  i6 = i2;
-  goto l13;
-l12:
-  i6 = i2 + 72;
+  i5 = i2 + 44;
+  i6 = *(short int*)i5;
+  i6 = i6 != 82;
+  if (i6) goto l13;
+  i6 = *(int*)(i10-4);
+  i6 = _type_test(i6, &Data__GateDesc_td.td, 5);
+  if (!(i6)) goto l12;
+  i6 = i10 + 32;
   i6 = (int)*(void**)i6;
+  i6 = i2 == i6;
+  if (i6) goto l13;
+l12:
+  i7 = i2;
+  goto l14;
 l13:
-  i10 = i1 + 24;
-  i7 = i6 == 0;
-  i10 = (int)*(void**)i10;
-  if (i7) goto l29;
-  i8 = (int)ParseStatm__AssignToVar_FindGate((Data__Region)i6, (Data__Addressable)i1);
-  i7 = i8 == 0;
-  if (i7) goto l14;
-  i7 = i5;
-  goto l27;
+  i7 = i2 + 72;
+  i7 = (int)*(void**)i7;
 l14:
-  i8 = (int)Data__MergeDesc_CreateGate((Data__Merge)i6, (short int)19, (Data__Object)i1, (Data__Struct)i10);
-  i4 = (int)*(void**)i0;
-  i10 = *(int*)(i4-4);
-  i10 = _type_test(i10, &Data__GateDesc_td.td, 5);
-  if (!(i10)) goto l15;
-  i10 = i4 + 56;
-  i10 = (int)*(void**)i10;
-  i10 = i1 == i10;
-  if (i10) goto l16;
+  i6 = i1 + 24;
+  i3 = i7 == 0;
+  i6 = (int)*(void**)i6;
+  if (i3) goto l30;
+  i8 = (int)ParseStatm__AssignToVar_FindGate((Data__Region)i7, (Data__Addressable)i1);
+  i3 = i8 == 0;
+  if (i3) goto l15;
+  i3 = i10;
+  goto l28;
 l15:
-  i4 = i1 + 12;
-  i10 = (int)*(void**)i4;
-  i4 = i8 + 60;
-  i10 = (int)ParseStatm__CorrectCondGate((Data__Region)i2, (Data__Usable)i10);
-  *(void**)i4 = (void*)i10;
-  goto l17;
+  i8 = (int)Data__MergeDesc_CreateGate((Data__Merge)i7, (short int)19, (Data__Object)i1, (Data__Struct)i6);
+  i4 = (int)*(void**)i0;
+  i6 = *(int*)(i4-4);
+  i6 = _type_test(i6, &Data__GateDesc_td.td, 5);
+  if (!(i6)) goto l16;
+  i6 = i4 + 56;
+  i6 = (int)*(void**)i6;
+  i6 = i1 == i6;
+  if (i6) goto l17;
 l16:
-  i10 = i4 + 60;
+  i4 = i1 + 12;
+  i6 = (int)*(void**)i4;
   i4 = i8 + 60;
-  i10 = (int)*(void**)i10;
-  *(void**)i4 = (void*)i10;
+  i6 = (int)ParseStatm__CorrectCondGate((Data__Region)i2, (Data__Usable)i6);
+  *(void**)i4 = (void*)i6;
+  goto l18;
 l17:
-  i10 = ParseStatm__AssignToVar_IsCondGate((Data__Usable)i5);
-  i4 = i10 >= 0;
-  if (i4) goto l18;
+  i6 = i4 + 60;
+  i4 = i8 + 60;
+  i6 = (int)*(void**)i6;
+  *(void**)i4 = (void*)i6;
+l18:
+  i6 = ParseStatm__AssignToVar_IsCondGate((Data__Usable)i10);
+  i4 = i6 >= 0;
+  if (i4) goto l19;
   i4 = i8 + 60;
   i4 = (int)*(void**)i4;
-  i7 = i5;
-  goto l23;
-l18:
-  i7 = i10 == 65;
-  if (i7) goto l19;
-  i7 = i5 + 28;
-  i7 = (int)*(void**)i7;
-  i7 += 8;
-  i7 = (int)*(void**)i7;
-  i7 = (int)*(void**)i7;
-  goto l20;
+  i3 = i10;
+  goto l24;
 l19:
-  i7 = i5 + 28;
-  i7 = (int)*(void**)i7;
-  i7 += 8;
-  i7 = (int)*(void**)i7;
-  i7 += 8;
-  i7 = (int)*(void**)i7;
-  i7 = (int)*(void**)i7;
+  i3 = i6 == 65;
+  if (i3) goto l20;
+  i3 = i10 + 28;
+  i3 = (int)*(void**)i3;
+  i3 += 8;
+  i3 = (int)*(void**)i3;
+  i3 = (int)*(void**)i3;
+  goto l21;
 l20:
+  i3 = i10 + 28;
+  i3 = (int)*(void**)i3;
+  i3 += 8;
+  i3 = (int)*(void**)i3;
+  i3 += 8;
+  i3 = (int)*(void**)i3;
+  i3 = (int)*(void**)i3;
+l21:
   i0 = (int)*(void**)i0;
   i4 = *(int*)(i0-4);
   i4 = _type_test(i4, &Data__GateDesc_td.td, 5);
-  if (!(i4)) goto l21;
+  if (!(i4)) goto l22;
   i0 += 32;
   i0 = (int)*(void**)i0;
   i4 = i0 + 44;
   i4 = *(short int*)i4;
   i4 = i4 != 82;
-  if (i4) goto l21;
+  if (i4) goto l22;
   i0 = i2 != i0;
-  if (i0) goto l22;
-l21:
-  i4 = i7;
-  i7 = i5;
-  goto l23;
+  if (i0) goto l23;
 l22:
+  i4 = i3;
+  i3 = i10;
+  goto l24;
+l23:
   i4 = i8 + 60;
   i4 = (int)*(void**)i4;
-l23:
-  i10 = i6 + 44;
-  i10 = *(short int*)i10;
-  i10 = i10 == 83;
-  if (i10) goto l24;
-  Data__InstructionDesc_Operand((Data__Instruction)i8, (Data__Usable)i4);
-  Data__InstructionDesc_Operand((Data__Instruction)i8, (Data__Usable)i4);
-  goto l26;
 l24:
-  i10 = i6 + 28;
-  i10 = (int)*(void**)i10;
-  i0 = i10 == 0;
-  if (i0) goto l26;
-l25:
+  i6 = i7 + 44;
+  i6 = *(short int*)i6;
+  i6 = i6 == 83;
+  if (i6) goto l25;
   Data__InstructionDesc_Operand((Data__Instruction)i8, (Data__Usable)i4);
-  i0 = i10 + 8;
-  i10 = (int)*(void**)i0;
-  i0 = i10 != 0;
-  if (i0) goto l25;
+  Data__InstructionDesc_Operand((Data__Instruction)i8, (Data__Usable)i4);
+  goto l27;
+l25:
+  i6 = i7 + 28;
+  i6 = (int)*(void**)i6;
+  i0 = i6 == 0;
+  if (i0) goto l27;
 l26:
-  i10 = i2 == i6;
-  if (!(i10)) goto l27;
-  ParseStatm__AssignToVar_FixupLoopGate((Data__Region)i6, (Data__Gate)i8);
-  i6 = ParseStatm__setAssignHints;
-  if (!(i6)) goto l27;
-  i10 = i8 + 20;
-  i6 = (int)Data__CreateSymLocation((Data__Addressable)i1, (short int)-3);
-  *(void**)i10 = (void*)i6;
+  Data__InstructionDesc_Operand((Data__Instruction)i8, (Data__Usable)i4);
+  i0 = i6 + 8;
+  i6 = (int)*(void**)i0;
+  i0 = i6 != 0;
+  if (i0) goto l26;
 l27:
-  i10 = *(int*)(i7-4);
-  i10 = _type_test(i10, &Data__GateDesc_td.td, 5);
-  if (!(i10)) goto l28;
-  i6 = *(short int*)i3;
-  i6 = i6 != 81;
-  if (i6) goto l28;
-  i4 = i7 + 32;
+  i6 = i2 == i7;
+  if (!(i6)) goto l28;
+  ParseStatm__AssignToVar_FixupLoopGate((Data__Region)i7, (Data__Gate)i8);
+  i7 = ParseStatm__setAssignHints;
+  if (!(i7)) goto l28;
+  i6 = i8 + 20;
+  i7 = (int)Data__CreateSymLocation((Data__Addressable)i1, (short int)-3);
+  *(void**)i6 = (void*)i7;
+l28:
+  i6 = *(int*)(i3-4);
+  i6 = _type_test(i6, &Data__GateDesc_td.td, 5);
+  if (!(i6)) goto l29;
+  i7 = *(short int*)i5;
+  i7 = i7 != 81;
+  if (i7) goto l29;
+  i4 = i3 + 32;
   i4 = (int)*(void**)i4;
   i4 += 44;
   i4 = *(short int*)i4;
   i4 = i4 != 81;
-  if (i4) goto l28;
-  i4 = i7 + 60;
-  i10 = i8 + 60;
-  i6 = (int)*(void**)i4;
-  i0 = (int)*(void**)i10;
-  i0 = ParseStatm__AssignToVar_Visible((Data__Usable)i6, (Data__Usable)i0);
-  if (!(i0)) goto l28;
+  if (i4) goto l29;
+  i4 = i3 + 60;
+  i6 = i8 + 60;
+  i7 = (int)*(void**)i4;
+  i0 = (int)*(void**)i6;
+  i0 = ParseStatm__AssignToVar_Visible((Data__Usable)i7, (Data__Usable)i0);
+  if (!(i0)) goto l29;
   i4 = (int)*(void**)i4;
-  *(void**)i10 = (void*)i4;
-l28:
-  ParseStatm__AssignToVar_ReplaceGateOperand((Data__Gate)i8, (Data__Region)i2, (Data__Usable)i7);
-  i5 = i7;
-  goto l33;
+  *(void**)i6 = (void*)i4;
 l29:
-  i10 = *(int*)(i2-4);
-  i10 = (int)((_Type)i10)->tbprocs[0];
-  i10 = (int)((Data__GlobalRegion(*)(Data__Node))i10)((Data__Node)i2);
-  i0 = i10 + 80;
+  ParseStatm__AssignToVar_ReplaceGateOperand((Data__Gate)i8, (Data__Region)i2, (Data__Usable)i3);
+  i10 = i3;
+  goto l34;
+l30:
+  i6 = *(int*)(i2-4);
+  i6 = (int)((_Type)i6)->tbprocs[0];
+  i6 = (int)((_TBP_Data__NodeDesc_Greg)i6)((Data__Node)i2);
+  i0 = i6 + 80;
   i0 = (int)*(void**)i0;
   i4 = (int)*(void**)i4;
   i4 = i4 != i0;
-  if (i4) goto l31;
+  if (i4) goto l32;
   i8 = *(signed char*)i8;
   i8 = i8 == 4;
-  if (i8) goto l31;
+  if (i8) goto l32;
   i0 += 28;
   i0 = *(signed char*)i0;
   i0 = i0 != 8;
-  if (i0) goto l30;
+  if (i0) goto l31;
   i0 = i1 + 64;
   i0 = *(unsigned int*)i0;
   i0 = (i0 & ((unsigned int)1 << 24)) != 0;
-  if (i0) goto l31;
-l30:
+  if (i0) goto l32;
+l31:
   i0 = i1 + 20;
   i0 = (int)*(void**)i0;
   i0 = strcmp((const char*) i0, (const char*) (int)_c0) != 0;
-  if (i0) goto l33;
-l31:
-  i10 += 56;
-  i10 = (int)*(void**)i10;
-  i10 += 36;
-  i10 = (int)*(void**)i10;
-  i0 = (int)Data__InstructionDesc_GetOperand((Data__Instruction)i10, (Data__Addressable)i1, (short int)-3);
-  i8 = i0 == 0;
-  if (i8) goto l32;
-  Data__OpndDesc_ReplaceOperand((Data__Opnd)i0, (Data__Usable)i5);
-  goto l33;
+  if (i0) goto l34;
 l32:
-  Data__InstructionDesc_Operand((Data__Instruction)i10, (Data__Usable)i5);
-  Data__InstructionDesc_SetOpndSymLoc((Data__Instruction)i10, (Data__Addressable)i1);
+  i6 += 56;
+  i6 = (int)*(void**)i6;
+  i6 += 36;
+  i6 = (int)*(void**)i6;
+  i0 = (int)Data__InstructionDesc_GetOperand((Data__Instruction)i6, (Data__Addressable)i1, (short int)-3);
+  i8 = i0 == 0;
+  if (i8) goto l33;
+  Data__OpndDesc_ReplaceOperand((Data__Opnd)i0, (Data__Usable)i10);
+  goto l34;
 l33:
-  i3 = *(short int*)i3;
-  i3 = i3 != 82;
-  if (i3) goto l34;
-  i3 = *(int*)(i5-4);
-  i3 = _type_test(i3, &Data__GateDesc_td.td, 5);
-  if (!(i3)) goto l34;
-  i3 = i5 + 32;
-  i3 = (int)*(void**)i3;
-  i3 = i2 == i3;
-  if (i3) goto l35;
+  Data__InstructionDesc_Operand((Data__Instruction)i6, (Data__Usable)i10);
+  Data__InstructionDesc_SetOpndSymLoc((Data__Instruction)i6, (Data__Addressable)i1);
 l34:
-  i3 = i1 + 12;
-  *(void**)i3 = (void*)i5;
+  i5 = *(short int*)i5;
+  i5 = i5 != 82;
+  if (i5) goto l35;
+  i5 = *(int*)(i10-4);
+  i5 = _type_test(i5, &Data__GateDesc_td.td, 5);
+  if (!(i5)) goto l35;
+  i5 = i10 + 32;
+  i5 = (int)*(void**)i5;
+  i5 = i2 == i5;
+  if (i5) goto l36;
 l35:
-  i3 = (int)SymbolTable__mem;
-  i3 = i1 == i3;
-  if (i3) goto l36;
-  i3 = ParseStatm__setAssignHints;
-  if (!(i3)) goto l39;
+  i5 = i1 + 12;
+  *(void**)i5 = (void*)i10;
 l36:
-  i3 = (int)Data__CreateSymLocation((Data__Addressable)i1, (short int)-3);
-  i0 = i5 + 20;
-  *(void**)i0 = (void*)i3;
-  goto l39;
+  i5 = (int)SymbolTable__mem;
+  i5 = i1 == i5;
+  if (i5) goto l37;
+  i5 = ParseStatm__setAssignHints;
+  if (!(i5)) goto l40;
 l37:
-  region = (void*)i2;
-  dest = (void*)i1;
-  source = (void*)i9;
-  dest = (void*)i1;
-  region = (void*)i2;
-  source = (void*)i9;
-  ParseStatm__AssignToVar_CreateUpdate((short int)51, (Data__Instruction *)&instr, (Data__Region *)&region, (Data__Object *)&dest, &*x, (Data__Usable *)&source, &y);
-  goto l39;
+  i5 = (int)Data__CreateSymLocation((Data__Addressable)i1, (short int)-3);
+  i0 = i10 + 20;
+  *(void**)i0 = (void*)i5;
+  goto l40;
 l38:
   region = (void*)i2;
   dest = (void*)i1;
@@ -881,8 +877,17 @@ l38:
   dest = (void*)i1;
   region = (void*)i2;
   source = (void*)i9;
-  ParseStatm__AssignToVar_CreateUpdate((short int)52, (Data__Instruction *)&instr, (Data__Region *)&region, (Data__Object *)&dest, &*x, (Data__Usable *)&source, &y);
+  ParseStatm__AssignToVar_CreateUpdate((short int)51, (Data__Instruction *)&instr, (Data__Region *)&region, (Data__Object *)&dest, &*x, (Data__Usable *)&source, &y);
+  goto l40;
 l39:
+  region = (void*)i2;
+  dest = (void*)i1;
+  source = (void*)i9;
+  dest = (void*)i1;
+  region = (void*)i2;
+  source = (void*)i9;
+  ParseStatm__AssignToVar_CreateUpdate((short int)52, (Data__Instruction *)&instr, (Data__Region *)&region, (Data__Object *)&dest, &*x, (Data__Usable *)&source, &y);
+l40:
   ;
 }
 
@@ -1136,7 +1141,7 @@ void ParseStatm__CollectToMem(Data__Instruction instr) {
   i0 = (int)SymbolTable__store;
   i1 = (int)((_Type)i1)->tbprocs[0];
   Data__InstructionDesc_SetOpndSymLoc((Data__Instruction)(int)instr, (Data__Addressable)i0);
-  i0 = (int)((Data__GlobalRegion(*)(Data__Node))i1)((Data__Node)(int)instr);
+  i0 = (int)((_TBP_Data__NodeDesc_Greg)i1)((Data__Node)(int)instr);
   i0 += 80;
   i0 = (int)*(void**)i0;
   i0 += 44;
@@ -1204,7 +1209,7 @@ void ParseStatm__ReclaimFromMem(Data__Instruction instr) {
   ParseStatm__AssignToVar((Data__Region)i1, (Data__Object)i0, (Attributes__Item *)(int)&y, &Attributes__Item_td.td);
   i0 = *(int*)((int)instr-4);
   i0 = (int)((_Type)i0)->tbprocs[0];
-  i0 = (int)((Data__GlobalRegion(*)(Data__Node))i0)((Data__Node)(int)instr);
+  i0 = (int)((_TBP_Data__NodeDesc_Greg)i0)((Data__Node)(int)instr);
   i0 += 80;
   i0 = (int)*(void**)i0;
   i0 += 44;
@@ -2393,35 +2398,30 @@ void ParseStatm__ProcedureCall_PassParameters_PassParameter(Data__Object formal,
   register int i0, i1, i2, i3, i4, i5;
   Attributes__Item len;
   Attributes__Item size;
-  i1 = (int)formal;
-  i2 = (int)*ParseStatm__ProcedureCall_PassParameters_instr;
-  Attributes__Operand((Data__Instruction)i2, (Attributes__Item *)(int)param, param__tag);
-  i0 = i1 + 28;
+  i1 = (int)*ParseStatm__ProcedureCall_PassParameters_instr;
+  Attributes__Operand((Data__Instruction)i1, (Attributes__Item *)(int)param, param__tag);
+  i0 = (int)formal + 28;
   i0 = *(signed char*)i0;
   i0 = i0 != 4;
   if (i0) goto l0;
   i0 = (int)param + 4;
   i0 = (int)*(void**)i0;
-  i3 = i0 == 0;
-  if (i3) goto l0;
-  i3 = i0 + 28;
-  i3 = *(signed char*)i3;
-  i3 = i3 != 3;
-  if (i3) goto l0;
+  i2 = i0 == 0;
+  if (i2) goto l0;
+  i2 = i0 + 28;
+  i2 = *(signed char*)i2;
+  i2 = i2 != 3;
+  if (i2) goto l0;
   i0 += 40;
-  i3 = (int)*(void**)i0;
+  i2 = (int)*(void**)i0;
   i0 = (int)SymbolTable__currScope;
-  i0 = i3 == i0;
+  i0 = i2 == i0;
   if (i0) goto l1;
 l0:
-  formal = (void*)i1;
-  formal = (void*)i1;
   ParseStatm__ProcedureCall_PassParameters_PassParameter_SetSymLoc((short int)-3, (Data__Instruction *)&*ParseStatm__ProcedureCall_PassParameters_instr, &*param, (Data__Object *)&formal);
   i4 = (int)formal;
   goto l2;
 l1:
-  formal = (void*)i1;
-  formal = (void*)i1;
   ParseStatm__ProcedureCall_PassParameters_PassParameter_SetSymLoc((short int)-32768, (Data__Instruction *)&*ParseStatm__ProcedureCall_PassParameters_instr, &*param, (Data__Object *)&formal);
   i4 = (int)formal;
 l2:
@@ -2440,73 +2440,73 @@ l3:
   i0 = *(signed char*)i0;
   i0 = i0 != 4;
   if (i0) goto l4;
-  i1 = i4 + 24;
-  i1 = (int)*(void**)i1;
-  i1 += 20;
-  i1 = *(signed char*)i1;
-  i1 = i1 == 31;
-  if (i1) goto l8;
+  i0 = i4 + 24;
+  i0 = (int)*(void**)i0;
+  i0 += 20;
+  i0 = *(signed char*)i0;
+  i0 = i0 == 31;
+  if (i0) goto l8;
 l4:
   i3 = i4 + 24;
-  i1 = (int)*(void**)i3;
-  i3 = i1 + 20;
+  i0 = (int)*(void**)i3;
+  i3 = i0 + 20;
   i3 = *(signed char*)i3;
   i3 = i3 != 30;
   if (i3) goto l5;
-  i2 = i1 + 24;
+  i2 = i0 + 24;
   i2 = (int)*(void**)i2;
   i2 += 20;
   i2 = *(signed char*)i2;
   i2 = i2 == 16;
   if (i2) goto l7;
 l5:
-  i5 = i4 + 64;
-  i5 = *(unsigned int*)i5;
-  i5 = (i5 & ((unsigned int)1 << 5)) != 0;
-  if (i5) goto l9;
-  i1 = Data__StructDesc_OpenDimensions((Data__Struct)i1);
-  i2 = i1 - 1;
-  i1 = i2 < 0;
+  i1 = i4 + 64;
+  i1 = *(unsigned int*)i1;
+  i1 = (i1 & ((unsigned int)1 << 5)) != 0;
   if (i1) goto l9;
-  i1 = 0;
+  i0 = Data__StructDesc_OpenDimensions((Data__Struct)i0);
+  i2 = i0 - 1;
+  i0 = i2 < 0;
+  if (i0) goto l9;
+  i0 = 0;
 l6:
-  i0 = (int)*ParseStatm__ProcedureCall_PassParameters_instr;
+  i5 = (int)*ParseStatm__ProcedureCall_PassParameters_instr;
   i3 = (int)*ParseStatm__ProcedureCall_region;
-  i5 = *(int*)(int)param;
-  Attributes__ArrayLength((Data__Region)i3, (Attributes__Item *)(int)param, param__tag, (short int)i1, (int)i5, (unsigned char)0, (Attributes__Item *)(int)&len, &Attributes__Item_td.td);
-  Attributes__Operand((Data__Instruction)i0, (Attributes__Item *)(int)&len, &Attributes__Item_td.td);
-  i5 = i1 + 1;
+  i1 = *(int*)(int)param;
+  Attributes__ArrayLength((Data__Region)i3, (Attributes__Item *)(int)param, param__tag, (short int)i0, (int)i1, (unsigned char)0, (Attributes__Item *)(int)&len, &Attributes__Item_td.td);
+  Attributes__Operand((Data__Instruction)i5, (Attributes__Item *)(int)&len, &Attributes__Item_td.td);
+  i1 = i0 + 1;
   formal = (void*)i4;
   formal = (void*)i4;
-  ParseStatm__ProcedureCall_PassParameters_PassParameter_SetSymLoc((short int)i1, (Data__Instruction *)&*ParseStatm__ProcedureCall_PassParameters_instr, &*param, (Data__Object *)&formal);
-  i4 = i5 > i2;
+  ParseStatm__ProcedureCall_PassParameters_PassParameter_SetSymLoc((short int)i0, (Data__Instruction *)&*ParseStatm__ProcedureCall_PassParameters_instr, &*param, (Data__Object *)&formal);
+  i4 = i1 > i2;
   if (i4) goto l9;
-  i1 = i5;
+  i0 = i1;
   i4 = (int)formal;
   goto l6;
 l7:
-  i5 = i4 + 64;
-  i5 = *(unsigned int*)i5;
-  i5 = (i5 & ((unsigned int)1 << 5)) != 0;
-  if (i5) goto l9;
+  i1 = i4 + 64;
+  i1 = *(unsigned int*)i1;
+  i1 = (i1 & ((unsigned int)1 << 5)) != 0;
+  if (i1) goto l9;
   i2 = (int)*ParseStatm__ProcedureCall_region;
   i3 = (int)*ParseStatm__ProcedureCall_PassParameters_instr;
-  i5 = *(int*)(int)param;
-  Attributes__SizeOfItem((Data__Region)i2, (Attributes__Item *)(int)param, param__tag, (short int)0, (int)i5, (Attributes__Item *)(int)&size, &Attributes__Item_td.td);
+  i1 = *(int*)(int)param;
+  Attributes__SizeOfItem((Data__Region)i2, (Attributes__Item *)(int)param, param__tag, (short int)0, (int)i1, (Attributes__Item *)(int)&size, &Attributes__Item_td.td);
   Attributes__Operand((Data__Instruction)i3, (Attributes__Item *)(int)&size, &Attributes__Item_td.td);
   formal = (void*)i4;
   formal = (void*)i4;
   ParseStatm__ProcedureCall_PassParameters_PassParameter_SetSymLoc((short int)0, (Data__Instruction *)&*ParseStatm__ProcedureCall_PassParameters_instr, &*param, (Data__Object *)&formal);
   goto l9;
 l8:
-  i1 = i4 + 64;
-  i1 = *(unsigned int*)i1;
-  i1 = (i1 & ((unsigned int)1 << 6)) != 0;
-  if (i1) goto l9;
-  i1 = (int)*ParseStatm__ProcedureCall_PassParameters_instr;
-  i0 = (int)*ParseStatm__ProcedureCall_region;
-  i0 = (int)Attributes__TypeTag((Data__Region)i0, (Attributes__Item *)(int)param, param__tag, (short int)-1);
-  Data__InstructionDesc_Operand((Data__Instruction)i1, (Data__Usable)i0);
+  i0 = i4 + 64;
+  i0 = *(unsigned int*)i0;
+  i0 = (i0 & ((unsigned int)1 << 6)) != 0;
+  if (i0) goto l9;
+  i0 = (int)*ParseStatm__ProcedureCall_PassParameters_instr;
+  i1 = (int)*ParseStatm__ProcedureCall_region;
+  i1 = (int)Attributes__TypeTag((Data__Region)i1, (Attributes__Item *)(int)param, param__tag, (short int)-1);
+  Data__InstructionDesc_Operand((Data__Instruction)i0, (Data__Usable)i1);
   formal = (void*)i4;
   formal = (void*)i4;
   ParseStatm__ProcedureCall_PassParameters_PassParameter_SetSymLoc((short int)-1, (Data__Instruction *)&*ParseStatm__ProcedureCall_PassParameters_instr, &*param, (Data__Object *)&formal);
@@ -3004,7 +3004,7 @@ l17:
   i18 = (int)*(void**)i12;
   i7 = *(int*)(i3-4);
   i7 = (int)((_Type)i7)->tbprocs[1];
-  ((void(*)(Data__Usable, Data__Usable))i7)((Data__Usable)i3, (Data__Usable)i18);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i7)((Data__Usable)i3, (Data__Usable)i18);
   i10 = (int)SymbolTable__mem;
   i7 = i10 + 12;
   *(void**)i7 = (void*)i18;
@@ -3830,7 +3830,7 @@ l38:
 l39:
   i11 = *(int*)(i16-4);
   i11 = (int)((_Type)i11)->tbprocs[0];
-  i11 = (int)((Data__GlobalRegion(*)(Data__Node))i11)((Data__Node)i16);
+  i11 = (int)((_TBP_Data__NodeDesc_Greg)i11)((Data__Node)i16);
   i11 = (int)SymbolTable__currScope;
   i2 = i11 + 44;
   i2 = (int)*(void**)i2;
@@ -4275,7 +4275,7 @@ l1:
   i6 += 8;
   i6 = (int)*(void**)i6;
   i6 = (int)*(void**)i6;
-  ((void(*)(Data__Usable, Data__Usable))i7)((Data__Usable)i8, (Data__Usable)i6);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i7)((Data__Usable)i8, (Data__Usable)i6);
 l2:
   i2 = i9 + 4;
   i9 = (int)*(void**)i2;
@@ -4944,8 +4944,8 @@ l6:
   ParseExpr__TypeTest((Data__Region)i2, (const Attributes__Item *)(int)ParseStatm__StatementSeq_Statement_WithStatement_var, (const Attributes__Item *)(int)ParseStatm__StatementSeq_Statement_WithStatement_type, (unsigned char)0, (int)i0, (Attributes__Item *)(int)cond, cond__tag);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
-    if (!_mem) _new_failed(_P(97869));
+    _mem = GC_malloc(_not_zero(12)+8);
+    if (!_mem) _new_failed(_P(97916));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParseStatm__StatementSeq_WithGuardDesc_td.td;
     i0 = (int)_var;
@@ -5477,5 +5477,5 @@ void ParseStatm_init(void) {
   ParseExpr__ProcedureCall = (void(*)(Data__Region, const Attributes__Item *, Attributes__Item *, _Type result__tag, Attributes__ExitInfo *, _Type exitInfo__tag, unsigned char))(int)&ParseStatm__ProcedureCall;
   ParseExpr__CommitIfMerge = (void(*)(Data__Region))(int)&ParseStatm__CommitIfMerge;
   ParseExpr__FixupCondPath = (void(*)(Data__Region, Data__Merge, Data__Merge, unsigned char))(int)&ParseStatm__FixupCondPath;
-  ParseStatm__setAssignHints = (unsigned char)0;
+  ParseStatm__setAssignHints = 0;
 }

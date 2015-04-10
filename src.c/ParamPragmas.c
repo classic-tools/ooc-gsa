@@ -34,7 +34,7 @@ void ParamPragmas__PrepareForModify(ParamOptions__Option opt) {
 l0:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(3018));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamPragmas__PragmaStackDesc_td.td;
@@ -74,7 +74,7 @@ l4:
   if (!(i3)) goto l5;
   i2 = *(int*)((int)opt-4);
   i2 = (int)((_Type)i2)->tbprocs[2];
-  i3 = (int)((ParamOptions__Option(*)(ParamOptions__Option))i2)((ParamOptions__Option)(int)opt);
+  i3 = (int)((_TBP_ParamOptions__OptionDesc_Copy)i2)((ParamOptions__Option)(int)opt);
   i2 = (int)*(void**)i5;
   *(void**)i5 = (void*)i3;
   *(void**)i3 = (void*)i2;
@@ -106,12 +106,12 @@ l0:
   i4 = *(int*)(i0-4);
   i1 = *(int*)(i3-8);
   i4 = (int)((_Type)i4)->tbprocs[3];
-  i0 = (int)((ParamOptions__Option(*)(ParamOptions__OptionsSection, const unsigned char*, int name_0d))i4)((ParamOptions__OptionsSection)i0, (const unsigned char*)i3, i1);
+  i0 = (int)((_TBP_ParamOptions__OptionsSectionDesc_Find)i4)((ParamOptions__OptionsSection)i0, (const unsigned char*)i3, i1);
   i1 = *(int*)(i2-4);
   i3 = (int)*(void**)i2;
   i1 = (int)((_Type)i1)->tbprocs[3];
   i4 = i3 == 0;
-  ((void(*)(ParamOptions__Option, ParamOptions__Option))i1)((ParamOptions__Option)i2, (ParamOptions__Option)i0);
+  ((_TBP_ParamOptions__OptionDesc_CopyValue)i1)((ParamOptions__Option)i2, (ParamOptions__Option)i0);
   if (i4) goto l1;
   i2 = i3;
   goto l0;
@@ -142,7 +142,7 @@ l0:
 l1:
   {
     char *_mem, *_var;
-    _mem = GC_malloc(8+8);
+    _mem = GC_malloc(_not_zero(8)+8);
     if (!_mem) _new_failed(_P(4680));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamOptions__OptionDesc_td.td;
@@ -172,7 +172,7 @@ ParamPragmas__PragmaStack ParamPragmas__Save_CopyStack(ParamPragmas__PragmaStack
   if (i0) goto l0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(5051));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamPragmas__PragmaStackDesc_td.td;
@@ -211,7 +211,7 @@ l0:
 l1:
   i2 = *(int*)(i1-4);
   i2 = (int)((_Type)i2)->tbprocs[2];
-  i2 = (int)((ParamOptions__Option(*)(ParamOptions__Option))i2)((ParamOptions__Option)i1);
+  i2 = (int)((_TBP_ParamOptions__OptionDesc_Copy)i2)((ParamOptions__Option)i1);
   *(void**)i2 = (void*)i0;
   i1 = (int)*(void**)i1;
   i0 = i1 == 0;
@@ -275,7 +275,7 @@ l3:
   if (i1) goto l4;
   i1 = *(int*)(i4-4);
   i1 = (int)((_Type)i1)->tbprocs[3];
-  ((void(*)(ParamOptions__Option, ParamOptions__Option))i1)((ParamOptions__Option)i4, (ParamOptions__Option)i5);
+  ((_TBP_ParamOptions__OptionDesc_CopyValue)i1)((ParamOptions__Option)i4, (ParamOptions__Option)i5);
   goto l5;
 l4:
   i2 = (int)ParamPragmas__pragmas;
@@ -284,7 +284,7 @@ l4:
   i3 = *(int*)(i2-4);
   i1 = *(int*)(i5-8);
   i3 = (int)((_Type)i3)->tbprocs[5];
-  ((void(*)(ParamOptions__OptionsSection, const unsigned char*, int name_0d))i3)((ParamOptions__OptionsSection)i2, (const unsigned char*)i5, i1);
+  ((_TBP_ParamOptions__OptionsSectionDesc_Remove)i3)((ParamOptions__OptionsSection)i2, (const unsigned char*)i5, i1);
 l5:
   i1 = i0 != 0;
   if (!(i1)) goto l6;
@@ -307,17 +307,18 @@ void ParamPragmas_init(void) {
   _mid = _register_module(&ParamPragmas_md.md, &ParamPragmas__PragmaState_td.td);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(28+8);
+    _mem = GC_malloc(_not_zero(28)+8);
     if (!_mem) _new_failed(_P(6804));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &ParamPragmas__PragmasSectionDesc_td.td;
     i0 = (int)_var;
   }
+  ParamPragmas__pragmas = (void*)i0;
+  i0 = (int)ParamPragmas__pragmas;
   i2 = i0 + 16;
   i1 = i0 + 20;
   *(void**)i2 = (void*)0;
   i2 = i0 + 24;
   *(void**)i1 = (void*)0;
   *(short int*)i2 = 0;
-  ParamPragmas__pragmas = (void*)i0;
 }

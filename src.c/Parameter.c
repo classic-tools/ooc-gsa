@@ -75,7 +75,7 @@ void Parameter__StreamDesc_NextChar(Parameter__Stream s) {
   if (i0) goto l0;
   i0 = *(int*)((int)s-4);
   i0 = (int)((_Type)i0)->tbprocs[0];
-  ((void(*)(Parameter__Stream))i0)((Parameter__Stream)(int)s);
+  ((_TBP_Parameter__StreamDesc_Remove)i0)((Parameter__Stream)(int)s);
 l0:
   i0 = (int)s + 5;
   *(unsigned char*)i0 = 0;
@@ -111,7 +111,7 @@ l1:
   i0 = (int)Parameter__in;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[1];
-  ((void(*)(Parameter__Stream))i1)((Parameter__Stream)i0);
+  ((_TBP_Parameter__StreamDesc_NextChar)i1)((Parameter__Stream)i0);
 }
 
 void Parameter__StreamDesc_Error(Parameter__Stream s, int pos, const unsigned char* msg, int msg_0d) {
@@ -141,7 +141,7 @@ l0:
   i4 = *(int*)((int)s-4);
   i4 = (int)((_Type)i4)->tbprocs[1];
 l1:
-  ((void(*)(Parameter__Stream))i4)((Parameter__Stream)(int)s);
+  ((_TBP_Parameter__StreamDesc_NextChar)i4)((Parameter__Stream)(int)s);
   i1 = *(unsigned char*)i2;
   if (i1) goto l2;
   i1 = *(unsigned char*)i3;
@@ -156,7 +156,7 @@ l2:
   i1 = *(int*)((int)s-4);
   i1 = (int)((_Type)i1)->tbprocs[1];
 l3:
-  ((void(*)(Parameter__Stream))i1)((Parameter__Stream)(int)s);
+  ((_TBP_Parameter__StreamDesc_NextChar)i1)((Parameter__Stream)(int)s);
   i4 = *(unsigned char*)i2;
   if (i4) goto l4;
   i4 = *(unsigned char*)i3;
@@ -176,7 +176,7 @@ l5:
   if (i1) goto l6;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
-  ((void(*)(Parameter__Stream))i1)((Parameter__Stream)i0);
+  ((_TBP_Parameter__StreamDesc_SkipWhitespace)i1)((Parameter__Stream)i0);
 l6:
   ;
 }
@@ -187,8 +187,8 @@ void Parameter__StreamDesc_ReadIdent(Parameter__Stream s, unsigned char* ident, 
   i0 = (int)((_Type)i6)->tbprocs[5];
   i1 = (int)((_Type)i6)->tbprocs[4];
   i5 = (int)s + 8;
-  ((void(*)(Parameter__Stream))i0)((Parameter__Stream)(int)s);
-  i0 = ((int(*)(Parameter__Stream))i1)((Parameter__Stream)(int)s);
+  ((_TBP_Parameter__StreamDesc_SkipWhitespace)i0)((Parameter__Stream)(int)s);
+  i0 = ((_TBP_Parameter__StreamDesc_CurrPos)i1)((Parameter__Stream)(int)s);
   *(int*)i5 = i0;
   i0 = (int)s + 6;
   i0 = *(unsigned char*)i0;
@@ -206,7 +206,7 @@ l0:
   i0 = (int)ident + i4;
   *(unsigned char*)i0 = i3;
 l1:
-  ((void(*)(Parameter__Stream))i7)((Parameter__Stream)(int)s);
+  ((_TBP_Parameter__StreamDesc_NextChar)i7)((Parameter__Stream)(int)s);
   i0 = *(unsigned char*)i1;
   i3 = Parameter__IsAlpha((unsigned char)i0);
   i4++;
@@ -218,7 +218,7 @@ l1:
   i7 = (int)((_Type)i6)->tbprocs[3];
   i3 = ident_0d - 1;
   i5 = *(int*)i5;
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i7)((Parameter__Stream)(int)s, (int)i5, (const unsigned char*)(int)_c3, 20);
+  ((_TBP_Parameter__StreamDesc_Error)i7)((Parameter__Stream)(int)s, (int)i5, (const unsigned char*)(int)_c3, 20);
   i7 = (int)ident + i3;
   *(unsigned char*)i7 = 0;
   goto l4;
@@ -228,7 +228,7 @@ l2:
   goto l4;
 l3:
   i6 = (int)((_Type)i6)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i6)((Parameter__Stream)(int)s, (int)-2, (const unsigned char*)(int)_c4, 20);
+  ((_TBP_Parameter__StreamDesc_Error)i6)((Parameter__Stream)(int)s, (int)-2, (const unsigned char*)(int)_c4, 20);
 l4:
   ;
 }
@@ -239,8 +239,8 @@ void Parameter__StreamDesc_ReadInteger(Parameter__Stream s, unsigned char* num, 
   i0 = (int)((_Type)i5)->tbprocs[5];
   i1 = (int)((_Type)i5)->tbprocs[4];
   i4 = (int)s + 8;
-  ((void(*)(Parameter__Stream))i0)((Parameter__Stream)(int)s);
-  i0 = ((int(*)(Parameter__Stream))i1)((Parameter__Stream)(int)s);
+  ((_TBP_Parameter__StreamDesc_SkipWhitespace)i0)((Parameter__Stream)(int)s);
+  i0 = ((_TBP_Parameter__StreamDesc_CurrPos)i1)((Parameter__Stream)(int)s);
   *(int*)i4 = i0;
   i0 = (int)s + 6;
   i0 = *(unsigned char*)i0;
@@ -255,7 +255,7 @@ void Parameter__StreamDesc_ReadInteger(Parameter__Stream s, unsigned char* num, 
   if (i3) goto l1;
 l0:
   i5 = (int)((_Type)i5)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i5)((Parameter__Stream)(int)s, (int)-2, (const unsigned char*)(int)_c6, 17);
+  ((_TBP_Parameter__StreamDesc_Error)i5)((Parameter__Stream)(int)s, (int)-2, (const unsigned char*)(int)_c6, 17);
   goto l5;
 l1:
   i2 = (int)((_Type)i5)->tbprocs[1];
@@ -268,7 +268,7 @@ l2:
   *(unsigned char*)i6 = i1;
 l3:
   i3++;
-  ((void(*)(Parameter__Stream))i2)((Parameter__Stream)(int)s);
+  ((_TBP_Parameter__StreamDesc_NextChar)i2)((Parameter__Stream)(int)s);
   i1 = *(unsigned char*)i0;
   i1 = Parameter__IsNum((unsigned char)i1);
   if (i1) goto l2;
@@ -277,7 +277,7 @@ l3:
   i2 = (int)((_Type)i5)->tbprocs[3];
   i1 = num_0d - 1;
   i4 = *(int*)i4;
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i2)((Parameter__Stream)(int)s, (int)i4, (const unsigned char*)(int)_c5, 17);
+  ((_TBP_Parameter__StreamDesc_Error)i2)((Parameter__Stream)(int)s, (int)i4, (const unsigned char*)(int)_c5, 17);
   i2 = (int)num + i1;
   *(unsigned char*)i2 = 0;
   goto l5;
@@ -295,8 +295,8 @@ void Parameter__StreamDesc_ReadString(Parameter__Stream s, unsigned char* str, i
   i1 = (int)((_Type)i6)->tbprocs[5];
   i7 = (int)s + 8;
   i0 = (int)((_Type)i6)->tbprocs[4];
-  ((void(*)(Parameter__Stream))i1)((Parameter__Stream)(int)s);
-  i0 = ((int(*)(Parameter__Stream))i0)((Parameter__Stream)(int)s);
+  ((_TBP_Parameter__StreamDesc_SkipWhitespace)i1)((Parameter__Stream)(int)s);
+  i0 = ((_TBP_Parameter__StreamDesc_CurrPos)i0)((Parameter__Stream)(int)s);
   *(int*)i7 = i0;
   i4 = *(unsigned char*)i5;
   i0 = i4 == 39;
@@ -305,7 +305,7 @@ void Parameter__StreamDesc_ReadString(Parameter__Stream s, unsigned char* str, i
   if (i0) goto l7;
 l0:
   i0 = (int)((_Type)i6)->tbprocs[1];
-  ((void(*)(Parameter__Stream))i0)((Parameter__Stream)(int)s);
+  ((_TBP_Parameter__StreamDesc_NextChar)i0)((Parameter__Stream)(int)s);
   i1 = *(unsigned char*)i5;
   i3 = i1 < 32;
   if (i3) goto l3;
@@ -319,7 +319,7 @@ l1:
   i1 = (int)str + i8;
   *(unsigned char*)i1 = i3;
 l2:
-  ((void(*)(Parameter__Stream))i0)((Parameter__Stream)(int)s);
+  ((_TBP_Parameter__StreamDesc_NextChar)i0)((Parameter__Stream)(int)s);
   i3 = *(unsigned char*)i5;
   i8++;
   i1 = i3 < 32;
@@ -334,7 +334,7 @@ l4:
   i3 = i3 < 32;
   if (i3) goto l6;
   i3 = str_0d <= i8;
-  ((void(*)(Parameter__Stream))i0)((Parameter__Stream)(int)s);
+  ((_TBP_Parameter__StreamDesc_NextChar)i0)((Parameter__Stream)(int)s);
   if (i3) goto l5;
   i3 = (int)str + i8;
   *(unsigned char*)i3 = 0;
@@ -343,18 +343,18 @@ l5:
   i8 = (int)((_Type)i6)->tbprocs[3];
   i3 = str_0d - 1;
   i0 = *(int*)i7;
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i8)((Parameter__Stream)(int)s, (int)i0, (const unsigned char*)(int)_c8, 16);
+  ((_TBP_Parameter__StreamDesc_Error)i8)((Parameter__Stream)(int)s, (int)i0, (const unsigned char*)(int)_c8, 16);
   i0 = (int)str + i3;
   *(unsigned char*)i0 = 0;
   goto l8;
 l6:
   i6 = (int)((_Type)i6)->tbprocs[3];
   i7 = *(int*)i7;
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i6)((Parameter__Stream)(int)s, (int)i7, (const unsigned char*)(int)_c9, 49);
+  ((_TBP_Parameter__StreamDesc_Error)i6)((Parameter__Stream)(int)s, (int)i7, (const unsigned char*)(int)_c9, 49);
   goto l8;
 l7:
   i0 = (int)((_Type)i6)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i0)((Parameter__Stream)(int)s, (int)-2, (const unsigned char*)(int)_c7, 16);
+  ((_TBP_Parameter__StreamDesc_Error)i0)((Parameter__Stream)(int)s, (int)-2, (const unsigned char*)(int)_c7, 16);
 l8:
   ;
 }
@@ -396,13 +396,13 @@ void Parameter__StreamDesc_ReadName(Parameter__Stream s, const unsigned char* se
   i5 = *(int*)((int)s-4);
   i1 = (int)((_Type)i5)->tbprocs[5];
   i0 = (int)s + 6;
-  ((void(*)(Parameter__Stream))i1)((Parameter__Stream)(int)s);
+  ((_TBP_Parameter__StreamDesc_SkipWhitespace)i1)((Parameter__Stream)(int)s);
   i0 = *(unsigned char*)i0;
   if (i0) goto l4;
   i6 = Parameter__StreamDesc_ReadName_IsSep(sep, sep_0d, (Parameter__Stream *)&s);
   if (i6) goto l4;
   i0 = (int)((_Type)i5)->tbprocs[4];
-  i0 = ((int(*)(Parameter__Stream))i0)((Parameter__Stream)(int)s);
+  i0 = ((_TBP_Parameter__StreamDesc_CurrPos)i0)((Parameter__Stream)(int)s);
   i1 = (int)s + 8;
   *(int*)i1 = i0;
   i2 = (int)s + 5;
@@ -416,7 +416,7 @@ l0:
   *(unsigned char*)i0 = i4;
 l1:
   i3++;
-  ((void(*)(Parameter__Stream))i1)((Parameter__Stream)(int)s);
+  ((_TBP_Parameter__StreamDesc_NextChar)i1)((Parameter__Stream)(int)s);
   i4 = Parameter__StreamDesc_ReadName_IsSep(sep, sep_0d, (Parameter__Stream *)&s);
   if (i4) goto l2;
   i0 = *(unsigned char*)i2;
@@ -430,7 +430,7 @@ l2:
   i1 = (int)((_Type)i5)->tbprocs[3];
   i0 = name_0d - 1;
   i2 = (int)name + i0;
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i1)((Parameter__Stream)(int)s, (int)-2, (const unsigned char*)(int)_c10, 14);
+  ((_TBP_Parameter__StreamDesc_Error)i1)((Parameter__Stream)(int)s, (int)-2, (const unsigned char*)(int)_c10, 14);
   *(unsigned char*)i2 = 0;
   goto l5;
 l3:
@@ -439,7 +439,7 @@ l3:
   goto l5;
 l4:
   i5 = (int)((_Type)i5)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i5)((Parameter__Stream)(int)s, (int)-2, (const unsigned char*)(int)_c11, 14);
+  ((_TBP_Parameter__StreamDesc_Error)i5)((Parameter__Stream)(int)s, (int)-2, (const unsigned char*)(int)_c11, 14);
 l5:
   _top_vs = _old_top_vs;
 }
@@ -449,7 +449,7 @@ unsigned char Parameter__StreamDesc_LookingAtString(Parameter__Stream s, unsigne
   i1 = *(int*)((int)s-4);
   i2 = (int)((_Type)i1)->tbprocs[5];
   i0 = (int)s + 5;
-  ((void(*)(Parameter__Stream))i2)((Parameter__Stream)(int)s);
+  ((_TBP_Parameter__StreamDesc_SkipWhitespace)i2)((Parameter__Stream)(int)s);
   i0 = *(unsigned char*)i0;
   i2 = i0 == 39;
   if (i2) goto l0;
@@ -459,7 +459,7 @@ unsigned char Parameter__StreamDesc_LookingAtString(Parameter__Stream s, unsigne
   goto l1;
 l0:
   i1 = (int)((_Type)i1)->tbprocs[8];
-  ((void(*)(Parameter__Stream, unsigned char*, int str_0d))i1)((Parameter__Stream)(int)s, (unsigned char*)(int)str, str_0d);
+  ((_TBP_Parameter__StreamDesc_ReadString)i1)((Parameter__Stream)(int)s, (unsigned char*)(int)str, str_0d);
   i0 = 1;
 l1:
   return (unsigned char)i0;
@@ -476,8 +476,8 @@ void Parameter__StreamDesc_Match(Parameter__Stream s, const unsigned char* sym__
   i3 = (int)((_Type)i0)->tbprocs[5];
   i1 = (int)((_Type)i0)->tbprocs[4];
   i2 = Parameter__IsAlpha((unsigned char)i5);
-  ((void(*)(Parameter__Stream))i3)((Parameter__Stream)(int)s);
-  i1 = ((int(*)(Parameter__Stream))i1)((Parameter__Stream)(int)s);
+  ((_TBP_Parameter__StreamDesc_SkipWhitespace)i3)((Parameter__Stream)(int)s);
+  i1 = ((_TBP_Parameter__StreamDesc_CurrPos)i1)((Parameter__Stream)(int)s);
   i3 = (int)s + 8;
   *(int*)i3 = i1;
   if (i2) goto l3;
@@ -494,7 +494,7 @@ l0:
   i2 = (int)sym + i1;
   i2 = *(unsigned char*)i2;
   i3 = i2 == 0;
-  ((void(*)(Parameter__Stream))i5)((Parameter__Stream)(int)s);
+  ((_TBP_Parameter__StreamDesc_NextChar)i5)((Parameter__Stream)(int)s);
   if (i3) goto l2;
   i3 = *(unsigned char*)i4;
   i3 = i3 == i2;
@@ -520,14 +520,14 @@ l4:
   goto l6;
 l5:
   i6 = (int)((_Type)i0)->tbprocs[6];
-  ((void(*)(Parameter__Stream, unsigned char*, int ident_0d))i6)((Parameter__Stream)(int)s, (unsigned char*)(int)ident, 256);
+  ((_TBP_Parameter__StreamDesc_ReadIdent)i6)((Parameter__Stream)(int)s, (unsigned char*)(int)ident, 256);
   i6 = strcmp((const char*) (int)sym, (const char*) (int)ident) != 0;
 l6:
   if (!(i6)) goto l7;
   _string_copy((int)ident, (int)sym, 256);
   Strings__Append((const unsigned char*)(int)_c12, 10, (unsigned char*)(int)ident, 256);
   i0 = (int)((_Type)i0)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i0)((Parameter__Stream)(int)s, (int)-2, (const unsigned char*)(int)ident, 256);
+  ((_TBP_Parameter__StreamDesc_Error)i0)((Parameter__Stream)(int)s, (int)-2, (const unsigned char*)(int)ident, 256);
 l7:
   _top_vs = _old_top_vs;
 }
@@ -570,7 +570,7 @@ void Parameter__AddSection(const unsigned char* name__ref, int name_0d, Paramete
     char *_mem, *_var;
     int* _dim_ptr;
     if(i1 < 0) _invalid_length(i1, _P(17216));
-    _mem = GC_malloc_atomic(i1*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
     if (!_mem) _new_failed(_P(17181));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -615,7 +615,7 @@ void Parameter__SectionDesc_Parse(Parameter__Section section, unsigned char incl
   i1 = (int)Parameter__in;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[11];
-  ((void(*)(Parameter__Stream, const unsigned char*, int sym_0d))i0)((Parameter__Stream)i1, (const unsigned char*)(int)_c13, 4);
+  ((_TBP_Parameter__StreamDesc_Match)i0)((Parameter__Stream)i1, (const unsigned char*)(int)_c13, 4);
 l0:
   ;
 }
@@ -679,7 +679,7 @@ void Parameter__SectionDesc_CmdLineOption(Parameter__Section s, const unsigned c
   _push_value(int, cmdValue, cmdValue__ref, cmdValue_0d);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(20+8);
+    _mem = GC_malloc(_not_zero(20)+8);
     if (!_mem) _new_failed(_P(19812));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Parameter__CmdLineOptionDesc_td.td;
@@ -724,7 +724,7 @@ l4:
     char *_mem, *_var;
     int* _dim_ptr;
     if(i0 < 0) _invalid_length(i0, _P(20282));
-    _mem = GC_malloc_atomic(i0*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
     if (!_mem) _new_failed(_P(20237));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -742,7 +742,7 @@ l4:
     char *_mem, *_var;
     int* _dim_ptr;
     if(i1 < 0) _invalid_length(i1, _P(20373));
-    _mem = GC_malloc_atomic(i1*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i1*1)+8);
     if (!_mem) _new_failed(_P(20328));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -767,7 +767,7 @@ l0:
   i7 = (int)Parameter__in;
   i6 = *(int*)(i7-4);
   i6 = (int)((_Type)i6)->tbprocs[5];
-  ((void(*)(Parameter__Stream))i6)((Parameter__Stream)i7);
+  ((_TBP_Parameter__StreamDesc_SkipWhitespace)i6)((Parameter__Stream)i7);
   i2 = (int)Parameter__in;
   i7 = i2 + 6;
   i7 = *(unsigned char*)i7;
@@ -788,7 +788,7 @@ l1:
   i0 = (int)Parameter__in;
   i5 = *(int*)(i0-4);
   i5 = (int)((_Type)i5)->tbprocs[1];
-  ((void(*)(Parameter__Stream))i5)((Parameter__Stream)i0);
+  ((_TBP_Parameter__StreamDesc_NextChar)i5)((Parameter__Stream)i0);
   i0 = (int)Parameter__in;
   i0 += 5;
   i0 = *(unsigned char*)i0;
@@ -818,7 +818,7 @@ l4:
   i5 = *(unsigned char*)i5;
   *(unsigned char*)i6 = i5;
 l5:
-  ((void(*)(Parameter__Stream))i4)((Parameter__Stream)i1);
+  ((_TBP_Parameter__StreamDesc_NextChar)i4)((Parameter__Stream)i1);
   i5 = (int)Parameter__in;
   i5 += 5;
   i6 = *(unsigned char*)i5;
@@ -838,7 +838,7 @@ l6:
 l7:
   i4 = *(int*)(i2-4);
   i4 = (int)((_Type)i4)->tbprocs[1];
-  ((void(*)(Parameter__Stream))i4)((Parameter__Stream)i2);
+  ((_TBP_Parameter__StreamDesc_NextChar)i4)((Parameter__Stream)i2);
   i0 = (int)Parameter__in;
   i4 = i0 + 6;
   i4 = *(unsigned char*)i4;
@@ -853,7 +853,7 @@ l8:
   i3 = (int)Parameter__in;
   i4 = *(int*)(i3-4);
   i4 = (int)((_Type)i4)->tbprocs[1];
-  ((void(*)(Parameter__Stream))i4)((Parameter__Stream)i3);
+  ((_TBP_Parameter__StreamDesc_NextChar)i4)((Parameter__Stream)i3);
   i4 = (int)Parameter__in;
   i3 = i4 + 6;
   i3 = *(unsigned char*)i3;
@@ -868,13 +868,13 @@ l9:
   i4 = (int)Parameter__in;
   i0 = *(int*)(i4-4);
   i0 = (int)((_Type)i0)->tbprocs[1];
-  ((void(*)(Parameter__Stream))i0)((Parameter__Stream)i4);
+  ((_TBP_Parameter__StreamDesc_NextChar)i0)((Parameter__Stream)i4);
   i1 = 0;
   goto l11;
 l10:
   i7 = *(int*)(i2-4);
   i7 = (int)((_Type)i7)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i7)((Parameter__Stream)i2, (int)-1, (const unsigned char*)(int)_c14, 13);
+  ((_TBP_Parameter__StreamDesc_Error)i7)((Parameter__Stream)i2, (int)-1, (const unsigned char*)(int)_c14, 13);
   i1 = 1;
 l11:
   if (!(i1)) goto l0;
@@ -896,7 +896,7 @@ void Parameter__FileStreamDesc_Remove(Parameter__FileStream s) {
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[5];
-  ((void(*)(Files__File))i1)((Files__File)i0);
+  ((_TBP_Files__FileDesc_Close)i1)((Files__File)i0);
   Parameter__StreamDesc_Remove((Parameter__Stream)(int)s);
 }
 
@@ -911,7 +911,7 @@ void Parameter__FileStreamDesc_NextChar(Parameter__FileStream s) {
   i5 = *(int*)(i3-4);
   i1 = *(unsigned char*)i2;
   i5 = (int)((_Type)i5)->tbprocs[7];
-  ((void(*)(BinaryRider__Reader, unsigned char *))i5)((BinaryRider__Reader)i3, (unsigned char *)i2);
+  ((_TBP_BinaryRider__ReaderDesc_ReadChar)i5)((BinaryRider__Reader)i3, (unsigned char *)i2);
   i3 = (int)*(void**)i0;
   i2 = (int)*(void**)i3;
   i3 = i2 == 0;
@@ -935,7 +935,7 @@ l2:
   if (i0) goto l3;
   i0 = *(int*)((int)s-4);
   i0 = (int)((_Type)i0)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i0)((Parameter__Stream)(int)s, (int)-1, (const unsigned char*)(int)_c15, 11);
+  ((_TBP_Parameter__StreamDesc_Error)i0)((Parameter__Stream)(int)s, (int)-1, (const unsigned char*)(int)_c15, 11);
 l3:
   Parameter__StreamDesc_NextChar((Parameter__Stream)(int)s);
 l4:
@@ -960,7 +960,7 @@ l0:
 l1:
   i0 = *(int*)((int)s-4);
   i0 = (int)((_Type)i0)->tbprocs[4];
-  i0 = ((int(*)(Parameter__Stream))i0)((Parameter__Stream)(int)s);
+  i0 = ((_TBP_Parameter__StreamDesc_CurrPos)i0)((Parameter__Stream)(int)s);
 l2:
   Parameter__StreamDesc_Error((Parameter__Stream)(int)s, (int)i0, (const unsigned char*)(int)msg, msg_0d);
   i1 = (int)s + 12;
@@ -982,7 +982,7 @@ int Parameter__FileStreamDesc_CurrPos(Parameter__FileStream s) {
   i0 = (int)*(void**)i0;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[0];
-  i0 = ((int(*)(BinaryRider__Reader))i1)((BinaryRider__Reader)i0);
+  i0 = ((_TBP_BinaryRider__ReaderDesc_Pos)i1)((BinaryRider__Reader)i0);
   i0--;
   return (int)i0;
 }
@@ -993,7 +993,7 @@ void Parameter__GetIndexedArg(short int index, unsigned char* arg, int arg_0d) {
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[3];
   i2 = index <= 0;
-  ((void(*)(TextRider__Reader, int))i1)((TextRider__Reader)i0, (int)0);
+  ((_TBP_TextRider__ReaderDesc_SetPos)i1)((TextRider__Reader)i0, (int)0);
   if (i2) goto l1;
   i2 = index;
 l0:
@@ -1002,13 +1002,13 @@ l0:
   i2--;
   i1 = (int)((_Type)i1)->tbprocs[8];
   i3 = i2 > 0;
-  ((void(*)(TextRider__Reader))i1)((TextRider__Reader)i0);
+  ((_TBP_TextRider__ReaderDesc_ReadLn)i1)((TextRider__Reader)i0);
   if (i3) goto l0;
 l1:
   i0 = (int)Parameter__argReader;
   i1 = *(int*)(i0-4);
   i1 = (int)((_Type)i1)->tbprocs[10];
-  ((void(*)(TextRider__Reader, unsigned char*, int s_0d))i1)((TextRider__Reader)i0, (unsigned char*)(int)arg, arg_0d);
+  ((_TBP_TextRider__ReaderDesc_ReadLine)i1)((TextRider__Reader)i0, (unsigned char*)(int)arg, arg_0d);
 }
 
 short int Parameter__ParseConfigFile_ConfigFileOption(const unsigned char* configOveride__ref, int configOveride_0d) {
@@ -1086,7 +1086,7 @@ void Parameter__ParseConfigFile(const unsigned char* configFile__ref, int config
   _push_value(int, configOveride, configOveride__ref, configOveride_0d);
   {
     char *_mem, *_var;
-    _mem = GC_malloc(276+8);
+    _mem = GC_malloc(_not_zero(276)+8);
     if (!_mem) _new_failed(_P(27417));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Parameter__FileStreamDesc_td.td;
@@ -1130,11 +1130,11 @@ l4:
   if (i4) goto l14;
   i0 = *(int*)(i2-4);
   i0 = (int)((_Type)i0)->tbprocs[2];
-  ((void(*)(Parameter__FileStream))i0)((Parameter__FileStream)i2);
+  ((_TBP_Parameter__FileStreamDesc_Install)i0)((Parameter__FileStream)i2);
   i0 = (int)Parameter__in;
   i3 = *(int*)(i0-4);
   i3 = (int)((_Type)i3)->tbprocs[5];
-  ((void(*)(Parameter__Stream))i3)((Parameter__Stream)i0);
+  ((_TBP_Parameter__StreamDesc_SkipWhitespace)i3)((Parameter__Stream)i0);
   i0 = (int)Parameter__in;
   i0 += 6;
   i0 = *(unsigned char*)i0;
@@ -1143,7 +1143,7 @@ l5:
   i0 = (int)Parameter__in;
   i4 = *(int*)(i0-4);
   i4 = (int)((_Type)i4)->tbprocs[6];
-  ((void(*)(Parameter__Stream, unsigned char*, int ident_0d))i4)((Parameter__Stream)i0, (unsigned char*)(int)ident, 32);
+  ((_TBP_Parameter__StreamDesc_ReadIdent)i4)((Parameter__Stream)i0, (unsigned char*)(int)ident, 32);
   i4 = (int)Parameter__in;
   i0 = i4 + 7;
   i0 = *(unsigned char*)i0;
@@ -1155,7 +1155,7 @@ l5:
   i4 = *(int*)(i3-4);
   *(unsigned char*)i0 = 1;
   i4 = (int)((_Type)i4)->tbprocs[0];
-  ((void(*)(Parameter__Section, unsigned char))i4)((Parameter__Section)i3, (unsigned char)1);
+  ((_TBP_Parameter__SectionDesc_Parse)i4)((Parameter__Section)i3, (unsigned char)1);
   i3 = 0;
   goto l10;
 l6:
@@ -1165,7 +1165,7 @@ l6:
   i4 = (int)Parameter__in;
   i3 = *(int*)(i4-4);
   i3 = (int)((_Type)i3)->tbprocs[3];
-  ((void(*)(Parameter__Stream, int, const unsigned char*, int msg_0d))i3)((Parameter__Stream)i4, (int)-2, (const unsigned char*)(int)str, 256);
+  ((_TBP_Parameter__StreamDesc_Error)i3)((Parameter__Stream)i4, (int)-2, (const unsigned char*)(int)str, 256);
   _halt(1);
   goto l8;
 l7:
@@ -1180,7 +1180,7 @@ l10:
   i0 = (int)Parameter__in;
   i4 = *(int*)(i0-4);
   i4 = (int)((_Type)i4)->tbprocs[5];
-  ((void(*)(Parameter__Stream))i4)((Parameter__Stream)i0);
+  ((_TBP_Parameter__StreamDesc_SkipWhitespace)i4)((Parameter__Stream)i0);
 l11:
   if (i3) goto l13;
   i0 = (int)Parameter__in;
@@ -1197,7 +1197,7 @@ l13:
   if (i2) goto l15;
   i2 = *(int*)(i0-4);
   i2 = (int)((_Type)i2)->tbprocs[0];
-  ((void(*)(Parameter__Stream))i2)((Parameter__Stream)i0);
+  ((_TBP_Parameter__StreamDesc_Remove)i2)((Parameter__Stream)i0);
   goto l15;
 l14:
   (void)memcpy((void*) (int)str, (const void*) (int)_c23, 24);
@@ -1213,7 +1213,7 @@ void Parameter__IncludeSectionDesc_Parse(Parameter__IncludeSection incl, unsigne
   Msg__Msg res;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(276+8);
+    _mem = GC_malloc(_not_zero(276)+8);
     if (!_mem) _new_failed(_P(30346));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Parameter__FileStreamDesc_td.td;
@@ -1223,12 +1223,12 @@ void Parameter__IncludeSectionDesc_Parse(Parameter__IncludeSection incl, unsigne
   i0 = (int)Parameter__in;
   i3 = *(int*)(i0-4);
   i3 = (int)((_Type)i3)->tbprocs[10];
-  i0 = ((unsigned char(*)(Parameter__Stream, unsigned char*, int str_0d))i3)((Parameter__Stream)i0, (unsigned char*)i1, 256);
+  i0 = ((_TBP_Parameter__StreamDesc_LookingAtString)i3)((Parameter__Stream)i0, (unsigned char*)i1, 256);
   if (i0) goto l0;
   i3 = (int)Parameter__in;
   i0 = *(int*)(i3-4);
   i0 = (int)((_Type)i0)->tbprocs[9];
-  ((void(*)(Parameter__Stream, const unsigned char*, int sep_0d, unsigned char*, int name_0d))i0)((Parameter__Stream)i3, (const unsigned char*)(int)_c18, 1, (unsigned char*)i1, 256);
+  ((_TBP_Parameter__StreamDesc_ReadName)i0)((Parameter__Stream)i3, (const unsigned char*)(int)_c18, 1, (unsigned char*)i1, 256);
 l0:
   Parameter__SectionDesc_Parse((Parameter__Section)(int)incl, (unsigned char)includeEnd);
   if (includeEnd) goto l1;
@@ -1244,7 +1244,7 @@ l1:
   if (i0) goto l2;
   i0 = *(int*)(i2-4);
   i0 = (int)((_Type)i0)->tbprocs[2];
-  ((void(*)(Parameter__FileStream))i0)((Parameter__FileStream)i2);
+  ((_TBP_Parameter__FileStreamDesc_Install)i0)((Parameter__FileStream)i2);
 l2:
   ;
 }
@@ -1265,7 +1265,7 @@ l0:
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[1];
   Out__Ln();
-  ((void(*)(Parameter__Section))i0)((Parameter__Section)i1);
+  ((_TBP_Parameter__SectionDesc_Write)i0)((Parameter__Section)i1);
   Out__String((const unsigned char*)(int)_c13, 4);
   Out__Ln();
 l1:
@@ -1328,7 +1328,7 @@ l0:
 l1:
   i0 = *(int*)((int)s-4);
   i0 = (int)((_Type)i0)->tbprocs[4];
-  i0 = ((int(*)(Parameter__Stream))i0)((Parameter__Stream)(int)s);
+  i0 = ((_TBP_Parameter__StreamDesc_CurrPos)i0)((Parameter__Stream)(int)s);
 l2:
   i2 = (int)s + 16;
   Parameter__StreamDesc_Error((Parameter__Stream)(int)s, (int)i0, (const unsigned char*)(int)msg, msg_0d);
@@ -1555,7 +1555,7 @@ l6:
     char *_mem, *_var;
     int* _dim_ptr;
     if(i0 < 0) _invalid_length(i0, _P(38315));
-    _mem = GC_malloc_atomic(i0*1+8);
+    _mem = GC_malloc_atomic(_not_zero(i0*1)+8);
     if (!_mem) _new_failed(_P(38295));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -1569,14 +1569,14 @@ l7:
   i1 = *(int*)(i0-8);
   _string_copy(i0, (int)str, i1);
   i1 = (int)((_Type)i4)->tbprocs[2];
-  ((void(*)(Parameter__StringStream))i1)((Parameter__StringStream)i2);
+  ((_TBP_Parameter__StringStreamDesc_Install)i1)((Parameter__StringStream)i2);
   i1 = (int)cmd + 4;
   i1 = (int)*(void**)i1;
   i0 = *(int*)(i1-4);
   i0 = (int)((_Type)i0)->tbprocs[0];
   i4 = (int)((_Type)i4)->tbprocs[0];
-  ((void(*)(Parameter__Section, unsigned char))i0)((Parameter__Section)i1, (unsigned char)0);
-  ((void(*)(Parameter__Stream))i4)((Parameter__Stream)i2);
+  ((_TBP_Parameter__SectionDesc_Parse)i0)((Parameter__Section)i1, (unsigned char)0);
+  ((_TBP_Parameter__StreamDesc_Remove)i4)((Parameter__Stream)i2);
   goto l11;
 l8:
   (void)memcpy((void*) (int)str, (const void*) (int)_c25, 8);
@@ -1605,7 +1605,7 @@ short int Parameter__ParseCmdLine(unsigned char optionsStartWithDash, unsigned c
   Parameter__StringStream strStream;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(140+8);
+    _mem = GC_malloc(_not_zero(140)+8);
     if (!_mem) _new_failed(_P(38563));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Parameter__StringStreamDesc_td.td;
@@ -1616,7 +1616,7 @@ short int Parameter__ParseCmdLine(unsigned char optionsStartWithDash, unsigned c
   {
     char *_mem, *_var;
     int* _dim_ptr;
-    _mem = GC_malloc_atomic(256*1+8);
+    _mem = GC_malloc_atomic(_not_zero(256*1)+8);
     if (!_mem) _new_failed(_P(38584));
     _var = _mem+8;
     _dim_ptr = (void*)(_var-4);
@@ -1797,23 +1797,24 @@ void Parameter__GetArg(short int index, unsigned char* arg, int arg_0d) {
 void Parameter_init(void) {
   register int i0, i1, i2;
   _mid = _register_module(&Parameter_md.md, &Parameter__StringStreamDesc_td.td);
+  Parameter__sections = (void*)0;
+  Parameter__cmdList = (void*)0;
+  Parameter__in = (void*)0;
   {
     char *_mem, *_var;
-    _mem = GC_malloc(12+8);
+    _mem = GC_malloc(_not_zero(12)+8);
     if (!_mem) _new_failed(_P(41139));
     _var = _mem+8;
     ((_Type*)_var)[-1] = &Parameter__IncludeSectionDesc_td.td;
     i0 = (int)_var;
   }
+  Parameter__include = (void*)i0;
+  i0 = (int)Parameter__include;
   i2 = i0 + 8;
   i1 = i0 + 9;
   *(unsigned char*)i2 = 0;
   *(unsigned char*)i1 = 1;
-  i1 = (int)ProgramArgs__args;
-  i1 = (int)TextRider__ConnectReader((Channel__Channel)i1);
-  Parameter__sections = (void*)0;
-  Parameter__cmdList = (void*)0;
-  Parameter__in = (void*)0;
-  Parameter__include = (void*)i0;
-  Parameter__argReader = (void*)i1;
+  i0 = (int)ProgramArgs__args;
+  i0 = (int)TextRider__ConnectReader((Channel__Channel)i0);
+  Parameter__argReader = (void*)i0;
 }

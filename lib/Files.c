@@ -1,6 +1,6 @@
-/*	$Id: Files.c,v 1.16 1999/10/31 13:59:40 ooc-devel Exp $	*/
+/*	$Id: Files.c,v 1.17 2000/07/21 17:02:49 ooc-devel Exp $	*/
 /*  Access to files and file attributes.
-    Copyright (C) 1997, 1998, 1999  Michael van Acken
+    Copyright (C) 1997-2000  Michael van Acken
 
     This module is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public License
@@ -358,7 +358,8 @@ void Files__ErrorContextDesc_GetTemplate (Files__ErrorContext context,
 
 static void add_msg_attribute(Files__Result msg, const char* name, const char* value) {
   DYN_TBCALL(Msg,MsgDesc,SetStringAttrib,msg,
-	     (msg, (const Msg__String)name, strlen(name)+1, (CHAR*)value));
+	     (msg, (const Msg__String)name, strlen(name)+1,
+              Msg__GetStringPtr((CHAR*)value, strlen(value)+1)));
 }
 
 static Files__Result get_error(Msg__Code code, int use_errno, Files__File f) {

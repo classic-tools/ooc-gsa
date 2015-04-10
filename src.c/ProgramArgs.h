@@ -32,38 +32,38 @@ typedef struct ProgramArgs__ReaderDesc {
   int pos1;
 } ProgramArgs__ReaderDesc;
 typedef struct ProgramArgs__ReaderDesc* ProgramArgs__Reader;
-#define _TBP_ProgramArgs__ReaderDesc_Pos int(*)(ProgramArgs__Reader r)
+typedef int(* _TBP_ProgramArgs__ReaderDesc_Pos)(ProgramArgs__Reader r);
 #define _TBN_ProgramArgs__ReaderDesc_Pos 0
 extern int ProgramArgs__ReaderDesc_Pos(ProgramArgs__Reader r);
-#define _TBP_ProgramArgs__ReaderDesc_Available int(*)(ProgramArgs__Reader r)
+typedef int(* _TBP_ProgramArgs__ReaderDesc_Available)(ProgramArgs__Reader r);
 #define _TBN_ProgramArgs__ReaderDesc_Available 1
 extern int ProgramArgs__ReaderDesc_Available(ProgramArgs__Reader r);
-#define _TBP_ProgramArgs__ReaderDesc_SetPos void(*)(ProgramArgs__Reader r, int newPos)
+typedef void(* _TBP_ProgramArgs__ReaderDesc_SetPos)(ProgramArgs__Reader r, int newPos);
 #define _TBN_ProgramArgs__ReaderDesc_SetPos 2
 extern void ProgramArgs__ReaderDesc_SetPos(ProgramArgs__Reader r, int newPos);
-#define _TBP_ProgramArgs__ReaderDesc_ReadByte void(*)(ProgramArgs__Reader r, unsigned char *x)
+typedef void(* _TBP_ProgramArgs__ReaderDesc_ReadByte)(ProgramArgs__Reader r, unsigned char *x);
 #define _TBN_ProgramArgs__ReaderDesc_ReadByte 3
 extern void ProgramArgs__ReaderDesc_ReadByte(ProgramArgs__Reader r, unsigned char *x);
-#define _TBP_ProgramArgs__ReaderDesc_ReadBytes void(*)(ProgramArgs__Reader r, unsigned char* x, int x_0d, int start, int n)
+typedef void(* _TBP_ProgramArgs__ReaderDesc_ReadBytes)(ProgramArgs__Reader r, unsigned char* x, int x_0d, int start, int n);
 #define _TBN_ProgramArgs__ReaderDesc_ReadBytes 4
 extern void ProgramArgs__ReaderDesc_ReadBytes(ProgramArgs__Reader r, unsigned char* x, int x_0d, int start, int n);
-#define _TBP_ProgramArgs__ChannelDesc_Length int(*)(ProgramArgs__Channel ch)
+typedef int(* _TBP_ProgramArgs__ChannelDesc_Length)(ProgramArgs__Channel ch);
 #define _TBN_ProgramArgs__ChannelDesc_Length 0
 extern int ProgramArgs__ChannelDesc_Length(ProgramArgs__Channel ch);
-#define _TBP_ProgramArgs__ChannelDesc_ArgNumber int(*)(ProgramArgs__Channel ch)
+typedef int(* _TBP_ProgramArgs__ChannelDesc_ArgNumber)(ProgramArgs__Channel ch);
 #define _TBN_ProgramArgs__ChannelDesc_ArgNumber 7
 extern int ProgramArgs__ChannelDesc_ArgNumber(ProgramArgs__Channel ch);
 #include "Time.h"
-#define _TBP_ProgramArgs__ChannelDesc_GetModTime void(*)(ProgramArgs__Channel ch, Time__TimeStamp *mtime, _Type mtime__tag)
+typedef void(* _TBP_ProgramArgs__ChannelDesc_GetModTime)(ProgramArgs__Channel ch, Time__TimeStamp *mtime, _Type mtime__tag);
 #define _TBN_ProgramArgs__ChannelDesc_GetModTime 1
 extern void ProgramArgs__ChannelDesc_GetModTime(ProgramArgs__Channel ch, Time__TimeStamp *mtime, _Type mtime__tag);
-#define _TBP_ProgramArgs__ChannelDesc_NewReader ProgramArgs__Reader(*)(ProgramArgs__Channel ch)
+typedef ProgramArgs__Reader(* _TBP_ProgramArgs__ChannelDesc_NewReader)(ProgramArgs__Channel ch);
 #define _TBN_ProgramArgs__ChannelDesc_NewReader 2
 extern ProgramArgs__Reader ProgramArgs__ChannelDesc_NewReader(ProgramArgs__Channel ch);
-#define _TBP_ProgramArgs__ChannelDesc_Flush void(*)(ProgramArgs__Channel ch)
+typedef void(* _TBP_ProgramArgs__ChannelDesc_Flush)(ProgramArgs__Channel ch);
 #define _TBN_ProgramArgs__ChannelDesc_Flush 4
 extern void ProgramArgs__ChannelDesc_Flush(ProgramArgs__Channel ch);
-#define _TBP_ProgramArgs__ChannelDesc_Close void(*)(ProgramArgs__Channel ch)
+typedef void(* _TBP_ProgramArgs__ChannelDesc_Close)(ProgramArgs__Channel ch);
 #define _TBN_ProgramArgs__ChannelDesc_Close 5
 extern void ProgramArgs__ChannelDesc_Close(ProgramArgs__Channel ch);
 extern struct _TD ProgramArgs__ChannelDesc_td;

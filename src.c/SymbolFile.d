@@ -16,8 +16,7 @@ static SymbolFile__StructArray SymbolFile__structArray;
 static int SymbolFile__structLen;
 static unsigned char SymbolFile__emptyString[2];
 static Parameter__String SymbolFile__emptyStringPtr;
-unsigned char SymbolFile__symbolFileId[5] = {
-  239, 154, 82, 115, 0, };
+unsigned char SymbolFile__symbolFileId[5];
 typedef struct SymbolFile__Read_ModuleListDesc* SymbolFile__Read_ModuleList;
 typedef struct SymbolFile__Read_ModuleListDesc {
   struct SymbolFile__Read_ModuleListDesc* next;

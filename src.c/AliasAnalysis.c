@@ -1533,11 +1533,11 @@ l0:
 l1:
   if (i1) goto l2;
   i0 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[24];
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Result, Worklist__UsingHook))i0)((Worklist__Worklist *)(int)&AliasAnalysis__worklist, &Worklist__Worklist_td.td, (Data__Result)(int)instr, (Worklist__UsingHook)(int)&AliasAnalysis__IsAccess);
+  ((_TBP_Worklist__Worklist_AddUsingInstr)i0)((Worklist__Worklist *)(int)&AliasAnalysis__worklist, &Worklist__Worklist_td.td, (Data__Result)(int)instr, (Worklist__UsingHook)(int)&AliasAnalysis__IsAccess);
   i0 = *(int*)((int)instr-4);
   i1 = (int)((_Type)i0)->tbprocs[1];
   i0 = (int)*(void**)(int)with;
-  ((void(*)(Data__Usable, Data__Usable))i1)((Data__Usable)(int)instr, (Data__Usable)i0);
+  ((_TBP_Data__UsableDesc_ReplaceUses)i1)((Data__Usable)(int)instr, (Data__Usable)i0);
 l2:
   ;
 }
@@ -1757,7 +1757,7 @@ l0:
   if (i3) goto l2;
   i1 = i1 > 36;
   if (i1) goto l2;
-  ((void(*)(Worklist__Worklist *, _Type wl__tag, Data__Info))i0)((Worklist__Worklist *)(int)&AliasAnalysis__worklist, &Worklist__Worklist_td.td, (Data__Info)i2);
+  ((_TBP_Worklist__Worklist_AddHead)i0)((Worklist__Worklist *)(int)&AliasAnalysis__worklist, &Worklist__Worklist_td.td, (Data__Info)i2);
   goto l2;
 l1:
   AliasAnalysis__Analyse_AddAccessInstr((Data__Region)i2);
@@ -1776,15 +1776,15 @@ void AliasAnalysis__Analyse(Data__Region greg) {
   AliasAnalysis__enabled = 1;
   Data__GlobalRegionDesc_NumberDominanceTree((Data__GlobalRegion)(int)greg);
   AliasAnalysis__Analyse_AddAccessInstr((Data__Region)(int)greg);
-  i0 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i2)((Worklist__Worklist *)(int)&AliasAnalysis__worklist, &Worklist__Worklist_td.td);
+  i0 = ((_TBP_Worklist__Worklist_IsEmpty)i2)((Worklist__Worklist *)(int)&AliasAnalysis__worklist, &Worklist__Worklist_td.td);
   if (i0) goto l1;
   i0 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[15];
   i3 = (int)((_Type)&Worklist__Worklist_td.td)->tbprocs[18];
 l0:
-  i1 = (int)((Data__Info(*)(Worklist__Worklist *, _Type wl__tag))i0)((Worklist__Worklist *)(int)&AliasAnalysis__worklist, &Worklist__Worklist_td.td);
-  ((void(*)(Worklist__Worklist *, _Type wl__tag))i3)((Worklist__Worklist *)(int)&AliasAnalysis__worklist, &Worklist__Worklist_td.td);
+  i1 = (int)((_TBP_Worklist__Worklist_GetHead)i0)((Worklist__Worklist *)(int)&AliasAnalysis__worklist, &Worklist__Worklist_td.td);
+  ((_TBP_Worklist__Worklist_RemoveHead)i3)((Worklist__Worklist *)(int)&AliasAnalysis__worklist, &Worklist__Worklist_td.td);
   AliasAnalysis__SimplifyAccess((Data__Instruction)i1);
-  i1 = ((unsigned char(*)(Worklist__Worklist *, _Type wl__tag))i2)((Worklist__Worklist *)(int)&AliasAnalysis__worklist, &Worklist__Worklist_td.td);
+  i1 = ((_TBP_Worklist__Worklist_IsEmpty)i2)((Worklist__Worklist *)(int)&AliasAnalysis__worklist, &Worklist__Worklist_td.td);
   if (!(i1)) goto l0;
 l1:
   ;
@@ -1878,5 +1878,5 @@ l12:
 
 void AliasAnalysis_init(void) {
   _mid = _register_module(&AliasAnalysis_md.md, &AliasAnalysis__Aliasing_Selector_td.td);
-  AliasAnalysis__enabled = (unsigned char)0;
+  AliasAnalysis__enabled = 0;
 }
