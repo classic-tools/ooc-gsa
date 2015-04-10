@@ -1,4 +1,4 @@
-(* 	$Id: GenDecl.Mod,v 1.54 2002/12/03 13:21:02 ooc-devel Exp $	 *)
+(* 	$Id: GenDecl.Mod,v 1.55 2002/12/09 11:00:13 ooc-devel Exp $	 *)
 MODULE GenDecl;
 (*  Handles name mangling, generates C declarations and type casts.
     Copyright (C) 1996-2002  Michael van Acken
@@ -1513,7 +1513,11 @@ PROCEDURE PtrList (w: TextRider.Writer; root: D.Object; mode: SHORTINT): INTEGER
     w. WriteString ("const ");
     WriteScalarType (w, D.struct[D.strPtr], FALSE, FALSE);
     w. WriteString (" list[");
-    w. WriteInt (len, 0);
+    IF (len = 0) THEN                    (* avoid zero length arrays *)
+      w. WriteInt (1, 0);
+    ELSE
+      w. WriteInt (len, 0);
+    END;
     w. WriteString ("];");
     NewLine (w, 0);
     w. WriteString ("} _p");
@@ -1522,7 +1526,11 @@ PROCEDURE PtrList (w: TextRider.Writer; root: D.Object; mode: SHORTINT): INTEGER
     IF (D.strAddress = D.strHugeInt) THEN w. WriteString("0, "); END;
     w. WriteInt (len, 0);
     w. WriteString (', NULL, {');
-    WriteObjects (root);
+    IF (len = 0) THEN                    (* avoid zero length arrays *)
+      w. WriteString ("NULL");
+    ELSE
+      WriteObjects (root);
+    END;
     NewLine (w, 0);
     w. WriteString ('}};');
     RETURN id

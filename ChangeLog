@@ -1,6 +1,12 @@
 Note: Directory parts of files mentioned here refer to the
       OOC source tree, not the shrunk oo2c distribution.
 
+2002-12-09  Michael van Acken  <acken@informatik.uni-kl.de>
+
+	* backend/ansi-c/GenDecl.Mod (PtrList):
+	Don't try to define and populate an array of length zero.
+	ANSI-C doesn't do this, although gcc can deal with it.
+
 2002-12-03  Michael van Acken  <acken@informatik.uni-kl.de>
 
 	* backend/ansi-c/GenDecl.Mod:

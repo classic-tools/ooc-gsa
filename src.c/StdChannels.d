@@ -22,8 +22,8 @@ Msg__Msg StdChannels__GetError(int code);
 static const struct {
   int length;
   void* pad;
-  const void* list[0];
-} _p0 = {0, NULL, {
+  const void* list[1];
+} _p0 = {0, NULL, {NULL
 }};
 static const struct {
   int length;

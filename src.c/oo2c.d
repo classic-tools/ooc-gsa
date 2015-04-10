@@ -49,14 +49,14 @@ void oo2c__Compile(const unsigned char* sourceFile__ref, int sourceFile_0d, Code
 static const struct {
   int length;
   void* pad;
-  const void* list[0];
-} _p0 = {0, NULL, {
+  const void* list[1];
+} _p0 = {0, NULL, {NULL
 }};
 static const struct {
   int length;
   void* pad;
-  const void* list[0];
-} _p1 = {0, NULL, {
+  const void* list[1];
+} _p1 = {0, NULL, {NULL
 }};
 static const struct {
   int length;
